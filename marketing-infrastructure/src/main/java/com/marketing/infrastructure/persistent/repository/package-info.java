@@ -1,1 +1,0 @@
-package com.marketing.infrastructure.persistent.repository;

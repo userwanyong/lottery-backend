@@ -1,4 +1,4 @@
-package com.marketing.test;
+package com.marketing.test.infrastructure;
 
 import com.alibaba.fastjson.JSON;
 import com.marketing.infrastructure.persistent.dao.AwardMapper;
@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApiTest {
+public class AwardMapperTest {
 
     @Resource
     private AwardMapper awardMapper;
