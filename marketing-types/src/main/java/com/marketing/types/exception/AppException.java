@@ -2,36 +2,41 @@ package com.marketing.types.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import java.io.Serial;
 
+/**
+ * @author 永
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AppException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 5317680961212299217L;
 
     /** 异常码 */
-    private String code;
+    private int code;
 
     /** 异常信息 */
-    private String info;
+    private String message;
 
-    public AppException(String code) {
+    public AppException(int code) {
         this.code = code;
     }
 
-    public AppException(String code, Throwable cause) {
+    public AppException(int code, Throwable cause) {
         this.code = code;
         super.initCause(cause);
     }
 
-    public AppException(String code, String message) {
+    public AppException(int code, String message) {
         this.code = code;
-        this.info = message;
+        this.message = message;
     }
 
-    public AppException(String code, String message, Throwable cause) {
+    public AppException(int code, String message, Throwable cause) {
         this.code = code;
-        this.info = message;
+        this.message = message;
         super.initCause(cause);
     }
 
@@ -39,7 +44,7 @@ public class AppException extends RuntimeException {
     public String toString() {
         return "com.marketing.x.api.types.exception.XApiException{" +
                 "code='" + code + '\'' +
-                ", info='" + info + '\'' +
+                ", info='" + message + '\'' +
                 '}';
     }
 

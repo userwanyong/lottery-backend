@@ -3,8 +3,14 @@ package com.marketing.infrastructure.persistent.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.marketing.domain.strategy.model.entity.StrategyAwardEntity;
+import com.marketing.domain.strategy.model.entity.StrategyEntity;
+import com.marketing.domain.strategy.model.entity.StrategyRuleEntity;
 import com.marketing.domain.strategy.repository.StrategyRepository;
+import com.marketing.infrastructure.persistent.dao.RuleMapper;
 import com.marketing.infrastructure.persistent.dao.StrategyAwardMapper;
+import com.marketing.infrastructure.persistent.dao.StrategyMapper;
+import com.marketing.infrastructure.persistent.po.Rule;
+import com.marketing.infrastructure.persistent.po.Strategy;
 import com.marketing.infrastructure.persistent.po.StrategyAward;
 import com.marketing.infrastructure.persistent.redis.RedisService;
 import com.marketing.types.common.Constants;
@@ -26,6 +32,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     private StrategyAwardMapper strategyAwardMapper;
     @Resource
     private RedisService redisService;
+    @Resource
+    private StrategyMapper strategyMapper;
+    @Resource
+    private RuleMapper ruleMapper;
 
     @Override
     public List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId) {
@@ -56,23 +66,52 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public void storeStrategyAwardSearchRateTable(Long strategyId, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable) {
+    public void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable) {
         // 1. 存储 抽奖策略范围值，如1000，用于生成1000以内的随机数
-        redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + strategyId, rateRange);
+        redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
         // 2. 存储 概率查找表
-        Map<Integer, Long> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + strategyId);
+        Map<Integer, Long> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         cacheRateTable.putAll(strategyAwardSearchRateTable);
 
     }
 
     @Override
-    public Long getStrategyAwardAssemble(Long strategyId, Integer rateKey) {
+    public Long getStrategyAwardAssemble(String strategyId, Integer rateKey) {
         return redisService.getFromMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + strategyId, rateKey);
     }
 
     @Override
-    public int getRateRange(Long strategyId) {
+    public int getRateRange(String strategyId) {
         return redisService.getValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + strategyId);
+    }
+
+    @Override
+    public StrategyEntity queryStrategyEntityByStrategyId(Long strategyId) {
+        // 优先从redis缓存中获取
+        String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
+        StrategyEntity strategyEntity = redisService.getValue(cacheKey);
+        if (strategyEntity != null) {
+            return strategyEntity;
+        }
+        LambdaQueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>().lambda()
+                .eq(Strategy::getStrategyId, strategyId);
+        Strategy strategy = strategyMapper.selectOne(queryWrapper);
+        StrategyEntity newStrategyEntity = new StrategyEntity();
+        BeanUtils.copyProperties(strategy, newStrategyEntity);
+        redisService.setValue(cacheKey, newStrategyEntity);
+        return newStrategyEntity;
+    }
+
+    @Override
+    public StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleModel) {
+        LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
+                .eq(Rule::getStrategyId, strategyId)
+                .eq(Rule::getRuleModel, ruleModel);
+
+        Rule rule = ruleMapper.selectOne(queryWrapper);
+        StrategyRuleEntity strategyRuleEntity = new StrategyRuleEntity();
+        BeanUtils.copyProperties(rule, strategyRuleEntity);
+        return strategyRuleEntity;
     }
 
 }

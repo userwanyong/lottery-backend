@@ -21,6 +21,7 @@ CREATE TABLE `strategy`
     `id`            bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
     `strategy_id`   bigint(11)          NOT NULL COMMENT '抽奖策略ID',
     `strategy_desc` varchar(128)        NOT NULL COMMENT '抽奖策略描述',
+    `rule_models` varchar(256) DEFAULT NULL COMMENT '规则模型',
     `create_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -59,7 +60,7 @@ CREATE TABLE `rule`
     `award_id`    bigint(11)                   DEFAULT NULL COMMENT '抽奖奖品ID（规则类型为策略，则不需要奖品ID）',
     `rule_type`   tinyint(1)          NOT NULL DEFAULT '0' COMMENT '规则类型（1-策略规则、2-奖品规则）',
     `rule_model`  varchar(16)         NOT NULL COMMENT '规则模型（rule_random - 随机值计算、rule_lock - 抽奖几次后解锁、rule_luck_award - 幸运奖(兜底奖品)）',
-    `rule_value`  varchar(64)         NOT NULL COMMENT '规则比值',
+    `rule_value`  varchar(256)         NOT NULL COMMENT '规则比值',
     `rule_desc`   varchar(128)        NOT NULL COMMENT '规则描述',
     `create_time` datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -81,8 +82,8 @@ VALUES (1, 101, 'user_credit_random', '1,100', '用户积分【优先透彻规�
        (8, 108, 'openai_use_count', '100', 'OpenAI 增加使用次数'),
        (9, 109, 'openai_model', 'gpt-4,dall-e-2,dall-e-3', 'OpenAI 增加模型');
 
-INSERT INTO `strategy` (`id`, `strategy_id`, `strategy_desc`)
-VALUES (1, 100001, '抽奖策略');
+INSERT INTO `strategy` (`id`, `strategy_id`, `rule_models`, `strategy_desc`)
+VALUES (1, 100001,'rule_weight,rule_blacklist', '抽奖策略');
 
 INSERT INTO `strategy_award` (`id`, `strategy_id`, `award_id`, `award_title`, `award_subtitle`, `award_count`,
                               `award_count_surplus`, `award_rate`, `rule_models`, `sort`)

@@ -1,6 +1,9 @@
 package com.marketing.domain.strategy.repository;
 
 import com.marketing.domain.strategy.model.entity.StrategyAwardEntity;
+import com.marketing.domain.strategy.model.entity.StrategyEntity;
+import com.marketing.domain.strategy.model.entity.StrategyRuleEntity;
+
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +15,13 @@ public interface StrategyRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
 
-    void storeStrategyAwardSearchRateTable(Long strategyId, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable);
+    void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable);
 
-    Long getStrategyAwardAssemble(Long strategyId, Integer rateKey);
+    Long getStrategyAwardAssemble(String strategyId, Integer rateKey);
 
-    int getRateRange(Long strategyId);
+    int getRateRange(String strategyId);
 
+    StrategyEntity queryStrategyEntityByStrategyId(Long strategyId);
+
+    StrategyRuleEntity queryStrategyRule(Long strategyId, String ruleWeight);
 }
