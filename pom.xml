@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.marketing</groupId>
-    <artifactId>marketing</artifactId>
+    <groupId>com.lottery</groupId>
+    <artifactId>lottery</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>marketing-app</module>
-        <module>marketing-domain</module>
-        <module>marketing-trigger</module>
-        <module>marketing-infrastructure</module>
-        <module>marketing-types</module>
+        <module>lottery-app</module>
+        <module>lottery-domain</module>
+        <module>lottery-trigger</module>
+        <module>lottery-infrastructure</module>
+        <module>lottery-types</module>
     </modules>
 
     <properties>
@@ -91,23 +92,23 @@
 
             <!-- 工程模块 -->
             <dependency>
-                <groupId>com.marketing</groupId>
-                <artifactId>marketing-domain</artifactId>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-domain</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.marketing</groupId>
-                <artifactId>marketing-infrastructure</artifactId>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-infrastructure</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.marketing</groupId>
-                <artifactId>marketing-types</artifactId>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-types</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>com.marketing</groupId>
-                <artifactId>marketing-trigger</artifactId>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-trigger</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
