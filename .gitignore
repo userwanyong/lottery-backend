@@ -39,3 +39,4 @@ build/
 /.idea/
 /lottery-app/src/main/resources/application-dev.yml
 /data/
+/lottery-app/data/
