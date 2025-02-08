@@ -1,4 +1,4 @@
-package com.marketing.domain.strategy.service;
+package com.marketing.domain.strategy.service.strategy;
 
 import com.marketing.domain.strategy.model.entity.StrategyAwardEntity;
 import com.marketing.domain.strategy.model.entity.StrategyEntity;
@@ -20,7 +20,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class StrategyServiceImpl implements StrategyService , StrategyDispatch{
+public class StrategyServiceImpl implements StrategyArmory, StrategyService {
     @Resource
     private StrategyRepository repository;
 

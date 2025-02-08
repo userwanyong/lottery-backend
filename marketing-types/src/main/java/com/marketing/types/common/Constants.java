@@ -11,10 +11,10 @@ public class Constants {
     public final static String SPACE = " ";
 
     public static class RedisKey {
-        public static String STRATEGY_KEY = "marketing_strategy_key_";
-        public static String STRATEGY_AWARD_KEY = "marketing_strategy_award_key_";
-        public static String STRATEGY_RATE_TABLE_KEY = "marketing_strategy_rate_table_key_";
-        public static String STRATEGY_RATE_RANGE_KEY = "marketing_strategy_rate_range_key_";
+        public static String STRATEGY_KEY = "lottery_strategy_key_";
+        public static String STRATEGY_AWARD_KEY = "lottery_strategy_award_key_";
+        public static String STRATEGY_RATE_TABLE_KEY = "lottery_strategy_rate_table_key_";
+        public static String STRATEGY_RATE_RANGE_KEY = "lottery_strategy_rate_range_key_";
     }
 
 }

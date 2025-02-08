@@ -1,10 +1,10 @@
-package com.marketing.domain.strategy.service;
+package com.marketing.domain.strategy.service.strategy;
 
 /**
  * @author 永
  * 策略装配接口
  */
-public interface StrategyService {
+public interface StrategyArmory {
 
     /**
      * 装配抽奖策略「触发的时机可以为活动审核通过后进行调用」

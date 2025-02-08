@@ -1,10 +1,10 @@
-package com.marketing.domain.strategy.service;
+package com.marketing.domain.strategy.service.strategy;
 
 /**
  * @author 永
  * 策略调度接口
  */
-public interface StrategyDispatch {
+public interface StrategyService {
 
     /**
      * 获取抽奖策略装配的随机结果

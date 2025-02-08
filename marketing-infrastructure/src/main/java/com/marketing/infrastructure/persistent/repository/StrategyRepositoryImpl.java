@@ -1,5 +1,6 @@
 package com.marketing.infrastructure.persistent.repository;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.marketing.domain.strategy.model.entity.StrategyAwardEntity;
@@ -44,7 +45,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         // 优先从redis缓存中获取
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + strategyId;
         strategyAwardEntities = redisService.getValue(cacheKey);
-        if (strategyAwardEntities !=null && !strategyAwardEntities.isEmpty()) {
+        if (strategyAwardEntities != null && !strategyAwardEntities.isEmpty()) {
             return strategyAwardEntities;
         }
         // 否则查询数据库
@@ -112,6 +113,16 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         StrategyRuleEntity strategyRuleEntity = new StrategyRuleEntity();
         BeanUtils.copyProperties(rule, strategyRuleEntity);
         return strategyRuleEntity;
+    }
+
+    @Override
+    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+        LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
+                .eq(Rule::getStrategyId, strategyId)
+                .eq(Rule::getRuleModel, ruleModel)
+                //如果awardId不为null，则加入查询条件
+                .eq(awardId != null, Rule::getAwardId, awardId);
+        return ruleMapper.selectOne(queryWrapper).getRuleValue();
     }
 
 }
