@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.infrastructure.persistent.dao.RuleMapper;
 import com.lottery.infrastructure.persistent.dao.StrategyAwardMapper;
@@ -115,13 +116,22 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public String queryStrategyRuleValue(Long strategyId, Integer awardId, String ruleModel) {
+    public String queryStrategyRuleValue(Long strategyId, Long awardId, String ruleModel) {
         LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
                 .eq(Rule::getStrategyId, strategyId)
                 .eq(Rule::getRuleModel, ruleModel)
                 //如果awardId不为null，则加入查询条件
                 .eq(awardId != null, Rule::getAwardId, awardId);
         return ruleMapper.selectOne(queryWrapper).getRuleValue();
+    }
+
+    @Override
+    public StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId) {
+        LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>().lambda()
+                .eq(StrategyAward::getStrategyId, strategyId)
+                .eq(StrategyAward::getAwardId, awardId);
+        StrategyAward strategyAward = strategyAwardMapper.selectOne(queryWrapper);
+        return StrategyRuleModelVO.builder().ruleModels(strategyAward.getRuleModels()).build();
     }
 
 }

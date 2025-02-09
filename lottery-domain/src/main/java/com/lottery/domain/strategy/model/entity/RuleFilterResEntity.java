@@ -40,7 +40,14 @@ public class RuleFilterResEntity<T extends RuleFilterResEntity.LotteryEntity> {
     }
 
     // 抽奖之中
+    @EqualsAndHashCode(callSuper = true)
+    @Data
+    @Builder
     static public class LotteryCenterEntity extends LotteryEntity {
+        /**
+         * 奖品ID；
+         */
+        private Long awardId;
     }
 
     // 抽奖之后

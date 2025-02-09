@@ -5,6 +5,7 @@ import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.LotteryStrategy;
 import com.lottery.domain.strategy.service.rule.factory.DefaultLogicFactory;
@@ -46,7 +47,7 @@ public abstract class AbstractLottery implements LotteryStrategy {
                 .userId(userId)
                 .strategyId(strategyId)
                 .build();
-        RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> ruleFilterResEntity = this.doCheckRaffleBeforeLogic(lotteryReq, strategy.ruleModels());
+        RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> ruleFilterResEntity = this.doCheckLotteryBeforeLogic(lotteryReq, strategy.ruleModels());
 
         // 4. 根据过滤的返回值（放行or接管）如果被接管，判断规则类型做对应处理
         if (RuleLogicCheckTypeVO.TAKE_OVER.getCode() == ruleFilterResEntity.getCode()) {
@@ -68,13 +69,34 @@ public abstract class AbstractLottery implements LotteryStrategy {
 
         // 5. 否则执行默认抽奖流程
         Long awardId = strategyService.getRandomAwardId(strategyId);
-        // 6. 返回抽到的奖品 TODO 这里只填充了ID，后期改改吗？
+
+        // 6. 查询奖品规则
+        StrategyRuleModelVO strategyRuleModelVO = repository.queryRuleModelVO(strategyId, awardId);
+
+        // 7. 抽奖中的规则过滤
+        LotteryReqEntity lotteryReqCenter = LotteryReqEntity.builder()
+                .userId(userId)
+                .strategyId(strategyId)
+                .awardId(awardId)
+                .build();
+        RuleFilterResEntity<RuleFilterResEntity.LotteryCenterEntity> ruleFilterResEntityCenter = this.doCheckLotteryCenterLogic(lotteryReqCenter, strategyRuleModelVO.lotteryCenterRuleModelList());
+
+        // 8. 根据过滤的返回值（放行or接管）如果被接管，进行处理
+        if (RuleLogicCheckTypeVO.TAKE_OVER.getCode() == ruleFilterResEntityCenter.getCode()){
+            return LotteryResEntity.builder()
+                    .awardId(ruleFilterResEntityCenter.getData().getAwardId())
+                    .build();
+        }
+
+        // 9. 返回抽到的奖品 TODO 这里只填充了ID，后期改改吗？
         return LotteryResEntity.builder()
                 .awardId(awardId)
                 .build();
     }
 
-    protected abstract RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> doCheckRaffleBeforeLogic(LotteryReqEntity lotteryReqEntity, String... logics);
+    protected abstract RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> doCheckLotteryBeforeLogic(LotteryReqEntity lotteryReqEntity, String... logics);
+
+    protected abstract RuleFilterResEntity<RuleFilterResEntity.LotteryCenterEntity> doCheckLotteryCenterLogic(LotteryReqEntity lotteryReqEntity, String... logics);
 
 }
 

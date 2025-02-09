@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.service.LotteryStrategy;
+import com.lottery.domain.strategy.service.rule.impl.RuleLockLogicFilter;
 import com.lottery.domain.strategy.service.rule.impl.RuleWeightLogicFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -23,10 +24,14 @@ public class LotteryTest {
     private LotteryStrategy lotteryStrategy;
     @Resource
     private RuleWeightLogicFilter ruleWeightLogicFilter;
+    @Resource
+    private RuleLockLogicFilter ruleLockLogicFilter;
 
     @Before
     public void setUp() {
+        // 通过反射 mock 规则中的值
         ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 5050L);
+        ReflectionTestUtils.setField(ruleLockLogicFilter, "userLotteryCount", 10L);
     }
 
     @Test
@@ -51,5 +56,17 @@ public class LotteryTest {
         LotteryResEntity lotteryResEntity = lotteryStrategy.performRaffle(lotteryReqEntity);
         log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
         log.info("测试结果：{}", JSON.toJSONString(lotteryResEntity));
+    }
+
+
+    @Test
+    public void test_raffle_center_rule_lock(){
+        LotteryReqEntity lotteryReqEntity = LotteryReqEntity.builder()
+                .userId("user010")
+                .strategyId(100003L)
+                .build();
+        LotteryResEntity raffleAwardEntity = lotteryStrategy.performRaffle(lotteryReqEntity);
+        log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
+        log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
     }
 }

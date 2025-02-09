@@ -33,7 +33,13 @@ public class DefaultLottery extends AbstractLottery {
     }
 
     @Override
-    protected RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> doCheckRaffleBeforeLogic(LotteryReqEntity lotteryReqEntity, String... logics) {
+    protected RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> doCheckLotteryBeforeLogic(LotteryReqEntity lotteryReqEntity, String... logics) {
+        if (logics == null || 0 == logics.length) {
+            return RuleFilterResEntity.<RuleFilterResEntity.LotteryBeforeEntity>builder()
+                    .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                    .message(RuleLogicCheckTypeVO.ALLOW.getMessage())
+                    .build();
+        }
         // 1. 获取规则过滤器组
         Map<String, LogicFilter<RuleFilterResEntity.LotteryBeforeEntity>> logicFilterGroup = logicFactory.openLogicFilter();
 
@@ -69,6 +75,7 @@ public class DefaultLottery extends AbstractLottery {
 
         RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> ruleFilterResEntity = null;
         for (String ruleModel : ruleList) {
+            // 得到相应规则过滤器
             LogicFilter<RuleFilterResEntity.LotteryBeforeEntity> logicFilter = logicFilterGroup.get(ruleModel);
 
             RuleFilterReqEntity ruleFilterReqEntity = new RuleFilterReqEntity();
@@ -79,8 +86,42 @@ public class DefaultLottery extends AbstractLottery {
 
             ruleFilterResEntity = logicFilter.filter(ruleFilterReqEntity);
 
-            // 非放行结果则顺序过滤
+            // 是放行结果则继续过滤
             log.info("抽奖前规则过滤 userId: {} ruleModel: {} code: {} info: {}", lotteryReqEntity.getUserId(), ruleModel, ruleFilterResEntity.getCode(), ruleFilterResEntity.getMessage());
+            if (RuleLogicCheckTypeVO.ALLOW.getCode() != ruleFilterResEntity.getCode()) {
+                return ruleFilterResEntity;
+            }
+        }
+
+        return ruleFilterResEntity;
+    }
+
+    @Override
+    protected RuleFilterResEntity<RuleFilterResEntity.LotteryCenterEntity> doCheckLotteryCenterLogic(LotteryReqEntity lotteryReqEntity, String... logics) {
+        if (logics == null || 0 == logics.length) {
+            return RuleFilterResEntity.<RuleFilterResEntity.LotteryCenterEntity>builder()
+                    .code(RuleLogicCheckTypeVO.ALLOW.getCode())
+                    .message(RuleLogicCheckTypeVO.ALLOW.getMessage())
+                    .build();
+        }
+        // 1. 获取规则过滤器组
+        Map<String, LogicFilter<RuleFilterResEntity.LotteryCenterEntity>> logicFilterGroup = logicFactory.openLogicFilter();
+        // 2. 过滤解锁规则
+        RuleFilterResEntity<RuleFilterResEntity.LotteryCenterEntity> ruleFilterResEntity = null;
+        for (String ruleModel : logics) {
+            // 得到相应规则过滤器
+            LogicFilter<RuleFilterResEntity.LotteryCenterEntity> logicFilter = logicFilterGroup.get(ruleModel);
+
+            RuleFilterReqEntity ruleFilterReqEntity = new RuleFilterReqEntity();
+            ruleFilterReqEntity.setUserId(lotteryReqEntity.getUserId());
+            ruleFilterReqEntity.setAwardId(lotteryReqEntity.getAwardId());
+            ruleFilterReqEntity.setStrategyId(lotteryReqEntity.getStrategyId());
+            ruleFilterReqEntity.setRuleModel(ruleModel);
+
+            ruleFilterResEntity = logicFilter.filter(ruleFilterReqEntity);
+
+            // 是放行结果则继续过滤
+            log.info("抽奖中规则过滤 userId: {} ruleModel: {} code: {} info: {}", lotteryReqEntity.getUserId(), ruleModel, ruleFilterResEntity.getCode(), ruleFilterResEntity.getMessage());
             if (RuleLogicCheckTypeVO.ALLOW.getCode() != ruleFilterResEntity.getCode()) {
                 return ruleFilterResEntity;
             }

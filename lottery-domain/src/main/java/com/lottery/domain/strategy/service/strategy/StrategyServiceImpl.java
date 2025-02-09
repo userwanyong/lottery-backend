@@ -35,6 +35,9 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
         //生成并保存概率查找表+权重的
         // 3. 根据策略id查询策略表，获得策略实体，判断是否存在权重规则
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
+        if (strategyEntity.getRuleModels() == null){// 未配置任何规则
+            return true;
+        }
         String ruleWeight = strategyEntity.getRuleWeight();
         if (ruleWeight == null) {
             return true;

@@ -26,8 +26,12 @@ public class StrategyTest {
      */
     @Test
     public void test_strategyArmory() {
-        boolean success = strategyArmory.assembleLotteryStrategy(100001L);
-        log.info("测试结果：{}", success);
+        boolean success1 = strategyArmory.assembleLotteryStrategy(100001L);
+        boolean success2 = strategyArmory.assembleLotteryStrategy(100002L);
+        boolean success3 = strategyArmory.assembleLotteryStrategy(100003L);
+        log.info("测试结果1：{}", success1);
+        log.info("测试结果2：{}", success2);
+        log.info("测试结果3：{}", success3);
     }
 
     /**

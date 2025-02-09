@@ -36,18 +36,18 @@ public class RuleBackListLogicFilter implements LogicFilter<RuleFilterResEntity.
         String[] splitRuleValue = ruleValue.split(Constants.COLON);
         Long awardId = Long.valueOf(splitRuleValue[0]);
 
-        // 2. 查询黑名单用户
+        // 2. 查询该值对应的黑名单用户
         String[] userBlackIds = splitRuleValue[1].split(Constants.SPLIT);
 
         // 如果用户在黑名单中，进行接管
         for (String userBlackId : userBlackIds) {
             if (userId.equals(userBlackId)) {
                 return RuleFilterResEntity.<RuleFilterResEntity.LotteryBeforeEntity>builder()
-                        .ruleModel(DefaultLogicFactory.LogicModel.RULE_BLACKLIST.getCode())
                         .data(RuleFilterResEntity.LotteryBeforeEntity.builder()
                                 .strategyId(ruleFilterReqEntity.getStrategyId())
                                 .awardId(awardId)
                                 .build())
+                        .ruleModel(DefaultLogicFactory.LogicModel.RULE_BLACKLIST.getCode())
                         .code(RuleLogicCheckTypeVO.TAKE_OVER.getCode())
                         .message(RuleLogicCheckTypeVO.TAKE_OVER.getMessage())
                         .build();
