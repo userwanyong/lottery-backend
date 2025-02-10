@@ -1,12 +1,12 @@
-package com.lottery.domain.strategy.service.rule.impl;
+package com.lottery.domain.strategy.service.rule.filter.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleFilterReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.annotation.LogicStrategy;
-import com.lottery.domain.strategy.service.rule.LogicFilter;
-import com.lottery.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.lottery.domain.strategy.service.rule.filter.LogicFilter;
+import com.lottery.domain.strategy.service.rule.filter.factory.DefaultLogicFilterFactory;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,11 +16,12 @@ import java.util.*;
 
 /**
  * @author 永
- * 抽奖前-根据抽奖权重返回可抽奖范围KEY
+ * 抽奖前-权重过滤规则
  */
+@Deprecated
 @Slf4j
 @Component
-@LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.RULE_WIGHT) // 如果存在权重规则，则使用这个过滤器
+@LogicStrategy(logicMode = DefaultLogicFilterFactory.LogicModel.RULE_WIGHT) // 如果存在权重规则，则使用这个过滤器
 public class RuleWeightLogicFilter implements LogicFilter<RuleFilterResEntity.LotteryBeforeEntity> {
 
     // TODO 后期从数据库查询
@@ -38,7 +39,7 @@ public class RuleWeightLogicFilter implements LogicFilter<RuleFilterResEntity.Lo
      */
     @Override
     public RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> filter(RuleFilterReqEntity ruleFilterReqEntity) {
-        log.info("规则过滤-权重范围 userId:{} strategyId:{} ruleModel:{}", ruleFilterReqEntity.getUserId(), ruleFilterReqEntity.getStrategyId(), ruleFilterReqEntity.getRuleModel());
+        log.info("规则过滤-权重过滤开始 userId:{} strategyId:{} ruleModel:{}", ruleFilterReqEntity.getUserId(), ruleFilterReqEntity.getStrategyId(), ruleFilterReqEntity.getRuleModel());
 
         String userId = ruleFilterReqEntity.getUserId();
         Long strategyId = ruleFilterReqEntity.getStrategyId();
@@ -65,18 +66,20 @@ public class RuleWeightLogicFilter implements LogicFilter<RuleFilterResEntity.Lo
 
         // 如果找到，进行接管
         if (nextValue != null) {
+            log.info("规则过滤-权重接管 userId:{} strategyId:{} ruleModel:{} ruleWeightValueKey:{}", ruleFilterReqEntity.getUserId(), ruleFilterReqEntity.getStrategyId(), ruleFilterReqEntity.getRuleModel(),analyticalValueGroup.get(nextValue));
             return RuleFilterResEntity.<RuleFilterResEntity.LotteryBeforeEntity>builder()
                     .data(RuleFilterResEntity.LotteryBeforeEntity.builder()
                             .strategyId(strategyId)
                             .ruleWeightValueKey(analyticalValueGroup.get(nextValue))
                             .build())
-                    .ruleModel(DefaultLogicFactory.LogicModel.RULE_WIGHT.getCode())
+                    .ruleModel(DefaultLogicFilterFactory.LogicModel.RULE_WIGHT.getCode())
                     .code(RuleLogicCheckTypeVO.TAKE_OVER.getCode())
                     .message(RuleLogicCheckTypeVO.TAKE_OVER.getMessage())
                     .build();
         }
 
         // 若没找到，放行
+        log.info("规则过滤-权重放行 userId:{} strategyId:{} ruleModel:{}", ruleFilterReqEntity.getUserId(), ruleFilterReqEntity.getStrategyId(), ruleFilterReqEntity.getRuleModel());
         return RuleFilterResEntity.<RuleFilterResEntity.LotteryBeforeEntity>builder()
                 .code(RuleLogicCheckTypeVO.ALLOW.getCode())
                 .message(RuleLogicCheckTypeVO.ALLOW.getMessage())

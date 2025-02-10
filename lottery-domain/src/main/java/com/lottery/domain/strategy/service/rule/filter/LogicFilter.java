@@ -1,4 +1,4 @@
-package com.lottery.domain.strategy.service.rule;
+package com.lottery.domain.strategy.service.rule.filter;
 
 import com.lottery.domain.strategy.model.entity.RuleFilterReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;

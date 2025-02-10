@@ -84,7 +84,7 @@ VALUES (1, 101, 'user_credit_random', '1,100', '用户积分【优先透彻规�
        (10,100, 'user_credit_blacklist','1','黑名单积分');
 
 INSERT INTO `strategy` (`id`, `strategy_id`, `rule_models`, `strategy_desc`)
-VALUES (1, 100001, 'rule_weight,rule_blacklist', '抽奖策略'),
+VALUES (1, 100001, 'rule_blacklist,rule_weight', '抽奖策略'),
        (2,100003,NULL,'抽奖策略-验证lock'),
        (3,100002,NULL,'抽奖策略-非完整1概率');
 

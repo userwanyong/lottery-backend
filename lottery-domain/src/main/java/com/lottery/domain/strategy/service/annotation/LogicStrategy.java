@@ -1,6 +1,6 @@
 package com.lottery.domain.strategy.service.annotation;
 
-import com.lottery.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.lottery.domain.strategy.service.rule.filter.factory.DefaultLogicFilterFactory;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LogicStrategy {
-    DefaultLogicFactory.LogicModel logicMode();
+    DefaultLogicFilterFactory.LogicModel logicMode();
 }

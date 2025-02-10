@@ -1,6 +1,6 @@
 package com.lottery.domain.strategy.model.valobj;
 
-import com.lottery.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import com.lottery.domain.strategy.service.rule.filter.factory.DefaultLogicFilterFactory;
 import com.lottery.types.common.Constants;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class StrategyRuleModelVO {
      */
     public String[] lotteryCenterRuleModelList() {
         List<String> ruleModelList = Arrays.stream(ruleModels.split(Constants.SPLIT))
-                .filter(DefaultLogicFactory.LogicModel::isCenter)
+                .filter(DefaultLogicFilterFactory.LogicModel::isCenter)
                 .toList();
         return ruleModelList.toArray(new String[0]);
     }

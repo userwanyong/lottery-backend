@@ -1,9 +1,9 @@
-package com.lottery.domain.strategy.service.rule.factory;
+package com.lottery.domain.strategy.service.rule.filter.factory;
 
 import com.alibaba.fastjson2.util.AnnotationUtils;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;
 import com.lottery.domain.strategy.service.annotation.LogicStrategy;
-import com.lottery.domain.strategy.service.rule.LogicFilter;
+import com.lottery.domain.strategy.service.rule.filter.LogicFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -14,16 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author 永
- * 规则工厂
+ * 过滤器工厂
  */
 @Service
-public class DefaultLogicFactory {
+public class DefaultLogicFilterFactory {
     public Map<String, LogicFilter<?>> logicFilterMap = new ConcurrentHashMap<>();
 
     /**
      * 通过注解找到每个过滤器对应的策略，并将其存储到Map中
      */
-    public DefaultLogicFactory(List<LogicFilter<?>> logicFilters) {
+    public DefaultLogicFilterFactory(List<LogicFilter<?>> logicFilters) {
         logicFilters.forEach(logic -> {
             LogicStrategy strategy = AnnotationUtils.findAnnotation(logic.getClass(), LogicStrategy.class);
             if (strategy != null) {

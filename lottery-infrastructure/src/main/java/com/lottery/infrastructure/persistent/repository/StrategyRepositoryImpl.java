@@ -126,6 +126,11 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
+    public String queryStrategyRuleValue(Long strategyId, String ruleModel) {
+        return queryStrategyRuleValue(strategyId, null, ruleModel);
+    }
+
+    @Override
     public StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId) {
         LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>().lambda()
                 .eq(StrategyAward::getStrategyId, strategyId)

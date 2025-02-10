@@ -6,15 +6,21 @@ package com.lottery.types.common;
  */
 public class Constants {
 
-    public final static String SPLIT = ",";
-    public final static String COLON = ":";
-    public final static String SPACE = " ";
+    public static final String SPLIT = ",";
+    public static final String COLON = ":";
+    public static final String SPACE = " ";
 
     public static class RedisKey {
         public static String STRATEGY_KEY = "lottery_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "lottery_strategy_award_key_";
         public static String STRATEGY_RATE_TABLE_KEY = "lottery_strategy_rate_table_key_";
         public static String STRATEGY_RATE_RANGE_KEY = "lottery_strategy_rate_range_key_";
+    }
+
+    public static class RuleModel {
+        public static final String DEFAULT = "default";
+        public static final String RULE_BLACKLIST = "rule_blacklist";
+        public static final String RULE_WIGHT = "rule_weight";
     }
 
 }
