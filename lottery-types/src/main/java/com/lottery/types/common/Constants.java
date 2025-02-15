@@ -21,6 +21,9 @@ public class Constants {
         public static final String DEFAULT = "default";
         public static final String RULE_BLACKLIST = "rule_blacklist";
         public static final String RULE_WIGHT = "rule_weight";
+        public static final String RULE_LOCK = "rule_lock";
+        public static final String RULE_STOCK = "rule_stock";
+        public static final String RULE_LUCK_AWARD = "rule_luck_award";
     }
 
 }

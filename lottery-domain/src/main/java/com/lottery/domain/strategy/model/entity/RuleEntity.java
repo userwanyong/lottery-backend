@@ -1,7 +1,10 @@
 package com.lottery.domain.strategy.model.entity;
 
 import com.lottery.types.common.Constants;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,16 +16,19 @@ import java.util.Map;
  * 规则实体
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RuleEntity {
 //    /**
 //     * 抽奖策略ID
 //     */
 //    private Long strategyId;
 
-//    /**
-//     * 抽奖奖品ID（规则类型为策略，则不需要奖品ID）
-//     */
-//    private Long awardId;
+    /**
+     * 抽奖奖品ID（规则类型为策略，则不需要奖品ID）
+     */
+    private Long awardId;
 
 //    /**
 //     * 规则类型（1-策略规则、2-奖品规则）
