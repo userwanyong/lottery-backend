@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class RuleTreeNodeVO {
     /** 规则树ID */
-    private Integer treeId;
+    private String treeId;
     /** 规则名 */
     private String ruleName;
     /** 规则描述 */

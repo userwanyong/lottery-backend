@@ -1,7 +1,7 @@
 package com.lottery.domain.strategy.service.rule.chain.factory;
 
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.types.common.Constants;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,9 @@ import java.util.Map;
 @Service
 public class DefaultLogicChainFactory {
     private final Map<String, LogicChain> logicChainGroup;
-    protected StrategyRepository repository;
+    protected LotteryRepository repository;
 
-    public DefaultLogicChainFactory(Map<String, LogicChain> logicChainGroup, StrategyRepository repository) {
+    public DefaultLogicChainFactory(Map<String, LogicChain> logicChainGroup, LotteryRepository repository) {
         this.logicChainGroup = logicChainGroup;
         this.repository = repository;
     }
@@ -24,7 +24,7 @@ public class DefaultLogicChainFactory {
     /**
      * 构建责任链
      */
-    public LogicChain openChain(Long strategyId) {
+    public LogicChain openLogicChain(Long strategyId) {
         // 1. 查询策略
         StrategyEntity strategy = repository.queryStrategyEntityByStrategyId(strategyId);
         String[] ruleModels = strategy.ruleModels();

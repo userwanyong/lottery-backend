@@ -3,7 +3,7 @@ package com.lottery.domain.strategy.service.strategy;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.*;
 @Service
 public class StrategyServiceImpl implements StrategyArmory, StrategyService {
     @Resource
-    private StrategyRepository repository;
+    private LotteryRepository repository;
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {

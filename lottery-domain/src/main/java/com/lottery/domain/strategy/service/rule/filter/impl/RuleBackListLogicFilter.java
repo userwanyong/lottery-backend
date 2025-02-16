@@ -3,7 +3,7 @@ package com.lottery.domain.strategy.service.rule.filter.impl;
 import com.lottery.domain.strategy.model.entity.RuleFilterReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.annotation.LogicStrategy;
 import com.lottery.domain.strategy.service.rule.filter.LogicFilter;
 import com.lottery.domain.strategy.service.rule.filter.factory.DefaultLogicFilterFactory;
@@ -24,7 +24,7 @@ import javax.annotation.Resource;
 public class RuleBackListLogicFilter implements LogicFilter<RuleFilterResEntity.LotteryBeforeEntity> {
 
     @Resource
-    private StrategyRepository repository;
+    private LotteryRepository repository;
 
     @Override
     public RuleFilterResEntity<RuleFilterResEntity.LotteryBeforeEntity> filter(RuleFilterReqEntity ruleFilterReqEntity) {

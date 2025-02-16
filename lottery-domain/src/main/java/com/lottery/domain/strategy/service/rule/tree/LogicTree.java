@@ -7,5 +7,5 @@ import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFac
  * 规则树接口
  */
 public interface LogicTree {
-    DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId);
+    DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId);
 }

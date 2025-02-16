@@ -34,6 +34,7 @@ public class LotteryTest {
         ReflectionTestUtils.setField(ruleLockLogicFilter, "userLotteryCount", 10L);
     }
 
+
     @Test
     public void test_performLottery_weight() {
         for (int i = 0; i < 10; i++) {
@@ -41,7 +42,7 @@ public class LotteryTest {
                     .userId("user000")
                     .strategyId(100001L)
                     .build();
-            LotteryResEntity lotteryResEntity = lotteryStrategy.performRaffle(lotteryReqEntity);
+            LotteryResEntity lotteryResEntity = lotteryStrategy.performLottery(lotteryReqEntity);
             log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
             log.info("测试结果：{}", JSON.toJSONString(lotteryResEntity));
         }
@@ -53,7 +54,7 @@ public class LotteryTest {
                 .userId("user003")  // 黑名单用户 user001,user002,user003
                 .strategyId(100001L)
                 .build();
-        LotteryResEntity lotteryResEntity = lotteryStrategy.performRaffle(lotteryReqEntity);
+        LotteryResEntity lotteryResEntity = lotteryStrategy.performLottery(lotteryReqEntity);
         log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
         log.info("测试结果：{}", JSON.toJSONString(lotteryResEntity));
     }
@@ -63,9 +64,9 @@ public class LotteryTest {
     public void test_raffle_center_rule_lock(){
         LotteryReqEntity lotteryReqEntity = LotteryReqEntity.builder()
                 .userId("user010")
-                .strategyId(100003L)
+                .strategyId(100006L)
                 .build();
-        LotteryResEntity raffleAwardEntity = lotteryStrategy.performRaffle(lotteryReqEntity);
+        LotteryResEntity raffleAwardEntity = lotteryStrategy.performLottery(lotteryReqEntity);
         log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
         log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
     }

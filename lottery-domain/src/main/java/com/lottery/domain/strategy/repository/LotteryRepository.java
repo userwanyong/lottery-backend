@@ -3,6 +3,7 @@ package com.lottery.domain.strategy.repository;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author 永
  * 策略服务仓储接口
  */
-public interface StrategyRepository {
+public interface LotteryRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
 
@@ -30,4 +31,6 @@ public interface StrategyRepository {
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
     StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId);
+
+    RuleTreeVO queryRuleTreeVO(String treeId);
 }

@@ -70,6 +70,56 @@ CREATE TABLE `rule`
   DEFAULT CHARSET = utf8mb4;
 
 
+# 规则树表 rule_tree
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `rule_tree`;
+CREATE TABLE `rule_tree` (
+     `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+     `tree_id` varchar(32) NOT NULL COMMENT '规则树ID',
+     `tree_name` varchar(64) NOT NULL COMMENT '规则树名称',
+     `tree_desc` varchar(128) DEFAULT NULL COMMENT '规则树描述',
+     `tree_node_rule_key` varchar(32) NOT NULL COMMENT '规则树根入口规则',
+     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+     PRIMARY KEY (`id`),
+     UNIQUE KEY `uq_tree_id` (`tree_id`)
+) ENGINE=InnoDB
+    DEFAULT CHARSET=utf8mb4;
+
+
+# 规则树节点表 rule_tree_node
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `rule_tree_node`;
+CREATE TABLE `rule_tree_node` (
+      `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+      `tree_id` varchar(32) NOT NULL COMMENT '规则树ID',
+      `rule_name` varchar(32) NOT NULL COMMENT '规则名',
+      `rule_desc` varchar(64) NOT NULL COMMENT '规则描述',
+      `rule_value` varchar(128) DEFAULT NULL COMMENT '规则的值',
+      `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+      `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+      PRIMARY KEY (`id`)
+) ENGINE=InnoDB
+    DEFAULT CHARSET=utf8mb4;
+
+
+# 规则树节点连线表 rule_tree_node_line
+# ------------------------------------------------------------
+DROP TABLE IF EXISTS `rule_tree_node_line`;
+CREATE TABLE `rule_tree_node_line` (
+       `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+       `tree_id` varchar(32) NOT NULL COMMENT '规则树ID',
+       `rule_node_from` varchar(32) NOT NULL COMMENT 'From',
+       `rule_node_to` varchar(32) NOT NULL COMMENT 'To',
+       `rule_limit_type` varchar(8) NOT NULL COMMENT '限定类型；1:=;2:>;3:<;4:>=;5<=;6:enum[枚举范围];',
+       `rule_limit_value` varchar(32) NOT NULL COMMENT '限定值（到下个节点）',
+       `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+       `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+       PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
 # 测试数据 ------------------------------------------------------------
 INSERT INTO `award` (`id`, `award_id`, `award_key`, `award_config`, `award_desc`)
 VALUES (1, 101, 'user_credit_random', '1,100', '用户积分【优先透彻规则范围，如果没有则走配置】'),
@@ -86,7 +136,8 @@ VALUES (1, 101, 'user_credit_random', '1,100', '用户积分【优先透彻规�
 INSERT INTO `strategy` (`id`, `strategy_id`, `rule_models`, `strategy_desc`)
 VALUES (1, 100001, 'rule_blacklist,rule_weight', '抽奖策略'),
        (2,100003,NULL,'抽奖策略-验证lock'),
-       (3,100002,NULL,'抽奖策略-非完整1概率');
+       (3,100002,NULL,'抽奖策略-非完整1概率'),
+       (4,100006,NULL,'抽奖策略-规则树');
 
 
 INSERT INTO `strategy_award` (`id`, `strategy_id`, `award_id`, `award_title`, `award_subtitle`, `award_count`,
@@ -107,7 +158,10 @@ VALUES (1, 100001, 101, '随机积分', NULL, 80000, 80000, 20.0000, 'rule_rando
 
        (13,100003,107,'增加dall-e-3画图模型','抽奖1次后解锁',200,200,0.0400,'rule_lock,rule_luck_award',1),
        (14,100003,108,'增加100次使用','抽奖2次后解锁',199,199,0.0099,'rule_lock,rule_luck_award',2),
-       (15,100003,109,'解锁全部模型','抽奖6次后解锁',1,1,0.0001,'rule_lock,rule_luck_award',3);
+       (15,100003,109,'解锁全部模型','抽奖6次后解锁',1,1,0.0001,'rule_lock,rule_luck_award',3),
+
+       (16,100006,101,'随机积分',NULL,3,3,0.0300,'tree_lock',1),
+       (17,100006,102,'随机积分',NULL,97,97,0.9700,'tree_lock',1);
 
 INSERT INTO `rule` (`id`, `strategy_id`, `award_id`, `rule_type`, `rule_model`, `rule_value`, `rule_desc`)
 VALUES (1, 100001, 101, 2, 'rule_random', '1,1000', '随机积分策略'),
@@ -127,3 +181,20 @@ VALUES (1, 100001, 101, 2, 'rule_random', '1,1000', '随机积分策略'),
        (15,100003,107,2,'rule_lock','1','抽奖1次后解锁'),
        (16,100003,108,2,'rule_lock','2','抽奖2次后解锁'),
        (17,100003,109,2,'rule_lock','6','抽奖6次后解锁');
+
+INSERT INTO `rule_tree` (`id`, `tree_id`, `tree_name`, `tree_desc`, `tree_node_rule_key`)
+VALUES
+    (1,'tree_lock','规则树','规则树','rule_lock');
+
+INSERT INTO `rule_tree_node` (`id`, `tree_id`, `rule_name`, `rule_desc`, `rule_value`)
+VALUES
+    (1,'tree_lock','rule_lock','限定用户已完成N次抽奖后解锁','1'),
+    (2,'tree_lock','rule_luck_award','兜底奖品随机积分','1,100'),
+    (3,'tree_lock','rule_stock','库存扣减规则',NULL);
+
+
+INSERT INTO `rule_tree_node_line` (`id`, `tree_id`, `rule_node_from`, `rule_node_to`, `rule_limit_type`, `rule_limit_value`)
+VALUES
+    (1,'tree_lock','rule_lock','rule_stock','EQUAL','ALLOW'),
+    (2,'tree_lock','rule_lock','rule_luck_award','EQUAL','TAKE_OVER'),
+    (3,'tree_lock','rule_stock','rule_luck_award','EQUAL','TAKE_OVER');

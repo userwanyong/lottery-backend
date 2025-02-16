@@ -25,10 +25,10 @@ public class LotteryResEntity {
 //     */
 //    private String awardKey;
 
-//    /**
-//     * 奖品配置信息
-//     */
-//    private String awardConfig;
+    /**
+     * 奖品配置信息
+     */
+    private String awardConfig;
 //
 //    /**
 //     * 奖品内容描述

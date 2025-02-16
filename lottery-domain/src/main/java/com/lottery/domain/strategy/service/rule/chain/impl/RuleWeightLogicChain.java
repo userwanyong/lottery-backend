@@ -1,6 +1,7 @@
 package com.lottery.domain.strategy.service.rule.chain.impl;
 
-import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
 import com.lottery.domain.strategy.service.strategy.StrategyService;
 import com.lottery.types.common.Constants;
@@ -20,13 +21,13 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     // TODO 后期从数据库查询
     public Long userScore = 4500L;
     @Resource
-    private StrategyRepository repository;
+    private LotteryRepository repository;
 
     @Resource
     private StrategyService strategyService;
 
     @Override
-    public Long chain(String userId, Long strategyId) {
+    public RuleEntity logic(String userId, Long strategyId) {
 
         log.info("抽奖责任链-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
 
@@ -35,7 +36,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         // 1. 处理规则模型的值，如果规则模型没有值，直接放行
         Map<Long, String> analyticalValueGroup = getAnalyticalValue(ruleValue);
         if (analyticalValueGroup == null || analyticalValueGroup.isEmpty()) {
-            return next().chain(userId, strategyId);
+            return next().logic(userId, strategyId);
         }
 
         // 2. 转换Keys值，并默认排序
@@ -53,12 +54,15 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         if (nextValue != null) {
             Long awardId = strategyService.getRandomAwardId(strategyId, analyticalValueGroup.get(nextValue));
             log.info("抽奖责任链-权重接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT, awardId);
-            return awardId;
+            return RuleEntity.builder()
+                    .awardId(awardId)
+                    .ruleModel(Constants.RuleModel.RULE_WIGHT)
+                    .build();
         }
 
         // 否则过滤其他责任链
         log.info("抽奖责任链-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
-        return next().chain(userId, strategyId);
+        return next().logic(userId, strategyId);
     }
 
     private Map<Long, String> getAnalyticalValue(String ruleValue) {

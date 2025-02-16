@@ -11,7 +11,7 @@ import lombok.Data;
 @Builder
 public class RuleTreeNodeLineVO {
     /** 规则树ID */
-    private Integer treeId;
+    private String treeId;
     /**  From */
     private String ruleNodeFrom;
     /**  To */

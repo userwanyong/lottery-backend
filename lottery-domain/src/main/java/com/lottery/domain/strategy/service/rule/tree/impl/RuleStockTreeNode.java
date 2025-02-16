@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component(Constants.RuleModel.RULE_STOCK)
 public class RuleStockTreeNode implements LogicTree {
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId) {
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .build();

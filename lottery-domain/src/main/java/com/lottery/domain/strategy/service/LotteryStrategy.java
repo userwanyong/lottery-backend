@@ -10,8 +10,8 @@ import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 public interface LotteryStrategy {
 
     /**
-     * @param raffleFactorEntity 抽奖要素实体，根据入参信息计算抽奖结果
+     * @param lotteryFactorEntity 抽奖要素实体，根据入参信息计算抽奖结果
      * @return 抽奖的奖品
      */
-    LotteryResEntity performRaffle(LotteryReqEntity raffleFactorEntity);
+    LotteryResEntity performLottery(LotteryReqEntity lotteryFactorEntity);
 }

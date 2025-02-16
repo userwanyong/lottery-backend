@@ -11,6 +11,7 @@ public class Constants {
     public static final String SPACE = " ";
 
     public static class RedisKey {
+        public static final String RULE_TREE_VO_KEY = "lottery_tree_vo_key_";
         public static String STRATEGY_KEY = "lottery_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "lottery_strategy_award_key_";
         public static String STRATEGY_RATE_TABLE_KEY = "lottery_strategy_rate_table_key_";

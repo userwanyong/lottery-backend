@@ -1,6 +1,8 @@
 package com.lottery.test.domain;
 
 
+import com.alibaba.fastjson.JSON;
+import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.chain.impl.RuleWeightLogicChain;
@@ -31,20 +33,20 @@ public class ChainTest {
 
     @Test
     public void test_LogicChain_rule_blacklist() {
-        LogicChain logicChain = defaultLogicChainFactory.openChain(100001L);
-        Long awardId = logicChain.chain("user001", 100001L);
-        log.info("测试结果：{}", awardId);
+        LogicChain logicChain = defaultLogicChainFactory.openLogicChain(100001L);
+        RuleEntity ruleEntity = logicChain.logic("user001", 100001L);
+        log.info("测试结果：{}", JSON.toJSONString(ruleEntity));
     }
     @Test
     public void test_LogicChain_rule_weight() {
-        LogicChain logicChain = defaultLogicChainFactory.openChain(100001L);
-        Long awardId = logicChain.chain("user000", 100001L);
-        log.info("测试结果：{}", awardId);
+        LogicChain logicChain = defaultLogicChainFactory.openLogicChain(100001L);
+        RuleEntity ruleEntity = logicChain.logic("user000", 100001L);
+        log.info("测试结果：{}", JSON.toJSONString(ruleEntity));
     }
     @Test
     public void test_LogicChain_rule_default() {
-        LogicChain logicChain = defaultLogicChainFactory.openChain(100001L);
-        Long awardId = logicChain.chain("user000", 100001L);
-        log.info("测试结果：{}", awardId);
+        LogicChain logicChain = defaultLogicChainFactory.openLogicChain(100001L);
+        RuleEntity ruleEntity = logicChain.logic("user000", 100001L);
+        log.info("测试结果：{}", JSON.toJSONString(ruleEntity));
     }
 }

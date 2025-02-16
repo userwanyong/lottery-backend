@@ -3,7 +3,7 @@ package com.lottery.domain.strategy.service.rule.filter.impl;
 import com.lottery.domain.strategy.model.entity.RuleFilterReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleFilterResEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.annotation.LogicStrategy;
 import com.lottery.domain.strategy.service.rule.filter.LogicFilter;
 import com.lottery.domain.strategy.service.rule.filter.factory.DefaultLogicFilterFactory;
@@ -27,7 +27,7 @@ public class RuleWeightLogicFilter implements LogicFilter<RuleFilterResEntity.Lo
     // TODO 后期从数据库查询
     public Long userScore = 4500L;
     @Resource
-    private StrategyRepository repository;
+    private LotteryRepository repository;
 
     /**
      * 权重规则过滤；

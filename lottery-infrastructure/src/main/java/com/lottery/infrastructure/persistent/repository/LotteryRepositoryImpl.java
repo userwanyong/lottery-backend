@@ -5,14 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
-import com.lottery.domain.strategy.repository.StrategyRepository;
-import com.lottery.infrastructure.persistent.dao.RuleMapper;
-import com.lottery.infrastructure.persistent.dao.StrategyAwardMapper;
-import com.lottery.infrastructure.persistent.dao.StrategyMapper;
-import com.lottery.infrastructure.persistent.po.Rule;
-import com.lottery.infrastructure.persistent.po.Strategy;
-import com.lottery.infrastructure.persistent.po.StrategyAward;
+import com.lottery.domain.strategy.model.valobj.*;
+import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.infrastructure.persistent.dao.*;
+import com.lottery.infrastructure.persistent.po.*;
 import com.lottery.infrastructure.persistent.redis.RedisService;
 import com.lottery.types.common.Constants;
 import org.springframework.beans.BeanUtils;
@@ -20,15 +16,16 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * @author 永
- * 策略服务仓储实现
+ * 抽奖服务仓储实现
  */
 @Repository
-public class StrategyRepositoryImpl implements StrategyRepository {
+public class LotteryRepositoryImpl implements LotteryRepository {
     @Resource
     private StrategyAwardMapper strategyAwardMapper;
     @Resource
@@ -37,6 +34,12 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     private StrategyMapper strategyMapper;
     @Resource
     private RuleMapper ruleMapper;
+    @Resource
+    private RuleTreeMapper ruleTreeMapper;
+    @Resource
+    private RuleTreeNodeMapper ruleTreeNodeMapper;
+    @Resource
+    private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
 
     @Override
     public List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId) {
@@ -137,6 +140,63 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .eq(StrategyAward::getAwardId, awardId);
         StrategyAward strategyAward = strategyAwardMapper.selectOne(queryWrapper);
         return StrategyRuleModelVO.builder().ruleModels(strategyAward.getRuleModels()).build();
+    }
+
+    @Override
+    public RuleTreeVO queryRuleTreeVO(String treeId) {
+        // 优先从缓存获取
+        String cacheKey = Constants.RedisKey.RULE_TREE_VO_KEY + treeId;
+        RuleTreeVO ruleTreeVOCache = redisService.getValue(cacheKey);
+        if (null != ruleTreeVOCache) {
+            return ruleTreeVOCache;
+        }
+        // 否则从数据库获取
+        LambdaQueryWrapper<RuleTree> ruleTreeQueryWrapper = new QueryWrapper<RuleTree>().lambda()
+                .eq(RuleTree::getTreeId, treeId);
+        RuleTree ruleTree = ruleTreeMapper.selectOne(ruleTreeQueryWrapper);
+        LambdaQueryWrapper<RuleTreeNode> ruleTreeNodeQueryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
+                .eq(RuleTreeNode::getTreeId, treeId);
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(ruleTreeNodeQueryWrapper);
+        LambdaQueryWrapper<RuleTreeNodeLine> ruleTreeNodeLineQueryWrapper = new QueryWrapper<RuleTreeNodeLine>().lambda()
+                .eq(RuleTreeNodeLine::getTreeId, treeId);
+        List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(ruleTreeNodeLineQueryWrapper);
+
+        //转map
+        HashMap<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
+        for (RuleTreeNodeLine ruleTreeNodeLine : ruleTreeNodeLines) {
+            RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
+                    .treeId(ruleTreeNodeLine.getTreeId())
+                    .ruleNodeFrom(ruleTreeNodeLine.getRuleNodeFrom())
+                    .ruleNodeTo(ruleTreeNodeLine.getRuleNodeTo())
+                    .ruleLimitType(RuleLimitTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitType()))
+                    .ruleLimitValue(RuleLogicCheckTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitValue()))
+                    .build();
+            List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList = ruleTreeNodeLineMap.computeIfAbsent(ruleTreeNodeLine.getRuleNodeFrom(), k -> new ArrayList<>());
+            ruleTreeNodeLineVOList.add(ruleTreeNodeLineVO);
+        }
+        HashMap<String, RuleTreeNodeVO> ruleTreeNodeMap = new HashMap<>();
+        for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
+            RuleTreeNodeVO ruleTreeNodeVO = RuleTreeNodeVO.builder()
+                    .treeId(ruleTreeNode.getTreeId())
+                    .ruleName(ruleTreeNode.getRuleName())
+                    .ruleDesc(ruleTreeNode.getRuleDesc())
+                    .ruleValue(ruleTreeNode.getRuleValue())
+                    .treeNodeLineVOList(ruleTreeNodeLineMap.get(ruleTreeNode.getRuleName()))
+                    .build();
+            ruleTreeNodeMap.put(ruleTreeNode.getRuleName(), ruleTreeNodeVO);
+        }
+        // 构建tree
+        RuleTreeVO ruleTreeVO = RuleTreeVO.builder()
+                .treeId(ruleTree.getTreeId())
+                .treeName(ruleTree.getTreeName())
+                .treeDesc(ruleTree.getTreeDesc())
+                .treeRootRuleNode(ruleTree.getTreeNodeRuleKey())
+                .treeNodeMap(ruleTreeNodeMap)
+                .build();
+
+        // 保存到redis
+        redisService.setValue(cacheKey, ruleTreeVO);
+        return ruleTreeVO;
     }
 
 }

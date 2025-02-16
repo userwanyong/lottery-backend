@@ -1,7 +1,6 @@
 package com.lottery.domain.strategy.service.rule.tree.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.lottery.domain.strategy.service.rule.tree.LogicTree;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component(Constants.RuleModel.RULE_LUCK_AWARD)
 public class RuleLuckAwardTreeNode implements LogicTree {
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Integer awardId) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId) {
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .ruleEntity(RuleEntity.builder()
