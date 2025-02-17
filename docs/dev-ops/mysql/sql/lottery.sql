@@ -142,15 +142,15 @@ VALUES (1, 100001, 'rule_blacklist,rule_weight', '抽奖策略'),
 
 INSERT INTO `strategy_award` (`id`, `strategy_id`, `award_id`, `award_title`, `award_subtitle`, `award_count`,
                               `award_count_surplus`, `award_rate`, `rule_models`, `sort`)
-VALUES (1, 100001, 101, '随机积分', NULL, 80000, 80000, 20.0000, 'rule_random,rule_luck_award', 1),
-       (2, 100001, 102, '5次使用', NULL, 10000, 10000, 20.0000, 'rule_luck_award', 2),
-       (3, 100001, 103, '10次使用', NULL, 5000, 5000, 20.0000, 'rule_luck_award', 3),
-       (4, 100001, 104, '20次使用', NULL, 4000, 4000, 15.0000, 'rule_luck_award', 4),
-       (5, 100001, 105, '增加gpt-4对话模型', NULL, 600, 600, 15.0000, 'rule_luck_award', 5),
-       (6, 100001, 106, '增加dall-e-2画图模型', NULL, 200, 200, 14.0000, 'rule_luck_award', 6),
-       (7, 100001, 107, '增加dall-e-3画图模型', '抽奖1次后解锁', 200, 200, 10.0000, 'rule_lock,rule_luck_award', 7),
-       (8, 100001, 108, '增加100次使用', '抽奖2次后解锁', 199, 199, 5.0000, 'rule_lock,rule_luck_award', 8),
-       (9, 100001, 109, '解锁全部模型', '抽奖6次后解锁', 1, 1, 1.0000, 'rule_lock,rule_luck_award', 9),
+VALUES (1, 100001, 101, '随机积分', NULL, 80000, 80000, 0.2000, 'rule_random,rule_luck_award', 1),
+       (2, 100001, 102, '5次使用', NULL, 10000, 10000, 0.2000, 'rule_luck_award', 2),
+       (3, 100001, 103, '10次使用', NULL, 5000, 5000, 0.2000, 'rule_luck_award', 3),
+       (4, 100001, 104, '20次使用', NULL, 4000, 4000, 0.1500, 'rule_luck_award', 4),
+       (5, 100001, 105, '增加gpt-4对话模型', NULL, 600, 600, 0.1500, 'rule_luck_award', 5),
+       (6, 100001, 106, '增加dall-e-2画图模型', NULL, 200, 200, 0.0500, 'rule_luck_award', 6),
+       (7, 100001, 107, '增加dall-e-3画图模型', '抽奖1次后解锁', 200, 200, 0.0300, 'rule_lock,rule_luck_award', 7),
+       (8, 100001, 108, '增加100次使用', '抽奖2次后解锁', 199, 199, 0.0100, 'rule_lock,rule_luck_award', 8),
+       (9, 100001, 109, '解锁全部模型', '抽奖6次后解锁', 1, 1, 0.0100, 'rule_lock,rule_luck_award', 9),
 
        (10,100002,101,'随机积分',NULL,1,1,0.5000,'rule_random,rule_luck_award',1),
        (11,100002,102,'5次使用',NULL,1,1,0.1000,'rule_random,rule_luck_award',2),
@@ -160,8 +160,8 @@ VALUES (1, 100001, 101, '随机积分', NULL, 80000, 80000, 20.0000, 'rule_rando
        (14,100003,108,'增加100次使用','抽奖2次后解锁',199,199,0.0099,'rule_lock,rule_luck_award',2),
        (15,100003,109,'解锁全部模型','抽奖6次后解锁',1,1,0.0001,'rule_lock,rule_luck_award',3),
 
-       (16,100006,101,'随机积分',NULL,3,3,50.0000,'tree_lock',1),
-       (17,100006,102,'随机积分',NULL,97,97,50.0000,'tree_lock',1);
+       (16,100006,101,'随机积分',NULL,3,3,0.5000,'tree_lock',1),
+       (17,100006,102,'随机积分',NULL,97,97,0.5000,'tree_lock',1);
 
 INSERT INTO `rule` (`id`, `strategy_id`, `award_id`, `rule_type`, `rule_model`, `rule_value`, `rule_desc`)
 VALUES (1, 100001, 101, 2, 'rule_random', '1,1000', '随机积分策略'),
