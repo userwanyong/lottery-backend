@@ -32,13 +32,19 @@ public class StrategyTest {
     @Test
     public void test_strategyArmory() {
         // 因为实际操作是更新数据库时，更新redis。这里装配抽奖策略时有部分参数是从原先redis缓存中获取的，测试先手动清空redis便于调试
-        boolean success1 = strategyArmory.assembleLotteryStrategy(100001L);
-        boolean success2 = strategyArmory.assembleLotteryStrategy(100002L);
-        boolean success3 = strategyArmory.assembleLotteryStrategy(100003L);
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + 100006;
+        String cacheKey2 = Constants.RedisKey.STRATEGY_KEY + 100006;
+        String cacheKey3 = Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + 100006;
+        redisService.remove(cacheKey);
+        redisService.remove(cacheKey2);
+        redisService.remove(cacheKey3);
+//        boolean success1 = strategyArmory.assembleLotteryStrategy(100001L);
+//        boolean success2 = strategyArmory.assembleLotteryStrategy(100002L);
+//        boolean success3 = strategyArmory.assembleLotteryStrategy(100003L);
         boolean success4 = strategyArmory.assembleLotteryStrategy(100006L);
-        log.info("测试结果1：{}", success1);
-        log.info("测试结果2：{}", success2);
-        log.info("测试结果3：{}", success3);
+//        log.info("测试结果1：{}", success1);
+//        log.info("测试结果2：{}", success2);
+//        log.info("测试结果3：{}", success3);
         log.info("测试结果4：{}", success4);
     }
 

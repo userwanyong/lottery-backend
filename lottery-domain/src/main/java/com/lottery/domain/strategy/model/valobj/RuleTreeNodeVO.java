@@ -20,6 +20,6 @@ public class RuleTreeNodeVO {
     private String ruleDesc;
     /** 规则的值 */
     private String ruleValue;
-    /** 规则连线 */
+    /** 规则走向 */
     private List<RuleTreeNodeLineVO> treeNodeLineVOList;
 }

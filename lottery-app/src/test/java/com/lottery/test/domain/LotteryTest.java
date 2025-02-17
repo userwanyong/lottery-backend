@@ -6,6 +6,7 @@ import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.service.LotteryStrategy;
 import com.lottery.domain.strategy.service.rule.filter.impl.RuleLockLogicFilter;
 import com.lottery.domain.strategy.service.rule.filter.impl.RuleWeightLogicFilter;
+import com.lottery.domain.strategy.service.rule.tree.impl.RuleLockTreeNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.annotation.Resource;
+import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -25,13 +27,13 @@ public class LotteryTest {
     @Resource
     private RuleWeightLogicFilter ruleWeightLogicFilter;
     @Resource
-    private RuleLockLogicFilter ruleLockLogicFilter;
+    private RuleLockTreeNode ruleLockTreeNode;
 
     @Before
     public void setUp() {
         // 通过反射 mock 规则中的值
         ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 5050L);
-        ReflectionTestUtils.setField(ruleLockLogicFilter, "userLotteryCount", 10L);
+        ReflectionTestUtils.setField(ruleLockTreeNode, "userLotteryCount", 10L);
     }
 
 
@@ -69,5 +71,20 @@ public class LotteryTest {
         LotteryResEntity raffleAwardEntity = lotteryStrategy.performLottery(lotteryReqEntity);
         log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
         log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+    }
+
+    @Test
+    public void test_performLottery() throws InterruptedException {
+        for (int i = 0; i < 1; i++) {
+            LotteryReqEntity raffleFactorEntity = LotteryReqEntity.builder()
+                    .userId("user010")
+                    .strategyId(100006L)
+                    .build();
+            LotteryResEntity raffleAwardEntity = lotteryStrategy.performLottery(raffleFactorEntity);
+            log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
+            log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+        }
+        // 等待 UpdateAwardStockJob 消费队列
+        new CountDownLatch(1).await();
     }
 }

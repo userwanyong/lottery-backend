@@ -80,15 +80,15 @@ public interface RedisService {
      * 自减 Key 的值；1、2、3、4
      *
      * @param key 键
-     * @return 自增后的值
+     * @return 自减后的值
      */
     long decr(String key);
 
     /**
-     * 指定值，自增 Key 的值；1、2、3、4
+     * 指定值，自减 Key 的值；1、2、3、4
      *
      * @param key 键
-     * @return 自增后的值
+     * @return 自减后的值
      */
     long decrBy(String key, long delta);
 
@@ -245,5 +245,13 @@ public interface RedisService {
      */
     <T> RBloomFilter<T> getBloomFilter(String key);
 
+    /**
+     * 只有该key不存在时才会设置成功
+     * @param key 键
+     * @return true/false
+     */
+    Boolean setNx(String key);
+
+    void setAtomic(String key, Integer value);
 }
 

@@ -2,15 +2,21 @@ package com.lottery.infrastructure.persistent.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
+import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.valobj.*;
 import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.infrastructure.persistent.dao.*;
 import com.lottery.infrastructure.persistent.po.*;
 import com.lottery.infrastructure.persistent.redis.RedisService;
 import com.lottery.types.common.Constants;
+import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBlockingQueue;
+import org.redisson.api.RDelayedQueue;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
@@ -19,12 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 永
  * 抽奖服务仓储实现
  */
 @Repository
+@Slf4j
 public class LotteryRepositoryImpl implements LotteryRepository {
     @Resource
     private StrategyAwardMapper strategyAwardMapper;
@@ -147,21 +155,23 @@ public class LotteryRepositoryImpl implements LotteryRepository {
         // 优先从缓存获取
         String cacheKey = Constants.RedisKey.RULE_TREE_VO_KEY + treeId;
         RuleTreeVO ruleTreeVOCache = redisService.getValue(cacheKey);
-        if (null != ruleTreeVOCache) {
+        if (ruleTreeVOCache != null) {
             return ruleTreeVOCache;
         }
         // 否则从数据库获取
         LambdaQueryWrapper<RuleTree> ruleTreeQueryWrapper = new QueryWrapper<RuleTree>().lambda()
                 .eq(RuleTree::getTreeId, treeId);
         RuleTree ruleTree = ruleTreeMapper.selectOne(ruleTreeQueryWrapper);
+
         LambdaQueryWrapper<RuleTreeNode> ruleTreeNodeQueryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
                 .eq(RuleTreeNode::getTreeId, treeId);
         List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(ruleTreeNodeQueryWrapper);
+
         LambdaQueryWrapper<RuleTreeNodeLine> ruleTreeNodeLineQueryWrapper = new QueryWrapper<RuleTreeNodeLine>().lambda()
                 .eq(RuleTreeNodeLine::getTreeId, treeId);
         List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(ruleTreeNodeLineQueryWrapper);
 
-        //转map
+        //转VO
         HashMap<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
         for (RuleTreeNodeLine ruleTreeNodeLine : ruleTreeNodeLines) {
             RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
@@ -185,7 +195,6 @@ public class LotteryRepositoryImpl implements LotteryRepository {
                     .build();
             ruleTreeNodeMap.put(ruleTreeNode.getRuleName(), ruleTreeNodeVO);
         }
-        // 构建tree
         RuleTreeVO ruleTreeVO = RuleTreeVO.builder()
                 .treeId(ruleTree.getTreeId())
                 .treeName(ruleTree.getTreeName())
@@ -197,6 +206,64 @@ public class LotteryRepositoryImpl implements LotteryRepository {
         // 保存到redis
         redisService.setValue(cacheKey, ruleTreeVO);
         return ruleTreeVO;
+    }
+
+    @Override
+    public Boolean reduceAwardStock(String key) {
+        long count = redisService.decr(key);
+        if (count < 0) {
+            redisService.setAtomic(key, 0);
+            return false;
+        }
+        // 1. 按照cacheKey decr 后的值，如 99、98、97 和 key 组成为库存锁的key进行使用
+        // 2. 加锁为了兜底，如果后续有恢复库存，手动处理等，也不会超卖。因为所有的可用库存key，都被加锁了
+        String lockKey = key + Constants.UNDERLINE + count;
+        Boolean lock = redisService.setNx(lockKey);
+        if (!lock) {
+            log.info("策略奖品库存加锁失败 {}", lockKey);
+        }
+        return lock;
+    }
+
+    @Override
+    public void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        // 获取Redis中的阻塞队列
+        RBlockingQueue<LotteryReqEntity> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        // 基于阻塞队列创建一个延迟队列
+        RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        // 将 lotteryReqEntity 添加到延迟队列，并设置延迟时间为3秒
+        delayedQueue.offer(lotteryReqEntity, 3, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public LotteryReqEntity takeQueueValue() {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        // 获取指定键的阻塞队列
+        RBlockingQueue<LotteryReqEntity> destinationQueue = redisService.getBlockingQueue(cacheKey);
+        // 从队列中取出并返回一个元素
+        return destinationQueue.poll();
+    }
+
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Long awardId) {
+        StrategyAward strategyAward = new StrategyAward();
+        strategyAward.setStrategyId(strategyId);
+        strategyAward.setAwardId(awardId);
+        LambdaUpdateWrapper<StrategyAward> queryWrapper = new UpdateWrapper<StrategyAward>().lambda()
+                .setSql("award_count_surplus = award_count_surplus - 1")
+                .eq(StrategyAward::getStrategyId, strategyId)
+                .eq(StrategyAward::getAwardId, awardId)
+                .gt(StrategyAward::getAwardCountSurplus, 0);
+        strategyAwardMapper.update(strategyAward, queryWrapper);
+    }
+
+    @Override
+    public void cacheStrategyAwardCount(String key, Integer awardCount) {
+        if (redisService.isExists(key)) {
+            return;
+        }
+        redisService.setAtomic(key, awardCount);
     }
 
 }

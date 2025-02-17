@@ -1,5 +1,6 @@
 package com.lottery.domain.strategy.repository;
 
+import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
@@ -32,5 +33,20 @@ public interface LotteryRepository {
 
     StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId);
 
+    /**
+     * 构建规则树
+     * @param treeId 规则树ID
+     * @return 规则树VO
+     */
     RuleTreeVO queryRuleTreeVO(String treeId);
+
+    Boolean reduceAwardStock(String key);
+
+    void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity);
+
+    LotteryReqEntity takeQueueValue();
+
+    void updateStrategyAwardStock(Long strategyId, Long awardId);
+
+    void cacheStrategyAwardCount(String key, Integer awardCount);
 }

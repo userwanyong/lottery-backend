@@ -39,9 +39,9 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
             // 3.1. 获取规则树的节点
             LogicTree logicTreeNode = logicTreeNodeGroup.get(ruleTreeNode.getRuleName());
             // 3.2. 节点计算，判断走向
-            DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId, awardId);
+            DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId, awardId,ruleTreeNode.getRuleValue());
             RuleLogicCheckTypeVO ruleLogicCheckTypeVO = logicEntity.getRuleLogicCheckType();
-            ruleEntity = logicEntity.getRuleEntity();
+            ruleEntity = logicEntity.getRuleEntity(); //当前：兜底奖励or通过-次数锁-库存-后的正常奖励
             log.info("决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
             // 3.3. 获取下个节点
             nextNode = getNextNode(ruleLogicCheckTypeVO.getCode(), ruleTreeNode.getTreeNodeLineVOList());
@@ -50,21 +50,23 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
         // 4. 返回最终结果
         return ruleEntity;
     }
-    public String getNextNode(Integer matterValue, List<RuleTreeNodeLineVO> treeNodeLineVOList) {
+    public String getNextNode(Integer code, List<RuleTreeNodeLineVO> treeNodeLineVOList) {
         if (treeNodeLineVOList==null || treeNodeLineVOList.isEmpty()) {
             return null;
         }
-        for (RuleTreeNodeLineVO nodeLine : treeNodeLineVOList) {
-            if (decisionLogic(matterValue, nodeLine)) {
+        for (RuleTreeNodeLineVO nodeLine : treeNodeLineVOList) { //当前：一个拦截TAKE_OVER，一个放行ALLOW
+            if (decisionLogic(code, nodeLine)) {
                 return nodeLine.getRuleNodeTo();
             }
         }
-        throw new RuntimeException("决策树引擎，nextNode 计算失败，未找到可执行节点！");
+        // 否则下面接没有节点了，返回现在获得的奖励即可
+        return null;
     }
-    public boolean decisionLogic(Integer matterValue, RuleTreeNodeLineVO nodeLine) {
+    public boolean decisionLogic(Integer code, RuleTreeNodeLineVO nodeLine) {
+        // 将上级节点返回的状态码 与 从数据库表中获取数据组合成的VO表进行对比，判断下一步走哪个节点
         switch (nodeLine.getRuleLimitType()) {
             case EQUAL:
-                return matterValue.equals(nodeLine.getRuleLimitValue().getCode());
+                return code.equals(nodeLine.getRuleLimitValue().getCode());
             // 以下规则暂时不需要实现
             case GT:
             case LT:

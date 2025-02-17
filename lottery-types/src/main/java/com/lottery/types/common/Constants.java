@@ -9,13 +9,16 @@ public class Constants {
     public static final String SPLIT = ",";
     public static final String COLON = ":";
     public static final String SPACE = " ";
+    public static final String UNDERLINE = "_";
 
     public static class RedisKey {
-        public static final String RULE_TREE_VO_KEY = "lottery_tree_vo_key_";
+        public static final String RULE_TREE_VO_KEY = "lottery_rule_tree_vo_key_";
         public static String STRATEGY_KEY = "lottery_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "lottery_strategy_award_key_";
         public static String STRATEGY_RATE_TABLE_KEY = "lottery_strategy_rate_table_key_";
         public static String STRATEGY_RATE_RANGE_KEY = "lottery_strategy_rate_range_key_";
+        public static String STRATEGY_AWARD_COUNT_KEY = "lottery_strategy_award_count_key_";
+        public static String STRATEGY_AWARD_COUNT_QUEUE_KEY = "lottery_strategy_award_count_queue_key_";
     }
 
     public static class RuleModel {

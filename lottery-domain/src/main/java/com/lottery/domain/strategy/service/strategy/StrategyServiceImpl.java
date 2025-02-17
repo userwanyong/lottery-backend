@@ -1,9 +1,10 @@
 package com.lottery.domain.strategy.service.strategy;
 
+import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +30,19 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
     public boolean assembleLotteryStrategy(Long strategyId) {
         // 1. 查询策略配置（该策略对应的奖品）
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
+        // 缓存奖品库存
+        for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
+            Long awardId = strategyAwardEntity.getAwardId();
+            Integer awardCount = strategyAwardEntity.getAwardCount();
+            cacheStrategyAwardCount(strategyId, awardId, awardCount);
+        }
         // 2. 生成并保存概率查找表
         assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
 
         //生成并保存概率查找表+权重的
         // 3. 根据策略id查询策略表，获得策略实体，判断是否存在权重规则
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
-        if (strategyEntity.getRuleModels() == null){// 未配置任何规则
+        if (strategyEntity.getRuleModels() == null) {// 未配置任何规则
             return true;
         }
         String ruleWeight = strategyEntity.getRuleWeight();
@@ -61,6 +68,11 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
         }
 
         return true;
+    }
+
+    private void cacheStrategyAwardCount(Long strategyId, Long awardId, Integer awardCount) {
+        String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY+strategyId+Constants.UNDERLINE+awardId;
+        repository.cacheStrategyAwardCount(key, awardCount);
     }
 
 
@@ -121,11 +133,23 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
 
     @Override
     public Long getRandomAwardId(Long strategyId, String ruleWeightValue) {
-        String key = String.valueOf(strategyId).concat("_").concat(ruleWeightValue);
+        String key = String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(ruleWeightValue);
         // 1、获得数量范围
         int rateRange = repository.getRateRange(key);
         // 2、生成随机值，获取 概率值奖品查找表 的结果
         return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
+
+    @Override
+    public Long getRandomAwardId(String key) {
+        int rateRange = repository.getRateRange(key);
+        return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
+
+    @Override
+    public Boolean reduceAwardStock(Long strategyId, Long awardId) {
+        String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        return repository.reduceAwardStock(key);
     }
 
 }

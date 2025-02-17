@@ -41,6 +41,7 @@ public class DefaultLogicChainFactory {
         }
         // 4. 责任链的最后装填默认责任链
         current.appendNext(logicChainGroup.get(Constants.RuleModel.DEFAULT));
+        // 5. 返回责任链
         return logicChain;
     }
 }

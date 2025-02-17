@@ -160,8 +160,8 @@ VALUES (1, 100001, 101, '随机积分', NULL, 80000, 80000, 20.0000, 'rule_rando
        (14,100003,108,'增加100次使用','抽奖2次后解锁',199,199,0.0099,'rule_lock,rule_luck_award',2),
        (15,100003,109,'解锁全部模型','抽奖6次后解锁',1,1,0.0001,'rule_lock,rule_luck_award',3),
 
-       (16,100006,101,'随机积分',NULL,3,3,0.0300,'tree_lock',1),
-       (17,100006,102,'随机积分',NULL,97,97,0.9700,'tree_lock',1);
+       (16,100006,101,'随机积分',NULL,3,3,50.0000,'tree_lock',1),
+       (17,100006,102,'随机积分',NULL,97,97,50.0000,'tree_lock',1);
 
 INSERT INTO `rule` (`id`, `strategy_id`, `award_id`, `rule_type`, `rule_model`, `rule_value`, `rule_desc`)
 VALUES (1, 100001, 101, 2, 'rule_random', '1,1000', '随机积分策略'),
@@ -184,12 +184,12 @@ VALUES (1, 100001, 101, 2, 'rule_random', '1,1000', '随机积分策略'),
 
 INSERT INTO `rule_tree` (`id`, `tree_id`, `tree_name`, `tree_desc`, `tree_node_rule_key`)
 VALUES
-    (1,'tree_lock','规则树','规则树','rule_lock');
+    (1,'tree_lock','抽奖规则树','抽奖中、抽奖后规则树','rule_lock');
 
 INSERT INTO `rule_tree_node` (`id`, `tree_id`, `rule_name`, `rule_desc`, `rule_value`)
 VALUES
     (1,'tree_lock','rule_lock','限定用户已完成N次抽奖后解锁','1'),
-    (2,'tree_lock','rule_luck_award','兜底奖品随机积分','1,100'),
+    (2,'tree_lock','rule_luck_award','兜底奖品随机积分','101:1,100'),
     (3,'tree_lock','rule_stock','库存扣减规则',NULL);
 
 

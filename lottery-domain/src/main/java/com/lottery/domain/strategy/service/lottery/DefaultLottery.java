@@ -89,7 +89,7 @@ public class DefaultLottery extends AbstractLottery {
                     .awardId(awardId)
                     .build();
         }
-        // 2. 根据规则模型查规则树
+        // 2. 根据规则模型查数据库表构建规则树
         RuleTreeVO ruleTreeVO =repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
         if (ruleTreeVO == null) {
             throw new RuntimeException("存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
@@ -101,7 +101,14 @@ public class DefaultLottery extends AbstractLottery {
     }
 
 
+    @Override
+    public LotteryReqEntity takeQueueValue() {
+        return repository.takeQueueValue();
+    }
 
-
+    @Override
+    public void updateStrategyAwardStock(Long strategyId, Long awardId) {
+        repository.updateStrategyAwardStock(strategyId, awardId);
+    }
 }
 
