@@ -1,7 +1,9 @@
 package com.lottery.domain.strategy.model.valobj;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RuleTreeNodeVO {
     /** 规则树ID */
     private String treeId;

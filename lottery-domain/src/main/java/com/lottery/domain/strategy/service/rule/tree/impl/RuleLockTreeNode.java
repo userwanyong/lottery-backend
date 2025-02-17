@@ -23,13 +23,13 @@ public class RuleLockTreeNode implements LogicTree {
         // 判断用户抽奖次数
         // 小于等于该值，拦截
         if (userLotteryCount < Long.parseLong(ruleValue)) {
-            log.info("规则树-次数锁拦截 userId:{} strategyId:{} ruleModel:{} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_LOCK,101);
+            log.info("【规则树】-次数锁拦截 userId:{} strategyId:{} ruleModel:{} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_LOCK,101);
             return DefaultLogicTreeFactory.TreeActionEntity.builder()
                     .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                     .build();
         }
         // 大于等于该值，放行
-        log.info("规则树-次数锁放行 userId:{} strategyId:{} ruleModel:{}", userId, strategyId, Constants.RuleModel.RULE_LOCK);
+        log.info("【规则树】-次数锁放行 userId:{} strategyId:{} ruleModel:{}", userId, strategyId, Constants.RuleModel.RULE_LOCK);
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.ALLOW)
                 .build();

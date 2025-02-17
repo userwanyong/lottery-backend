@@ -29,7 +29,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     @Override
     public RuleEntity logic(String userId, Long strategyId) {
 
-        log.info("抽奖责任链-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
+        log.info("【责任链】-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
 
         String ruleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_WIGHT);
 
@@ -53,7 +53,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         // 如果找到，进行接管
         if (nextValue != null) {
             Long awardId = strategyService.getRandomAwardId(strategyId, analyticalValueGroup.get(nextValue));
-            log.info("抽奖责任链-权重接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT, awardId);
+            log.info("【责任链】-权重接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT, awardId);
             return RuleEntity.builder()
                     .awardId(awardId)
                     .ruleModel(Constants.RuleModel.RULE_WIGHT)
@@ -61,7 +61,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         }
 
         // 否则过滤其他责任链
-        log.info("抽奖责任链-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
+        log.info("【责任链】-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
         return next().logic(userId, strategyId);
     }
 

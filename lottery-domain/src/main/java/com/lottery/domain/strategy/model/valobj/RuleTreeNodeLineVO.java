@@ -1,7 +1,9 @@
 package com.lottery.domain.strategy.model.valobj;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 永
@@ -9,6 +11,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RuleTreeNodeLineVO {
     /** 规则树ID */
     private String treeId;

@@ -28,6 +28,7 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
+        log.info("============抽奖策略装配开始，策略ID：{}============",strategyId);
         // 1. 查询策略配置（该策略对应的奖品）
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
         // 缓存奖品库存
@@ -43,10 +44,12 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
         // 3. 根据策略id查询策略表，获得策略实体，判断是否存在权重规则
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
         if (strategyEntity.getRuleModels() == null) {// 未配置任何规则
+            log.info("============抽奖策略装配完成，策略ID：{}============",strategyId);
             return true;
         }
         String ruleWeight = strategyEntity.getRuleWeight();
         if (ruleWeight == null) {
+            log.info("============抽奖策略装配完成，策略ID：{}============",strategyId);
             return true;
         }
         // 4. 根据策略id和规则模型查询规则表，获得相应实体数据
@@ -66,7 +69,7 @@ public class StrategyServiceImpl implements StrategyArmory, StrategyService {
             // 5.3. 生成并保存概率查找表+权重的
             assembleLotteryStrategy(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntitiesClone);
         }
-
+        log.info("============抽奖策略装配完成，策略ID：{}============",strategyId);
         return true;
     }
 
