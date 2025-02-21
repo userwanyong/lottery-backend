@@ -2,6 +2,7 @@ package com.lottery.domain.strategy.service.lottery;
 
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.domain.strategy.repository.LotteryRepository;
@@ -13,13 +14,15 @@ import com.lottery.domain.strategy.service.strategy.StrategyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author 永
  * 抽奖流程的默认实现
  */
 @Slf4j
 @Service
-public class DefaultLottery extends AbstractLottery {
+public class DefaultLottery extends AbstractLottery implements Stock {
 
     public DefaultLottery(LotteryRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
         super(repository, strategyService, defaultLogicChainFactory, defaultLogicTreeFactory);
@@ -37,13 +40,13 @@ public class DefaultLottery extends AbstractLottery {
     public RuleEntity lotteryLogicTree(String userId, Long strategyId, Long awardId) {
         // 1. 查规则模型，如果为空，说明未设置规则，直接返回抽到的奖品实体
         StrategyRuleModelVO strategyRuleModelVO = repository.queryRuleModelVO(strategyId, awardId);
-        if (strategyRuleModelVO == null){
+        if (strategyRuleModelVO == null) {
             return RuleEntity.builder()
                     .awardId(awardId)
                     .build();
         }
         // 2. 根据规则模型查数据库表构建规则树
-        RuleTreeVO ruleTreeVO =repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
+        RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
         if (ruleTreeVO == null) {
             throw new RuntimeException("存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
         }
@@ -62,6 +65,11 @@ public class DefaultLottery extends AbstractLottery {
     @Override
     public void updateStrategyAwardStock(Long strategyId, Long awardId) {
         repository.updateStrategyAwardStock(strategyId, awardId);
+    }
+
+    @Override
+    public List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId) {
+        return repository.queryStrategyAwardList(strategyId);
     }
 }
 

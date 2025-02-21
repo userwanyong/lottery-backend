@@ -29,6 +29,9 @@ public class LotteryResEntity {
      * 奖品配置信息
      */
     private String awardConfig;
+
+    /** 奖品顺序号 */
+    private Integer sort;
 //
 //    /**
 //     * 奖品内容描述

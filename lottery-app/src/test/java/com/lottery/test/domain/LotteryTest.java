@@ -48,13 +48,15 @@ public class LotteryTest {
     @Test
     public void test_strategyArmory() {
         // 因为实际操作是更新数据库时，更新redis。这里装配抽奖策略时有部分参数是从原先redis缓存中获取的，测试先手动清空redis便于调试
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + 100006;
-        String cacheKey2 = Constants.RedisKey.STRATEGY_KEY + 100006;
-        String cacheKey3 = Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + 100006;
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + 200001;
+        String cacheKey2 = Constants.RedisKey.STRATEGY_KEY + 200001;
+        String cacheKey3 = Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + 200001;
+        String cacheKey4 = Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + 200001;
         redisService.remove(cacheKey);
         redisService.remove(cacheKey2);
         redisService.remove(cacheKey3);
-        boolean success4 = strategyArmory.assembleLotteryStrategy(100006L);
+        redisService.remove(cacheKey4);
+        boolean success4 = strategyArmory.assembleLotteryStrategy(200001L);
         log.info("测试结果4：{}", success4);
     }
 
@@ -66,7 +68,7 @@ public class LotteryTest {
         for (int i = 0; i < 1; i++) {
             LotteryReqEntity lotteryReqEntity = LotteryReqEntity.builder()
                     .userId("user010")
-                    .strategyId(100006L)
+                    .strategyId(200001L)
                     .build();
             LotteryResEntity lotteryResEntity = lottery.performLottery(lotteryReqEntity);
             log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));

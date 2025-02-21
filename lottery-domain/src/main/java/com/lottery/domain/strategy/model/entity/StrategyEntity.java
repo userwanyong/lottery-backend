@@ -10,15 +10,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Data
 public class StrategyEntity {
-//    /**
-//     * 抽奖策略ID
-//     */
-//    private Long strategyId;
-//
-//    /**
-//     * 抽奖策略描述
-//     */
-//    private String strategyDesc;
+    /**
+     * 抽奖策略ID
+     */
+    private Long strategyId;
+
+    /**
+     * 抽奖策略描述
+     */
+    private String strategyDesc;
 
     /**
      * 规则模型

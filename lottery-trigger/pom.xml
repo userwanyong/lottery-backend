@@ -31,6 +31,11 @@
         <!-- 系统模块 -->
         <dependency>
             <groupId>com.lottery</groupId>
+            <artifactId>lottery-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lottery</groupId>
             <artifactId>lottery-domain</artifactId>
         </dependency>
     </dependencies>

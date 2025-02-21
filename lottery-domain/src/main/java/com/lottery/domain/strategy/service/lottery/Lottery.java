@@ -2,12 +2,23 @@ package com.lottery.domain.strategy.service.lottery;
 
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
+import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
+
+import java.util.List;
 
 /**
  * @author 永
- * 抽奖策略接口
+ * 抽奖相关操作
  */
 public interface Lottery {
+
+    /**
+     * 根据策略ID查询抽奖奖品列表配置
+     *
+     * @param strategyId 策略ID
+     * @return 奖品列表
+     */
+    List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId);
 
     /**
      * @param lotteryFactorEntity 抽奖要素实体，根据入参信息计算抽奖结果
@@ -15,18 +26,4 @@ public interface Lottery {
      */
     LotteryResEntity performLottery(LotteryReqEntity lotteryFactorEntity);
 
-    /**
-     * 获取奖品库存消耗队列
-     *
-     * @return 奖品库存Key信息
-     */
-    LotteryReqEntity takeQueueValue();
-
-    /**
-     * 更新奖品库存消耗记录
-     *
-     * @param strategyId 策略ID
-     * @param awardId    奖品ID
-     */
-    void updateStrategyAwardStock(Long strategyId, Long awardId);
 }

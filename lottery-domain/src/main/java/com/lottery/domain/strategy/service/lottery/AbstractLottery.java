@@ -3,6 +3,7 @@ package com.lottery.domain.strategy.service.lottery;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
@@ -37,7 +38,7 @@ public abstract class AbstractLottery implements Lottery {
         // 1. 参数校验
         String userId = lotteryReqEntity.getUserId();
         Long strategyId = lotteryReqEntity.getStrategyId();
-        if (strategyId == null || StringUtils.isBlank(userId)) {
+        if (strategyId == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         log.info("---------------用户ID：{} 抽奖开始---------------",userId);
@@ -47,23 +48,27 @@ public abstract class AbstractLottery implements Lottery {
         log.info("【抽奖策略计算】-责任链 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, chainAward.getAwardId(), chainAward.getRuleModel());
         // 只有默认规则才走规则树
         if (!Constants.RuleModel.DEFAULT.equals(chainAward.getRuleModel())) {
-            return LotteryResEntity.builder()
-                    .awardId(chainAward.getAwardId())
-                    .build();
+            return buildLotteryAwardEntity(strategyId, chainAward.getAwardId(), null);
         }
         // 3. 规则树
         RuleEntity treeAward=lotteryLogicTree(userId,strategyId,chainAward.getAwardId());
         log.info("【抽奖策略计算】-规则树 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
 
-        LotteryResEntity result = LotteryResEntity.builder()
-                .awardId(treeAward.getAwardId())
-                .awardConfig(treeAward.getRuleValue())
-                .build();
+        LotteryResEntity result = buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
         // 4. 返回结果
         log.info("---------------用户ID：{} 抽奖结束,获得奖品：{}---------------",userId,result);
         return result;
 
 
+    }
+
+    private LotteryResEntity buildLotteryAwardEntity(Long strategyId, Long awardId, String awardConfig) {
+        StrategyAwardEntity strategyAward = repository.queryStrategyAwardEntity(strategyId, awardId);
+        return LotteryResEntity.builder()
+                .awardId(awardId)
+                .awardConfig(awardConfig)
+                .sort(strategyAward.getSort())
+                .build();
     }
 
     public abstract RuleEntity lotteryLogicChain(String userId, Long strategyId);

@@ -49,4 +49,6 @@ public interface LotteryRepository {
     void updateStrategyAwardStock(Long strategyId, Long awardId);
 
     void cacheStrategyAwardCount(String key, Integer awardCount);
+
+    StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Long awardId);
 }

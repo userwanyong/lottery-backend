@@ -14,6 +14,7 @@
         <module>lottery-trigger</module>
         <module>lottery-infrastructure</module>
         <module>lottery-types</module>
+        <module>lottery-api</module>
     </modules>
 
     <properties>
@@ -91,6 +92,11 @@
             </dependency>
 
             <!-- 工程模块 -->
+            <dependency>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>com.lottery</groupId>
                 <artifactId>lottery-domain</artifactId>

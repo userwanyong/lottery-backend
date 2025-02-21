@@ -54,7 +54,7 @@ public class LotteryRepositoryImpl implements LotteryRepository {
         List<StrategyAwardEntity> strategyAwardEntities;
 
         // 优先从redis缓存中获取
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + strategyId;
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + strategyId;
         strategyAwardEntities = redisService.getValue(cacheKey);
         if (strategyAwardEntities != null && !strategyAwardEntities.isEmpty()) {
             return strategyAwardEntities;
@@ -264,6 +264,29 @@ public class LotteryRepositoryImpl implements LotteryRepository {
             return;
         }
         redisService.setAtomic(key, awardCount);
+    }
+
+    @Override
+    public StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Long awardId) {
+        // 优先从缓存获取
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + strategyId + Constants.UNDERLINE + awardId;
+        StrategyAwardEntity strategyAwardEntity = redisService.getValue(cacheKey);
+        if (strategyAwardEntity!=null) {
+            return strategyAwardEntity;
+        }
+        // 查询数据
+        LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>().lambda()
+                .eq(StrategyAward::getStrategyId, strategyId)
+                .eq(StrategyAward::getAwardId, awardId);
+
+        StrategyAward strategyAwardRes = strategyAwardMapper.selectOne(queryWrapper);
+        // 转换数据
+        StrategyAwardEntity strategyAwardEntity1 = new StrategyAwardEntity();
+        BeanUtils.copyProperties(strategyAwardRes, strategyAwardEntity1);
+        // 缓存结果
+        redisService.setValue(cacheKey, strategyAwardEntity1);
+        // 返回数据
+        return strategyAwardEntity1;
     }
 
 }
