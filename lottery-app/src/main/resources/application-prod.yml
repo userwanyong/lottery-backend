@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8091
   tomcat:
     threads:
       max: 200        # 设定处理客户请求的线程的最大数目，决定了服务器可以同时响应客户请求的数,默认200
@@ -19,7 +19,7 @@ thread:
         block-queue-size: 5000
         policy: CallerRunsPolicy
 
-# 数据库配置
+# 数据库配置（会优先使用构建容器时设置的参数）
 spring:
   datasource:
     username: root
@@ -41,7 +41,7 @@ spring:
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 
-# Redis
+# Redis（会优先使用构建容器时设置的参数）
 redis:
   sdk:
     config:

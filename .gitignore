@@ -40,3 +40,4 @@ build/
 /lottery-app/src/main/resources/application-dev.yml
 /data/
 /lottery-app/data/
+/docs/dev-ops/log/

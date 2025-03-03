@@ -1,5 +1,4 @@
-# 命令执行 docker-compose -f docker-compose-environment-aliyun.yml up -d
-# docker 代理和使用文档；https://bugstack.cn/md/road-map/docker.html
+# 命令执行 docker-compose -f docker-compose-environment.yml up -d
 version: '3.9'
 services:
   mysql:
@@ -10,28 +9,31 @@ services:
     environment:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - my-network
     ports:
       - "13306:3306"
     volumes:
-      - ./mysql/sql:/docker-entrypoint-initdb.d
+      - ./mysql/sql:/docker-entrypoint-initdb.d #将本地目录 ./mysql/sql 挂载到容器内的 /docker-entrypoint-initdb.d 目录，用于初始化数据库
+      - /var/lib/mysql:/var/lib/mysql  # 直接挂载数据卷
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      interval: 5s
-      timeout: 10s
-      retries: 10
-      start_period: 15s
-    networks:
-      - my-network
+      interval: 5s #检查间隔
+      timeout: 5s #超时时间
+      retries: 3 #重试次数
+      start_period: 10s #在服务启动后等待 10s 再开始健康检查
+
 
   # phpmyadmin https://hub.docker.com/_/phpmyadmin
   phpmyadmin:
     image: phpmyadmin:5.2.1
     container_name: phpmyadmin
     hostname: phpmyadmin
+    restart: always
     ports:
-      - 8899:80
+      - "8899:80"
     environment:
-      - PMA_HOST=mysql
+      - PMA_HOST=mysql # mysql 的容器名
       - PMA_PORT=3306
       - MYSQL_ROOT_PASSWORD=123456
     depends_on:
@@ -48,7 +50,7 @@ services:
     hostname: redis
     privileged: true
     ports:
-      - 16379:6379
+      - "16379:6379"
     volumes:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
@@ -56,9 +58,10 @@ services:
       - my-network
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 3
+      start_period: 10s
 
   # RedisAdmin https://github.com/joeferner/redis-commander
   redis-admin:
@@ -67,7 +70,7 @@ services:
     hostname: redis-commander
     restart: always
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
       - REDIS_HOSTS=local:redis:6379
       - HTTP_USER=admin
