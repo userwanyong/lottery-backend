@@ -1,8 +1,7 @@
 package com.lottery.trigger.job;
 
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
-import com.lottery.domain.strategy.service.lottery.Lottery;
-import com.lottery.domain.strategy.service.lottery.Stock;
+import com.lottery.domain.strategy.service.Stock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

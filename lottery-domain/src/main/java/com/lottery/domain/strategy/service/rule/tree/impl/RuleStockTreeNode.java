@@ -6,7 +6,7 @@ import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.lottery.domain.strategy.repository.LotteryRepository;
 import com.lottery.domain.strategy.service.rule.tree.LogicTree;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
-import com.lottery.domain.strategy.service.strategy.StrategyService;
+import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

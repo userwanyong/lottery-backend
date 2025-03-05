@@ -23,22 +23,26 @@ public class MyTest {
 
     @Test
     public void test_insert() {
-        ActivityOrder raffleActivityOrder = new ActivityOrder();
-        raffleActivityOrder.setUserId("219621515656");
-        raffleActivityOrder.setActivityId(100301L);
-        raffleActivityOrder.setActivityName("测试活动");
-        raffleActivityOrder.setStrategyId(100006L);
-        raffleActivityOrder.setOrderId(RandomStringUtils.randomNumeric(12));
-        raffleActivityOrder.setOrderTime(new Date());
-        raffleActivityOrder.setState(0);
+        ActivityOrder activityOrder = new ActivityOrder();
+        activityOrder.setUserId("219621515656");
+        activityOrder.setActivityId(100301L);
+        activityOrder.setActivityName("测试活动");
+        activityOrder.setStrategyId(100006L);
+        activityOrder.setOrderId(RandomStringUtils.randomNumeric(12));
+        activityOrder.setOrderTime(new Date());
+        activityOrder.setState("complete");
+        activityOrder.setSku(100001L);
+        activityOrder.setDayCount(100);
+        activityOrder.setMonthCount(1000);
+        activityOrder.setTotalCount(10000);
         // 插入数据
-        activityOrderMapper.myinsert(raffleActivityOrder);
+        activityOrderMapper.myinsert(activityOrder);
     }
 
     @Test
-    public void test_queryRaffleActivityOrderByUserId() {
+    public void test_queryActivityOrderByUserId() {
         String userId = "219621515656";
-        List<ActivityOrder> raffleActivityOrders = activityOrderMapper.queryRaffleActivityOrderByUserId(userId);
-        log.info("测试结果：{}", JSON.toJSONString(raffleActivityOrders));
+        List<ActivityOrder> activityOrder = activityOrderMapper.queryRaffleActivityOrderByUserId(userId);
+        log.info("测试结果：{}", JSON.toJSONString(activityOrder));
     }
 }

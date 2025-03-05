@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -11,9 +13,9 @@ import lombok.Data;
 /**
  * 抽奖活动单
  * @author 永
- * @TableName activity_order
+ * @TableName activity_order_000
  */
-@TableName(value ="activity_order")
+@TableName(value ="activity_order_000")
 @Data
 public class ActivityOrder implements Serializable {
     /**
@@ -31,6 +33,11 @@ public class ActivityOrder implements Serializable {
      * 活动ID
      */
     private Long activityId;
+
+    /**
+     * 商品sku
+     */
+    private Long sku;
 
     /**
      * 活动名称
@@ -53,9 +60,24 @@ public class ActivityOrder implements Serializable {
     private Date orderTime;
 
     /**
-     * 订单状态（0-not_used、1-used、2-expire）
+     * 总次数
      */
-    private Integer state;
+    private Integer totalCount;
+
+    /**
+     * 日次数
+     */
+    private Integer dayCount;
+
+    /**
+     * 月次数
+     */
+    private Integer monthCount;
+
+    /**
+     * 订单状态（complete）
+     */
+    private String state;
 
     /**
      * 创建时间
@@ -67,6 +89,7 @@ public class ActivityOrder implements Serializable {
      */
     private Date updateTime;
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

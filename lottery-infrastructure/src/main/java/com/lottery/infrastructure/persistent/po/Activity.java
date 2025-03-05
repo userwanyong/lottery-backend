@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
@@ -48,21 +50,6 @@ public class Activity implements Serializable {
     private Date endDateTime;
 
     /**
-     * 库存总量
-     */
-    private Integer stockCount;
-
-    /**
-     * 剩余库存
-     */
-    private Integer stockCountSurplus;
-
-    /**
-     * 活动参与次数id
-     */
-    private Long activityCountId;
-
-    /**
      * 抽奖策略ID
      */
     private Long strategyId;
@@ -82,6 +69,7 @@ public class Activity implements Serializable {
      */
     private Date updateTime;
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

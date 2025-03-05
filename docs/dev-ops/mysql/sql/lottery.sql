@@ -382,11 +382,8 @@ CREATE TABLE `activity`
     `activity_desc`       varchar(128)        NOT NULL COMMENT '活动描述',
     `begin_date_time`     datetime            NOT NULL COMMENT '开始时间',
     `end_date_time`       datetime            NOT NULL COMMENT '结束时间',
-    `stock_count`         int(11)             NOT NULL COMMENT '库存总量',
-    `stock_count_surplus` int(11)             NOT NULL COMMENT '剩余库存',
-    `activity_count_id`   bigint(12)          NOT NULL COMMENT '活动参与次数id',
     `strategy_id`         bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `state`               varchar(8)          NOT NULL COMMENT '活动状态',
+    `state`               varchar(8)          NOT NULL DEFAULT 'create' COMMENT '活动状态',
     `create_time`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -401,7 +398,7 @@ DROP TABLE IF EXISTS `activity_count`;
 CREATE TABLE `activity_count`
 (
     `id`                bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `activity_count_id` bigint(12)          NOT NULL COMMENT '活动参与次数id',
+    `activity_count_id` bigint(12)          NOT NULL COMMENT '活动次数id',
     `total_count`       int(8)              NOT NULL COMMENT '总次数',
     `day_count`         int(8)              NOT NULL COMMENT '日次数',
     `month_count`       int(8)              NOT NULL COMMENT '月次数',
@@ -411,3 +408,20 @@ CREATE TABLE `activity_count`
     UNIQUE KEY `uq_activity_count_id` (`activity_count_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动次数配置表';
+
+DROP TABLE IF EXISTS `activity_sku`;
+CREATE TABLE `activity_sku`
+(
+    `id`                  int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `sku`                 bigint(12)       NOT NULL COMMENT '商品sku - 把每一个组合当做一个商品',
+    `activity_id`         bigint(12)       NOT NULL COMMENT '活动ID',
+    `activity_count_id`   bigint(12)       NOT NULL COMMENT '活动个人参与次数ID',
+    `stock_count`         int(11)          NOT NULL COMMENT '商品库存',
+    `stock_count_surplus` int(11)          NOT NULL COMMENT '剩余库存',
+    `create_time`         datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_sku` (`sku`),
+    KEY `idx_activity_id_activity_count_id` (`activity_id`, `activity_count_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动sku表';

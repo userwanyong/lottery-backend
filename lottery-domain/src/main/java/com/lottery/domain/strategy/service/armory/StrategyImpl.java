@@ -1,4 +1,4 @@
-package com.lottery.domain.strategy.service.strategy;
+package com.lottery.domain.strategy.service.armory;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;

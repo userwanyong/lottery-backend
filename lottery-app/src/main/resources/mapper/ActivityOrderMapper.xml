@@ -8,23 +8,17 @@
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
+            <result property="sku" column="sku" jdbcType="BIGINT"/>
             <result property="activityName" column="activity_name" jdbcType="VARCHAR"/>
             <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
             <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
             <result property="orderTime" column="order_time" jdbcType="TIMESTAMP"/>
-            <result property="state" column="state" jdbcType="TINYINT"/>
+            <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
+            <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
+            <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
+            <result property="state" column="state" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <insert id="myinsert" parameterType="com.lottery.infrastructure.persistent.dao.ActivityOrderMapper">
-            insert into activity_order(user_id, activity_id, activity_name, strategy_id, order_id, order_time, state, create_time, update_time)
-            values(#{userId}, #{activityId}, #{activityName}, #{strategyId}, #{orderId}, #{orderTime}, #{state}, now(), now())
-    </insert>
-
-    <select id="queryRaffleActivityOrderByUserId" resultType="com.lottery.infrastructure.persistent.po.ActivityOrder">
-        select user_id, activity_id, activity_name, strategy_id, order_id, order_time, state
-        from activity_order
-        where user_id = #{userId}
-    </select>
 </mapper>

@@ -12,6 +12,10 @@ public class Constants {
     public static final String UNDERLINE = "_";
 
     public static class RedisKey {
+        public static final String ACTIVITY_KEY = "lottery_activity_key_";
+        public static final String ACTIVITY_SKU_KEY = "lottery_activity_sku_key_";
+        public static final String ACTIVITY_COUNT_KEY = "lottery_activity_count_key_";
+
         public static final String RULE_TREE_VO_KEY = "lottery_rule_tree_vo_key_";
         public static final String STRATEGY_KEY = "lottery_strategy_key_";
         public static final String STRATEGY_AWARD_KEY = "lottery_strategy_award_key_";

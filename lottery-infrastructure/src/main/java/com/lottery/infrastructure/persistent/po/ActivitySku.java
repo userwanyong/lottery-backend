@@ -4,18 +4,20 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 抽奖活动账户流水表
+ * 抽奖活动sku表
  * @author 永
- * @TableName activity_account_flow
+ * @TableName activity_sku
  */
-@TableName(value ="activity_account_flow")
+@TableName(value ="activity_sku")
 @Data
-public class ActivityAccountFlow implements Serializable {
+public class ActivitySku implements Serializable {
     /**
      * 自增ID
      */
@@ -23,9 +25,9 @@ public class ActivityAccountFlow implements Serializable {
     private Integer id;
 
     /**
-     * 用户ID
+     * 商品sku - 把每一个组合当做一个商品
      */
-    private String userId;
+    private Long sku;
 
     /**
      * 活动ID
@@ -33,34 +35,19 @@ public class ActivityAccountFlow implements Serializable {
     private Long activityId;
 
     /**
-     * 总次数
+     * 活动个人参与次数ID
      */
-    private Integer totalCount;
+    private Long activityCountId;
 
     /**
-     * 日次数
+     * 商品库存
      */
-    private Integer dayCount;
+    private Integer stockCount;
 
     /**
-     * 月次数
+     * 剩余库存
      */
-    private Integer monthCount;
-
-    /**
-     * 流水ID - 生成的唯一ID
-     */
-    private String flowId;
-
-    /**
-     * 流水渠道（0-活动领取、1-购买、2-兑换、3-免费赠送）
-     */
-    private Integer flowChannel;
-
-    /**
-     * 业务ID（外部透传，活动ID、订单ID）
-     */
-    private String bizId;
+    private Integer stockCountSurplus;
 
     /**
      * 创建时间
@@ -72,6 +59,7 @@ public class ActivityAccountFlow implements Serializable {
      */
     private Date updateTime;
 
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

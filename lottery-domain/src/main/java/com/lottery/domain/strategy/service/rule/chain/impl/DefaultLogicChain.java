@@ -2,7 +2,7 @@ package com.lottery.domain.strategy.service.rule.chain.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
-import com.lottery.domain.strategy.service.strategy.StrategyService;
+import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

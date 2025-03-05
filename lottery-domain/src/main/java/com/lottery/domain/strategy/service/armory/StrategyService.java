@@ -1,4 +1,4 @@
-package com.lottery.domain.strategy.service.strategy;
+package com.lottery.domain.strategy.service.armory;
 
 /**
  * @author 永

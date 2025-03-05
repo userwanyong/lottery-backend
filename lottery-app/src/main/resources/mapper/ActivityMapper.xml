@@ -11,9 +11,6 @@
             <result property="activityDesc" column="activity_desc" jdbcType="VARCHAR"/>
             <result property="beginDateTime" column="begin_date_time" jdbcType="TIMESTAMP"/>
             <result property="endDateTime" column="end_date_time" jdbcType="TIMESTAMP"/>
-            <result property="stockCount" column="stock_count" jdbcType="INTEGER"/>
-            <result property="stockCountSurplus" column="stock_count_surplus" jdbcType="INTEGER"/>
-            <result property="activityCountId" column="activity_count_id" jdbcType="BIGINT"/>
             <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
             <result property="state" column="state" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
