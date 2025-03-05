@@ -2,4 +2,4 @@ spring:
   config:
     name: lottery-app
   profiles:
-    active: prod
+    active: dev
