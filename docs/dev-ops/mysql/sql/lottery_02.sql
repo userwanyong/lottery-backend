@@ -25,92 +25,100 @@ CREATE TABLE `activity_account`
 DROP TABLE IF EXISTS `activity_order_000`;
 CREATE TABLE `activity_order_000`
 (
-    `id`            bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`       varchar(32)         NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint(12)          NOT NULL COMMENT '活动ID',
-    `sku`           bigint(12)          NOT NULL COMMENT '商品sku',
-    `activity_name` varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `order_id`      varchar(12)         NOT NULL COMMENT '订单ID',
-    `order_time`    datetime            NOT NULL COMMENT '下单时间',
-    `total_count`   int(8)              NOT NULL COMMENT '总次数',
-    `day_count`     int(8)              NOT NULL COMMENT '日次数',
-    `month_count`   int(8)              NOT NULL COMMENT '月次数',
-    `state`         varchar(8)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
-    `create_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)         NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
+    `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
+    `order_time`      datetime            NOT NULL COMMENT '下单时间',
+    `total_count`     int(8)              NOT NULL COMMENT '总次数',
+    `day_count`       int(8)              NOT NULL COMMENT '日次数',
+    `month_count`     int(8)              NOT NULL COMMENT '月次数',
+    `state`           varchar(10)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动单';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
 
 DROP TABLE IF EXISTS `activity_order_001`;
 CREATE TABLE `activity_order_001`
 (
-    `id`            bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`       varchar(32)         NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint(12)          NOT NULL COMMENT '活动ID',
-    `sku`           bigint(12)          NOT NULL COMMENT '商品sku',
-    `activity_name` varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `order_id`      varchar(12)         NOT NULL COMMENT '订单ID',
-    `order_time`    datetime            NOT NULL COMMENT '下单时间',
-    `total_count`   int(8)              NOT NULL COMMENT '总次数',
-    `day_count`     int(8)              NOT NULL COMMENT '日次数',
-    `month_count`   int(8)              NOT NULL COMMENT '月次数',
-    `state`         varchar(8)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
-    `create_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)         NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
+    `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
+    `order_time`      datetime            NOT NULL COMMENT '下单时间',
+    `total_count`     int(8)              NOT NULL COMMENT '总次数',
+    `day_count`       int(8)              NOT NULL COMMENT '日次数',
+    `month_count`     int(8)              NOT NULL COMMENT '月次数',
+    `state`           varchar(10)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动单';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
 
 
 DROP TABLE IF EXISTS `activity_order_002`;
 CREATE TABLE `activity_order_002`
 (
-    `id`            bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`       varchar(32)         NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint(12)          NOT NULL COMMENT '活动ID',
-    `sku`           bigint(12)          NOT NULL COMMENT '商品sku',
-    `activity_name` varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `order_id`      varchar(12)         NOT NULL COMMENT '订单ID',
-    `order_time`    datetime            NOT NULL COMMENT '下单时间',
-    `total_count`   int(8)              NOT NULL COMMENT '总次数',
-    `day_count`     int(8)              NOT NULL COMMENT '日次数',
-    `month_count`   int(8)              NOT NULL COMMENT '月次数',
-    `state`         varchar(8)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
-    `create_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)         NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
+    `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
+    `order_time`      datetime            NOT NULL COMMENT '下单时间',
+    `total_count`     int(8)              NOT NULL COMMENT '总次数',
+    `day_count`       int(8)              NOT NULL COMMENT '日次数',
+    `month_count`     int(8)              NOT NULL COMMENT '月次数',
+    `state`           varchar(10)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动单';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
 
 DROP TABLE IF EXISTS `activity_order_003`;
 CREATE TABLE `activity_order_003`
 (
-    `id`            bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`       varchar(32)         NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint(12)          NOT NULL COMMENT '活动ID',
-    `sku`           bigint(12)          NOT NULL COMMENT '商品sku',
-    `activity_name` varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `order_id`      varchar(12)         NOT NULL COMMENT '订单ID',
-    `order_time`    datetime            NOT NULL COMMENT '下单时间',
-    `total_count`   int(8)              NOT NULL COMMENT '总次数',
-    `day_count`     int(8)              NOT NULL COMMENT '日次数',
-    `month_count`   int(8)              NOT NULL COMMENT '月次数',
-    `state`         varchar(8)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
-    `create_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)         NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
+    `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
+    `order_time`      datetime            NOT NULL COMMENT '下单时间',
+    `total_count`     int(8)              NOT NULL COMMENT '总次数',
+    `day_count`       int(8)              NOT NULL COMMENT '日次数',
+    `month_count`     int(8)              NOT NULL COMMENT '月次数',
+    `state`           varchar(10)          NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动单';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';

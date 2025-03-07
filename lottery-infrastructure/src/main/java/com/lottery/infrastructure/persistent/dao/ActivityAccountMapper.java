@@ -11,6 +11,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ActivityAccountMapper extends BaseMapper<ActivityAccount> {
 
+    int updateAccount(ActivityAccount activityAccount);
+
+    void add(ActivityAccount activityAccount);
 }
 
 

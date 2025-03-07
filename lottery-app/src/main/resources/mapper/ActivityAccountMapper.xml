@@ -17,5 +17,17 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <update id="updateAccount" parameterType="com.lottery.infrastructure.persistent.po.ActivityAccount">
+        update activity_account
+        set
+            total_count = total_count + #{totalCount},
+            total_count_surplus = total_count_surplus + #{totalCountSurplus},
+            day_count_surplus = day_count_surplus + #{dayCountSurplus},
+            day_count = day_count + #{dayCount},
+            month_count_surplus = month_count_surplus + #{monthCountSurplus},
+            month_count = month_count + #{monthCount},
+            update_time = now()
+        where user_id = #{userId} and activity_id = #{activityId}
+    </update>
 
 </mapper>

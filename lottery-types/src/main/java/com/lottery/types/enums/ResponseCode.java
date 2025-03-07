@@ -16,6 +16,7 @@ public enum ResponseCode {
     ILLEGAL_PARAMETER(1002, "非法参数"),
     NO_LOGIN(1003, "未登录"),
     STRATEGY_RULE_WEIGHT_IS_NULL(1004, "业务异常，策略规则中 rule_weight 权重规则已适用但未配置"),
+    INDEX_DUP(1005, "索引重复"),
     ;
 
     private final int code;

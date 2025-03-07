@@ -35,4 +35,10 @@ public class Constants {
         public static final String RULE_LUCK_AWARD = "rule_luck_award";
     }
 
+    public static class ActivityModel {
+        public static final String ACTIVITY_BASE = "activity_base";
+        public static final String ACTIVITY_SKU_STOCK = "activity_sku_stock";
+
+    }
+
 }

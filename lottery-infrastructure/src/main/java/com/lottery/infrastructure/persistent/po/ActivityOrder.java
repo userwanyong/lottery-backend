@@ -15,7 +15,7 @@ import lombok.Data;
  * @author 永
  * @TableName activity_order_000
  */
-@TableName(value ="activity_order_000")
+@TableName(value ="activity_order")
 @Data
 public class ActivityOrder implements Serializable {
     /**
@@ -78,6 +78,8 @@ public class ActivityOrder implements Serializable {
      * 订单状态（complete）
      */
     private String state;
+
+    private String outBusinessNo;
 
     /**
      * 创建时间

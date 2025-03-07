@@ -1,7 +1,6 @@
 package com.lottery.domain.activity.model.entity;
 
 import com.lottery.domain.activity.model.valobj.OrderStateVO;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,12 +10,16 @@ import java.util.Date;
  * 活动参与实体对象
  */
 @Data
-@Builder
 public class ActivityOrderEntity {
     /**
      * 用户ID
      */
     private String userId;
+
+    /**
+     * sku
+     */
+    private Long sku;
 
     /**
      * 活动ID
@@ -62,5 +65,11 @@ public class ActivityOrderEntity {
      * 订单状态
      */
     private OrderStateVO state;
+
+    /**
+     * 业务仿重ID - 外部透传的，确保幂等
+     */
+    private String outBusinessNo;
+
 
 }
