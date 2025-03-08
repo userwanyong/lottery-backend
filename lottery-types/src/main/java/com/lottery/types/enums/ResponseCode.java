@@ -17,6 +17,10 @@ public enum ResponseCode {
     NO_LOGIN(1003, "未登录"),
     STRATEGY_RULE_WEIGHT_IS_NULL(1004, "业务异常，策略规则中 rule_weight 权重规则已适用但未配置"),
     INDEX_DUP(1005, "索引重复"),
+    ACTIVITY_STATE_ERROR(1006, "活动未开启（非open状态）"),
+    ACTIVITY_DATE_ERROR(1007, "非活动日期范围"),
+    ACTIVITY_SKU_STOCK_ERROR(1008, "活动库存不足"),
+
     ;
 
     private final int code;

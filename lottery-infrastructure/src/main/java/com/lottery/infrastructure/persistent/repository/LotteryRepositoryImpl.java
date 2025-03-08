@@ -212,7 +212,7 @@ public class LotteryRepositoryImpl implements LotteryRepository {
     public Boolean reduceAwardStock(String key) {
         long count = redisService.decr(key);
         if (count < 0) {
-            redisService.setAtomic(key, 0);
+            redisService.setAtomicLong(key, 0);
             return false;
         }
         // 1. 按照cacheKey decr 后的值，如 99、98、97 和 key 组成为库存锁的key进行使用
@@ -263,7 +263,7 @@ public class LotteryRepositoryImpl implements LotteryRepository {
         if (redisService.isExists(key)) {
             return;
         }
-        redisService.setAtomic(key, awardCount);
+        redisService.setAtomicLong(key, awardCount);
     }
 
     @Override

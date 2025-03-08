@@ -2,6 +2,7 @@ package com.lottery.domain.activity.service;
 
 import com.lottery.domain.activity.model.aggregate.CreateOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
+import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.lottery.domain.activity.model.valobj.OrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.rule.factory.DefaultActivityChainFactory;
@@ -15,7 +16,7 @@ import java.util.Date;
  * 抽奖活动服务
  */
 @Service
-public class DefaultActivity extends AbstractActivity{
+public class DefaultActivity extends AbstractActivity implements ActivitySkuStock{
 
     public DefaultActivity(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(activityRepository, defaultActivityChainFactory);
@@ -53,4 +54,23 @@ public class DefaultActivity extends AbstractActivity{
         activityRepository.doSaveOrder(createOrderAggregate);
     }
 
+    @Override
+    public ActivitySkuStockKeyVO takeQueueValue() {
+        return activityRepository.takeQueueValue();
+    }
+
+    @Override
+    public void updateActivitySkuStock(Long sku) {
+        activityRepository.updateActivitySkuStock(sku);
+    }
+
+    @Override
+    public void clearActivitySkuStock(Long sku) {
+        activityRepository.clearActivitySkuStock(sku);
+    }
+
+    @Override
+    public void clearQueueValue() {
+        activityRepository.clearQueueValue();
+    }
 }

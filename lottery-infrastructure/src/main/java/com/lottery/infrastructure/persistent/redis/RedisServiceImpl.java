@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 永
@@ -161,7 +162,12 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public void setAtomic(String key, Integer value) {
+    public Boolean setNx(String key, Long expire, TimeUnit timeUnit) {
+        return redissonClient.getBucket(key).trySet("lock",expire,timeUnit);
+    }
+
+    @Override
+    public void setAtomicLong(String key, Integer value) {
         redissonClient.getAtomicLong(key).set(value);
     }
 

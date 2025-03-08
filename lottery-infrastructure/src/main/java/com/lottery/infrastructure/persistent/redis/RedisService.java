@@ -2,6 +2,8 @@ package com.lottery.infrastructure.persistent.redis;
 
 import org.redisson.api.*;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author 永
  * Redis 服务接口
@@ -251,7 +253,8 @@ public interface RedisService {
      * @return true/false
      */
     Boolean setNx(String key);
+    Boolean setNx(String key,Long expire, TimeUnit timeUnit);
 
-    void setAtomic(String key, Integer value);
+    void setAtomicLong(String key, Integer value);
 }
 
