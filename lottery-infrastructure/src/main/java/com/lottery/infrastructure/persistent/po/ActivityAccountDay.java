@@ -4,26 +4,25 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * 抽奖活动账户表
- *
+ * 抽奖活动账户表-日次数
  * @author 永
- * @TableName activity_account
+ * @TableName activity_account_day
  */
-@TableName(value = "activity_account")
+@TableName(value ="activity_account_day")
 @Data
-public class ActivityAccount implements Serializable {
+public class ActivityAccountDay implements Serializable {
     /**
      * 自增ID
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     /**
      * 用户ID
@@ -36,14 +35,9 @@ public class ActivityAccount implements Serializable {
     private Long activityId;
 
     /**
-     * 总次数
+     * 日期（yyyy-mm-dd）
      */
-    private Integer totalCount;
-
-    /**
-     * 总次数-剩余
-     */
-    private Integer totalCountSurplus;
+    private String day;
 
     /**
      * 日次数
@@ -54,16 +48,6 @@ public class ActivityAccount implements Serializable {
      * 日次数-剩余
      */
     private Integer dayCountSurplus;
-
-    /**
-     * 月次数
-     */
-    private Integer monthCount;
-
-    /**
-     * 月次数-剩余
-     */
-    private Integer monthCountSurplus;
 
     /**
      * 创建时间

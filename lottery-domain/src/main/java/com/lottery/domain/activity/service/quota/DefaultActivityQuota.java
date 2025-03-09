@@ -1,11 +1,12 @@
-package com.lottery.domain.activity.service;
+package com.lottery.domain.activity.service.quota;
 
-import com.lottery.domain.activity.model.aggregate.CreateOrderAggregate;
+import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.lottery.domain.activity.model.valobj.OrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
-import com.lottery.domain.activity.service.rule.factory.DefaultActivityChainFactory;
+import com.lottery.domain.activity.service.ActivitySkuStockService;
+import com.lottery.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +14,17 @@ import java.util.Date;
 
 /**
  * @author 永
- * 抽奖活动服务
+ * 活动额度默认实现类
  */
 @Service
-public class DefaultActivity extends AbstractActivity implements ActivitySkuStock{
+public class DefaultActivityQuota extends AbstractActivityQuota implements ActivitySkuStockService {
 
-    public DefaultActivity(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+    public DefaultActivityQuota(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
         super(activityRepository, defaultActivityChainFactory);
     }
 
     @Override
-    protected CreateOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
+    protected CreateQuotaOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
         ActivityOrderEntity activityOrderEntity = new ActivityOrderEntity();
         activityOrderEntity.setUserId(skuRechargeEntity.getUserId());
         activityOrderEntity.setSku(skuRechargeEntity.getSku());
@@ -38,7 +39,7 @@ public class DefaultActivity extends AbstractActivity implements ActivitySkuStoc
         activityOrderEntity.setState(OrderStateVO.completed);
         activityOrderEntity.setOutBusinessNo(skuRechargeEntity.getOutBusinessNo());
 
-        return CreateOrderAggregate.builder()
+        return CreateQuotaOrderAggregate.builder()
                 .userId(skuRechargeEntity.getUserId())
                 .activityId(activitySkuEntity.getActivityId())
                 .totalCount(activityCountEntity.getTotalCount())
@@ -50,8 +51,8 @@ public class DefaultActivity extends AbstractActivity implements ActivitySkuStoc
     }
 
     @Override
-    protected void doSaveOrder(CreateOrderAggregate createOrderAggregate) {
-        activityRepository.doSaveOrder(createOrderAggregate);
+    protected void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+        activityRepository.doSaveOrder(createQuotaOrderAggregate);
     }
 
     @Override

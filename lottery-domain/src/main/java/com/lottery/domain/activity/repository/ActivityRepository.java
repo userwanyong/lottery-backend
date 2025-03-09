@@ -1,9 +1,8 @@
 package com.lottery.domain.activity.repository;
 
-import com.lottery.domain.activity.model.aggregate.CreateOrderAggregate;
-import com.lottery.domain.activity.model.entity.ActivityCountEntity;
-import com.lottery.domain.activity.model.entity.ActivityEntity;
-import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
+import com.lottery.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
+import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
+import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 
 import java.util.Date;
@@ -16,7 +15,7 @@ public interface ActivityRepository {
     ActivitySkuEntity queryActivitySku(Long sku);
     ActivityEntity queryActivityByActivityId(Long activityId);
     ActivityCountEntity queryActivityCountByActivityCountId(Long activityCountId);
-    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
+    void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
     void cacheActivitySkuStockCount(String key, Integer stockCountSurplus);
 
@@ -31,4 +30,14 @@ public interface ActivityRepository {
     void clearQueueValue();
 
     void clearActivitySkuStock(Long sku);
+
+    UserOrderResEntity queryNoUsedPartakeOrder(UserOrderReqEntity reqEntity);
+
+    ActivityAccountEntity queryActivityAccountByUserId(String userId, Long activityId);
+
+    ActivityAccountMonthEntity queryActivityAccountMonthByUserId(String userId, Long activityId, String month);
+
+    ActivityAccountDayEntity queryActivityAccountDayByUserId(String userId, Long activityId, String day);
+
+    void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate);
 }

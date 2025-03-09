@@ -4,66 +4,40 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * 抽奖活动账户表
- *
+ * 任务表，发送MQ
  * @author 永
- * @TableName activity_account
+ * @TableName task
  */
-@TableName(value = "activity_account")
+@TableName(value ="task")
 @Data
-public class ActivityAccount implements Serializable {
+public class Task implements Serializable {
     /**
      * 自增ID
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     /**
-     * 用户ID
+     * 消息主题
      */
-    private String userId;
+    private String topic;
 
     /**
-     * 活动ID
+     * 消息主体
      */
-    private Long activityId;
+    private String message;
 
     /**
-     * 总次数
+     * 任务状态；create-创建、completed-完成、fail-失败
      */
-    private Integer totalCount;
-
-    /**
-     * 总次数-剩余
-     */
-    private Integer totalCountSurplus;
-
-    /**
-     * 日次数
-     */
-    private Integer dayCount;
-
-    /**
-     * 日次数-剩余
-     */
-    private Integer dayCountSurplus;
-
-    /**
-     * 月次数
-     */
-    private Integer monthCount;
-
-    /**
-     * 月次数-剩余
-     */
-    private Integer monthCountSurplus;
+    private String state;
 
     /**
      * 创建时间

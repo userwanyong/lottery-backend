@@ -1,4 +1,4 @@
-package com.lottery.domain.activity.service.rule;
+package com.lottery.domain.activity.service.quota.rule;
 
 import com.lottery.domain.activity.model.entity.ActivityCountEntity;
 import com.lottery.domain.activity.model.entity.ActivityEntity;

@@ -1,8 +1,10 @@
 package com.lottery.infrastructure.persistent.dao;
 
-import com.lottery.infrastructure.persistent.po.ActivityAccount;
+import cn.bugstack.middleware.db.router.annotation.DBRouter;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.lottery.infrastructure.persistent.po.ActivityAccount;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 /**
 * @author 永
@@ -14,6 +16,10 @@ public interface ActivityAccountMapper extends BaseMapper<ActivityAccount> {
     int updateAccount(ActivityAccount activityAccount);
 
     void add(ActivityAccount activityAccount);
+
+    @DBRouter
+    @Select("select * from activity_account where user_id = #{userId} and activity_id = #{activityId}")
+    ActivityAccount queryActivityAccountByUserId(ActivityAccount activityAccount);
 }
 
 

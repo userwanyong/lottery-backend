@@ -1,4 +1,4 @@
-package com.lottery.test.domain;
+package com.lottery.test.domain.strategy;
 
 import com.alibaba.fastjson.JSON;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;

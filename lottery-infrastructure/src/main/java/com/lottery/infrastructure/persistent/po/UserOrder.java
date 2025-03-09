@@ -4,26 +4,25 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import lombok.Data;
 
 /**
- * 抽奖活动账户表
- *
+ * 用户抽奖订单表
  * @author 永
- * @TableName activity_account
+ * @TableName user_order
  */
-@TableName(value = "activity_account")
+@TableName(value ="user_order")
 @Data
-public class ActivityAccount implements Serializable {
+public class UserOrder implements Serializable {
     /**
-     * 自增ID
+     * id
      */
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     /**
      * 用户ID
@@ -36,34 +35,29 @@ public class ActivityAccount implements Serializable {
     private Long activityId;
 
     /**
-     * 总次数
+     * 订单ID
      */
-    private Integer totalCount;
+    private String orderId;
 
     /**
-     * 总次数-剩余
+     * 活动名称
      */
-    private Integer totalCountSurplus;
+    private String activityName;
 
     /**
-     * 日次数
+     * 抽奖策略ID
      */
-    private Integer dayCount;
+    private Long strategyId;
 
     /**
-     * 日次数-剩余
+     * 下单时间
      */
-    private Integer dayCountSurplus;
+    private Date orderTime;
 
     /**
-     * 月次数
+     * 订单状态；create-创建、used-已使用、cancel-已作废
      */
-    private Integer monthCount;
-
-    /**
-     * 月次数-剩余
-     */
-    private Integer monthCountSurplus;
+    private String orderState;
 
     /**
      * 创建时间

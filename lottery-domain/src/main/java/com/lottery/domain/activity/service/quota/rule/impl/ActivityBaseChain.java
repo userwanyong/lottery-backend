@@ -1,10 +1,10 @@
-package com.lottery.domain.activity.service.rule.impl;
+package com.lottery.domain.activity.service.quota.rule.impl;
 
 import com.lottery.domain.activity.model.entity.ActivityCountEntity;
 import com.lottery.domain.activity.model.entity.ActivityEntity;
 import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
 import com.lottery.domain.activity.model.valobj.ActivityStateVO;
-import com.lottery.domain.activity.service.rule.AbstractActivityChain;
+import com.lottery.domain.activity.service.quota.rule.AbstractActivityChain;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;

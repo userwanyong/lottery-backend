@@ -4,9 +4,9 @@ import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 
 /**
  * @author 永
- * 活动库存操作接口
+ * 额度领域-活动库存操作接口
  */
-public interface ActivitySkuStock {
+public interface ActivitySkuStockService {
     ActivitySkuStockKeyVO takeQueueValue();
 
     void updateActivitySkuStock(Long sku);

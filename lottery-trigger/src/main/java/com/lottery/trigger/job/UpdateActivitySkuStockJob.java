@@ -1,7 +1,7 @@
 package com.lottery.trigger.job;
 
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
-import com.lottery.domain.activity.service.ActivitySkuStock;
+import com.lottery.domain.activity.service.ActivitySkuStockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 @Component
 public class UpdateActivitySkuStockJob {
     @Resource
-    private ActivitySkuStock skuStock;
+    private ActivitySkuStockService skuStock;
     @Scheduled(cron = "0/5 * * * * ?")
     public void exec() {
         try {

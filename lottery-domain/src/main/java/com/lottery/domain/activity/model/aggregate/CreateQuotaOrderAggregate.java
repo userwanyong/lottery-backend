@@ -6,11 +6,11 @@ import lombok.Data;
 
 /**
  * @author 永
- * 下单聚合对象
+ * 活动额度聚合对象
  */
 @Data
 @Builder
-public class CreateOrderAggregate {
+public class CreateQuotaOrderAggregate {
     /**
      * 用户ID
      */

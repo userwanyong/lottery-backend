@@ -2,7 +2,7 @@ package com.lottery.trigger.listener;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.lottery.domain.activity.service.ActivitySkuStock;
+import com.lottery.domain.activity.service.ActivitySkuStockService;
 import com.lottery.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -22,7 +22,7 @@ public class ActivitySkuStockZeroCustomer {
     @Value("${spring.rabbitmq.topic.activity_sku_stock_zero}")
     private String topic;
     @Resource
-    private ActivitySkuStock skuStock;
+    private ActivitySkuStockService skuStock;
     @RabbitListener(queuesToDeclare = @Queue(value = "activity_sku_stock_zero"))
     public void listener(String message) {
         try {

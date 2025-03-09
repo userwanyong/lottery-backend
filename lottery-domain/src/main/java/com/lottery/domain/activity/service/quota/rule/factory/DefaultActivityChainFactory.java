@@ -1,6 +1,6 @@
-package com.lottery.domain.activity.service.rule.factory;
+package com.lottery.domain.activity.service.quota.rule.factory;
 
-import com.lottery.domain.activity.service.rule.ActivityChain;
+import com.lottery.domain.activity.service.quota.rule.ActivityChain;
 import com.lottery.types.common.Constants;
 import org.springframework.stereotype.Service;
 
