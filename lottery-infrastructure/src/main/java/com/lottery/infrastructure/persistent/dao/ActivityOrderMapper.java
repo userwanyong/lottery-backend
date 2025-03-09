@@ -14,7 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ActivityOrderMapper extends BaseMapper<ActivityOrder> {
 
 
-    void add(ActivityOrder activityOrder);
 }
 
 

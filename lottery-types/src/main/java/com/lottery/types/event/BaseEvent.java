@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * @author 永
+ * mq发送基本消息事件（通用）
  */
 @Data
 public abstract class BaseEvent<T> {

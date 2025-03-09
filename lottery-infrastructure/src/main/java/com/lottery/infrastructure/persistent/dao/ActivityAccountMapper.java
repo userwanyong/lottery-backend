@@ -15,8 +15,6 @@ public interface ActivityAccountMapper extends BaseMapper<ActivityAccount> {
 
     int updateAccount(ActivityAccount activityAccount);
 
-    void add(ActivityAccount activityAccount);
-
     @DBRouter
     @Select("select * from activity_account where user_id = #{userId} and activity_id = #{activityId}")
     ActivityAccount queryActivityAccountByUserId(ActivityAccount activityAccount);

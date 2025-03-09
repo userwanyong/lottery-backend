@@ -1,0 +1,14 @@
+package com.lottery.domain.award.service;
+
+import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
+
+/**
+ * @author 永
+ * 奖品发放接口
+ */
+public interface UserAwardService {
+    /**
+     * 保存奖品发放记录
+     */
+    void saveUserAwardRecord(UserAwardRecordEntity userAwardRecordEntity);
+}

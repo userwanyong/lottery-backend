@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * @author 永
- * @description 活动sku库存清空消息
+ * @description 活动sku库存清空消息（基本消息事件的组装）
  */
 @Component
 public class ActivitySkuStockZeroMessageEvent extends BaseEvent<Long> {

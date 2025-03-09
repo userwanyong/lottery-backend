@@ -60,7 +60,7 @@ public class UserAwardRecord implements Serializable {
     private Date awardTime;
 
     /**
-     * 奖品状态；create-创建、completed-发奖完成
+     * 奖品状态；create-创建、completed-发奖完成、、fail-发奖失败
      */
     private String awardState;
 
