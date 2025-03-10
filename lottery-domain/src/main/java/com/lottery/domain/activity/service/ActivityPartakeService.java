@@ -9,7 +9,12 @@ import com.lottery.domain.activity.model.entity.UserOrderResEntity;
  */
 public interface ActivityPartakeService {
     /**
-     * 创建用户参与订单
+     * 创建抽奖单
      */
     UserOrderResEntity createPartakeOrder(UserOrderReqEntity reqEntity);
+
+    /**
+     * 创建抽奖单
+     */
+    UserOrderResEntity createPartakeOrder(String userId, Long activityId);
 }

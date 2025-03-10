@@ -21,10 +21,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +38,10 @@ public class LotteryRepositoryImpl implements LotteryRepository {
     private RedisService redisService;
     @Resource
     private StrategyMapper strategyMapper;
+    @Resource
+    private ActivityAccountDayMapper activityAccountDayMapper;
+    @Resource
+    private ActivityMapper activityMapper;
     @Resource
     private RuleMapper ruleMapper;
     @Resource
@@ -287,6 +289,28 @@ public class LotteryRepositoryImpl implements LotteryRepository {
         redisService.setValue(cacheKey, strategyAwardEntity1);
         // 返回数据
         return strategyAwardEntity1;
+    }
+
+    @Override
+    public Long queryStrategyIdByActivityId(Long activityId) {
+        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
+                .eq(Activity::getActivityId, activityId);
+        return activityMapper.selectOne(queryWrapper).getStrategyId();
+    }
+
+    @Override
+    public Integer queryTodayUserLotteryCount(String userId, Long strategyId) {
+        //获取活动id
+        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
+                .eq(Activity::getStrategyId, strategyId);
+        Long activityId = activityMapper.selectOne(queryWrapper).getActivityId();
+        // 封装参数
+        ActivityAccountDay activityAccountDay = new ActivityAccountDay();
+        activityAccountDay.setUserId(userId);
+        activityAccountDay.setActivityId(activityId);
+        activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        ActivityAccountDay activityAccountDayRes = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
+        return activityAccountDayRes.getDayCount()- activityAccountDayRes.getDayCountSurplus();
     }
 
 }

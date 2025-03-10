@@ -10,8 +10,10 @@ import com.lottery.domain.award.repository.UserAwardRepository;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.TaskMapper;
 import com.lottery.infrastructure.persistent.dao.UserAwardRecordMapper;
+import com.lottery.infrastructure.persistent.dao.UserOrderMapper;
 import com.lottery.infrastructure.persistent.po.Task;
 import com.lottery.infrastructure.persistent.po.UserAwardRecord;
+import com.lottery.infrastructure.persistent.po.UserOrder;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,8 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     @Resource
     private TaskMapper taskMapper;
     @Resource
+    private UserOrderMapper userOrderMapper;
+    @Resource
     private IDBRouterStrategy dbRouter;
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -53,6 +57,10 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         task.setMessage(String.valueOf(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
+        UserOrder userOrder = new UserOrder();
+        userOrder.setUserId(userAwardRecordEntity.getUserId());
+        userOrder.setActivityId(userAwardRecordEntity.getActivityId());
+
         //写入数据库
         try {
             dbRouter.doRouter(userAwardRecordEntity.getUserId());
@@ -60,6 +68,13 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                 try {
                     userAwardRecordMapper.insert(userAwardRecord);
                     taskMapper.insert(task);
+                    //更新抽奖单
+                    int count=userOrderMapper.updateUserOrderStateUsed(userOrder);
+                    if (count!=1){
+                        status.setRollbackOnly();
+                        log.error("写入中奖记录失败,该抽奖单已被使用");
+                        return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(),ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
+                    }
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();

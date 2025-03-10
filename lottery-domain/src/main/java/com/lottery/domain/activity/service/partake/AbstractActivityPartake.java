@@ -25,6 +25,11 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
     }
 
     @Override
+    public UserOrderResEntity createPartakeOrder(String userId, Long activityId) {
+        return createPartakeOrder(UserOrderReqEntity.builder().userId(userId).activityId(activityId).build());
+    }
+
+    @Override
     public UserOrderResEntity createPartakeOrder(UserOrderReqEntity reqEntity) {
         //基础信息
         String userId = reqEntity.getUserId();
@@ -39,12 +44,12 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
         if (currentTime.before(activityEntity.getBeginDateTime()) || currentTime.after(activityEntity.getEndDateTime())){
             throw new AppException(ResponseCode.ACTIVITY_DATE_ERROR.getCode(),ResponseCode.ACTIVITY_DATE_ERROR.getMessage());
         }
-        //查询是否有参与订单但未被消费,有的话直接返回
+        //查询是否有抽奖单但未被消费,有的话直接返回
         UserOrderResEntity userOrderResEntity = activityRepository.queryNoUsedPartakeOrder(reqEntity);
         if (userOrderResEntity != null){
             return userOrderResEntity;
         }
-        //构建参与订单
+        //构建抽奖单
         UserOrderResEntity userOrderRes=this.buildUserPartakeOrder(userId, activityId, currentTime);
         //构建参与领域聚合对象
         CreatePartakeOrderAggregate createPartakeOrderAggregate = this.doFilterAccount(userId, activityId, currentTime);

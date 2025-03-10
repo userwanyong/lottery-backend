@@ -23,6 +23,7 @@ public enum ResponseCode {
     ACCOUNT_QUOTA_ERROR(1009,"账户总额度不足"),
     ACCOUNT_MONTH_QUOTA_ERROR(1010,"账户月额度不足"),
     ACCOUNT_DAY_QUOTA_ERROR(1011,"账户日额度不足"),
+    ACTIVITY_ORDER_ERROR(1012, "用户抽奖单已使用过，不可重复抽奖"),
 
     ;
 

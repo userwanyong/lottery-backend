@@ -6,6 +6,7 @@ import com.lottery.infrastructure.persistent.po.UserOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
 * @author 永
@@ -18,6 +19,10 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
     @DBRouter
     @Select("select * from user_order where user_id = #{userId} and activity_id = #{activityId} and order_state='create'")
     UserOrder queryNoUsedPartakeOrder(UserOrder userOrder);
+
+    @DBRouter
+    @Update("update user_order set order_state = 'used' where user_id = #{userId} and activity_id = #{activityId} and order_state='create'")
+    int updateUserOrderStateUsed(UserOrder userOrder);
 }
 
 

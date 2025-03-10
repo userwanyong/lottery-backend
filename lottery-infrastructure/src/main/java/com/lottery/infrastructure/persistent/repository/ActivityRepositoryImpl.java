@@ -28,8 +28,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author 永
@@ -392,7 +395,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         activityAccountMapper.update(null, activityAccountLambdaUpdateWrapperD);
                     }
 
-                    // 4. 写入参与活动订单 user_order
+                    // 4. 创建抽奖单 user_order
                     UserOrder userOrder = new UserOrder();
                     BeanUtils.copyProperties(userOrderResEntity, userOrder);
                     userOrder.setOrderState(userOrderResEntity.getOrderState().getCode());
@@ -408,6 +411,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             dbRouter.clear();
         }
 
+    }
+
+    @Override
+    public List<ActivitySkuEntity> queryActivitySkuListByActivityId(Long activityId) {
+        LambdaQueryWrapper<ActivitySku> queryWrapper = new QueryWrapper<ActivitySku>().lambda()
+                .eq(ActivitySku::getActivityId, activityId);
+        List<ActivitySku> activitySkus = activitySkuMapper.selectList(queryWrapper);
+
+        return activitySkus.stream()
+                .map(activitySku -> {
+                    ActivitySkuEntity activitySkuEntity = new ActivitySkuEntity();
+                    BeanUtils.copyProperties(activitySku, activitySkuEntity);
+                    return activitySkuEntity;
+                })
+                .collect(Collectors.toList());
     }
 
 

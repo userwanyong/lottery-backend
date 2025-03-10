@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 永
@@ -28,6 +29,20 @@ public class ActivityImpl implements ActivityArmory,ActivityService{
         repository.queryActivityByActivityId(activitySkuEntity.getActivityId());
         //预热次数(已在查询时放入缓存)
         repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
+        return true;
+    }
+
+    @Override
+    public boolean assembleActivitySkuByActivityId(Long activityId) {
+        //查询该活动下的sku列表
+        List<ActivitySkuEntity> activitySkuEntityList = repository.queryActivitySkuListByActivityId(activityId);
+        for (ActivitySkuEntity activitySkuEntity : activitySkuEntityList) {
+            cacheActivitySkuStockCount(activitySkuEntity.getSku(),activitySkuEntity.getStockCountSurplus());
+            //预热次数(已在查询时放入缓存)
+            repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
+        }
+        //预热活动(已在查询时放入缓存)
+        repository.queryActivityByActivityId(activityId);
         return true;
     }
 

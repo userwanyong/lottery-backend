@@ -51,4 +51,8 @@ public interface LotteryRepository {
     void cacheStrategyAwardCount(String key, Integer awardCount);
 
     StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Long awardId);
+
+    Long queryStrategyIdByActivityId(Long activityId);
+
+    Integer queryTodayUserLotteryCount(String userId, Long strategyId);
 }

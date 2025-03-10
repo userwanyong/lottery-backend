@@ -72,6 +72,12 @@ public class StrategyImpl implements StrategyArmory, StrategyService {
         return true;
     }
 
+    @Override
+    public boolean assembleLotteryStrategyByActivityId(Long activityId) {
+        Long strategyId = repository.queryStrategyIdByActivityId(activityId);
+        return assembleLotteryStrategy(strategyId);
+    }
+
     private void cacheStrategyAwardCount(Long strategyId, Long awardId, Integer awardCount) {
         String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
         repository.cacheStrategyAwardCount(key, awardCount);
