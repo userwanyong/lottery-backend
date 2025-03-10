@@ -13,12 +13,13 @@ import java.util.Date;
 
 /**
  * @author 永
- * 发奖品事件消息（基本消息事件的组装）
+ * 奖品事件消息（基本消息事件的组装）
  */
 @Component
 public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendAwardMessage> {
     @Value("${spring.rabbitmq.topic.send_award}")
     private String topic;
+
     @Override
     public EventMessage<SendAwardMessage> buildEventMessage(SendAwardMessage data) {
         return EventMessage.<SendAwardMessage>builder()

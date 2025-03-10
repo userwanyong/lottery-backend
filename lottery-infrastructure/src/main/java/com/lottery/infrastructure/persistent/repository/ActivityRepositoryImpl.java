@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author 永
- * 活动领域仓储服务
+ * 活动领域仓储实现
  */
 @Repository
 @Slf4j

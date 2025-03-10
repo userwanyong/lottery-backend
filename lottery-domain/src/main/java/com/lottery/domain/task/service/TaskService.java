@@ -1,14 +1,13 @@
 package com.lottery.domain.task.service;
 
 
-
 import com.lottery.domain.task.model.entity.TaskEntity;
 
 import java.util.List;
 
 /**
  * @author 永
- * 任务服务接口
+ * 任务领域接口
  */
 public interface TaskService {
     /**

@@ -50,7 +50,7 @@ public class SendMessageTaskJob {
                                     taskService.sendMessage(taskEntity);
                                     taskService.updateTaskSendMessageCompleted(taskEntity.getUserId(), taskEntity.getMessageId());
                                 } catch (Exception e) {
-                                    log.error("【定时任务】发送MQ消息失败 userId: {} topic: {}", taskEntity.getUserId(), taskEntity.getTopic());
+                                    log.error("【定时任务】发送MQ任务表消息失败 userId: {} topic: {}", taskEntity.getUserId(), taskEntity.getTopic());
                                     taskService.updateTaskSendMessageFail(taskEntity.getUserId(), taskEntity.getMessageId());
                                 }
                             });

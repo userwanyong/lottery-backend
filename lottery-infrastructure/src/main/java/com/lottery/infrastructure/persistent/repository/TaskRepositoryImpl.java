@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * @author 永
- * 任务服务仓储实现
+ * 任务领域仓储实现
  */
 @Repository
 @Slf4j
@@ -23,6 +23,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     private TaskMapper taskMapper;
     @Resource
     private EventPublisher eventPublisher;
+
     @Override
     public List<TaskEntity> queryNoSendMessageTaskList() {
         List<Task> tasks = taskMapper.queryNoSendMessageTaskList();

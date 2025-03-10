@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * @author 永
- * 任务服务仓储接口
+ * 任务领域仓储接口
  */
 public interface TaskRepository {
     List<TaskEntity> queryNoSendMessageTaskList();

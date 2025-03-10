@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 
 /**
  * @author 永
- * 奖品发放接口实现类
+ * 奖品领域实现类
  */
 @Service
 public class UserAwardServiceImpl implements UserAwardService{

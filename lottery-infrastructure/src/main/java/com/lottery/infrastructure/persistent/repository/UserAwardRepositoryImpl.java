@@ -26,7 +26,7 @@ import javax.annotation.Resource;
 
 /**
  * @author 永
- * 发奖服务仓储实现
+ * 奖品服务仓储实现
  */
 @Repository
 @Slf4j
@@ -72,7 +72,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     int count=userOrderMapper.updateUserOrderStateUsed(userOrder);
                     if (count!=1){
                         status.setRollbackOnly();
-                        log.error("写入中奖记录失败,该抽奖单已被使用");
+                        log.error("更新抽奖单失败,该抽奖单已被使用");
                         return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(),ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
                     }
                     return 1;

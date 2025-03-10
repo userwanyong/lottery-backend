@@ -4,7 +4,7 @@ import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 
 /**
  * @author 永
- * 奖品发放接口
+ * 奖品领域接口
  */
 public interface UserAwardService {
     /**

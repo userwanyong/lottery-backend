@@ -5,7 +5,7 @@ import lombok.Getter;
 
 /**
  * @author 永
- * 任务状态值对象
+ * 任务状态枚举值对象
  */
 
 @Getter

@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * @author 永
- * 用户中奖记录聚合对象
+ * 奖品领域聚合对象
  */
 @Data
 public class UserAwardRecordAggregate {

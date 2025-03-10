@@ -9,13 +9,14 @@ import java.util.List;
 
 /**
  * @author 永
- * 任务服务实现类
+ * 任务领域实现类
  */
 @Service
-public class TaskServiceImpl implements TaskService{
+public class TaskServiceImpl implements TaskService {
 
     @Resource
     private TaskRepository taskRepository;
+
     @Override
     public List<TaskEntity> queryNoSendMessageTaskList() {
         return taskRepository.queryNoSendMessageTaskList();
@@ -28,7 +29,7 @@ public class TaskServiceImpl implements TaskService{
 
     @Override
     public void updateTaskSendMessageCompleted(String userId, String messageId) {
-        taskRepository.updateTaskSendMessageCompleted(userId,messageId);
+        taskRepository.updateTaskSendMessageCompleted(userId, messageId);
     }
 
     @Override
