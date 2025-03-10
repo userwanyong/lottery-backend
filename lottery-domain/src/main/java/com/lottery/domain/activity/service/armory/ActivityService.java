@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * @author 永
- * 活动调度接口
+ * 活动-装配领域-调度接口
  */
 public interface ActivityService {
     boolean reduceActivitySkuStock(Long sku, Date endDateTime);

@@ -1,6 +1,6 @@
 package com.lottery.test.domain.activity;
 
-import com.lottery.domain.activity.model.entity.SkuRechargeEntity;
+import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.types.exception.AppException;
@@ -41,12 +41,12 @@ public class ActivityQuotaServiceTest {
     public void test_createQuotaOrder() throws InterruptedException {
         for (int i = 0; i < 10; i++) {
             try {
-                SkuRechargeEntity skuRechargeEntity = new SkuRechargeEntity();
-                skuRechargeEntity.setUserId("yong");
-                skuRechargeEntity.setSku(9011L);
+                QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
+                quotaOrderEntity.setUserId("yong");
+                quotaOrderEntity.setSku(9011L);
                 // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
-                skuRechargeEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
-                String orderId = activityQuotaService.createQuotaOrder(skuRechargeEntity);
+                quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
+                String orderId = activityQuotaService.createQuotaOrder(quotaOrderEntity);
                 log.info("测试结果：{}", orderId);
             } catch (AppException e) {
                 log.warn(e.getMessage());

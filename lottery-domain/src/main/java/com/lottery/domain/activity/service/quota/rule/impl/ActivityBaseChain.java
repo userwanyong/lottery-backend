@@ -22,20 +22,21 @@ import java.util.Date;
 public class ActivityBaseChain extends AbstractActivityChain {
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.info("【活动责任链】-基础信息【有效期、状态、库存(sku)】校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
-        if (!ActivityStateVO.open.equals(activityEntity.getState())){
-            throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(),ResponseCode.ACTIVITY_STATE_ERROR.getMessage());
+        log.info("【活动责任链】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        //是否开启
+        if (!ActivityStateVO.open.equals(activityEntity.getState())) {
+            throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(), ResponseCode.ACTIVITY_STATE_ERROR.getMessage());
         }
         //校验日期是否在活动期间
         Date date = new Date();
-        if (date.before(activityEntity.getBeginDateTime()) || date.after(activityEntity.getEndDateTime())){
-            throw new AppException(ResponseCode.ACTIVITY_DATE_ERROR.getCode(),ResponseCode.ACTIVITY_DATE_ERROR.getMessage());
+        if (date.before(activityEntity.getBeginDateTime()) || date.after(activityEntity.getEndDateTime())) {
+            throw new AppException(ResponseCode.ACTIVITY_DATE_ERROR.getCode(), ResponseCode.ACTIVITY_DATE_ERROR.getMessage());
         }
         //校验是否还存在sku库存
-        if (activitySkuEntity.getStockCountSurplus() <= 0){
-            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(),ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
+        if (activitySkuEntity.getStockCountSurplus() <= 0) {
+            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
-        log.info("【活动责任链】-基础信息【有效期、状态、库存(sku)】校验完成");
+        log.info("【活动责任链】-日期、状态、库存校验通过");
         //执行责任链的下一个节点
         return next().action(activitySkuEntity, activityEntity, activityCountEntity);
     }

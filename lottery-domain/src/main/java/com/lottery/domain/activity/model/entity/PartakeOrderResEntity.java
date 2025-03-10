@@ -7,10 +7,10 @@ import java.util.Date;
 
 /**
  * @author 永
- * 活动参与单响应体
+ * 创建抽奖单响应体
  */
 @Data
-public class UserOrderResEntity {
+public class PartakeOrderResEntity {
 
     /**
      * 用户ID

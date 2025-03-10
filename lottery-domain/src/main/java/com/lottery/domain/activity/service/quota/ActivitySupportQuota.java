@@ -8,7 +8,7 @@ import com.lottery.domain.activity.service.quota.rule.factory.DefaultActivityCha
 
 /**
  * @author 永
- * 活动额度的支撑类
+ * 活动-额度领域-支撑类
  */
 public class ActivitySupportQuota {
     protected DefaultActivityChainFactory defaultActivityChainFactory;

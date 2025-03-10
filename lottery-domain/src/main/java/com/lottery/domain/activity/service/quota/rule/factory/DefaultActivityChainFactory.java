@@ -8,14 +8,14 @@ import java.util.Map;
 
 /**
  * @author 永
- * 责任链工厂
+ * 活动-额度领域-责任链工厂
  */
 @Service
 public class DefaultActivityChainFactory {
     private final ActivityChain activityChain;
 
     public DefaultActivityChainFactory(Map<String, ActivityChain> activityChainGroup) {
-        activityChain= activityChainGroup.get(Constants.ActivityModel.ACTIVITY_BASE);
+        activityChain = activityChainGroup.get(Constants.ActivityModel.ACTIVITY_BASE);
         activityChain.appendNext(activityChainGroup.get(Constants.ActivityModel.ACTIVITY_SKU_STOCK));
     }
 

@@ -1,6 +1,6 @@
 package com.lottery.trigger.http;
 
-import com.lottery.domain.activity.model.entity.UserOrderResEntity;
+import com.lottery.domain.activity.model.entity.PartakeOrderResEntity;
 import com.lottery.domain.activity.service.ActivityPartakeService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
@@ -69,7 +69,7 @@ public class LotteryActivityController implements LotteryActivityService {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
             // 2. 参与活动 - 创建参与记录订单
-            UserOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
+            PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
             log.info("活动抽奖，创建订单 userId:{} activityId:{} orderId:{}", request.getUserId(), request.getActivityId(), partakeOrder.getOrderId());
             // 3. 抽奖策略 - 执行抽奖
             LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());

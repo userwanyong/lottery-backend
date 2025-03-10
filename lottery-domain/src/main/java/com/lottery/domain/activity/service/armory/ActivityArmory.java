@@ -2,7 +2,7 @@ package com.lottery.domain.activity.service.armory;
 
 /**
  * @author 永
- * 活动装配接口 -预热
+ * 活动-装配领域接口
  */
 public interface ActivityArmory {
 
@@ -13,5 +13,10 @@ public interface ActivityArmory {
      */
     boolean assembleActivitySku(Long sku);
 
+    /**
+     * 活动sku装配
+     * @param activityId 活动id
+     * @return t/f
+     */
     boolean assembleActivitySkuByActivityId(Long activityId);
 }

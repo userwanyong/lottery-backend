@@ -18,7 +18,7 @@ CREATE TABLE `activity_account`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动账户表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='活动账户表';
 
 DROP TABLE IF EXISTS `activity_account_day`;
 CREATE TABLE `activity_account_day`
@@ -34,7 +34,7 @@ CREATE TABLE `activity_account_day`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id_day` (`user_id`, `activity_id`, `day`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动账户表-日次数';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='活动账户表-日次数';
 
 DROP TABLE IF EXISTS `activity_account_month`;
 CREATE TABLE `activity_account_month`
@@ -50,7 +50,7 @@ CREATE TABLE `activity_account_month`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id_month` (`user_id`, `activity_id`, `month`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动账户表-月次数';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='活动账户表-月次数';
 
 DROP TABLE IF EXISTS `task`;
 CREATE TABLE `task`
@@ -77,7 +77,7 @@ CREATE TABLE `user_award_record_000`
     `user_id`     varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id` bigint(12)       NOT NULL COMMENT '活动ID',
     `strategy_id` bigint(8)        NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖订单ID【作为幂等使用】',
+    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
     `award_id`    int(11)          NOT NULL COMMENT '奖品ID',
     `award_title` varchar(128)     NOT NULL COMMENT '奖品标题（名称）',
     `award_time`  datetime         NOT NULL COMMENT '中奖时间',
@@ -99,7 +99,7 @@ CREATE TABLE `user_award_record_001`
     `user_id`     varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id` bigint(12)       NOT NULL COMMENT '活动ID',
     `strategy_id` bigint(8)        NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖订单ID【作为幂等使用】',
+    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
     `award_id`    int(11)          NOT NULL COMMENT '奖品ID',
     `award_title` varchar(128)     NOT NULL COMMENT '奖品标题（名称）',
     `award_time`  datetime         NOT NULL COMMENT '中奖时间',
@@ -121,7 +121,7 @@ CREATE TABLE `user_award_record_002`
     `user_id`     varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id` bigint(12)       NOT NULL COMMENT '活动ID',
     `strategy_id` bigint(8)        NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖订单ID【作为幂等使用】',
+    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
     `award_id`    int(11)          NOT NULL COMMENT '奖品ID',
     `award_title` varchar(128)     NOT NULL COMMENT '奖品标题（名称）',
     `award_time`  datetime         NOT NULL COMMENT '中奖时间',
@@ -143,7 +143,7 @@ CREATE TABLE `user_award_record_003`
     `user_id`     varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id` bigint(12)       NOT NULL COMMENT '活动ID',
     `strategy_id` bigint(8)        NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖订单ID【作为幂等使用】',
+    `order_id`    varchar(12)      NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
     `award_id`    int(11)          NOT NULL COMMENT '奖品ID',
     `award_title` varchar(128)     NOT NULL COMMENT '奖品标题（名称）',
     `award_time`  datetime         NOT NULL COMMENT '中奖时间',
@@ -165,7 +165,7 @@ CREATE TABLE `user_order_000`
     `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
     `user_id`       varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id`   bigint(12)       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(12)      NOT NULL COMMENT '订单ID',
+    `order_id`      varchar(12)      NOT NULL COMMENT '抽奖单ID',
     `activity_name` varchar(64)      NOT NULL COMMENT '活动名称',
     `strategy_id`   bigint(8)        NOT NULL COMMENT '抽奖策略ID',
     `order_time`    datetime         NOT NULL COMMENT '下单时间',
@@ -176,7 +176,7 @@ CREATE TABLE `user_order_000`
     UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='用户抽奖订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖单表';
 
 DROP TABLE IF EXISTS `user_order_001`;
 CREATE TABLE `user_order_001`
@@ -184,7 +184,7 @@ CREATE TABLE `user_order_001`
     `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
     `user_id`       varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id`   bigint(12)       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(12)      NOT NULL COMMENT '订单ID',
+    `order_id`      varchar(12)      NOT NULL COMMENT '抽奖单ID',
     `activity_name` varchar(64)      NOT NULL COMMENT '活动名称',
     `strategy_id`   bigint(8)        NOT NULL COMMENT '抽奖策略ID',
     `order_time`    datetime         NOT NULL COMMENT '下单时间',
@@ -195,7 +195,7 @@ CREATE TABLE `user_order_001`
     UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='用户抽奖订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖单表';
 
 DROP TABLE IF EXISTS `user_order_002`;
 CREATE TABLE `user_order_002`
@@ -203,7 +203,7 @@ CREATE TABLE `user_order_002`
     `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
     `user_id`       varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id`   bigint(12)       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(12)      NOT NULL COMMENT '订单ID',
+    `order_id`      varchar(12)      NOT NULL COMMENT '抽奖单ID',
     `activity_name` varchar(64)      NOT NULL COMMENT '活动名称',
     `strategy_id`   bigint(8)        NOT NULL COMMENT '抽奖策略ID',
     `order_time`    datetime         NOT NULL COMMENT '下单时间',
@@ -214,7 +214,7 @@ CREATE TABLE `user_order_002`
     UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='用户抽奖订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖单表';
 
 DROP TABLE IF EXISTS `user_order_003`;
 CREATE TABLE `user_order_003`
@@ -222,7 +222,7 @@ CREATE TABLE `user_order_003`
     `id`            int(11) unsigned NOT NULL AUTO_INCREMENT,
     `user_id`       varchar(32)      NOT NULL COMMENT '用户ID',
     `activity_id`   bigint(12)       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(12)      NOT NULL COMMENT '订单ID',
+    `order_id`      varchar(12)      NOT NULL COMMENT '抽奖单ID',
     `activity_name` varchar(64)      NOT NULL COMMENT '活动名称',
     `strategy_id`   bigint(8)        NOT NULL COMMENT '抽奖策略ID',
     `order_time`    datetime         NOT NULL COMMENT '下单时间',
@@ -233,7 +233,7 @@ CREATE TABLE `user_order_003`
     UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='用户抽奖订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖单表';
 
 DROP TABLE IF EXISTS `activity_order_000`;
 CREATE TABLE `activity_order_000`
@@ -244,7 +244,7 @@ CREATE TABLE `activity_order_000`
     `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
     `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
+    `order_id`        varchar(12)         NOT NULL COMMENT '额度单ID',
     `order_time`      datetime            NOT NULL COMMENT '下单时间',
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
     `day_count`       int(8)              NOT NULL COMMENT '日次数',
@@ -258,7 +258,7 @@ CREATE TABLE `activity_order_000`
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖额度单表';
 
 DROP TABLE IF EXISTS `activity_order_001`;
 CREATE TABLE `activity_order_001`
@@ -268,7 +268,7 @@ CREATE TABLE `activity_order_001`
     `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
     `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '额度单ID',
     `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
     `order_time`      datetime            NOT NULL COMMENT '下单时间',
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
@@ -283,7 +283,7 @@ CREATE TABLE `activity_order_001`
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖额度单表';
 
 
 DROP TABLE IF EXISTS `activity_order_002`;
@@ -294,7 +294,7 @@ CREATE TABLE `activity_order_002`
     `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
     `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '额度单ID',
     `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
     `order_time`      datetime            NOT NULL COMMENT '下单时间',
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
@@ -309,7 +309,7 @@ CREATE TABLE `activity_order_002`
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖额度单表';
 
 DROP TABLE IF EXISTS `activity_order_003`;
 CREATE TABLE `activity_order_003`
@@ -319,7 +319,7 @@ CREATE TABLE `activity_order_003`
     `activity_id`     bigint(12)          NOT NULL COMMENT '活动ID',
     `sku`             bigint(12)          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)         NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint(8)           NOT NULL COMMENT '抽奖策略ID',
+    `strategy_id`     bigint(8)           NOT NULL COMMENT '额度单ID',
     `order_id`        varchar(12)         NOT NULL COMMENT '订单ID',
     `order_time`      datetime            NOT NULL COMMENT '下单时间',
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
@@ -334,4 +334,4 @@ CREATE TABLE `activity_order_003`
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动订单表';
+  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖额度单表';

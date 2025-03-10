@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * @author 永
- * 活动额度聚合对象
+ * 额度单聚合对象
  */
 @Data
 @Builder

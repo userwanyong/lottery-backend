@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * @author 永
- * 活动仓储接口
+ * 活动领域仓储接口
  */
 public interface ActivityRepository {
     ActivitySkuEntity queryActivitySku(Long sku);
@@ -32,7 +32,7 @@ public interface ActivityRepository {
 
     void clearActivitySkuStock(Long sku);
 
-    UserOrderResEntity queryNoUsedPartakeOrder(UserOrderReqEntity reqEntity);
+    PartakeOrderResEntity queryNoUsedPartakeOrder(PartakeOrderReqEntity reqEntity);
 
     ActivityAccountEntity queryActivityAccountByUserId(String userId, Long activityId);
 

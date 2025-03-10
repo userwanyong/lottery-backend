@@ -4,7 +4,7 @@ import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.ActivityCountEntity;
 import com.lottery.domain.activity.model.entity.ActivityEntity;
 import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
-import com.lottery.domain.activity.model.entity.SkuRechargeEntity;
+import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.activity.service.quota.rule.ActivityChain;
@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author 永
- * 活动额度抽象类
+ * 活动-额度领域-抽象类
  */
 @Slf4j
 public abstract class AbstractActivityQuota extends ActivitySupportQuota implements ActivityQuotaService {
@@ -27,37 +27,37 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
     }
 
     @Override
-    public String createQuotaOrder(SkuRechargeEntity skuRechargeEntity) {
+    public String createQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
         // 1. 参数校验
-        String userId = skuRechargeEntity.getUserId();
-        Long sku = skuRechargeEntity.getSku();
-        String outBusinessNo = skuRechargeEntity.getOutBusinessNo();
+        String userId = quotaOrderEntity.getUserId();
+        Long sku = quotaOrderEntity.getSku();
+        String outBusinessNo = quotaOrderEntity.getOutBusinessNo();
         if (sku == null || StringUtils.isBlank(userId) || StringUtils.isBlank(outBusinessNo)) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         // 2. 查询基础信息
-        // 2.1 查询sku信息
+        // 2.1 查询sku表信息
         ActivitySkuEntity activitySkuEntity = queryActivitySku(sku);
-        // 2.2 查询活动信息
+        // 2.2 查询活动表信息
         ActivityEntity activityEntity = queryActivityByActivityId(activitySkuEntity.getActivityId());
-        // 2.3 查询活动次数信息
+        // 2.3 查询活动次数表信息
         ActivityCountEntity activityCountEntity = queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
 
-        // 3. 活动动作规则校验 todo 后续处理规则过滤流程，暂时也不处理责任链结果
+        // 3. 责任链校验
         ActivityChain activityChain = defaultActivityChainFactory.openActivityChain();
         activityChain.action(activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 4. 构建订单聚合对象
-        CreateQuotaOrderAggregate createQuotaOrderAggregate = buildOrderAggregate(skuRechargeEntity, activitySkuEntity, activityEntity, activityCountEntity);
+        // 4. 构建额度单聚合对象
+        CreateQuotaOrderAggregate createQuotaOrderAggregate = buildOrderAggregate(quotaOrderEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 5. 保存订单
+        // 5. 保存额度单
         doSaveOrder(createQuotaOrderAggregate);
 
-        // 6. 返回单号
+        // 6. 返回额度单号
         return createQuotaOrderAggregate.getActivityOrderEntity().getOrderId();
     }
 
-    protected abstract CreateQuotaOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
+    protected abstract CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
 
     protected abstract void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 

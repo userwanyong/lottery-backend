@@ -6,7 +6,7 @@ import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
 
 /**
  * @author 永
- * 下单责任链接口
+ * 活动责任链接口
  */
 public interface ActivityChain extends ActivityChainArmory {
     boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);

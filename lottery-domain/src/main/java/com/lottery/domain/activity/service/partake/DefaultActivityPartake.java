@@ -14,13 +14,14 @@ import java.util.Date;
 
 /**
  * @author 永
- * 活动参与默认实现类
+ * 活动-参与领域-默认实现类
  */
 @Service
-public class DefaultActivityPartake extends AbstractActivityPartake{
+public class DefaultActivityPartake extends AbstractActivityPartake {
 
     private final SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
     private final SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
+
     public DefaultActivityPartake(ActivityRepository activityRepository) {
         super(activityRepository);
     }
@@ -30,19 +31,19 @@ public class DefaultActivityPartake extends AbstractActivityPartake{
         // 查询总账户额度
         ActivityAccountEntity activityAccountEntity = activityRepository.queryActivityAccountByUserId(userId, activityId);
         // 总剩余额度判断
-        if (activityAccountEntity ==null || activityAccountEntity.getTotalCountSurplus() <= 0) {
+        if (activityAccountEntity == null || activityAccountEntity.getTotalCountSurplus() <= 0) {
             throw new AppException(ResponseCode.ACCOUNT_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_QUOTA_ERROR.getMessage());
         }
         String month = dateFormatMonth.format(currentTime);
         String day = dateFormatDay.format(currentTime);
         // 查询月账户额度
         ActivityAccountMonthEntity activityAccountMonthEntity = activityRepository.queryActivityAccountMonthByUserId(userId, activityId, month);
-        if (activityAccountMonthEntity!=null && activityAccountMonthEntity.getMonthCountSurplus() <= 0) {
+        if (activityAccountMonthEntity != null && activityAccountMonthEntity.getMonthCountSurplus() <= 0) {
             throw new AppException(ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getMessage());
         }
         // 创建月账户信息；true = 存在月账户、false = 不存在月账户
         boolean isExistAccountMonth = null != activityAccountMonthEntity;
-        if (activityAccountMonthEntity==null) {
+        if (activityAccountMonthEntity == null) {
             activityAccountMonthEntity = new ActivityAccountMonthEntity();
             activityAccountMonthEntity.setUserId(userId);
             activityAccountMonthEntity.setActivityId(activityId);
@@ -78,17 +79,17 @@ public class DefaultActivityPartake extends AbstractActivityPartake{
     }
 
     @Override
-    protected UserOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime) {
+    protected PartakeOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime) {
         ActivityEntity activityEntity = activityRepository.queryActivityByActivityId(activityId);
-        // 构建订单
-        UserOrderResEntity userOrderResEntity = new UserOrderResEntity();
-        userOrderResEntity.setUserId(userId);
-        userOrderResEntity.setActivityId(activityId);
-        userOrderResEntity.setActivityName(activityEntity.getActivityName());
-        userOrderResEntity.setStrategyId(activityEntity.getStrategyId());
-        userOrderResEntity.setOrderId(RandomStringUtils.randomNumeric(12));
-        userOrderResEntity.setOrderTime(currentTime);
-        userOrderResEntity.setOrderState(UserOrderStateVO.create);
-        return userOrderResEntity;
+        // 构建抽奖单
+        PartakeOrderResEntity partakeOrderResEntity = new PartakeOrderResEntity();
+        partakeOrderResEntity.setUserId(userId);
+        partakeOrderResEntity.setActivityId(activityId);
+        partakeOrderResEntity.setActivityName(activityEntity.getActivityName());
+        partakeOrderResEntity.setStrategyId(activityEntity.getStrategyId());
+        partakeOrderResEntity.setOrderId(RandomStringUtils.randomNumeric(12));
+        partakeOrderResEntity.setOrderTime(currentTime);
+        partakeOrderResEntity.setOrderState(UserOrderStateVO.create);
+        return partakeOrderResEntity;
     }
 }

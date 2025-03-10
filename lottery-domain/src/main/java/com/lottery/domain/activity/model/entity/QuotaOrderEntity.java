@@ -4,10 +4,10 @@ import lombok.Data;
 
 /**
  * @author 永
- * 活动购物车实体对象
+ * 创建额度单请求体
  */
 @Data
-public class SkuRechargeEntity {
+public class QuotaOrderEntity {
     /** 用户ID */
     private String userId;
     /** 商品SKU - activity + activity count */

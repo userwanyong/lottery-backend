@@ -27,17 +27,18 @@ public class ActivitySkuStockChain extends AbstractActivityChain {
     private ActivityService activityService;
     @Resource
     private ActivityRepository repository;
+
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.info("【活动责任链】-商品库存扣减开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        log.info("【活动责任链】-suk库存扣减开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
         //扣减总库存
-        boolean status=activityService.reduceActivitySkuStock(activitySkuEntity.getSku(),activityEntity.getEndDateTime());
-        if (!status){
-            log.info("【活动责任链】-商品库存扣减失败");
+        boolean status = activityService.reduceActivitySkuStock(activitySkuEntity.getSku(), activityEntity.getEndDateTime());
+        if (!status) {
+            log.info("【活动责任链】-suk库存扣减失败");
             throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
-        log.info("【活动责任链】-商品库存扣减成功");
-        // 写入延迟队列，延迟消费更新库存记录
+        log.info("【活动责任链】-suk库存扣减成功");
+        // 写入延迟队列，通过redis延迟队列更新数据库
         repository.activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO.builder()
                 .sku(activitySkuEntity.getSku())
                 .activityId(activityEntity.getActivityId())

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * @author 永
- * 活动装配实现类
+ * 活动-装配领域-实现类
  */
 @Slf4j
 @Service

@@ -2,7 +2,7 @@ package com.lottery.domain.activity.service.quota.rule;
 
 /**
  * @author 永
- * 下单责任链
+ * 活动责任链
  */
 public abstract class AbstractActivityChain implements ActivityChain {
 

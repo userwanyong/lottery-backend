@@ -14,7 +14,7 @@ import java.util.Date;
 
 /**
  * @author 永
- * 活动额度默认实现类
+ * 活动-额度领域-默认实现类
  */
 @Service
 public class DefaultActivityQuota extends AbstractActivityQuota implements ActivitySkuStockService {
@@ -24,10 +24,10 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     }
 
     @Override
-    protected CreateQuotaOrderAggregate buildOrderAggregate(SkuRechargeEntity skuRechargeEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
+    protected CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
         ActivityOrderEntity activityOrderEntity = new ActivityOrderEntity();
-        activityOrderEntity.setUserId(skuRechargeEntity.getUserId());
-        activityOrderEntity.setSku(skuRechargeEntity.getSku());
+        activityOrderEntity.setUserId(quotaOrderEntity.getUserId());
+        activityOrderEntity.setSku(quotaOrderEntity.getSku());
         activityOrderEntity.setActivityId(activityEntity.getActivityId());
         activityOrderEntity.setActivityName(activityEntity.getActivityName());
         activityOrderEntity.setStrategyId(activityEntity.getStrategyId());
@@ -37,10 +37,10 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
         activityOrderEntity.setDayCount(activityCountEntity.getDayCount());
         activityOrderEntity.setMonthCount(activityCountEntity.getMonthCount());
         activityOrderEntity.setState(OrderStateVO.completed);
-        activityOrderEntity.setOutBusinessNo(skuRechargeEntity.getOutBusinessNo());
+        activityOrderEntity.setOutBusinessNo(quotaOrderEntity.getOutBusinessNo());
 
         return CreateQuotaOrderAggregate.builder()
-                .userId(skuRechargeEntity.getUserId())
+                .userId(quotaOrderEntity.getUserId())
                 .activityId(activitySkuEntity.getActivityId())
                 .totalCount(activityCountEntity.getTotalCount())
                 .dayCount(activityCountEntity.getDayCount())

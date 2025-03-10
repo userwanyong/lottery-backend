@@ -28,7 +28,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author 永
- * 活动仓储服务
+ * 活动领域仓储服务
  */
 @Repository
 @Slf4j
@@ -116,7 +115,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Override
     public void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
         try {
-            // 订单对象
+            // 额度单对象
             ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
             ActivityOrder activityOrder = new ActivityOrder();
             activityOrder.setUserId(activityOrderEntity.getUserId());
@@ -152,13 +151,13 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     // 2. 更新账户
                     int count = activityAccountMapper.updateAccount(activityAccount);
                     // 3. 创建账户 - 更新为0，则账户不存在，创新新账户。
-                    if (0 == count) {
+                    if (count == 0) {
                         activityAccountMapper.insert(activityAccount);
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
                     status.setRollbackOnly(); //标记当前事务为回滚状态
-                    log.error("写入订单记录，唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
+                    log.error("创建额度单失败，额度单表唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode());
                 }
             });
@@ -176,7 +175,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public boolean reduceActivitySkuStock(Long sku,String key, Date endDateTime) {
+    public boolean reduceActivitySkuStock(Long sku, String key, Date endDateTime) {
         long count = redisService.decr(key);
         if (count == 0) {
             // 库存消耗没了以后，发送MQ消息，更新数据库库存
@@ -188,9 +187,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         String lockKey = key + Constants.UNDERLINE + count;
         //过期时间为活动结束后一天
         long expireMillis = endDateTime.getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
-        Boolean lock = redisService.setNx(lockKey,expireMillis,TimeUnit.MILLISECONDS);
+        Boolean lock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
         if (!lock) {
-            log.info("策略奖品库存加锁失败 {}", lockKey);
+            log.info("额度库存加锁失败 {}", lockKey);
         }
         return lock;
     }
@@ -239,17 +238,17 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public UserOrderResEntity queryNoUsedPartakeOrder(UserOrderReqEntity reqEntity) {
+    public PartakeOrderResEntity queryNoUsedPartakeOrder(PartakeOrderReqEntity reqEntity) {
         UserOrder userOrder = new UserOrder();
         BeanUtils.copyProperties(reqEntity, userOrder);
         UserOrder order = userOrderMapper.queryNoUsedPartakeOrder(userOrder);
-        if (order == null){
+        if (order == null) {
             return null;
         }
-        UserOrderResEntity userOrderResEntity = new UserOrderResEntity();
-        BeanUtils.copyProperties(order, userOrderResEntity);
-        userOrderResEntity.setOrderState(UserOrderStateVO.valueOf(order.getOrderState()));
-        return userOrderResEntity;
+        PartakeOrderResEntity partakeOrderResEntity = new PartakeOrderResEntity();
+        BeanUtils.copyProperties(order, partakeOrderResEntity);
+        partakeOrderResEntity.setOrderState(UserOrderStateVO.valueOf(order.getOrderState()));
+        return partakeOrderResEntity;
     }
 
     @Override
@@ -258,7 +257,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccount.setActivityId(activityId);
         activityAccount.setUserId(userId);
         ActivityAccount dbActivityAccount = activityAccountMapper.queryActivityAccountByUserId(activityAccount);
-        if (dbActivityAccount == null){
+        if (dbActivityAccount == null) {
             return null;
         }
         ActivityAccountEntity activityAccountEntity = new ActivityAccountEntity();
@@ -273,7 +272,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccountMonth.setActivityId(activityId);
         activityAccountMonth.setMonth(month);
         ActivityAccountMonth dbActivityAccountMonth = activityAccountMonthMapper.queryActivityAccountMonthByUserId(activityAccountMonth);
-        if (dbActivityAccountMonth == null){
+        if (dbActivityAccountMonth == null) {
             return null;
         }
         ActivityAccountMonthEntity activityAccountMonthEntity = new ActivityAccountMonthEntity();
@@ -288,7 +287,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccountDay.setActivityId(activityId);
         activityAccountDay.setDay(day);
         ActivityAccountDay dbActivityAccountDay = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
-        if (dbActivityAccountDay == null){
+        if (dbActivityAccountDay == null) {
             return null;
         }
         ActivityAccountDayEntity activityAccountDayEntity = new ActivityAccountDayEntity();
@@ -304,7 +303,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             ActivityAccountEntity activityAccountEntity = createPartakeOrderAggregate.getActivityAccountEntity();
             ActivityAccountMonthEntity activityAccountMonthEntity = createPartakeOrderAggregate.getActivityAccountMonthEntity();
             ActivityAccountDayEntity activityAccountDayEntity = createPartakeOrderAggregate.getActivityAccountDayEntity();
-            UserOrderResEntity userOrderResEntity = createPartakeOrderAggregate.getUserOrderResEntity();
+            PartakeOrderResEntity partakeOrderResEntity = createPartakeOrderAggregate.getPartakeOrderResEntity();
 
             // 统一切换路由，以下事务内的所有操作，都走一个路由
             dbRouter.doRouter(userId);
@@ -322,9 +321,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                             .gt(ActivityAccount::getMonthCountSurplus, 0)
                             .gt(ActivityAccount::getDayCountSurplus, 0);
                     int totalCount = activityAccountMapper.update(null, activityAccountLambdaUpdateWrapper);
-                    if (totalCount!=1) {
+                    if (totalCount != 1) {
                         status.setRollbackOnly();
-                        log.warn("写入创建参与活动记录，更新总账户额度不足，异常 userId: {} activityId: {}", userId, activityId);
+                        log.error("创建抽奖单失败，总账户额度不足 userId: {} activityId: {}", userId, activityId);
                         throw new AppException(ResponseCode.ACCOUNT_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_QUOTA_ERROR.getMessage());
                     }
 
@@ -339,21 +338,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                                 .eq(ActivityAccountMonth::getMonth, activityAccountMonthEntity.getMonth())
                                 .gt(ActivityAccountMonth::getMonthCountSurplus, 0);
                         int updateMonthCount = activityAccountMonthMapper.update(null, activityAccountMonthLambdaUpdateWrapper);
-                        if (updateMonthCount!=1) {
+                        if (updateMonthCount != 1) {
                             // 未更新成功则回滚
                             status.setRollbackOnly();
-                            log.warn("写入创建参与活动记录，更新月账户额度不足，异常 userId: {} activityId: {} month: {}", userId, activityId, activityAccountMonthEntity.getMonth());
+                            log.error("创建抽奖单失败，月账户额度不足 userId: {} activityId: {} month: {}", userId, activityId, activityAccountMonthEntity.getMonth());
                             throw new AppException(ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_MONTH_QUOTA_ERROR.getMessage());
                         }
                     } else {
                         //创建
                         ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
                         BeanUtils.copyProperties(activityAccountMonthEntity, activityAccountMonth);
-                        activityAccountMonth.setMonthCountSurplus(activityAccountMonthEntity.getMonthCountSurplus()-1);
+                        activityAccountMonth.setMonthCountSurplus(activityAccountMonthEntity.getMonthCountSurplus() - 1);
                         activityAccountMonthMapper.insert(activityAccountMonth);
                         // 新创建月账户，则更新总账表中月镜像额度
                         LambdaUpdateWrapper<ActivityAccount> activityAccountLambdaUpdateWrapperM = new LambdaUpdateWrapper<ActivityAccount>()
-                                .set(ActivityAccount::getMonthCountSurplus, activityAccountEntity.getMonthCountSurplus()-1)
+                                .set(ActivityAccount::getMonthCountSurplus, activityAccountEntity.getMonthCountSurplus() - 1)
                                 .set(ActivityAccount::getUpdateTime, new Date())
                                 .eq(ActivityAccount::getUserId, userId)
                                 .eq(ActivityAccount::getActivityId, activityId)
@@ -372,10 +371,10 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                                 .eq(ActivityAccountDay::getDay, activityAccountDayEntity.getDay())
                                 .gt(ActivityAccountDay::getDayCountSurplus, 0);
                         int updateDayCount = activityAccountDayMapper.update(null, activityAccountDayLambdaUpdateWrapper);
-                        if (updateDayCount!=1) {
+                        if (updateDayCount != 1) {
                             // 未更新成功则回滚
                             status.setRollbackOnly();
-                            log.warn("写入创建参与活动记录，更新日账户额度不足，异常 userId: {} activityId: {} day: {}", userId, activityId, activityAccountDayEntity.getDay());
+                            log.error("创建抽奖单失败，日账户额度不足 userId: {} activityId: {} day: {}", userId, activityId, activityAccountDayEntity.getDay());
                             throw new AppException(ResponseCode.ACCOUNT_DAY_QUOTA_ERROR.getCode(), ResponseCode.ACCOUNT_DAY_QUOTA_ERROR.getMessage());
                         }
                     } else {
@@ -383,11 +382,11 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         ActivityAccountDay activityAccountDay = new ActivityAccountDay();
                         BeanUtils.copyProperties(activityAccountDayEntity, activityAccountDay);
                         //日总额度为总账户的，但日剩余额度要-1，因为创建时你已经花了一次了
-                        activityAccountDay.setDayCountSurplus(activityAccountDayEntity.getDayCountSurplus()-1);
+                        activityAccountDay.setDayCountSurplus(activityAccountDayEntity.getDayCountSurplus() - 1);
                         activityAccountDayMapper.insert(activityAccountDay);
                         // 新创建日账户，则更新总账表中日镜像额度
                         LambdaUpdateWrapper<ActivityAccount> activityAccountLambdaUpdateWrapperD = new LambdaUpdateWrapper<ActivityAccount>()
-                                .set(ActivityAccount::getDayCountSurplus, activityAccountEntity.getDayCountSurplus()-1)
+                                .set(ActivityAccount::getDayCountSurplus, activityAccountEntity.getDayCountSurplus() - 1)
                                 .set(ActivityAccount::getUpdateTime, new Date())
                                 .eq(ActivityAccount::getUserId, userId)
                                 .eq(ActivityAccount::getActivityId, activityId)
@@ -397,13 +396,13 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
                     // 4. 创建抽奖单 user_order
                     UserOrder userOrder = new UserOrder();
-                    BeanUtils.copyProperties(userOrderResEntity, userOrder);
-                    userOrder.setOrderState(userOrderResEntity.getOrderState().getCode());
+                    BeanUtils.copyProperties(partakeOrderResEntity, userOrder);
+                    userOrder.setOrderState(partakeOrderResEntity.getOrderState().getCode());
                     userOrderMapper.insert(userOrder);
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("写入创建参与活动记录，唯一索引冲突 userId: {} activityId: {}", userId, activityId, e);
+                    log.error("创建抽奖单失败，抽奖单表唯一索引冲突 userId: {} activityId: {}", userId, activityId, e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
                 }
             });

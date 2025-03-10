@@ -3,7 +3,7 @@ package com.lottery.domain.activity.model.aggregate;
 import com.lottery.domain.activity.model.entity.ActivityAccountDayEntity;
 import com.lottery.domain.activity.model.entity.ActivityAccountEntity;
 import com.lottery.domain.activity.model.entity.ActivityAccountMonthEntity;
-import com.lottery.domain.activity.model.entity.UserOrderResEntity;
+import com.lottery.domain.activity.model.entity.PartakeOrderResEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author 永
- * 活动参与聚合对象
+ * 抽奖单聚合对象
  */
 @Data
 @Builder
@@ -49,5 +49,5 @@ public class CreatePartakeOrderAggregate {
     /**
      * 抽奖订单实体
      */
-    private UserOrderResEntity userOrderResEntity;
+    private PartakeOrderResEntity partakeOrderResEntity;
 }

@@ -11,12 +11,128 @@
 /*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
 /*!40103 SET TIME_ZONE = '+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE='NO_AUTO_VALUE_ON_ZERO', SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
+/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
 
-CREATE database if NOT EXISTS `marketing` default character set utf8mb4 collate utf8mb4_0900_ai_ci;
-use `marketing`;
+--
+-- Table structure for table `activity`
+--
+
+DROP TABLE IF EXISTS `activity`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
+    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
+    `activity_desc`   varchar(128)    NOT NULL COMMENT '活动描述',
+    `begin_date_time` datetime        NOT NULL COMMENT '开始时间',
+    `end_date_time`   datetime        NOT NULL COMMENT '结束时间',
+    `strategy_id`     bigint          NOT NULL COMMENT '抽奖策略ID',
+    `state`           varchar(8)      NOT NULL DEFAULT 'create' COMMENT '活动状态 create-创建 open-开启 close-关闭',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_activity_id` (`activity_id`),
+    KEY `idx_begin_date_time` (`begin_date_time`),
+    KEY `idx_end_date_time` (`end_date_time`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity`
+--
+
+LOCK TABLES `activity` WRITE;
+/*!40000 ALTER TABLE `activity`
+    DISABLE KEYS */;
+INSERT INTO `activity`
+VALUES (2, 100301, '测试活动', '测试活动', '2025-03-05 22:17:16', '2025-06-05 22:17:18', 200001, 'open',
+        '2025-03-05 22:17:20', '2025-03-08 20:36:54');
+/*!40000 ALTER TABLE `activity`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_count`
+--
+
+DROP TABLE IF EXISTS `activity_count`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_count`
+(
+    `id`                bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `activity_count_id` bigint          NOT NULL COMMENT '活动次数id',
+    `total_count`       int             NOT NULL COMMENT '总次数',
+    `day_count`         int             NOT NULL COMMENT '日次数',
+    `month_count`       int             NOT NULL COMMENT '月次数',
+    `create_time`       datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_activity_count_id` (`activity_count_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动次数配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_count`
+--
+
+LOCK TABLES `activity_count` WRITE;
+/*!40000 ALTER TABLE `activity_count`
+    DISABLE KEYS */;
+INSERT INTO `activity_count`
+VALUES (1, 11101, 1, 1, 1, '2025-03-05 22:19:07', '2025-03-08 20:46:48');
+/*!40000 ALTER TABLE `activity_count`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `activity_sku`
+--
+
+DROP TABLE IF EXISTS `activity_sku`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_sku`
+(
+    `id`                  int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `sku`                 bigint       NOT NULL COMMENT '商品sku - 把每一个组合当做一个商品',
+    `activity_id`         bigint       NOT NULL COMMENT '活动ID',
+    `activity_count_id`   bigint       NOT NULL COMMENT '活动个人参与次数ID',
+    `stock_count`         int          NOT NULL COMMENT '商品库存',
+    `stock_count_surplus` int          NOT NULL COMMENT '剩余库存',
+    `create_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_sku` (`sku`),
+    KEY `idx_activity_id_activity_count_id` (`activity_id`, `activity_count_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动sku表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `activity_sku`
+--
+
+LOCK TABLES `activity_sku` WRITE;
+/*!40000 ALTER TABLE `activity_sku`
+    DISABLE KEYS */;
+INSERT INTO `activity_sku`
+VALUES (1, 9011, 100301, 11101, 20, 0, '2025-03-11 22:12:56', '2025-03-10 19:37:43');
+/*!40000 ALTER TABLE `activity_sku`
+    ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `award`
@@ -344,12 +460,12 @@ LOCK TABLES `strategy_award` WRITE;
 INSERT INTO `strategy_award`
 VALUES (18, 200001, 101, '随机积分', NULL, 100, 100, 0.0500, 'tree_luck_award', 1, '2025-02-20 23:20:00',
         '2025-02-21 00:21:12'),
-       (19, 200001, 102, '7等奖', NULL, 100, 100, 0.4000, 'tree_luck_award', 2, '2025-02-20 23:24:23',
-        '2025-02-21 00:21:12'),
-       (20, 200001, 103, '6等奖', NULL, 100, 100, 0.2000, 'tree_luck_award', 3, '2025-02-20 23:24:23',
-        '2025-02-21 00:21:12'),
-       (21, 200001, 104, '5等奖', NULL, 100, 100, 0.1000, 'tree_luck_award', 4, '2025-02-20 23:24:23',
-        '2025-02-21 00:21:12'),
+       (19, 200001, 102, '7等奖', NULL, 100, 93, 0.4000, 'tree_luck_award', 2, '2025-02-20 23:24:23',
+        '2025-03-10 19:39:00'),
+       (20, 200001, 103, '6等奖', NULL, 100, 99, 0.2000, 'tree_luck_award', 3, '2025-02-20 23:24:23',
+        '2025-03-10 13:53:10'),
+       (21, 200001, 104, '5等奖', NULL, 100, 99, 0.1000, 'tree_luck_award', 4, '2025-02-20 23:24:23',
+        '2025-03-10 13:56:20'),
        (22, 200001, 105, '4等奖', NULL, 100, 100, 0.1000, 'tree_luck_award', 5, '2025-02-20 23:24:23',
         '2025-02-21 00:21:12'),
        (23, 200001, 106, '3等奖', '抽奖1次后解锁', 100, 100, 0.0500, 'tree_lock_1', 6, '2025-02-20 23:24:23',
@@ -371,57 +487,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-21 15:01:26
-
-DROP TABLE IF EXISTS `activity`;
-CREATE TABLE `activity`
-(
-    `id`                  bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `activity_id`         bigint(12)          NOT NULL COMMENT '活动ID',
-    `activity_name`       varchar(64)         NOT NULL COMMENT '活动名称',
-    `activity_desc`       varchar(128)        NOT NULL COMMENT '活动描述',
-    `begin_date_time`     datetime            NOT NULL COMMENT '开始时间',
-    `end_date_time`       datetime            NOT NULL COMMENT '结束时间',
-    `strategy_id`         bigint(8)           NOT NULL COMMENT '抽奖策略ID',
-    `state`               varchar(8)          NOT NULL DEFAULT 'create' COMMENT '活动状态',
-    `create_time`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_activity_id` (`activity_id`),
-    KEY `idx_begin_date_time` (`begin_date_time`),
-    KEY `idx_end_date_time` (`end_date_time`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动表';
-
-
-DROP TABLE IF EXISTS `activity_count`;
-CREATE TABLE `activity_count`
-(
-    `id`                bigint(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `activity_count_id` bigint(12)          NOT NULL COMMENT '活动次数id',
-    `total_count`       int(8)              NOT NULL COMMENT '总次数',
-    `day_count`         int(8)              NOT NULL COMMENT '日次数',
-    `month_count`       int(8)              NOT NULL COMMENT '月次数',
-    `create_time`       datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`       datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_activity_count_id` (`activity_count_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动次数配置表';
-
-DROP TABLE IF EXISTS `activity_sku`;
-CREATE TABLE `activity_sku`
-(
-    `id`                  int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `sku`                 bigint(12)       NOT NULL COMMENT '商品sku - 把每一个组合当做一个商品',
-    `activity_id`         bigint(12)       NOT NULL COMMENT '活动ID',
-    `activity_count_id`   bigint(12)       NOT NULL COMMENT '活动个人参与次数ID',
-    `stock_count`         int(11)          NOT NULL COMMENT '商品库存',
-    `stock_count_surplus` int(11)          NOT NULL COMMENT '剩余库存',
-    `create_time`         datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_sku` (`sku`),
-    KEY `idx_activity_id_activity_count_id` (`activity_id`, `activity_count_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖活动sku表';
+-- Dump completed on 2025-03-10 20:01:08

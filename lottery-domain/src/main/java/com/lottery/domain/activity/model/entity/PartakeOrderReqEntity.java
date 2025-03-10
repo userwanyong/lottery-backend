@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author 永
- * 活动参与单请求体
+ * 创建抽奖单请求体
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserOrderReqEntity {
+public class PartakeOrderReqEntity {
     /**
      * 用户ID
      */

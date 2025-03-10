@@ -1,20 +1,20 @@
 package com.lottery.domain.activity.service;
 
-import com.lottery.domain.activity.model.entity.UserOrderReqEntity;
-import com.lottery.domain.activity.model.entity.UserOrderResEntity;
+import com.lottery.domain.activity.model.entity.PartakeOrderReqEntity;
+import com.lottery.domain.activity.model.entity.PartakeOrderResEntity;
 
 /**
  * @author 永
- * 参与领域-活动服务接口
+ * 活动-参与领域接口
  */
 public interface ActivityPartakeService {
     /**
      * 创建抽奖单
      */
-    UserOrderResEntity createPartakeOrder(UserOrderReqEntity reqEntity);
+    PartakeOrderResEntity createPartakeOrder(PartakeOrderReqEntity reqEntity);
 
     /**
      * 创建抽奖单
      */
-    UserOrderResEntity createPartakeOrder(String userId, Long activityId);
+    PartakeOrderResEntity createPartakeOrder(String userId, Long activityId);
 }
