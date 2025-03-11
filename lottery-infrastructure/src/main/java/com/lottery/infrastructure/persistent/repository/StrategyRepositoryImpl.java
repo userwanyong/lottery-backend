@@ -9,7 +9,7 @@ import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.valobj.*;
-import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.infrastructure.persistent.dao.*;
 import com.lottery.infrastructure.persistent.po.*;
 import com.lottery.infrastructure.persistent.redis.RedisService;
@@ -27,11 +27,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author 永
- * 抽奖服务仓储实现
+ * 策略领域仓储实现
  */
 @Repository
 @Slf4j
-public class LotteryRepositoryImpl implements LotteryRepository {
+public class StrategyRepositoryImpl implements StrategyRepository {
     @Resource
     private StrategyAwardMapper strategyAwardMapper;
     @Resource
@@ -262,9 +262,9 @@ public class LotteryRepositoryImpl implements LotteryRepository {
 
     @Override
     public void cacheStrategyAwardCount(String key, Integer awardCount) {
-        if (redisService.isExists(key)) {
-            return;
-        }
+//        if (redisService.isExists(key)) {
+//            return;
+//        }
         redisService.setAtomicLong(key, awardCount);
     }
 

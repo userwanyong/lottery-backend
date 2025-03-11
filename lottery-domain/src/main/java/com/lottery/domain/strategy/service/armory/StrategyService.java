@@ -2,7 +2,7 @@ package com.lottery.domain.strategy.service.armory;
 
 /**
  * @author 永
- * 策略调度接口
+ * 策略-装配领域-调度接口
  */
 public interface StrategyService {
 

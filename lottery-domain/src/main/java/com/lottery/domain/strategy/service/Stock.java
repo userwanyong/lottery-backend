@@ -4,7 +4,7 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 
 /**
  * @author 永
- * 库存相关操作
+ * 策略-抽奖领域-库存相关操作
  */
 public interface Stock {
 

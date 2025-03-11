@@ -4,7 +4,7 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
-import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.domain.strategy.service.armory.StrategyService;
@@ -15,17 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author 永
- * 抽奖标准流程
+ * 策略-抽奖领域-抽奖标准流程
  */
 @Slf4j
 public abstract class AbstractLottery implements Lottery {
 
-    protected LotteryRepository repository;
+    protected StrategyRepository repository;
     protected StrategyService strategyService;
     protected DefaultLogicChainFactory defaultLogicChainFactory;
     protected DefaultLogicTreeFactory defaultLogicTreeFactory;
 
-    public AbstractLottery(LotteryRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+    public AbstractLottery(StrategyRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
         this.repository = repository;
         this.strategyService = strategyService;
         this.defaultLogicChainFactory = defaultLogicChainFactory;

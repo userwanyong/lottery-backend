@@ -1,7 +1,7 @@
 package com.lottery.domain.strategy.service.rule.chain.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
 import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.types.common.Constants;
@@ -21,7 +21,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     // TODO 后期从数据库查询
     public Long userScore = 4500L;
     @Resource
-    private LotteryRepository repository;
+    private StrategyRepository repository;
 
     @Resource
     private StrategyService strategyService;

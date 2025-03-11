@@ -3,7 +3,7 @@ package com.lottery.domain.strategy.service.rule.tree.impl;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.tree.LogicTree;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.domain.strategy.service.armory.StrategyService;
@@ -24,7 +24,7 @@ public class RuleStockTreeNode implements LogicTree {
     @Resource
     private StrategyService strategyService;
     @Resource
-    private LotteryRepository repository;
+    private StrategyRepository repository;
 
     @Override
     public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {

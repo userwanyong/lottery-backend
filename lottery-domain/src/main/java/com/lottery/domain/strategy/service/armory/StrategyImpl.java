@@ -3,7 +3,7 @@ package com.lottery.domain.strategy.service.armory;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.repository.LotteryRepository;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -17,13 +17,13 @@ import java.util.*;
 
 /**
  * @author 永
- * 策略装配实现类，负责初始化策略计算
+ * 策略-装配领域
  */
 @Slf4j
 @Service
 public class StrategyImpl implements StrategyArmory, StrategyService {
     @Resource
-    private LotteryRepository repository;
+    private StrategyRepository repository;
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {

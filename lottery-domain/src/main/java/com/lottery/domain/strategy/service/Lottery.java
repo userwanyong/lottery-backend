@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author 永
- * 抽奖相关操作
+ * 策略-抽奖领域-抽奖相关操作
  */
 public interface Lottery {
 

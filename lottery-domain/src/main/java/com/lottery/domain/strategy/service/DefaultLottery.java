@@ -5,9 +5,7 @@ import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
-import com.lottery.domain.strategy.repository.LotteryRepository;
-import com.lottery.domain.strategy.service.AbstractLottery;
-import com.lottery.domain.strategy.service.Stock;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
@@ -20,13 +18,13 @@ import java.util.List;
 
 /**
  * @author 永
- * 抽奖流程的默认实现
+ * 策略-抽奖领域-抽奖流程的默认实现
  */
 @Slf4j
 @Service
 public class DefaultLottery extends AbstractLottery implements Stock {
 
-    public DefaultLottery(LotteryRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+    public DefaultLottery(StrategyRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
         super(repository, strategyService, defaultLogicChainFactory, defaultLogicTreeFactory);
     }
 
@@ -47,7 +45,7 @@ public class DefaultLottery extends AbstractLottery implements Stock {
                     .awardId(awardId)
                     .build();
         }
-        // 2. 根据规则模型查数据库表构建规则树
+        // 2. 根据规则模型查数据库表构建规则树树根
         RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
         if (ruleTreeVO == null) {
             throw new RuntimeException("存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());

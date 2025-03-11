@@ -2,7 +2,7 @@ package com.lottery.domain.activity.service.armory;
 
 /**
  * @author 永
- * 活动-装配领域接口
+ * 活动-装配领域-装配接口
  */
 public interface ActivityArmory {
 

@@ -1,9 +1,9 @@
 package com.lottery.domain.strategy.repository;
 
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
+import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 
@@ -12,9 +12,9 @@ import java.util.Map;
 
 /**
  * @author 永
- * 策略服务仓储接口
+ * 策略领域仓储接口
  */
-public interface LotteryRepository {
+public interface StrategyRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
 
@@ -29,14 +29,16 @@ public interface LotteryRepository {
     RuleEntity queryStrategyRule(Long strategyId, String ruleWeight);
 
     String queryStrategyRuleValue(Long strategyId, Long awardId, String ruleModel);
+
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
     StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId);
 
     /**
-     * 构建规则树
+     * 构建规则树树根
+     *
      * @param treeId 规则树ID
-     * @return 规则树VO
+     * @return 规则树树根VO
      */
     RuleTreeVO queryRuleTreeVO(String treeId);
 

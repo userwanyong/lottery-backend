@@ -1,8 +1,7 @@
 package com.lottery.domain.strategy.service.rule.tree.impl;
 
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
-import com.lottery.domain.strategy.repository.LotteryRepository;
-import com.lottery.domain.strategy.service.Lottery;
+import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.tree.LogicTree;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.types.common.Constants;
@@ -20,7 +19,7 @@ import javax.annotation.Resource;
 public class RuleLockTreeNode implements LogicTree {
 
     @Resource
-    private LotteryRepository repository;
+    private StrategyRepository repository;
     @Override
     public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {
         log.info("【规则树-次数锁节点开始执行】");
