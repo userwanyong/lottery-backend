@@ -46,15 +46,17 @@ public class LotteryActivityController implements LotteryActivityService {
     @GetMapping("/armory")
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
         try {
-            log.info("活动装配，数据预热，开始 activityId:{}", activityId);
+            log.info("======================[armory]整体装配开始 activityId:{} ======================", activityId);
             // 1. 活动装配
             activityArmory.assembleActivitySkuByActivityId(activityId);
+            log.info("[armory]活动装配成功 activityId:{}", activityId);
             // 2. 策略装配
             strategyArmory.assembleLotteryStrategyByActivityId(activityId);
-            log.info("活动装配，数据预热，完成 activityId:{}", activityId);
+            log.info("[armory]策略装配成功 activityId:{}", activityId);
+            log.info("======================[armory]整体装配成功 activityId:{} ======================", activityId);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
         } catch (Exception e) {
-            log.error("活动装配，数据预热，失败 activityId:{}", activityId, e);
+            log.error("======================[armory]整体装配失败 activityId:{} ======================", activityId, e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }
@@ -63,17 +65,18 @@ public class LotteryActivityController implements LotteryActivityService {
     @PostMapping("/draw")
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         try {
-            log.info("活动抽奖 userId:{} activityId:{}", request.getUserId(), request.getActivityId());
+            log.info("======================[draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
             // 1. 参数校验
             if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
             // 2. 参与活动 - 创建参与记录订单
             PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
-            log.info("活动抽奖，创建订单 userId:{} activityId:{} orderId:{}", request.getUserId(), request.getActivityId(), partakeOrder.getOrderId());
+            log.info("[draw]抽奖单 orderId:{}", partakeOrder.getOrderId());
             // 3. 抽奖策略 - 执行抽奖
+            log.info("[draw]执行抽奖");
             LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
-
+            log.info("[draw]抽奖结果 {}",lotteryResEntity);
             // 4. 存放结果 - 写入中奖记录
             UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
                     .userId(partakeOrder.getUserId())
@@ -86,17 +89,20 @@ public class LotteryActivityController implements LotteryActivityService {
                     .awardState(AwardStateVO.create)
                     .build();
             userAwardService.saveUserAwardRecord(userAwardRecord);
+            log.info("[draw]记录中奖记录成功");
             // 5. 返回结果
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), ActivityDrawResponseDTO.builder()
+            ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
                     .awardId(Math.toIntExact(lotteryResEntity.getAwardId()))
                     .awardTitle(lotteryResEntity.getAwardTitle())
                     .awardIndex(lotteryResEntity.getSort())
-                    .build());
+                    .build();
+            log.info("======================[draw]用户抽奖结束 userId:{} activityId:{} award:{} ======================", request.getUserId(), request.getActivityId(),result);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), result);
         } catch (AppException e) {
-            log.error("活动抽奖失败 userId:{} activityId:{}", request.getUserId(), request.getActivityId(), e);
+            log.error("======================[draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
             return new BaseResponse<>(e.getCode(),e.getMessage());
         } catch (Exception e) {
-            log.error("活动抽奖失败 userId:{} activityId:{}", request.getUserId(), request.getActivityId(), e);
+            log.error("======================[draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(),ResponseCode.UN_ERROR.getMessage());
         }
     }

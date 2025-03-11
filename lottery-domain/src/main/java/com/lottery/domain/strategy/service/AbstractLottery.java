@@ -40,8 +40,6 @@ public abstract class AbstractLottery implements Lottery {
         if (strategyId == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
-        log.info("---------------用户ID：{} 抽奖开始---------------",userId);
-
         // 2. 责任链
         RuleEntity chainAward=lotteryLogicChain(userId,strategyId);
         log.info("【抽奖策略计算】-责任链 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, chainAward.getAwardId(), chainAward.getRuleModel());
@@ -53,10 +51,8 @@ public abstract class AbstractLottery implements Lottery {
         RuleEntity treeAward=lotteryLogicTree(userId,strategyId,chainAward.getAwardId());
         log.info("【抽奖策略计算】-规则树 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
 
-        LotteryResEntity result = buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
         // 4. 返回结果
-        log.info("---------------用户ID：{} 抽奖结束,获得奖品：{}---------------",userId,result);
-        return result;
+        return buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
 
 
     }
