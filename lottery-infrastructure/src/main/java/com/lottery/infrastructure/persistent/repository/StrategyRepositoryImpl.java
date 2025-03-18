@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.lottery.domain.activity.event.AwardStockZeroMessageEvent;
+import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.valobj.*;
 import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.*;
 import com.lottery.infrastructure.persistent.po.*;
 import com.lottery.infrastructure.persistent.redis.RedisService;
@@ -25,6 +28,7 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author 永
@@ -51,6 +55,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     private RuleTreeNodeMapper ruleTreeNodeMapper;
     @Resource
     private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
+    @Resource
+    private EventPublisher eventPublisher;
+    @Resource
+    private AwardStockZeroMessageEvent awardStockZeroMessageEvent;
 
     @Override
     public List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId) {
@@ -215,7 +223,13 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public Boolean reduceAwardStock(String key,Long strategyId) {
         long count = redisService.decr(key);
-        if (count < 0) {
+        if (count==0){
+            //lottery_strategy_award_count_key_200001_123 以_分割，提取200001_123
+            String[] split = key.split(Constants.UNDERLINE);
+            String strategyAward = split[split.length - 2]+"_"+split[split.length - 1];
+            eventPublisher.publish(awardStockZeroMessageEvent.topic(),awardStockZeroMessageEvent.buildEventMessage(strategyAward));
+        }
+        else if (count < 0) {
             redisService.setAtomicLong(key, 0);
             return false;
         }
@@ -235,7 +249,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY+lotteryReqEntity.getStrategyId()+Constants.UNDERLINE+lotteryReqEntity.getAwardId();
         // 获取Redis中的阻塞队列
         RBlockingQueue<LotteryReqEntity> blockingQueue = redisService.getBlockingQueue(cacheKey);
         // 基于阻塞队列创建一个延迟队列
@@ -245,8 +259,8 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public LotteryReqEntity takeQueueValue() {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+    public LotteryReqEntity takeQueueValue(String strategyAward) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY+strategyAward;
         // 获取指定键的阻塞队列
         RBlockingQueue<LotteryReqEntity> destinationQueue = redisService.getBlockingQueue(cacheKey);
         // 从队列中取出并返回一个元素
@@ -337,5 +351,43 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         return map;
 
     }
+
+    @Override
+    public List<String> getStrategyAwardList() {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY;
+        List<String> resultValue = redisService.getValue(cacheKey);
+        if (resultValue != null && !resultValue.isEmpty()) {
+            return resultValue;
+        }
+        List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(null);
+        resultValue = strategyAwards.stream()
+                .map(strategyAward -> strategyAward.getStrategyId()+"_"+strategyAward.getAwardId())
+                .collect(Collectors.toList());
+        redisService.setValue(cacheKey, resultValue);
+        return resultValue;
+    }
+
+    @Override
+    public void clearAwardStock(String strategyAward) {
+        //使用_拆分
+        String[] split = strategyAward.split("_");
+        LambdaUpdateWrapper<StrategyAward> updateWrapper = new LambdaUpdateWrapper<StrategyAward>()
+                .set(StrategyAward::getAwardCountSurplus, 0)
+                .set(StrategyAward::getUpdateTime, new Date())
+                .eq(StrategyAward::getStrategyId, split[1])
+                .eq(StrategyAward::getAwardId, split[2]);
+        strategyAwardMapper.update(null, updateWrapper);
+
+    }
+
+    @Override
+    public void clearQueueValue(String strategyAward) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY+strategyAward;
+        RBlockingQueue<LotteryReqEntity> blockingQueue = redisService.getBlockingQueue(cacheKey);
+        blockingQueue.clear();
+        RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
+        delayedQueue.clear();
+    }
+
 
 }

@@ -59,13 +59,28 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
 
     @Override
-    public LotteryReqEntity takeQueueValue() {
-        return repository.takeQueueValue();
+    public LotteryReqEntity takeQueueValue(String strategyAward) {
+        return repository.takeQueueValue(strategyAward);
     }
 
     @Override
     public void updateStrategyAwardStock(Long strategyId, Long awardId) {
         repository.updateStrategyAwardStock(strategyId, awardId);
+    }
+
+    @Override
+    public List<String> getStrategyAwardList() {
+        return repository.getStrategyAwardList();
+    }
+
+    @Override
+    public void clearAwardStock(String strategyAward) {
+        repository.clearAwardStock(strategyAward);
+    }
+
+    @Override
+    public void clearQueueValue(String strategyAward) {
+        repository.clearQueueValue(strategyAward);
     }
 
     @Override

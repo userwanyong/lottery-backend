@@ -46,7 +46,7 @@ public interface StrategyRepository {
 
     void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity);
 
-    LotteryReqEntity takeQueueValue();
+    LotteryReqEntity takeQueueValue(String strategyAward);
 
     void updateStrategyAwardStock(Long strategyId, Long awardId);
 
@@ -59,4 +59,10 @@ public interface StrategyRepository {
     Integer queryTodayUserLotteryCount(String userId, Long strategyId);
 
     Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
+
+    List<String> getStrategyAwardList();
+
+    void clearAwardStock(String strategyAward);
+
+    void clearQueueValue(String strategyAward);
 }

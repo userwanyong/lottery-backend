@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author 永
@@ -17,17 +19,30 @@ import javax.annotation.Resource;
 public class UpdateAwardStockJob {
     @Resource
     private Stock stock;
+    @Resource
+    private ThreadPoolExecutor executor;
 
     @Scheduled(cron = "0/5 * * * * ?")
     public void exec(){
         try {
-            LotteryReqEntity lotteryReqEntity = stock.takeQueueValue();
-            if (lotteryReqEntity == null) {
-                log.info("【定时任务】-暂无更新数据库奖品库存任务");
-                return;
+            List<String> awardList = stock.getStrategyAwardList();
+            for (String strategyAward : awardList) {
+                executor.execute(() -> {
+                    LotteryReqEntity lotteryReqEntity = null;
+                    try {
+                        lotteryReqEntity = stock.takeQueueValue(strategyAward);
+                    }catch (Exception e){
+                        log.error("【定时任务】-更新数据库奖品库存-失败", e);
+                    }
+
+                    if (lotteryReqEntity == null) {
+                        log.info("【定时任务】-暂无更新数据库奖品库存任务");
+                        return;
+                    }
+                    stock.updateStrategyAwardStock(lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
+                    log.info("【定时任务】-更新数据库奖品库存-成功 strategyId:{} awardId:{}", lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
+                });
             }
-            stock.updateStrategyAwardStock(lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
-            log.info("【定时任务】-更新数据库奖品库存-成功 strategyId:{} awardId:{}", lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
         } catch (Exception e) {
             log.error("【定时任务】-更新数据库奖品库存-失败", e);
         }
