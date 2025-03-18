@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 永
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class DefaultLottery extends AbstractLottery implements Stock {
+public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
     public DefaultLottery(StrategyRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
         super(repository, strategyService, defaultLogicChainFactory, defaultLogicTreeFactory);
@@ -70,6 +71,17 @@ public class DefaultLottery extends AbstractLottery implements Stock {
     @Override
     public List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId) {
         return repository.queryStrategyAwardList(strategyId);
+    }
+
+    @Override
+    public List<StrategyAwardEntity> queryLotteryAwardListByActivityId(Long activityId) {
+        Long strategyId = repository.queryStrategyIdByActivityId(activityId);
+        return queryLotteryAwardList(strategyId);
+    }
+
+    @Override
+    public Map<String, Integer> queryAwardRuleLockCount(String[] treeIds) {
+        return repository.queryAwardRuleLockCount(treeIds);
     }
 }
 

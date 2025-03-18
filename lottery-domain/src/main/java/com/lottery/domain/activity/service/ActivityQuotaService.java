@@ -15,4 +15,5 @@ public interface ActivityQuotaService {
      */
     String createQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 
+    Integer queryTodayUserLotteryCount(String userId, Long activityId);
 }

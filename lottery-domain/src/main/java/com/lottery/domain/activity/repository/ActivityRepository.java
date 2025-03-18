@@ -24,11 +24,11 @@ public interface ActivityRepository {
 
     void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO build);
 
-    ActivitySkuStockKeyVO takeQueueValue();
+    ActivitySkuStockKeyVO takeQueueValue(Long sku);
 
     void updateActivitySkuStock(Long sku);
 
-    void clearQueueValue();
+    void clearQueueValue(Long sku);
 
     void clearActivitySkuStock(Long sku);
 
@@ -43,4 +43,8 @@ public interface ActivityRepository {
     void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate);
 
     List<ActivitySkuEntity> queryActivitySkuListByActivityId(Long activityId);
+
+    Integer queryTodayUserLotteryCount(String userId, Long activityId);
+
+    List<Long> querySkuList();
 }

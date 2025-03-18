@@ -1,6 +1,7 @@
 package com.lottery.infrastructure.persistent.repository;
 
 import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -196,15 +198,15 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO activitySkuStockKeyVO) {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY+activitySkuStockKeyVO.getSku();
         RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
         RDelayedQueue<ActivitySkuStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         delayedQueue.offer(activitySkuStockKeyVO, 3, TimeUnit.SECONDS);
     }
 
     @Override
-    public ActivitySkuStockKeyVO takeQueueValue() {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
+    public ActivitySkuStockKeyVO takeQueueValue(Long sku) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY+sku;
         RBlockingQueue<ActivitySkuStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
         return destinationQueue.poll();
     }
@@ -220,7 +222,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public void clearQueueValue() {
+    public void clearQueueValue(Long sku) {
         String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
         RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
         blockingQueue.clear();
@@ -425,6 +427,33 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     return activitySkuEntity;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Integer queryTodayUserLotteryCount(String userId, Long activityId) {
+        ActivityAccountDay activityAccountDay = new ActivityAccountDay();
+        activityAccountDay.setUserId(userId);
+        activityAccountDay.setActivityId(activityId);
+        activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        ActivityAccountDay db = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
+        if (db == null){
+            return 0;
+        }
+        return db.getDayCount() - db.getDayCountSurplus();
+    }
+
+    @Override
+    public List<Long> querySkuList() {
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUERY_KEY;
+        List<Long> resultValue = redisService.getValue(cacheKey);
+        if (resultValue != null && !resultValue.isEmpty()) {
+            return resultValue;
+        }
+        //查sku数据库全部列表的id
+        List<ActivitySku> activitySkus = activitySkuMapper.selectList(null);
+        resultValue = activitySkus.stream().map(ActivitySku::getSku).collect(Collectors.toList());
+        redisService.setValue(cacheKey, resultValue);
+        return resultValue;
     }
 
 

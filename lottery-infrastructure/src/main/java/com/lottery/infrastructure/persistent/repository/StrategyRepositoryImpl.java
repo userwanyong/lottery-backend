@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
@@ -72,6 +73,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         for (StrategyAward strategyAward : strategyAwards) {
             StrategyAwardEntity strategyAwardEntity = new StrategyAwardEntity();
             BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
+            strategyAwardEntity.setRuleModel(strategyAward.getRuleModels());
             strategyAwardEntities.add(strategyAwardEntity);
         }
         //保存到redis中
@@ -211,16 +213,20 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public Boolean reduceAwardStock(String key) {
+    public Boolean reduceAwardStock(String key,Long strategyId) {
         long count = redisService.decr(key);
         if (count < 0) {
             redisService.setAtomicLong(key, 0);
             return false;
         }
+        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
+                .eq(Activity::getStrategyId, strategyId);
+        Activity activity = activityMapper.selectOne(queryWrapper);
         // 1. 按照cacheKey decr 后的值，如 99、98、97 和 key 组成为库存锁的key进行使用
         // 2. 加锁为了兜底，如果后续有恢复库存，手动处理等，也不会超卖。因为所有的可用库存key，都被加锁了
         String lockKey = key + Constants.UNDERLINE + count;
-        Boolean lock = redisService.setNx(lockKey);
+        long expireMillis = activity.getEndDateTime().getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
+        Boolean lock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
         if (!lock) {
             log.info("策略奖品库存加锁失败 {}", lockKey);
         }
@@ -311,6 +317,25 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         ActivityAccountDay activityAccountDayRes = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
         return activityAccountDayRes.getDayCount()- activityAccountDayRes.getDayCountSurplus();
+    }
+
+    @Override
+    public Map<String, Integer> queryAwardRuleLockCount(String[] treeIds) {
+        if (treeIds == null || treeIds.length==0){
+            return new HashMap<>();
+        }
+        LambdaQueryWrapper<RuleTreeNode> queryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
+                .eq(RuleTreeNode::getRuleName, "rule_lock")
+                .in(RuleTreeNode::getTreeId, Arrays.asList(treeIds));
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(queryWrapper);
+        HashMap<String, Integer> map = new HashMap<>();
+        for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
+            String treeId = ruleTreeNode.getTreeId();
+            String ruleValue = ruleTreeNode.getRuleValue();
+            map.put(treeId, Integer.valueOf(ruleValue));
+        }
+        return map;
+
     }
 
 }

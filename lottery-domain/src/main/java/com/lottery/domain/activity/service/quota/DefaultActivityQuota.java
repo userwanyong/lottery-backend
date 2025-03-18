@@ -11,6 +11,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 永
@@ -56,8 +57,8 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     }
 
     @Override
-    public ActivitySkuStockKeyVO takeQueueValue() {
-        return activityRepository.takeQueueValue();
+    public ActivitySkuStockKeyVO takeQueueValue(Long sku) {
+        return activityRepository.takeQueueValue(sku);
     }
 
     @Override
@@ -71,7 +72,17 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     }
 
     @Override
-    public void clearQueueValue() {
-        activityRepository.clearQueueValue();
+    public void clearQueueValue(Long sku) {
+        activityRepository.clearQueueValue(sku);
+    }
+
+    @Override
+    public List<Long> querySkuList() {
+        return activityRepository.querySkuList();
+    }
+
+    @Override
+    public Integer queryTodayUserLotteryCount(String userId, Long activityId) {
+        return activityRepository.queryTodayUserLotteryCount(userId, activityId);
     }
 }

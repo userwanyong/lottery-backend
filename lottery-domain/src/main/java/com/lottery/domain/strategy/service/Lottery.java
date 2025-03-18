@@ -19,6 +19,13 @@ public interface Lottery {
      * @return 奖品列表
      */
     List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId);
+    /**
+     * 根据策略ID查询抽奖奖品列表配置
+     *
+     * @param activityId 活动ID
+     * @return 奖品列表
+     */
+    List<StrategyAwardEntity> queryLotteryAwardListByActivityId(Long activityId);
 
     /**
      * @param lotteryFactorEntity 抽奖要素实体，根据入参信息计算抽奖结果

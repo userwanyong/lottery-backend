@@ -67,10 +67,10 @@ public class LotteryActivityController implements LotteryActivityService {
         try {
             log.info("======================[draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
             // 1. 参数校验
-            if (StringUtils.isBlank(request.getUserId()) || null == request.getActivityId()) {
+            if (StringUtils.isBlank(request.getUserId()) || request.getActivityId() == null) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
-            // 2. 参与活动 - 创建参与记录订单
+            // 2. 参与活动 - 创建抽奖单
             PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
             log.info("[draw]抽奖单 orderId:{}", partakeOrder.getOrderId());
             // 3. 抽奖策略 - 执行抽奖

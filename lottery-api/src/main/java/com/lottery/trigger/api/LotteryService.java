@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface LotteryService {
 
-    /**
-     * 策略装配接口
-     *
-     * @param strategyId 策略ID
-     * @return 装配结果
-     */
-    BaseResponse<Boolean> strategyArmory(Long strategyId);
+//    /**
+//     * 策略装配接口
+//     *
+//     * @param strategyId 策略ID
+//     * @return 装配结果
+//     */
+//    BaseResponse<Boolean> strategyArmory(Long strategyId);
 
     /**
      * 查询抽奖奖品列表接口
@@ -31,11 +31,11 @@ public interface LotteryService {
     BaseResponse<List<LotteryAwardListResponseDTO>> queryLotteryAwardList(LotteryAwardListRequestDTO requestDTO);
 
 
-    /**
-     * 随机抽奖接口
-     *
-     * @param requestDTO 请求参数
-     * @return 抽奖结果
-     */
-    BaseResponse<LotteryResponseDTO> randomLottery(LotteryRequestDTO requestDTO);
+//    /**
+//     * 随机抽奖接口
+//     *
+//     * @param requestDTO 请求参数
+//     * @return 抽奖结果
+//     */
+//    BaseResponse<LotteryResponseDTO> randomLottery(LotteryRequestDTO requestDTO);
 }

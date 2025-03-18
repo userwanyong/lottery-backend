@@ -16,4 +16,10 @@ public class LotteryAwardListResponseDTO {
     private String awardSubtitle;
     // 排序编号
     private Integer sort;
+    // 奖品次数规则 - 抽奖N次后解锁，未配置则为空
+    private Integer awardRuleLockCount;
+    // 奖品是否解锁 - true 已解锁、false 未解锁
+    private Boolean isAwardUnlock;
+    // 还需要多少次解锁
+    private Integer waitUnLockCount;
 }

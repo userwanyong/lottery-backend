@@ -42,7 +42,7 @@ public interface StrategyRepository {
      */
     RuleTreeVO queryRuleTreeVO(String treeId);
 
-    Boolean reduceAwardStock(String key);
+    Boolean reduceAwardStock(String key,Long strategyId);
 
     void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity);
 
@@ -57,4 +57,6 @@ public interface StrategyRepository {
     Long queryStrategyIdByActivityId(Long activityId);
 
     Integer queryTodayUserLotteryCount(String userId, Long strategyId);
+
+    Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
 }
