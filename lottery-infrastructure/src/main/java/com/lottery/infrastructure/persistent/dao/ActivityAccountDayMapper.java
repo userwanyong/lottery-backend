@@ -16,6 +16,8 @@ public interface ActivityAccountDayMapper extends BaseMapper<ActivityAccountDay>
     @DBRouter
     @Select("select * from activity_account_day where user_id = #{userId} and activity_id = #{activityId} and day = #{day}")
     ActivityAccountDay queryActivityAccountDayByUserId(ActivityAccountDay activityAccountDay);
+
+    int updateAccount(ActivityAccountDay activityAccountDay);
 }
 
 

@@ -16,6 +16,8 @@ public interface ActivityAccountMonthMapper extends BaseMapper<ActivityAccountMo
     @DBRouter
     @Select("select * from activity_account_month where user_id = #{userId} and activity_id = #{activityId} and month = #{month}")
     ActivityAccountMonth queryActivityAccountMonthByUserId(ActivityAccountMonth activityAccountMonth);
+
+    int updateAccount(ActivityAccountMonth activityAccountMonth);
 }
 
 

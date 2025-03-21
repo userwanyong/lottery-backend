@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.lottery.domain.rebate.model.entity.BehaviorEntity;
 import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.rebate.service.RebateService;
+import com.lottery.trigger.api.LotteryActivityService;
+import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,8 @@ import java.util.List;
 public class BehaviorRebateServiceTest {
     @Resource
     private RebateService rebateService;
+    @Resource
+    private LotteryActivityService lotteryActivityService;
 
     @Test
     public void test_createRebateOrder() {
@@ -29,5 +33,11 @@ public class BehaviorRebateServiceTest {
         behaviorEntity.setOutBusinessNo("20240430");
         List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
         log.info("测试结果：{}", JSON.toJSONString(orderIds));
+    }
+
+    @Test
+    public void test_calendarSignRebate() {
+        BaseResponse<Boolean> response = lotteryActivityService.calendarSignRebate("yong");
+        log.info("测试结果：{}", JSON.toJSONString(response));
     }
 }

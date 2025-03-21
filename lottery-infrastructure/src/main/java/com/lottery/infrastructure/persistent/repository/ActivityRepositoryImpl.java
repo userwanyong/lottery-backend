@@ -135,12 +135,28 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityOrder.setState(activityOrderEntity.getState().getCode());
             activityOrder.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
 
-            // 账户对象
+            // 总账户对象
             ActivityAccount activityAccount = new ActivityAccount();
             BeanUtils.copyProperties(activityOrderEntity, activityAccount);
             activityAccount.setTotalCountSurplus(activityOrderEntity.getTotalCount());
             activityAccount.setDayCountSurplus(activityOrderEntity.getDayCount());
             activityAccount.setMonthCountSurplus(activityOrderEntity.getMonthCount());
+
+            // 月账户对象
+            ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
+            activityAccountMonth.setUserId(createQuotaOrderAggregate.getUserId());
+            activityAccountMonth.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityAccountMonth.setMonth(new SimpleDateFormat("yyyy-MM").format(new Date()));
+            activityAccountMonth.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityAccountMonth.setMonthCountSurplus(createQuotaOrderAggregate.getMonthCount());
+
+            // 日账户对象
+            ActivityAccountDay activityAccountDay = new ActivityAccountDay();
+            activityAccountDay.setUserId(createQuotaOrderAggregate.getUserId());
+            activityAccountDay.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            activityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
 
             // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
             dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
@@ -149,11 +165,31 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 try {
                     // 1. 写入订单
                     activityOrderMapper.insert(activityOrder);
-                    // 2. 更新账户
+                    // 2. 更新总账户
                     int count = activityAccountMapper.updateAccount(activityAccount);
                     // 3. 创建账户 - 更新为0，则账户不存在，创新新账户。
                     if (count == 0) {
                         activityAccountMapper.insert(activityAccount);
+                    }
+                    ActivityAccount dbActivityAccount = new ActivityAccount();
+                    dbActivityAccount.setUserId(activityOrderEntity.getUserId());
+                    dbActivityAccount.setActivityId(activityOrderEntity.getActivityId());
+                    ActivityAccount quActivityAccount = activityAccountMapper.queryActivityAccountByUserId(dbActivityAccount);
+                    // 创建/更新月账户
+                    int countM = activityAccountMonthMapper.updateAccount(activityAccountMonth);
+                    if (countM == 0) {
+                        //此时总账户已经更新了，直接查总账户就行
+                        activityAccountMonth.setMonthCount(quActivityAccount.getMonthCount());
+                        activityAccountMonth.setMonthCountSurplus(quActivityAccount.getMonthCountSurplus());
+                        activityAccountMonthMapper.insert(activityAccountMonth);
+                    }
+                    // 创建/更新日账户
+                    int countD = activityAccountDayMapper.updateAccount(activityAccountDay);
+                    if (countD == 0) {
+                        //此时总账户已经更新了，直接查总账户就行
+                        activityAccountDay.setDayCount(quActivityAccount.getDayCount());
+                        activityAccountDay.setDayCountSurplus(quActivityAccount.getDayCountSurplus());
+                        activityAccountDayMapper.insert(activityAccountDay);
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时

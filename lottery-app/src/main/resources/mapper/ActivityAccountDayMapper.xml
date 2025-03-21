@@ -14,5 +14,12 @@
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <update id="updateAccount">
+        update activity_account_day
+        set day_count_surplus = day_count_surplus + #{dayCountSurplus},
+            day_count = day_count + #{dayCount},
+            update_time = now()
+        where user_id = #{userId} and activity_id = #{activityId} and day = #{day}
+    </update>
 
 </mapper>

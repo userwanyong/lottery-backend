@@ -21,4 +21,11 @@ public interface LotteryActivityService {
      * @return 返回结果
      */
     BaseResponse<ActivityDrawResponseDTO> draw(ActivityDrawRequestDTO request);
+    /**
+     * 日历签到返利接口
+     *
+     * @param userId 用户ID
+     * @return 签到结果
+     */
+    BaseResponse<Boolean> calendarSignRebate(String userId);
 }

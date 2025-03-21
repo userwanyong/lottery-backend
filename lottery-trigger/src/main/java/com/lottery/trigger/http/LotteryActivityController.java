@@ -6,6 +6,9 @@ import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.valobj.AwardStateVO;
 import com.lottery.domain.award.service.UserAwardService;
+import com.lottery.domain.rebate.model.entity.BehaviorEntity;
+import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
+import com.lottery.domain.rebate.service.RebateService;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.service.Lottery;
@@ -21,7 +24,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 永
@@ -41,6 +46,8 @@ public class LotteryActivityController implements LotteryActivityService {
     private UserAwardService userAwardService;
     @Resource
     private ActivityPartakeService activityPartakeService;
+    @Resource
+    private RebateService rebateService;
 
     @Override
     @GetMapping("/armory")
@@ -103,6 +110,26 @@ public class LotteryActivityController implements LotteryActivityService {
             return new BaseResponse<>(e.getCode(),e.getMessage());
         } catch (Exception e) {
             log.error("======================[draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
+            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(),ResponseCode.UN_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    public BaseResponse<Boolean> calendarSignRebate(String userId) {
+        try {
+            log.info("======================[calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
+            BehaviorEntity behaviorEntity = new BehaviorEntity();
+            behaviorEntity.setUserId(userId);
+            behaviorEntity.setBehaviorTypeVO(BehaviorTypeVO.SIGN);
+            behaviorEntity.setOutBusinessNo(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+            List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
+            log.info("======================[calendarSignRebate]用户签到返现成功 userId:{} orderIds:{} ======================",userId,orderIds);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(),ResponseCode.SUCCESS.getMessage(),true);
+        }catch (AppException e){
+            log.error("======================[calendarSignRebate]用户签到返现异常 userId:{} ======================",userId,e);
+            return new BaseResponse<>(e.getCode(),e.getMessage());
+        }catch (Exception e){
+            log.error("======================[calendarSignRebate]用户签到返现异常 userId:{} ======================",userId,e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(),ResponseCode.UN_ERROR.getMessage());
         }
     }
