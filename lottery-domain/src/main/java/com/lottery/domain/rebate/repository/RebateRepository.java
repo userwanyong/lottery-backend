@@ -1,0 +1,18 @@
+package com.lottery.domain.rebate.repository;
+
+import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
+import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
+import com.lottery.domain.rebate.model.valobj.RebateVO;
+
+import java.util.List;
+
+/**
+ * @author 永
+ * 返利领域仓储接口
+ */
+public interface RebateRepository {
+
+    List<RebateVO> queryRebateConfig(BehaviorTypeVO behaviorTypeVO);
+
+    void saveRebateAggregate(List<RebateAggregate> aggregates);
+}

@@ -1,3 +1,6 @@
+CREATE database if NOT EXISTS `marketing` default character set utf8mb4 collate utf8mb4_0900_ai_ci;
+use `marketing`;
+
 -- MySQL dump 10.13  Distrib 8.0.35, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: marketing
@@ -129,7 +132,7 @@ LOCK TABLES `activity_sku` WRITE;
 /*!40000 ALTER TABLE `activity_sku`
     DISABLE KEYS */;
 INSERT INTO `activity_sku`
-VALUES (1, 9011, 100301, 11101, 20, 20, '2025-03-11 22:12:56', '2025-03-10 19:37:43');
+VALUES (1, 9011, 100301, 11101, 20, 14, '2025-03-11 22:12:56', '2025-03-18 21:14:15');
 /*!40000 ALTER TABLE `activity_sku`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -154,7 +157,7 @@ CREATE TABLE `award`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 11
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='奖品表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +207,7 @@ CREATE TABLE `rule`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 18
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,9 +269,9 @@ CREATE TABLE `rule_tree`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_tree_id` (`tree_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 4
+  AUTO_INCREMENT = 5
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则树表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -284,7 +287,9 @@ VALUES (1, 'tree_lock_1', '抽奖规则树', '抽奖中、抽奖后规则树', '
        (2, 'tree_lock_2', '抽奖规则树', '抽奖中、抽奖后规则树', 'rule_lock', '2025-02-17 13:16:03',
         '2025-02-20 23:25:44'),
        (3, 'tree_luck_award', '抽奖规则树', '规则树-兜底奖', 'rule_stock', '2025-02-20 23:27:13',
-        '2025-02-20 23:27:13');
+        '2025-02-20 23:27:13'),
+       (4, 'tree_lock_3', '抽奖规则树', '抽奖中、抽奖后规则树', 'rule_lock', '2025-03-19 20:51:14',
+        '2025-03-19 20:51:14');
 /*!40000 ALTER TABLE `rule_tree`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -307,9 +312,9 @@ CREATE TABLE `rule_tree_node`
     `update_time` datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 9
+  AUTO_INCREMENT = 12
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,7 +337,12 @@ VALUES (1, 'tree_lock_1', 'rule_lock', '限定用户已完成1次抽奖后解锁
        (6, 'tree_lock_2', 'rule_stock', '库存扣减规则', NULL, '2025-02-17 13:16:03', '2025-02-20 23:27:52'),
        (7, 'tree_luck_award', 'rule_stock', '库存扣减规则', NULL, '2025-02-20 23:29:16', '2025-02-20 23:29:16'),
        (8, 'tree_luck_award', 'rule_luck_award', '兜底奖品随机积分', '101:1,100', '2025-02-20 23:29:43',
-        '2025-02-20 23:29:43');
+        '2025-02-20 23:29:43'),
+       (9, 'tree_lock_3', 'rule_lock', '限定用户已完成3次抽奖后解锁', '3', '2025-03-19 20:52:07',
+        '2025-03-19 20:52:07'),
+       (10, 'tree_lock_3', 'rule_luck_award', '兜底奖品随机积分', '101:1,100', '2025-03-19 20:52:07',
+        '2025-03-19 20:52:07'),
+       (11, 'tree_lock_3', 'rule_stock', '库存扣减规则', NULL, '2025-03-19 20:52:07', '2025-03-19 20:52:07');
 /*!40000 ALTER TABLE `rule_tree_node`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -356,9 +366,9 @@ CREATE TABLE `rule_tree_node_line`
     `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 8
+  AUTO_INCREMENT = 11
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点走向表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,7 +390,12 @@ VALUES (1, 'tree_lock_1', 'rule_lock', 'rule_stock', 'EQUAL', 'ALLOW', '2025-02-
        (6, 'tree_lock_2', 'rule_stock', 'rule_luck_award', 'EQUAL', 'TAKE_OVER', '2025-02-17 13:16:03',
         '2025-02-20 23:30:37'),
        (7, 'rule_luck_award', 'rule_stock', 'rule_luck_award', 'EQUAL', 'ALLOW', '2025-02-20 23:31:42',
-        '2025-02-20 23:31:42');
+        '2025-02-20 23:31:42'),
+       (8, 'tree_lock_3', 'rule_lock', 'rule_stock', 'EQUAL', 'ALLOW', '2025-02-17 13:16:03', '2025-02-20 23:30:37'),
+       (9, 'tree_lock_3', 'rule_lock', 'rule_luck_award', 'EQUAL', 'TAKE_OVER', '2025-02-17 13:16:03',
+        '2025-02-20 23:30:37'),
+       (10, 'tree_lock_3', 'rule_stock', 'rule_luck_award', 'EQUAL', 'TAKE_OVER', '2025-02-17 13:16:03',
+        '2025-02-20 23:30:37');
 /*!40000 ALTER TABLE `rule_tree_node_line`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -405,7 +420,7 @@ CREATE TABLE `strategy`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 6
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='策略表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -447,7 +462,7 @@ CREATE TABLE `strategy_award`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 26
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='策略奖品表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -458,22 +473,22 @@ LOCK TABLES `strategy_award` WRITE;
 /*!40000 ALTER TABLE `strategy_award`
     DISABLE KEYS */;
 INSERT INTO `strategy_award`
-VALUES (18, 200001, 101, '随机积分', NULL, 100, 100, 0.0500, 'tree_luck_award', 1, '2025-02-20 23:20:00',
-        '2025-02-21 00:21:12'),
-       (19, 200001, 102, '7等奖', NULL, 100, 93, 0.4000, 'tree_luck_award', 2, '2025-02-20 23:24:23',
-        '2025-03-10 19:39:00'),
-       (20, 200001, 103, '6等奖', NULL, 100, 99, 0.2000, 'tree_luck_award', 3, '2025-02-20 23:24:23',
-        '2025-03-10 13:53:10'),
-       (21, 200001, 104, '5等奖', NULL, 100, 99, 0.1000, 'tree_luck_award', 4, '2025-02-20 23:24:23',
-        '2025-03-10 13:56:20'),
-       (22, 200001, 105, '4等奖', NULL, 100, 100, 0.1000, 'tree_luck_award', 5, '2025-02-20 23:24:23',
-        '2025-02-21 00:21:12'),
-       (23, 200001, 106, '3等奖', '抽奖1次后解锁', 100, 100, 0.0500, 'tree_lock_1', 6, '2025-02-20 23:24:23',
-        '2025-02-20 23:42:45'),
-       (24, 200001, 107, '2等奖', '抽奖1次后解锁', 100, 100, 0.0500, 'tree_lock_1', 7, '2025-02-20 23:24:23',
-        '2025-02-20 23:24:23'),
-       (25, 200001, 108, '1等奖', '抽奖2次后解锁', 100, 100, 0.0500, 'tree_lock_2', 8, '2025-02-20 23:24:23',
-        '2025-02-20 23:24:23');
+VALUES (18, 200001, 101, '随机积分', NULL, 100, 99, 0.0500, 'tree_luck_award', 1, '2025-02-20 23:20:00',
+        '2025-03-19 20:53:55'),
+       (19, 200001, 102, 'OpenAI会员卡', NULL, 100, 75, 0.4000, 'tree_luck_award', 2, '2025-02-20 23:24:23',
+        '2025-03-19 21:33:10'),
+       (20, 200001, 103, '支付优惠券', NULL, 100, 87, 0.2000, 'tree_luck_award', 3, '2025-02-20 23:24:23',
+        '2025-03-19 21:33:00'),
+       (21, 200001, 104, '小米台灯', NULL, 100, 96, 0.1000, 'tree_luck_award', 4, '2025-02-20 23:24:23',
+        '2025-03-19 21:27:25'),
+       (22, 200001, 105, '小米su7周体验', '抽奖3次后解锁', 100, 97, 0.1000, 'tree_lock_3', 5, '2025-02-20 23:24:23',
+        '2025-03-19 21:27:40'),
+       (23, 200001, 106, '轻奢办公椅', '抽奖2次后解锁', 100, 99, 0.0500, 'tree_lock_2', 6, '2025-02-20 23:24:23',
+        '2025-03-19 21:19:20'),
+       (24, 200001, 107, '小霸王游戏机', '抽奖1次后解锁', 100, 98, 0.0500, 'tree_lock_1', 7, '2025-02-20 23:24:23',
+        '2025-03-19 21:24:13'),
+       (25, 200001, 108, '暴走玩偶', '', 100, 99, 0.0500, 'tree_luck_award', 8, '2025-02-20 23:24:23',
+        '2025-03-19 20:50:21');
 /*!40000 ALTER TABLE `strategy_award`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -487,4 +502,24 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-10 20:01:08
+-- Dump completed on 2025-03-20 16:44:47
+
+DROP TABLE IF EXISTS `behavior_rebate`;
+CREATE TABLE `behavior_rebate`
+(
+    `id`            int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `behavior_type` varchar(16)      NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`   varchar(128)     NOT NULL COMMENT '返利描述',
+    `rebate_type`   varchar(16)      NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config` varchar(32)      NOT NULL COMMENT '返利配置',
+    `state`         varchar(12)      NOT NULL COMMENT '状态（open 开启、close 关闭）',
+    `create_time`   datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_behavior_type` (`behavior_type`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4 COMMENT ='返利活动配置表';
+
+INSERT INTO `behavior_rebate` (`id`, `behavior_type`, `rebate_desc`, `rebate_type`, `rebate_config`, `state`)
+VALUES (1, 'sign', '签到返利-抽奖额度', 'sku', '9011', 'open'),
+       (2, 'sign', '签到返利-积分', 'integral', '10', 'open');
