@@ -58,7 +58,7 @@ public class LotteryController implements LotteryService {
     @Override
     @PostMapping("/query_lottery_award_list")
     public BaseResponse<List<LotteryAwardListResponseDTO>> queryLotteryAwardList(@RequestBody LotteryAwardListRequestDTO requestDTO) {
-        log.info("======================查询奖品列表开始 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
+        log.info("======================[queryLotteryAwardList]查询奖品列表开始 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
         // 1. 参数校验
         if (requestDTO.getActivityId() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
@@ -86,10 +86,10 @@ public class LotteryController implements LotteryService {
                 lotteryAwardListResponseDTO.setWaitUnLockCount(awardRuleLockCount == null || count >= awardRuleLockCount ? 0 : (awardRuleLockCount - count));
                 lotteryAwardListResponseDTOList.add(lotteryAwardListResponseDTO);
             }
-            log.info("======================查询奖品列表成功 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
+            log.info("======================[queryLotteryAwardList]查询奖品列表成功 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), lotteryAwardListResponseDTOList);
         } catch (Exception e) {
-            log.info("======================查询奖品列表失败 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
+            log.info("======================[queryLotteryAwardList]查询奖品列表失败 activityId：{} userId：{} ======================", requestDTO.getActivityId(), requestDTO.getUserId());
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }
@@ -112,7 +112,7 @@ public class LotteryController implements LotteryService {
 
     @Override
     @PostMapping("/query_strategy_rule_weight")
-    public BaseResponse<List<StrategyRuleWeightResponseDTO>> queryStrategyRuleWeight(StrategyRuleWeightRequestDTO requestDTO) {
+    public BaseResponse<List<StrategyRuleWeightResponseDTO>> queryStrategyRuleWeight(@RequestBody StrategyRuleWeightRequestDTO requestDTO) {
         try {
             log.info("======================[queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
             // 1.参数校验

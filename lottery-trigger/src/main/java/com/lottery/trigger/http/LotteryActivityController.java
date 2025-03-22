@@ -124,7 +124,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/calendar_sign_rebate")
-    public BaseResponse<Boolean> calendarSignRebate(String userId) {
+    public BaseResponse<Boolean> calendarSignRebate(@RequestParam String userId) {
         try {
             log.info("======================[calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
             BehaviorEntity behaviorEntity = new BehaviorEntity();
@@ -145,7 +145,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/query_user_activity_account")
-    public BaseResponse<UserActivityAccountResponseDTO> queryUserActivityAccount(UserActivityAccountRequestDTO requestDTO) {
+    public BaseResponse<UserActivityAccountResponseDTO> queryUserActivityAccount(@RequestBody UserActivityAccountRequestDTO requestDTO) {
         try {
             log.info("======================[queryUserActivityAccount]查询用户参与次数开始 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
             // 1.参数校验
@@ -170,7 +170,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/is_calendar_sign_rebate")
-    public BaseResponse<Boolean> isCalendarSignRebate(String userId) {
+    public BaseResponse<Boolean> isCalendarSignRebate(@RequestParam String userId) {
         try {
             log.info("======================[isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} ======================", userId);
             String outBusinessNo = new SimpleDateFormat("yyyyMMdd").format(new Date());
