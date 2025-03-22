@@ -1,6 +1,7 @@
 package com.lottery.domain.rebate.repository;
 
 import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
+import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
 import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.rebate.model.valobj.RebateVO;
 
@@ -15,4 +16,6 @@ public interface RebateRepository {
     List<RebateVO> queryRebateConfig(BehaviorTypeVO behaviorTypeVO);
 
     void saveRebateAggregate(List<RebateAggregate> aggregates);
+
+    List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
 }

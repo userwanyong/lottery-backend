@@ -25,7 +25,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author 永
@@ -86,7 +88,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("写入返利记录失败，唯一索引冲突 userId: {}", userId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
         } finally {
@@ -107,5 +109,26 @@ public class RebateRepositoryImpl implements RebateRepository {
                 taskMapper.updateTaskSendMessageFail(task);
             }
         }
+    }
+
+    @Override
+    public List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo) {
+        LambdaQueryWrapper<UserBehaviorRebateOrder> queryWrapper = new QueryWrapper<UserBehaviorRebateOrder>().lambda()
+                .eq(UserBehaviorRebateOrder::getUserId, userId)
+                .eq(UserBehaviorRebateOrder::getOutBusinessNo, outBusinessNo);
+        List<UserBehaviorRebateOrder> userBehaviorRebateOrders;
+        try {
+            dbRouter.doRouter(userId);
+            userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
+        }finally {
+            dbRouter.clear();
+        }
+        List<RebateOrderEntity> rebateOrderEntities = new ArrayList<>(userBehaviorRebateOrders.size());
+        for (UserBehaviorRebateOrder userBehaviorRebateOrder : userBehaviorRebateOrders) {
+            RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
+            BeanUtils.copyProperties(userBehaviorRebateOrder, rebateOrderEntity);
+            rebateOrderEntities.add(rebateOrderEntity);
+        }
+        return rebateOrderEntities;
     }
 }

@@ -4,6 +4,7 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
+import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.chain.LogicChain;
@@ -97,6 +98,11 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     @Override
     public Map<String, Integer> queryAwardRuleLockCount(String[] treeIds) {
         return repository.queryAwardRuleLockCount(treeIds);
+    }
+
+    @Override
+    public List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId) {
+        return repository.queryStrategyRuleWeight(userId, activityId);
     }
 }
 

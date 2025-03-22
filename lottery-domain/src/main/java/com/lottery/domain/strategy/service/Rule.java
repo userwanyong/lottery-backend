@@ -1,5 +1,8 @@
 package com.lottery.domain.strategy.service;
 
+import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,4 +11,6 @@ import java.util.Map;
  */
 public interface Rule {
     Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
+
+    List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
 }

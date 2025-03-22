@@ -8,7 +8,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 抽奖活动账户表-日次数
@@ -17,6 +21,9 @@ import lombok.Data;
  */
 @TableName(value ="activity_account_day")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActivityAccountDay implements Serializable {
     /**
      * 自增ID

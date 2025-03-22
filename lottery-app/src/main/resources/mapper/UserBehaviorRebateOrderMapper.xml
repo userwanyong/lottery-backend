@@ -12,6 +12,7 @@
             <result property="rebateDesc" column="rebate_desc" jdbcType="VARCHAR"/>
             <result property="rebateType" column="rebate_type" jdbcType="VARCHAR"/>
             <result property="rebateConfig" column="rebate_config" jdbcType="VARCHAR"/>
+            <result property="outBusinessNo" column="out_business_no" jdbcType="VARCHAR"/>
             <result property="bizId" column="biz_id" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>

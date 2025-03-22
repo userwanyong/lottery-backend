@@ -33,6 +33,10 @@ public class RebateOrderEntity {
      */
     private String rebateConfig;
     /**
+     * 外部业务号
+     */
+    private String outBusinessNo;
+    /**
      * 业务ID - 拼接的唯一值
      */
     private String bizId;

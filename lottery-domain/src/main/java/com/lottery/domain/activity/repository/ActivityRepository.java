@@ -47,4 +47,8 @@ public interface ActivityRepository {
     Integer queryTodayUserLotteryCount(String userId, Long activityId);
 
     List<Long> querySkuList();
+
+    ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId);
+
+    Integer queryTotalUserLotteryCount(String userId, Long activityId);
 }

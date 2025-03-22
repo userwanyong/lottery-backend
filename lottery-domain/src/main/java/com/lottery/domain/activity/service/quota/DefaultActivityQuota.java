@@ -85,4 +85,14 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     public Integer queryTodayUserLotteryCount(String userId, Long activityId) {
         return activityRepository.queryTodayUserLotteryCount(userId, activityId);
     }
+
+    @Override
+    public ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId) {
+        return activityRepository.queryUserActivityAccount(userId, activityId);
+    }
+
+    @Override
+    public Integer queryTotalUserLotteryCount(String userId, Long activityId) {
+        return activityRepository.queryTotalUserLotteryCount(userId, activityId);
+    }
 }

@@ -79,7 +79,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("写入中奖记录失败，唯一索引冲突 userId: {} activityId: {} awardId: {}", userAwardRecordEntity.getUserId(), userAwardRecordEntity.getActivityId(), userAwardRecordEntity.getAwardId(), e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
         } finally {

@@ -42,6 +42,7 @@ public class RebateServiceImpl implements RebateService {
             // 构建返利单
             RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
             BeanUtils.copyProperties(rebateVO, rebateOrderEntity);
+            rebateOrderEntity.setOutBusinessNo(behaviorEntity.getOutBusinessNo());
             rebateOrderEntity.setBizId(bizId);
             rebateOrderEntity.setUserId(behaviorEntity.getUserId());
             rebateOrderEntity.setOrderId(RandomStringUtils.randomNumeric(12));
@@ -76,5 +77,10 @@ public class RebateServiceImpl implements RebateService {
         rebateRepository.saveRebateAggregate(aggregates);
         // 4.返回返利单id集合
         return rebateOrders;
+    }
+
+    @Override
+    public List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo) {
+        return rebateRepository.queryRebateOrder(userId,outBusinessNo);
     }
 }

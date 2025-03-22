@@ -5,6 +5,7 @@ import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
+import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 
 import java.util.List;
@@ -65,4 +66,6 @@ public interface StrategyRepository {
     void clearAwardStock(String strategyAward);
 
     void clearQueueValue(String strategyAward);
+
+    List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
 }

@@ -175,27 +175,29 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     dbActivityAccount.setUserId(activityOrderEntity.getUserId());
                     dbActivityAccount.setActivityId(activityOrderEntity.getActivityId());
                     ActivityAccount quActivityAccount = activityAccountMapper.queryActivityAccountByUserId(dbActivityAccount);
-                    // 创建/更新月账户
-                    int countM = activityAccountMonthMapper.updateAccount(activityAccountMonth);
-                    if (countM == 0) {
-                        //此时总账户已经更新了，直接查总账户就行
-                        activityAccountMonth.setMonthCount(quActivityAccount.getMonthCount());
-                        activityAccountMonth.setMonthCountSurplus(quActivityAccount.getMonthCountSurplus());
-                        activityAccountMonthMapper.insert(activityAccountMonth);
-                    }
-                    // 创建/更新日账户
-                    int countD = activityAccountDayMapper.updateAccount(activityAccountDay);
-                    if (countD == 0) {
-                        //此时总账户已经更新了，直接查总账户就行
-                        activityAccountDay.setDayCount(quActivityAccount.getDayCount());
-                        activityAccountDay.setDayCountSurplus(quActivityAccount.getDayCountSurplus());
-                        activityAccountDayMapper.insert(activityAccountDay);
-                    }
+                    // 更新月账户 如果月账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountMonthMapper.updateAccount(activityAccountMonth);
+//                    int countM = activityAccountMonthMapper.updateAccount(activityAccountMonth);
+//                    if (countM == 0) {
+//                        //此时总账户已经更新了，直接查总账户就行
+//                        activityAccountMonth.setMonthCount(quActivityAccount.getMonthCount());
+//                        activityAccountMonth.setMonthCountSurplus(quActivityAccount.getMonthCountSurplus());
+//                        activityAccountMonthMapper.insert(activityAccountMonth);
+//                    }
+                    // 更新日账户 如果日账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountDayMapper.updateAccount(activityAccountDay);
+//                    int countD = activityAccountDayMapper.updateAccount(activityAccountDay);
+//                    if (countD == 0) {
+//                        //此时总账户已经更新了，直接查总账户就行
+//                        activityAccountDay.setDayCount(quActivityAccount.getDayCount());
+//                        activityAccountDay.setDayCountSurplus(quActivityAccount.getDayCountSurplus());
+//                        activityAccountDayMapper.insert(activityAccountDay);
+//                    }
                     return 1;
                 } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
                     status.setRollbackOnly(); //标记当前事务为回滚状态
                     log.error("创建额度单失败，额度单表唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode());
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(),ResponseCode.INDEX_DUP.getMessage());
                 }
             });
         } finally {
@@ -233,7 +235,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO activitySkuStockKeyVO) {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY +activitySkuStockKeyVO.getSku();
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY + activitySkuStockKeyVO.getSku();
         RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
         RDelayedQueue<ActivitySkuStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         delayedQueue.offer(activitySkuStockKeyVO, 3, TimeUnit.SECONDS);
@@ -241,7 +243,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public ActivitySkuStockKeyVO takeQueueValue(Long sku) {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY +sku;
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY + sku;
         RBlockingQueue<ActivitySkuStockKeyVO> destinationQueue = redisService.getBlockingQueue(cacheKey);
         return destinationQueue.poll();
     }
@@ -258,7 +260,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public void clearQueueValue(Long sku) {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY +sku;
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY + sku;
         RBlockingQueue<ActivitySkuStockKeyVO> blockingQueue = redisService.getBlockingQueue(cacheKey);
         blockingQueue.clear();
         RDelayedQueue<ActivitySkuStockKeyVO> delayedQueue = redisService.getDelayedQueue(blockingQueue);
@@ -440,7 +442,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("创建抽奖单失败，抽奖单表唯一索引冲突 userId: {} activityId: {}", userId, activityId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
         } finally {
@@ -471,7 +473,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccountDay.setActivityId(activityId);
         activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         ActivityAccountDay db = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
-        if (db == null){
+        if (db == null) {
             return 0;
         }
         return db.getDayCount() - db.getDayCountSurplus();
@@ -491,5 +493,63 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         return resultValue;
     }
 
+    @Override
+    public ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId) {
+        ActivityAccount activityAccount = new ActivityAccount();
+        activityAccount.setActivityId(activityId);
+        activityAccount.setUserId(userId);
+        ActivityAccount dbActivityAccount = activityAccountMapper.queryActivityAccountByUserId(activityAccount);
+        if (dbActivityAccount == null) {
+            return ActivityAccountEntity.builder()
+                    .activityId(activityId)
+                    .userId(userId)
+                    .totalCount(0)
+                    .totalCountSurplus(0)
+                    .monthCount(0)
+                    .monthCountSurplus(0)
+                    .dayCount(0)
+                    .dayCountSurplus(0)
+                    .build();
+        }
+        ActivityAccountEntity activityAccountEntity = new ActivityAccountEntity();
+        BeanUtils.copyProperties(dbActivityAccount, activityAccountEntity);
+        //TODO 这里我感觉不需要，后面数据不一致时在打开试试！
+//        // 2. 查询月账户额度
+//        ActivityAccountMonth activityAccountMonth = activityAccountMonthMapper.queryActivityAccountMonthByUserId(ActivityAccountMonth.builder()
+//                .activityId(activityId)
+//                .userId(userId)
+//                .build());
+//        // 3. 查询日账户额度
+//        ActivityAccountDay activityAccountDay = activityAccountDayMapper.queryActivityAccountDayByUserId(ActivityAccountDay.builder()
+//                .activityId(activityId)
+//                .userId(userId)
+//                .build());
+//        // 如果没有创建日账户，则从总账户中获取日总额度填充。「当新创建日账户时，会获得总账户额度」
+//        if (activityAccountDay==null) {
+//            activityAccountEntity.setDayCount(dbActivityAccount.getDayCount());
+//            activityAccountEntity.setDayCountSurplus(dbActivityAccount.getDayCount());
+//        } else {
+//            activityAccountEntity.setDayCount(activityAccountDay.getDayCount());
+//            activityAccountEntity.setDayCountSurplus(activityAccountDay.getDayCountSurplus());
+//        }
+//        // 如果没有创建月账户，则从总账户中获取月总额度填充。「当新创建日账户时，会获得总账户额度」
+//        if (activityAccountMonth==null) {
+//            activityAccountEntity.setMonthCount(dbActivityAccount.getMonthCount());
+//            activityAccountEntity.setMonthCountSurplus(dbActivityAccount.getMonthCount());
+//        } else {
+//            activityAccountEntity.setMonthCount(activityAccountMonth.getMonthCount());
+//            activityAccountEntity.setMonthCountSurplus(activityAccountMonth.getMonthCountSurplus());
+//        }
+        return activityAccountEntity;
+    }
+
+    @Override
+    public Integer queryTotalUserLotteryCount(String userId, Long activityId) {
+        ActivityAccount activityAccount = new ActivityAccount();
+        activityAccount.setUserId(userId);
+        activityAccount.setActivityId(activityId);
+        ActivityAccount dbActivityAccount = activityAccountMapper.queryActivityAccountByUserId(activityAccount);
+        return dbActivityAccount == null ? 0 : dbActivityAccount.getTotalCount() - dbActivityAccount.getTotalCountSurplus();
+    }
 
 }

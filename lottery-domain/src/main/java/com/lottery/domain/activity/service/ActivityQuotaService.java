@@ -1,5 +1,6 @@
 package com.lottery.domain.activity.service;
 
+import com.lottery.domain.activity.model.entity.ActivityAccountEntity;
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
 
 /**
@@ -16,4 +17,8 @@ public interface ActivityQuotaService {
     String createQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 
     Integer queryTodayUserLotteryCount(String userId, Long activityId);
+
+    ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId);
+
+    Integer queryTotalUserLotteryCount(String userId, Long activityId);
 }

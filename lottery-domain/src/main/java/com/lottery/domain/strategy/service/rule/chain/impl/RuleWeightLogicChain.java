@@ -1,5 +1,6 @@
 package com.lottery.domain.strategy.service.rule.chain.impl;
 
+import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
@@ -18,13 +19,14 @@ import java.util.*;
 @Component(Constants.RuleModel.RULE_WIGHT)
 public class RuleWeightLogicChain extends AbstractLogicChain {
 
-    // TODO 后期从数据库查询
-    public Long userScore = 4500L;
     @Resource
     private StrategyRepository repository;
 
     @Resource
     private StrategyService strategyService;
+
+    @Resource
+    private ActivityQuotaService activityQuotaService;
 
     @Override
     public RuleEntity logic(String userId, Long strategyId) {
@@ -32,6 +34,9 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         log.info("【责任链】-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
 
         String ruleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_WIGHT);
+
+//        Integer userScore = repository.queryActivityAccountTotalUseCount(userId, strategyId);
+        Integer userScore = activityQuotaService.queryTotalUserLotteryCount(userId, strategyId);
 
         // 1. 处理规则模型的值，如果规则模型没有值，直接放行
         Map<Long, String> analyticalValueGroup = getAnalyticalValue(ruleValue);

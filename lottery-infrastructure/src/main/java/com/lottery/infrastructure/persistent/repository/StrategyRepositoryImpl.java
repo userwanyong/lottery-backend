@@ -389,5 +389,49 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         delayedQueue.clear();
     }
 
-
+    @Override
+    public List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId) {
+        // 优先从缓存获取
+        Long strategyId = queryStrategyIdByActivityId(activityId);
+        String cacheKey = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY + strategyId;
+        List<RuleWeightVO> ruleWeightVOList = redisService.getValue(cacheKey);
+        if (ruleWeightVOList!=null) {
+            return ruleWeightVOList;
+        }
+        // 1.查询权重规则配置
+        LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
+                .eq(Rule::getStrategyId,strategyId)
+                .eq(Rule::getRuleModel, Constants.RuleModel.RULE_WIGHT);
+        String ruleValue = ruleMapper.selectOne(queryWrapper).getRuleValue();
+        // 2.处理规则的值
+        RuleEntity ruleEntity = new RuleEntity();
+        ruleEntity.setRuleModel(Constants.RuleModel.RULE_WIGHT);
+        ruleEntity.setRuleValue(ruleValue);
+        Map<String, List<Long>> ruleWeightValues = ruleEntity.getRuleWeightValues();
+        // 3.组装权重奖品
+        List<RuleWeightVO> newRuleWeightVOList = new ArrayList<>();
+        ruleWeightValues.keySet().forEach(ruleWeightKey -> {
+            List<Long> awardIds = ruleWeightValues.get(ruleWeightKey);
+            List<RuleWeightVO.Award> awardList = new ArrayList<>();
+            awardIds.forEach(awardId -> {
+                LambdaQueryWrapper<StrategyAward> wrapper = new QueryWrapper<StrategyAward>().lambda()
+                        .eq(StrategyAward::getStrategyId, strategyId)
+                        .eq(StrategyAward::getAwardId, awardId);
+                StrategyAward strategyAward = strategyAwardMapper.selectOne(wrapper);
+                awardList.add(RuleWeightVO.Award.builder()
+                        .awardId(awardId)
+                        .awardTitle(strategyAward.getAwardTitle())
+                        .build());
+            });
+            newRuleWeightVOList.add(RuleWeightVO.builder()
+                    .ruleValue(ruleValue)
+                    .awardIds(awardIds)
+                    .awardList(awardList)
+                    .weight(Integer.valueOf(ruleWeightKey.split(Constants.COLON)[0]))
+                    .build());
+        });
+        // 放入缓存
+        redisService.setValue(cacheKey, newRuleWeightVOList);
+        return newRuleWeightVOList;
+    }
 }

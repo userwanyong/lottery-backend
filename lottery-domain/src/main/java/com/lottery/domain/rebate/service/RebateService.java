@@ -1,6 +1,7 @@
 package com.lottery.domain.rebate.service;
 
 import com.lottery.domain.rebate.model.entity.BehaviorEntity;
+import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
 
 import java.util.List;
 
@@ -10,4 +11,6 @@ import java.util.List;
  */
 public interface RebateService {
     List<String> createRebateOrder(BehaviorEntity behaviorEntity);
+
+    List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
 }
