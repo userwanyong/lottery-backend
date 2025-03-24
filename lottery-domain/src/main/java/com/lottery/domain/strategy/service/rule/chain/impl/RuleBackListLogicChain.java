@@ -36,6 +36,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
                 log.info("【责任链】-黑名单接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST, awardId);
                 return RuleEntity.builder()
                         .awardId(awardId)
+                        .ruleValue("0.01,1")
                         .ruleModel(Constants.RuleModel.RULE_BLACKLIST)
                         .build();
             }

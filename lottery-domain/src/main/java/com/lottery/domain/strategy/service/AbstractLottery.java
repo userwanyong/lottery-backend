@@ -45,7 +45,7 @@ public abstract class AbstractLottery implements Lottery {
         log.info("【抽奖策略计算】-责任链 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, chainAward.getAwardId(), chainAward.getRuleModel());
         // 只有默认规则才走规则树
         if (!Constants.RuleModel.DEFAULT.equals(chainAward.getRuleModel())) {
-            return buildLotteryAwardEntity(strategyId, chainAward.getAwardId(), null);
+            return buildLotteryAwardEntity(strategyId, chainAward.getAwardId(), chainAward.getRuleValue());
         }
         // 3. 规则树
         RuleEntity treeAward=lotteryLogicTree(userId,strategyId,chainAward.getAwardId());

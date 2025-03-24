@@ -50,6 +50,7 @@ public class RuleEntity {
      */
     private String ruleDesc;
 
+
     /**
      * 获取权重rule_weight 值
      * 数据案例；4000:102,103,104,105 5000:102,103,104,105,106,107

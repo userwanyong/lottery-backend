@@ -7,22 +7,23 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
 /**
- * 用户中奖记录表
+ * 积分账户表
  * @author 永
- * @TableName user_award_record
+ * @TableName credit_account
  */
-@TableName(value ="user_award_record")
+@TableName(value ="credit_account")
 @Data
-public class UserAwardRecord implements Serializable {
+public class CreditAccount implements Serializable {
     /**
      * 自增ID
      */
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 用户ID
@@ -30,39 +31,19 @@ public class UserAwardRecord implements Serializable {
     private String userId;
 
     /**
-     * 活动ID
+     * 总积分，显示总账户值，记得一个人获得的总积分
      */
-    private Long activityId;
+    private BigDecimal totalAmount;
 
     /**
-     * 抽奖策略ID
+     * 可用积分，每次扣减的值
      */
-    private Long strategyId;
+    private BigDecimal availableAmount;
 
     /**
-     * 抽奖订单ID【作为幂等使用】
+     * 账户状态【open - 可用，close - 冻结】
      */
-    private String orderId;
-
-    /**
-     * 奖品ID
-     */
-    private Long awardId;
-
-    /**
-     * 奖品标题（名称）
-     */
-    private String awardTitle;
-
-    /**
-     * 中奖时间
-     */
-    private Date awardTime;
-
-    /**
-     * 奖品状态；create-创建、completed-发奖完成、、fail-发奖失败
-     */
-    private String awardState;
+    private String accountStatus;
 
     /**
      * 创建时间

@@ -39,7 +39,7 @@ public class UserAwardRecordEntity {
     /**
      * 奖品ID
      */
-    private Integer awardId;
+    private Long awardId;
 
     /**
      * 奖品标题（名称）
@@ -55,5 +55,10 @@ public class UserAwardRecordEntity {
      * 奖品状态；create-创建、completed-发奖完成、fail-发奖失败
      */
     private AwardStateVO awardState;
+
+    /**
+     * 奖品配置信息；发奖的时候，可以根据
+     */
+    private String awardConfig;
 
 }

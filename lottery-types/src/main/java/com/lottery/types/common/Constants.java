@@ -42,4 +42,9 @@ public class Constants {
 
     }
 
+    public static class AwardModel {
+        public static final String USER_CREDIT_RANDOM = "user_credit_random";
+
+    }
+
 }

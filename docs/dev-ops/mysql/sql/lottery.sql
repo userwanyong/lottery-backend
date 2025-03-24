@@ -431,7 +431,7 @@ LOCK TABLES `strategy` WRITE;
 /*!40000 ALTER TABLE `strategy`
     DISABLE KEYS */;
 INSERT INTO `strategy`
-VALUES (5, 200001, '抽奖策略-规则树', NULL, '2025-02-20 23:17:19', '2025-02-20 23:17:19');
+VALUES (5, 200001, '抽奖策略-规则树', 'rule_blacklist,rule_weight', '2025-02-20 23:17:19', '2025-02-20 23:17:19');
 /*!40000 ALTER TABLE `strategy`
     ENABLE KEYS */;
 UNLOCK TABLES;

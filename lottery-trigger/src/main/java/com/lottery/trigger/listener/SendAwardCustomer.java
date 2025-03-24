@@ -1,10 +1,18 @@
 package com.lottery.trigger.listener;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.lottery.domain.award.event.SendAwardMessageEvent;
+import com.lottery.domain.award.model.entity.DistributeAwardEntity;
+import com.lottery.domain.award.service.UserAwardService;
+import com.lottery.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * @author 永
@@ -16,11 +24,23 @@ public class SendAwardCustomer {
     @Value("${spring.rabbitmq.topic.send_award}")
     private String topic;
 
+    @Resource
+    private UserAwardService userAwardService;
+
     @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.send_award}"))
     public void listener(String message) {
         try {
             log.info("监听用户奖品发送消息 topic: {} message: {}", topic, message);
-            //后续会处理
+            BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage>>() {
+            }.getType());
+            SendAwardMessageEvent.SendAwardMessage sendAwardMessage = eventMessage.getData();
+            // 发奖
+            DistributeAwardEntity distributeAwardEntity = new DistributeAwardEntity();
+            distributeAwardEntity.setAwardConfig(sendAwardMessage.getAwardConfig());
+            distributeAwardEntity.setAwardId(sendAwardMessage.getAwardId());
+            distributeAwardEntity.setOrderId(sendAwardMessage.getOrderId());
+            distributeAwardEntity.setUserId(sendAwardMessage.getUserId());
+            userAwardService.distributeAward(distributeAwardEntity);
         } catch (Exception e) {
             log.error("监听用户奖品发送消息，消费失败 topic: {} message: {}", topic, message);
             throw e;

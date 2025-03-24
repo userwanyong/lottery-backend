@@ -22,7 +22,7 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
 
     @Override
     public EventMessage<SendAwardMessage> buildEventMessage(SendAwardMessage data) {
-        return EventMessage.<SendAwardMessage>builder()
+        return EventMessage.<SendAwardMessageEvent.SendAwardMessage>builder()
                 .id(RandomStringUtils.randomNumeric(11))
                 .timestamp(new Date())
                 .data(data)
@@ -46,10 +46,19 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
         /**
          * 奖品ID
          */
-        private Integer awardId;
+        private Long awardId;
         /**
          * 奖品标题（名称）
          */
         private String awardTitle;
+        /**
+         * 订单ID
+         */
+        private String orderId;
+        /**
+         * 奖品配置信息
+         */
+        private String awardConfig;
+
     }
 }
