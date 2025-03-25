@@ -22,6 +22,7 @@ import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
+import org.redisson.api.RLock;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -115,7 +116,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + createQuotaOrderAggregate.getUserId() + Constants.UNDERLINE + createQuotaOrderAggregate.getActivityId());
         try {
+            lock.lock(3, TimeUnit.SECONDS);
             // 额度单对象
             ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
             ActivityOrder activityOrder = new ActivityOrder();
@@ -166,15 +169,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     // 1. 写入订单
                     activityOrderMapper.insert(activityOrder);
                     // 2. 更新总账户
-                    int count = activityAccountMapper.updateAccount(activityAccount);
-                    // 3. 创建账户 - 更新为0，则账户不存在，创新新账户。
-                    if (count == 0) {
+                    LambdaQueryWrapper<ActivityAccount> queryWrapper = new QueryWrapper<ActivityAccount>().lambda()
+                            .eq(ActivityAccount::getUserId, activityOrderEntity.getUserId())
+                            .eq(ActivityAccount::getActivityId, activityOrderEntity.getActivityId());
+                    ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(queryWrapper);
+                    if (dbActivityAccount == null){
+                        // 创建
                         activityAccountMapper.insert(activityAccount);
+                    }else {
+                        // 更新
+                        activityAccountMapper.update(activityAccount, queryWrapper);
                     }
-                    ActivityAccount dbActivityAccount = new ActivityAccount();
-                    dbActivityAccount.setUserId(activityOrderEntity.getUserId());
-                    dbActivityAccount.setActivityId(activityOrderEntity.getActivityId());
-                    ActivityAccount quActivityAccount = activityAccountMapper.queryActivityAccountByUserId(dbActivityAccount);
+//                    ActivityAccount dbActivityAccount = new ActivityAccount();
+//                    dbActivityAccount.setUserId(activityOrderEntity.getUserId());
+//                    dbActivityAccount.setActivityId(activityOrderEntity.getActivityId());
+//                    ActivityAccount quActivityAccount = activityAccountMapper.queryActivityAccountByUserId(dbActivityAccount);
                     // 更新月账户 如果月账户不存在，则不用更新，在抽奖时会根据总账户创建
                     activityAccountMonthMapper.updateAccount(activityAccountMonth);
 //                    int countM = activityAccountMonthMapper.updateAccount(activityAccountMonth);
@@ -202,6 +211,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             });
         } finally {
             dbRouter.clear();
+            lock.unlock();
         }
     }
 

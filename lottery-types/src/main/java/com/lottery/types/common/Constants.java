@@ -25,6 +25,7 @@ public class Constants {
         public static final String STRATEGY_AWARD_COUNT_KEY = "lottery_strategy_award_count_key_";
         public static final String STRATEGY_AWARD_COUNT_QUEUE_KEY = "lottery_strategy_award_count_queue_key_";
         public static final String STRATEGY_RULE_WEIGHT_KEY = "lottery_strategy_rule_weight_key_";
+        public static final String ACTIVITY_ACCOUNT_LOCK = "lottery_activity_account_lock_";
     }
 
     public static class RuleModel {

@@ -16,15 +16,19 @@ import com.lottery.domain.award.repository.UserAwardRepository;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.*;
 import com.lottery.infrastructure.persistent.po.*;
+import com.lottery.infrastructure.persistent.redis.RedisService;
+import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 永
@@ -49,6 +53,8 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     private TransactionTemplate transactionTemplate;
     @Resource
     private EventPublisher eventPublisher;
+    @Resource
+    private RedisService redisService;
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {
@@ -120,14 +126,21 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         creditAccount.setTotalAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAvailableAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAccountStatus(AccountStatusVO.open.getCode());
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {
+            lock.lock(3, TimeUnit.SECONDS);
             dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
                 try {
                     // 更新/创建积分账户
-                    int update = creditAccountMapper.update(creditAccount);
-                    if (update==0){
+                    LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda().eq(CreditAccount::getUserId, userId);
+                    CreditAccount dbCreditAccount = creditAccountMapper.selectOne(queryWrapper);
+                    if (dbCreditAccount==null){
+                        // 新增
                         creditAccountMapper.insert(creditAccount);
+                    }else {
+                        // 更新
+                        creditAccountMapper.update(creditAccount);
                     }
                     // 更新中奖记录
                     int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserId, userId).eq(UserAwardRecord::getOrderId, userAwardRecordEntity.getOrderId()));
@@ -144,6 +157,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
             });
         }finally {
             dbRouter.clear();
+            lock.unlock();
         }
 
     }
