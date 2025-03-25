@@ -12,13 +12,13 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * 积分账户表
+ * 用户积分订单记录
  * @author 永
- * @TableName credit_account
+ * @TableName user_credit_order
  */
-@TableName(value ="credit_account")
+@TableName(value ="user_credit_order")
 @Data
-public class CreditAccount implements Serializable {
+public class UserCreditOrder implements Serializable {
     /**
      * 自增ID
      */
@@ -31,19 +31,29 @@ public class CreditAccount implements Serializable {
     private String userId;
 
     /**
-     * 总积分，显示总账户值，记得一个人获得的总积分
+     * 订单ID
      */
-    private BigDecimal totalAmount;
+    private String orderId;
 
     /**
-     * 可用积分
+     * 交易名称
      */
-    private BigDecimal availableAmount;
+    private String tradeName;
 
     /**
-     * 账户状态【open - 可用，close - 冻结】
+     * 交易类型；forward-正向、reverse-逆向
      */
-    private String accountStatus;
+    private String tradeType;
+
+    /**
+     * 交易金额
+     */
+    private BigDecimal tradeAmount;
+
+    /**
+     * 业务仿重ID - 外部透传。返利、行为等唯一标识
+     */
+    private String outBusinessNo;
 
     /**
      * 创建时间
