@@ -16,7 +16,8 @@ public interface ActivityRepository {
     ActivitySkuEntity queryActivitySku(Long sku);
     ActivityEntity queryActivityByActivityId(Long activityId);
     ActivityCountEntity queryActivityCountByActivityCountId(Long activityCountId);
-    void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
+    void doSaveNoPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
+    void doSaveCreditPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
     void cacheActivitySkuStockCount(String key, Integer stockCountSurplus);
 
@@ -51,4 +52,6 @@ public interface ActivityRepository {
     ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId);
 
     Integer queryTotalUserLotteryCount(String userId, Long activityId);
+
+    void updateQuotaOrder(DeliveryOrderEntity deliveryOrderEntity);
 }

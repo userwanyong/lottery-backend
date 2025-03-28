@@ -1,15 +1,20 @@
 package com.lottery.infrastructure.persistent.repository;
 
 import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.domain.credit.model.aggregate.TradeAggregate;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.CreditOrderEntity;
+import com.lottery.domain.credit.model.entity.TaskEntity;
 import com.lottery.domain.credit.repository.CreditRepository;
+import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.CreditAccountMapper;
+import com.lottery.infrastructure.persistent.dao.TaskMapper;
 import com.lottery.infrastructure.persistent.dao.UserCreditOrderMapper;
 import com.lottery.infrastructure.persistent.po.CreditAccount;
+import com.lottery.infrastructure.persistent.po.Task;
 import com.lottery.infrastructure.persistent.po.UserCreditOrder;
 import com.lottery.infrastructure.persistent.redis.RedisService;
 import com.lottery.types.common.Constants;
@@ -36,15 +41,20 @@ public class CreditRepositoryImpl implements CreditRepository {
     @Resource
     private UserCreditOrderMapper userCreditOrderMapper;
     @Resource
+    private TaskMapper taskMapper;
+    @Resource
     private IDBRouterStrategy dbRouter;
     @Resource
     private TransactionTemplate transactionTemplate;
+    @Resource
+    private EventPublisher eventPublisher;
 
     @Override
     public void saveTradeAggregate(TradeAggregate tradeAggregate) {
         String userId = tradeAggregate.getUserId();
         CreditAccountEntity creditAccountEntity = tradeAggregate.getCreditAccountEntity();
         CreditOrderEntity creditOrderEntity = tradeAggregate.getCreditOrderEntity();
+        TaskEntity taskEntity = tradeAggregate.getTaskEntity();
 
         CreditAccount creditAccount = new CreditAccount();
         creditAccount.setUserId(userId);
@@ -60,6 +70,13 @@ public class CreditRepositoryImpl implements CreditRepository {
         userCreditOrder.setTradeAmount(creditOrderEntity.getTradeAmount());
         userCreditOrder.setOutBusinessNo(creditOrderEntity.getOutBusinessNo());
 
+        Task task = new Task();
+        task.setUserId(taskEntity.getUserId());
+        task.setTopic(taskEntity.getTopic());
+        task.setMessageId(taskEntity.getMessageId());
+        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
+        task.setState(taskEntity.getState().getCode());
+
         RLock lock = redisService.getLock(Constants.RedisKey.CREDIT_ACCOUNT_LOCK + userId + Constants.UNDERLINE + creditOrderEntity.getOutBusinessNo());
 
         try {
@@ -71,15 +88,17 @@ public class CreditRepositoryImpl implements CreditRepository {
                     LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
                             .eq(CreditAccount::getUserId, userId);
                     CreditAccount account = creditAccountMapper.selectOne(queryWrapper);
-                    if (account == null){
+                    if (account == null) {
                         // 新增
                         creditAccountMapper.insert(creditAccount);
-                    }else {
+                    } else {
                         // 更新
                         creditAccountMapper.update(creditAccount);
                     }
                     // 保存订单
                     userCreditOrderMapper.insert(userCreditOrder);
+                    // 写入任务
+                    taskMapper.insert(task);
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
@@ -92,6 +111,17 @@ public class CreditRepositoryImpl implements CreditRepository {
         } finally {
             dbRouter.clear();
             lock.unlock();
+        }
+
+        //发送mq消息 不用加在事务里，因为有事务补偿机制
+        try {
+            eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
+            //更新数据库
+            taskMapper.updateTaskSendMessageCompleted(task);
+            log.info("更新账户积分，发送MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
+        } catch (Exception e) {
+            log.error("更新账户积分，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
+            taskMapper.updateTaskSendMessageFail(task);
         }
     }
 }

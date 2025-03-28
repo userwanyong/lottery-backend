@@ -2,6 +2,8 @@ package com.lottery.domain.activity.model.entity;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author 永
  * 活动sku实体对象
@@ -18,5 +20,7 @@ public class ActivitySkuEntity {
     private Integer stockCount;
     /** 剩余库存 */
     private Integer stockCountSurplus;
+    /** 兑换所需积分 */
+    private BigDecimal productAmount;
 
 }

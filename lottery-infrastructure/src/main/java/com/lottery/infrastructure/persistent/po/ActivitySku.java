@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -48,6 +49,11 @@ public class ActivitySku implements Serializable {
      * 剩余库存
      */
     private Integer stockCountSurplus;
+
+    /**
+     * 兑换所需积分
+     */
+    private BigDecimal productAmount;
 
     /**
      * 创建时间

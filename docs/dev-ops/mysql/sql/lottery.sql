@@ -107,14 +107,15 @@ DROP TABLE IF EXISTS `activity_sku`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `activity_sku`
 (
-    `id`                  int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `sku`                 bigint       NOT NULL COMMENT '商品sku - 把每一个组合当做一个商品',
-    `activity_id`         bigint       NOT NULL COMMENT '活动ID',
-    `activity_count_id`   bigint       NOT NULL COMMENT '活动个人参与次数ID',
-    `stock_count`         int          NOT NULL COMMENT '商品库存',
-    `stock_count_surplus` int          NOT NULL COMMENT '剩余库存',
-    `create_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`                  int unsigned   NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `sku`                 bigint         NOT NULL COMMENT '商品sku - 把每一个组合当做一个商品',
+    `activity_id`         bigint         NOT NULL COMMENT '活动ID',
+    `activity_count_id`   bigint         NOT NULL COMMENT '活动个人参与次数ID',
+    `stock_count`         int            NOT NULL COMMENT '商品库存',
+    `stock_count_surplus` int            NOT NULL COMMENT '剩余库存',
+    `product_amount`      decimal(10, 2) NOT NULL COMMENT '兑换所需积分',
+    `create_time`         datetime       NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_sku` (`sku`),
     KEY `idx_activity_id_activity_count_id` (`activity_id`, `activity_count_id`)
@@ -132,7 +133,7 @@ LOCK TABLES `activity_sku` WRITE;
 /*!40000 ALTER TABLE `activity_sku`
     DISABLE KEYS */;
 INSERT INTO `activity_sku`
-VALUES (1, 9011, 100301, 11101, 20, 14, '2025-03-11 22:12:56', '2025-03-18 21:14:15');
+VALUES (1, 9011, 100301, 11101, 20, 14, 1.99, '2025-03-11 22:12:56', '2025-03-18 21:14:15');
 /*!40000 ALTER TABLE `activity_sku`
     ENABLE KEYS */;
 UNLOCK TABLES;

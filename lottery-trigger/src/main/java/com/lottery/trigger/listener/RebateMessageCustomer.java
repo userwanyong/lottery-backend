@@ -3,6 +3,7 @@ package com.lottery.trigger.listener;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
+import com.lottery.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.credit.model.entity.TradeEntity;
 import com.lottery.domain.credit.model.valobj.TradeNameVO;
@@ -50,6 +51,7 @@ public class RebateMessageCustomer {
                     quotaOrderEntity.setSku(Long.valueOf(data.getRebateConfig()));
                     quotaOrderEntity.setUserId(data.getUserId());
                     quotaOrderEntity.setOutBusinessNo(data.getBizId());
+                    quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
                     String quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
                     log.info("监听用户入账消息，抽奖额度入账成功 topic: {} message: {} quotaOrder: {}", topic, message, quotaOrder);
                     break;

@@ -8,7 +8,7 @@ import com.lottery.domain.credit.model.entity.TradeEntity;
  */
 public interface CreditService {
     /**
-     * 创建增加积分额度订单
+     * 创建积分额度单
      * @param tradeEntity 交易实体对象
      * @return 单号
      */

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -75,10 +76,18 @@ public class ActivityOrder implements Serializable {
     private Integer monthCount;
 
     /**
+     * 支付积分
+     */
+    private BigDecimal payAmount;
+
+    /**
      * 订单状态（complete）
      */
     private String state;
 
+    /**
+     * 保证幂等，不会重复消费
+     */
     private String outBusinessNo;
 
     /**

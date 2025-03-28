@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TradeNameVO {
-    REBATE("行为返利"),
-    CONVERT_SKU("兑换抽奖"),
+    REBATE("每日签到"),
+    CONVERT_SKU("积分兑换"),
     ;
     private final String name;
 }

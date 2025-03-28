@@ -7,12 +7,15 @@ import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.ActivityQuotaService;
+import com.lottery.domain.activity.service.quota.policy.TradePolicy;
 import com.lottery.domain.activity.service.quota.rule.ActivityChain;
 import com.lottery.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
 
 /**
  * @author 永
@@ -22,8 +25,11 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class AbstractActivityQuota extends ActivitySupportQuota implements ActivityQuotaService {
 
 
-    public AbstractActivityQuota(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
+    private final Map<String, TradePolicy> tradePolicyGroup;
+
+    public AbstractActivityQuota(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory, Map<String, TradePolicy> tradePolicyGroup) {
         super(activityRepository, defaultActivityChainFactory);
+        this.tradePolicyGroup = tradePolicyGroup;
     }
 
     @Override
@@ -51,14 +57,13 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
         CreateQuotaOrderAggregate createQuotaOrderAggregate = buildOrderAggregate(quotaOrderEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
         // 5. 保存额度单
-        doSaveOrder(createQuotaOrderAggregate);
+        TradePolicy tradePolicy = tradePolicyGroup.get(quotaOrderEntity.getOrderTradeTypeVO().getCode());
+        tradePolicy.trade(createQuotaOrderAggregate);
 
         // 6. 返回额度单号
         return createQuotaOrderAggregate.getActivityOrderEntity().getOrderId();
     }
 
     protected abstract CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
-
-    protected abstract void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
 }

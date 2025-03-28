@@ -263,7 +263,8 @@ CREATE TABLE `activity_order_000`
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
     `day_count`       int(8)              NOT NULL COMMENT '日次数',
     `month_count`     int(8)              NOT NULL COMMENT '月次数',
-    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `pay_amount`      decimal(10, 2)               DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
     `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -288,7 +289,8 @@ CREATE TABLE `activity_order_001`
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
     `day_count`       int(8)              NOT NULL COMMENT '日次数',
     `month_count`     int(8)              NOT NULL COMMENT '月次数',
-    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `pay_amount`      decimal(10, 2)               DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
     `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -314,7 +316,8 @@ CREATE TABLE `activity_order_002`
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
     `day_count`       int(8)              NOT NULL COMMENT '日次数',
     `month_count`     int(8)              NOT NULL COMMENT '月次数',
-    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `pay_amount`      decimal(10, 2)               DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
     `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -339,7 +342,8 @@ CREATE TABLE `activity_order_003`
     `total_count`     int(8)              NOT NULL COMMENT '总次数',
     `day_count`       int(8)              NOT NULL COMMENT '日次数',
     `month_count`     int(8)              NOT NULL COMMENT '月次数',
-    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete）',
+    `pay_amount`      decimal(10, 2)               DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)         NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
     `out_business_no` varchar(64)         NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime            NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -349,7 +353,6 @@ CREATE TABLE `activity_order_003`
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT ='抽奖额度单表';
-
 
 DROP TABLE IF EXISTS `user_behavior_rebate_order_000`;
 CREATE TABLE `user_behavior_rebate_order_000`

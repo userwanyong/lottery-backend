@@ -3,15 +3,16 @@ package com.lottery.domain.activity.service.quota;
 import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
-import com.lottery.domain.activity.model.valobj.OrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.ActivitySkuStockService;
+import com.lottery.domain.activity.service.quota.policy.TradePolicy;
 import com.lottery.domain.activity.service.quota.rule.factory.DefaultActivityChainFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 永
@@ -20,8 +21,9 @@ import java.util.List;
 @Service
 public class DefaultActivityQuota extends AbstractActivityQuota implements ActivitySkuStockService {
 
-    public DefaultActivityQuota(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory) {
-        super(activityRepository, defaultActivityChainFactory);
+
+    public DefaultActivityQuota(ActivityRepository activityRepository, DefaultActivityChainFactory defaultActivityChainFactory, Map<String, TradePolicy> tradePolicyGroup) {
+        super(activityRepository, defaultActivityChainFactory, tradePolicyGroup);
     }
 
     @Override
@@ -37,7 +39,8 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
         activityOrderEntity.setTotalCount(activityCountEntity.getTotalCount());
         activityOrderEntity.setDayCount(activityCountEntity.getDayCount());
         activityOrderEntity.setMonthCount(activityCountEntity.getMonthCount());
-        activityOrderEntity.setState(OrderStateVO.completed);
+        activityOrderEntity.setPayAmount(activitySkuEntity.getProductAmount());
+//        activityOrderEntity.setState(OrderStateVO.completed);
         activityOrderEntity.setOutBusinessNo(quotaOrderEntity.getOutBusinessNo());
 
         return CreateQuotaOrderAggregate.builder()
@@ -51,10 +54,6 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
 
     }
 
-    @Override
-    protected void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
-        activityRepository.doSaveOrder(createQuotaOrderAggregate);
-    }
 
     @Override
     public ActivitySkuStockKeyVO takeQueueValue(Long sku) {
@@ -79,6 +78,11 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     @Override
     public List<Long> querySkuList() {
         return activityRepository.querySkuList();
+    }
+
+    @Override
+    public void updateQuotaOrder(DeliveryOrderEntity deliveryOrderEntity) {
+        activityRepository.updateQuotaOrder(deliveryOrderEntity);
     }
 
     @Override

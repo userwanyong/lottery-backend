@@ -26,6 +26,7 @@ public class Constants {
         public static final String STRATEGY_AWARD_COUNT_QUEUE_KEY = "lottery_strategy_award_count_queue_key_";
         public static final String STRATEGY_RULE_WEIGHT_KEY = "lottery_strategy_rule_weight_key_";
         public static final String ACTIVITY_ACCOUNT_LOCK = "lottery_activity_account_lock_";
+        public static final String ACTIVITY_ACCOUNT_UPDATE_LOCK = "lottery_activity_account_update_lock_";
         public static final String CREDIT_ACCOUNT_LOCK = "lottery_credit_account_lock_";
     }
 
@@ -46,6 +47,12 @@ public class Constants {
 
     public static class AwardModel {
         public static final String USER_CREDIT_RANDOM = "user_credit_random";
+
+    }
+
+    public static class QuotaModel {
+        public static final String CREDIT_PAY_TRADE = "credit_pay_trade";
+        public static final String REBATE_NO_PAY_TRADE = "rebate_no_pay_trade";
 
     }
 

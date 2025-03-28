@@ -10,6 +10,7 @@ import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.lottery.domain.activity.model.valobj.ActivityStateVO;
+import com.lottery.domain.activity.model.valobj.OrderStateVO;
 import com.lottery.domain.activity.model.valobj.UserOrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.infrastructure.event.EventPublisher;
@@ -115,7 +116,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public void doSaveOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+    public void doSaveNoPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + createQuotaOrderAggregate.getUserId() + Constants.UNDERLINE + createQuotaOrderAggregate.getActivityId());
         try {
             lock.lock(3, TimeUnit.SECONDS);
@@ -133,6 +134,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityOrder.setDayCount(activityOrderEntity.getDayCount());
             activityOrder.setMonthCount(activityOrderEntity.getMonthCount());
             activityOrder.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityOrder.setPayAmount(activityOrderEntity.getPayAmount());
             activityOrder.setDayCount(createQuotaOrderAggregate.getDayCount());
             activityOrder.setMonthCount(createQuotaOrderAggregate.getMonthCount());
             activityOrder.setState(activityOrderEntity.getState().getCode());
@@ -173,10 +175,10 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                             .eq(ActivityAccount::getUserId, activityOrderEntity.getUserId())
                             .eq(ActivityAccount::getActivityId, activityOrderEntity.getActivityId());
                     ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(queryWrapper);
-                    if (dbActivityAccount == null){
+                    if (dbActivityAccount == null) {
                         // 创建
                         activityAccountMapper.insert(activityAccount);
-                    }else {
+                    } else {
                         // 更新
                         activityAccountMapper.update(activityAccount, queryWrapper);
                     }
@@ -206,7 +208,52 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
                     status.setRollbackOnly(); //标记当前事务为回滚状态
                     log.error("创建额度单失败，额度单表唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(),ResponseCode.INDEX_DUP.getMessage());
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
+                }
+            });
+        } finally {
+            dbRouter.clear();
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void doSaveCreditPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + createQuotaOrderAggregate.getUserId() + Constants.UNDERLINE + createQuotaOrderAggregate.getActivityId());
+        try {
+            lock.lock(3, TimeUnit.SECONDS);
+            // 额度单对象
+            ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
+            ActivityOrder activityOrder = new ActivityOrder();
+            activityOrder.setUserId(activityOrderEntity.getUserId());
+            activityOrder.setSku(activityOrderEntity.getSku());
+            activityOrder.setActivityId(activityOrderEntity.getActivityId());
+            activityOrder.setActivityName(activityOrderEntity.getActivityName());
+            activityOrder.setStrategyId(activityOrderEntity.getStrategyId());
+            activityOrder.setOrderId(activityOrderEntity.getOrderId());
+            activityOrder.setOrderTime(activityOrderEntity.getOrderTime());
+            activityOrder.setTotalCount(activityOrderEntity.getTotalCount());
+            activityOrder.setDayCount(activityOrderEntity.getDayCount());
+            activityOrder.setMonthCount(activityOrderEntity.getMonthCount());
+            activityOrder.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityOrder.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityOrder.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityOrder.setState(activityOrderEntity.getState().getCode());
+            activityOrder.setPayAmount(activityOrderEntity.getPayAmount());
+            activityOrder.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
+
+            // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
+            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
+            // 编程式事务
+            transactionTemplate.execute(status -> {
+                try {
+                    // 1. 写入订单
+                    activityOrderMapper.insert(activityOrder);
+                    return 1;
+                } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
+                    status.setRollbackOnly(); //标记当前事务为回滚状态
+                    log.error("创建额度单失败，额度单表唯一索引冲突 userId: {} activityId: {} sku: {}", activityOrderEntity.getUserId(), activityOrderEntity.getActivityId(), activityOrderEntity.getSku(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
         } finally {
@@ -560,6 +607,90 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccount.setActivityId(activityId);
         ActivityAccount dbActivityAccount = activityAccountMapper.queryActivityAccountByUserId(activityAccount);
         return dbActivityAccount == null ? 0 : dbActivityAccount.getTotalCount() - dbActivityAccount.getTotalCountSurplus();
+    }
+
+    @Override
+    public void updateQuotaOrder(DeliveryOrderEntity deliveryOrderEntity) {
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_UPDATE_LOCK + deliveryOrderEntity.getUserId());
+        try {
+            dbRouter.doRouter(deliveryOrderEntity.getUserId());
+            lock.lock(3, TimeUnit.SECONDS);
+            // 查询订单
+            LambdaQueryWrapper<ActivityOrder> queryWrapper = new QueryWrapper<ActivityOrder>().lambda()
+                    .eq(ActivityOrder::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
+                    .eq(ActivityOrder::getUserId, deliveryOrderEntity.getUserId());
+            ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
+            if (activityOrder == null){
+                return;
+            }
+
+            // 总账户对象
+            ActivityAccount activityAccount = new ActivityAccount();
+            BeanUtils.copyProperties(activityOrder, activityAccount);
+            activityAccount.setTotalCountSurplus(activityOrder.getTotalCount());
+            activityAccount.setDayCountSurplus(activityOrder.getDayCount());
+            activityAccount.setMonthCountSurplus(activityOrder.getMonthCount());
+
+            // 月账户对象
+            ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
+            activityAccountMonth.setUserId(activityOrder.getUserId());
+            activityAccountMonth.setActivityId(activityOrder.getActivityId());
+            activityAccountMonth.setMonth(new SimpleDateFormat("yyyy-MM").format(new Date()));
+            activityAccountMonth.setMonthCount(activityOrder.getMonthCount());
+            activityAccountMonth.setMonthCountSurplus(activityOrder.getMonthCount());
+
+            // 日账户对象
+            ActivityAccountDay activityAccountDay = new ActivityAccountDay();
+            activityAccountDay.setUserId(activityOrder.getUserId());
+            activityAccountDay.setActivityId(activityOrder.getActivityId());
+            activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            activityAccountDay.setDayCount(activityOrder.getDayCount());
+            activityAccountDay.setDayCountSurplus(activityOrder.getDayCount());
+
+            transactionTemplate.execute(status -> {
+                try {
+                    // 1. 更新订单
+                    LambdaUpdateWrapper<ActivityOrder> updateWrapper = new LambdaUpdateWrapper<ActivityOrder>()
+                            .eq(ActivityOrder::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
+                            .eq(ActivityOrder::getUserId, deliveryOrderEntity.getUserId())
+                            .eq(ActivityOrder::getState, OrderStateVO.wait_pay)
+                            .set(ActivityOrder::getState, OrderStateVO.completed);
+                    int updateCount = activityOrderMapper.update(null, updateWrapper);
+                    if (1 != updateCount) {
+                        status.setRollbackOnly();
+                        return 1;
+                    }
+                    // 2. 更新总账户
+                    LambdaQueryWrapper<ActivityAccount> query = new QueryWrapper<ActivityAccount>().lambda()
+                            .eq(ActivityAccount::getUserId, activityAccount.getUserId())
+                            .eq(ActivityAccount::getActivityId, activityAccount.getActivityId());
+                    ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(query);
+                    if (dbActivityAccount == null) {
+                        // 创建
+                        activityAccountMapper.insert(activityAccount);
+                    } else {
+                        // 更新
+                        activityAccountMapper.update(activityAccount, query);
+                    }
+
+                    // 更新月账户 如果月账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountMonthMapper.updateAccount(activityAccountMonth);
+
+                    // 更新日账户 如果日账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountDayMapper.updateAccount(activityAccountDay);
+
+                    return 1;
+                } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
+                    status.setRollbackOnly(); //标记当前事务为回滚状态
+                    log.error("创建额度单失败，额度单表唯一索引冲突 userId: {} outBusinessNo: {}", deliveryOrderEntity.getUserId(), deliveryOrderEntity.getOutBusinessNo(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
+                }
+            });
+
+        } finally {
+            dbRouter.clear();
+            lock.unlock();
+        }
     }
 
 }

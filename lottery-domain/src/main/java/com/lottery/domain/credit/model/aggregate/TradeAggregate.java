@@ -1,9 +1,13 @@
 package com.lottery.domain.credit.model.aggregate;
 
+import com.lottery.domain.credit.event.CreditAdjustSuccessMessageEvent;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.CreditOrderEntity;
+import com.lottery.domain.credit.model.entity.TaskEntity;
+import com.lottery.domain.credit.model.valobj.TaskStateVO;
 import com.lottery.domain.credit.model.valobj.TradeNameVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
+import com.lottery.types.event.BaseEvent;
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -21,6 +25,8 @@ public class TradeAggregate {
     private CreditAccountEntity creditAccountEntity;
     // 积分订单实体
     private CreditOrderEntity creditOrderEntity;
+    // 任务实体
+    private TaskEntity taskEntity;
 
     public static CreditAccountEntity buildCreditAccountEntity(String userId, BigDecimal creditAmount) {
         return CreditAccountEntity.builder().userId(userId).creditAmount(creditAmount).build();
@@ -36,5 +42,16 @@ public class TradeAggregate {
                 .outBusinessNo(outBusinessNo)
                 .build();
     }
+
+    public static TaskEntity buildTaskEntity(String userId, String topic, String messageId, BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> message) {
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setUserId(userId);
+        taskEntity.setTopic(topic);
+        taskEntity.setMessageId(messageId);
+        taskEntity.setMessage(message);
+        taskEntity.setState(TaskStateVO.create);
+        return taskEntity;
+    }
+
 
 }

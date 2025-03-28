@@ -16,6 +16,7 @@
             <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
             <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
             <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
             <result property="state" column="state" jdbcType="VARCHAR"/>
             <result property="outBusinessNo" column="outBusinessNo" jdbcType="VARCHAR"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>

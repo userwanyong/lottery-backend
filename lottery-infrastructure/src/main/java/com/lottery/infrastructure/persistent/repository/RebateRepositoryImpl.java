@@ -104,6 +104,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                 eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
                 //更新数据库
                 taskMapper.updateTaskSendMessageCompleted(task);
+                log.info("写入返利记录，发送MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
             }catch (Exception e){
                 log.error("写入返利记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
                 taskMapper.updateTaskSendMessageFail(task);

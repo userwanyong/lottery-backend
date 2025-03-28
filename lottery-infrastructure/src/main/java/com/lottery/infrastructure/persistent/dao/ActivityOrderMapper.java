@@ -13,7 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
 @DBRouterStrategy(splitTable = true) //执行 MyBaits 操作的时候，对 SQL 语句进行动态变更。
 public interface ActivityOrderMapper extends BaseMapper<ActivityOrder> {
 
-
 }
 
 

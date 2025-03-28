@@ -104,6 +104,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
             eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
             // 更新数据库记录，task 任务表
             taskMapper.updateTaskSendMessageCompleted(task);
+            log.info("写入中奖记录，发送MQ消息成功 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
         } catch (Exception e) {
             log.error("写入中奖记录，发送MQ消息失败 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
             taskMapper.updateTaskSendMessageFail(task);

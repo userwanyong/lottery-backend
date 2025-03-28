@@ -3,6 +3,7 @@ package com.lottery.domain.activity.model.entity;
 import com.lottery.domain.activity.model.valobj.OrderStateVO;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -60,6 +61,11 @@ public class ActivityOrderEntity {
      * 月次数
      */
     private Integer monthCount;
+
+    /**
+     * 支付金额
+     */
+    private BigDecimal payAmount;
 
     /**
      * 订单状态
