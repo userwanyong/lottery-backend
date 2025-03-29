@@ -54,4 +54,8 @@ public interface ActivityRepository {
     Integer queryTotalUserLotteryCount(String userId, Long activityId);
 
     void updateQuotaOrder(DeliveryOrderEntity deliveryOrderEntity);
+
+    List<SkuProductEntity> querySkuProductEntityListByActivityId(Long activityId);
+
+    UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 }

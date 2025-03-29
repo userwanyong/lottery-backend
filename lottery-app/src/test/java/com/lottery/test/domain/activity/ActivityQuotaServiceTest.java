@@ -1,6 +1,7 @@
 package com.lottery.test.domain.activity;
 
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
+import com.lottery.domain.activity.model.entity.UnpaidQuotaOrderEntity;
 import com.lottery.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
@@ -45,8 +46,8 @@ public class ActivityQuotaServiceTest {
                 // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
                 quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
                 quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
-                String orderId = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-                log.info("测试结果：{}", orderId);
+                UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
+                log.info("测试结果：{}", quotaOrder);
             } catch (AppException e) {
                 log.warn(e.getMessage());
             }
@@ -62,7 +63,7 @@ public class ActivityQuotaServiceTest {
         // outBusinessNo 作为幂等仿重使用，同一个业务单号2次使用会抛出索引冲突 Duplicate entry '700091009111' for key 'uq_out_business_no' 确保唯一性。
         quotaOrderEntity.setOutBusinessNo("70009240609001");
         quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
-        String orderId = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-        log.info("测试结果：{}", orderId);
+        UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
+        log.info("测试结果：{}", quotaOrder);
     }
 }

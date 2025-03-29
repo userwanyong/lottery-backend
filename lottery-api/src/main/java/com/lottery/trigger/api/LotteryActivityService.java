@@ -1,10 +1,15 @@
 package com.lottery.trigger.api;
 
 import com.lottery.trigger.api.dto.req.ActivityDrawRequestDTO;
+import com.lottery.trigger.api.dto.req.SkuProductShopCartRequestDTO;
 import com.lottery.trigger.api.dto.req.UserActivityAccountRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
+import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
 import com.lottery.types.model.BaseResponse;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author 永
@@ -50,5 +55,29 @@ public interface LotteryActivityService {
      * @return Boolean
      */
     BaseResponse<Boolean> isCalendarSignRebate(String userId);
+
+    /**
+     * 查询sku商品集合
+     *
+     * @param activityId 活动ID
+     * @return 商品集合
+     */
+    BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(Long activityId);
+
+    /**
+     * 查询用户积分值
+     *
+     * @param userId 用户ID
+     * @return 可用积分
+     */
+    BaseResponse<BigDecimal> queryUserCreditAccount(String userId);
+
+    /**
+     * 积分支付兑换商品
+     *
+     * @param request 请求对象「用户ID、sku商品ID」
+     * @return Boolean
+     */
+    BaseResponse<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request);
 
 }

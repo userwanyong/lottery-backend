@@ -1,10 +1,7 @@
 package com.lottery.domain.activity.service.quota;
 
 import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
-import com.lottery.domain.activity.model.entity.ActivityCountEntity;
-import com.lottery.domain.activity.model.entity.ActivityEntity;
-import com.lottery.domain.activity.model.entity.ActivitySkuEntity;
-import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
+import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.activity.service.quota.policy.TradePolicy;
@@ -33,7 +30,7 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
     }
 
     @Override
-    public String createQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
+    public UnpaidQuotaOrderEntity createQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
         // 1. 参数校验
         String userId = quotaOrderEntity.getUserId();
         Long sku = quotaOrderEntity.getSku();
@@ -41,27 +38,40 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
         if (sku == null || StringUtils.isBlank(userId) || StringUtils.isBlank(outBusinessNo)) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
-        // 2. 查询基础信息
-        // 2.1 查询sku表信息
+
+        // 2. 查询未支付订单
+        UnpaidQuotaOrderEntity unpaidCreditOrder = activityRepository.queryUnpaidQuotaOrder(quotaOrderEntity);
+        if (unpaidCreditOrder != null) {
+            return unpaidCreditOrder;
+        }
+
+        // 3. 查询基础信息
+        // 3.1 查询sku表信息
         ActivitySkuEntity activitySkuEntity = queryActivitySku(sku);
-        // 2.2 查询活动表信息
+        // 3.2 查询活动表信息
         ActivityEntity activityEntity = queryActivityByActivityId(activitySkuEntity.getActivityId());
-        // 2.3 查询活动次数表信息
+        // 3.3 查询活动次数表信息
         ActivityCountEntity activityCountEntity = queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
 
-        // 3. 责任链校验
+        // 4. 责任链校验
         ActivityChain activityChain = defaultActivityChainFactory.openActivityChain();
         activityChain.action(activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 4. 构建额度单聚合对象
+        // 5. 构建额度单聚合对象
         CreateQuotaOrderAggregate createQuotaOrderAggregate = buildOrderAggregate(quotaOrderEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 5. 保存额度单
+        // 6. 保存额度单
         TradePolicy tradePolicy = tradePolicyGroup.get(quotaOrderEntity.getOrderTradeTypeVO().getCode());
         tradePolicy.trade(createQuotaOrderAggregate);
 
-        // 6. 返回额度单号
-        return createQuotaOrderAggregate.getActivityOrderEntity().getOrderId();
+        // 7. 返回额度单实体
+        ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
+        return UnpaidQuotaOrderEntity.builder()
+                .userId(activityOrderEntity.getUserId())
+                .orderId(activityOrderEntity.getOrderId())
+                .outBusinessNo(activityOrderEntity.getOutBusinessNo())
+                .payAmount(activityOrderEntity.getPayAmount())
+                .build();
     }
 
     protected abstract CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);

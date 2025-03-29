@@ -1,13 +1,19 @@
 package com.lottery.trigger.http;
 
-import com.lottery.domain.activity.model.entity.ActivityAccountEntity;
-import com.lottery.domain.activity.model.entity.PartakeOrderResEntity;
+import com.lottery.domain.activity.model.entity.*;
+import com.lottery.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.lottery.domain.activity.service.ActivityPartakeService;
 import com.lottery.domain.activity.service.ActivityQuotaService;
+import com.lottery.domain.activity.service.ActivitySkuProductService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.valobj.AwardStateVO;
 import com.lottery.domain.award.service.UserAwardService;
+import com.lottery.domain.credit.model.entity.CreditAccountEntity;
+import com.lottery.domain.credit.model.entity.TradeEntity;
+import com.lottery.domain.credit.model.valobj.TradeNameVO;
+import com.lottery.domain.credit.model.valobj.TradeTypeVO;
+import com.lottery.domain.credit.service.CreditService;
 import com.lottery.domain.rebate.model.entity.BehaviorEntity;
 import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
 import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
@@ -18,19 +24,24 @@ import com.lottery.domain.strategy.service.Lottery;
 import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.trigger.api.LotteryActivityService;
 import com.lottery.trigger.api.dto.req.ActivityDrawRequestDTO;
+import com.lottery.trigger.api.dto.req.SkuProductShopCartRequestDTO;
 import com.lottery.trigger.api.dto.req.UserActivityAccountRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
+import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +67,10 @@ public class LotteryActivityController implements LotteryActivityService {
     private RebateService rebateService;
     @Resource
     private ActivityQuotaService activityQuotaService;
+    @Resource
+    private ActivitySkuProductService activitySkuProductService;
+    @Resource
+    private CreditService creditService;
 
     @Override
     @GetMapping("/armory")
@@ -184,6 +199,83 @@ public class LotteryActivityController implements LotteryActivityService {
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
             log.error("======================[isCalendarSignRebate]查询用户当日是否已签到异常 userId:{} ======================", userId, e);
+            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    @GetMapping("/query_sku_product_list_by_activity_id")
+    public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(Long activityId) {
+        try {
+            log.info("======================[querySkuProductListByActivityId]查询商品列表开始 activityId:{} ======================", activityId);
+            if (activityId == null) {
+                return new BaseResponse<>(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+            }
+            List<SkuProductEntity> skuProductEntities = activitySkuProductService.querySkuProductEntityListByActivityId(activityId);
+            ArrayList<SkuProductResponseDTO> skuProductResponseDTOS = new ArrayList<>();
+            for (SkuProductEntity skuProductEntity : skuProductEntities) {
+                SkuProductResponseDTO.ActivityCount activityCount = new SkuProductResponseDTO.ActivityCount();
+                BeanUtils.copyProperties(skuProductEntity.getActivityCount(), activityCount);
+                SkuProductResponseDTO skuProductResponseDTO = new SkuProductResponseDTO();
+                BeanUtils.copyProperties(skuProductEntity, skuProductResponseDTO);
+                skuProductResponseDTO.setActivityCount(activityCount);
+                skuProductResponseDTOS.add(skuProductResponseDTO);
+            }
+            log.info("======================[querySkuProductListByActivityId]查询商品列表成功 activityId:{} ======================", activityId);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), skuProductResponseDTOS);
+        } catch (AppException e) {
+            log.error("======================[querySkuProductListByActivityId]查询商品列表异常 activityId:{} ======================", activityId, e);
+            return new BaseResponse<>(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            log.error("======================[querySkuProductListByActivityId]查询商品列表异常 activityId:{} ======================", activityId, e);
+            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    @GetMapping("/credit_pay_exchange_sku")
+    public BaseResponse<BigDecimal> queryUserCreditAccount(String userId) {
+        try {
+            CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
+            log.info("======================[queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
+        } catch (AppException e) {
+            log.error("======================[queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
+            return new BaseResponse<>(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            log.error("======================[queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
+            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        }
+
+    }
+
+    @Override
+    @PostMapping("/credit_pay_exchange_sku")
+    public BaseResponse<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request) {
+        try {
+            log.info("======================[creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
+            // 1.创建增加抽奖次数的额度订单
+            QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
+            quotaOrderEntity.setUserId(request.getUserId());
+            quotaOrderEntity.setSku(request.getSku());
+            quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
+            quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
+            UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
+            // 2.创建增加积分的积分订单
+            TradeEntity tradeEntity = new TradeEntity();
+            tradeEntity.setUserId(request.getUserId());
+            tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
+            tradeEntity.setTradeType(TradeTypeVO.REVERSE);
+            tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
+            tradeEntity.setAmount(quotaOrder.getPayAmount());
+            String creditOrder = creditService.createCreditOrder(tradeEntity);
+            log.info("======================[creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
+        } catch (AppException e) {
+            log.error("======================[creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
+            return new BaseResponse<>(e.getCode(), e.getMessage());
+        } catch (Exception e) {
+            log.error("======================[creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

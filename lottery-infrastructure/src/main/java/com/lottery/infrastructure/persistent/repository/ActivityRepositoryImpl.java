@@ -31,6 +31,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -143,9 +144,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             // 总账户对象
             ActivityAccount activityAccount = new ActivityAccount();
             BeanUtils.copyProperties(activityOrderEntity, activityAccount);
-            activityAccount.setTotalCountSurplus(activityOrderEntity.getTotalCount());
-            activityAccount.setDayCountSurplus(activityOrderEntity.getDayCount());
-            activityAccount.setMonthCountSurplus(activityOrderEntity.getMonthCount());
+
 
             // 月账户对象
             ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
@@ -177,9 +176,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(queryWrapper);
                     if (dbActivityAccount == null) {
                         // 创建
+                        activityAccount.setTotalCount(activityOrderEntity.getTotalCount());
+                        activityAccount.setDayCount(activityOrderEntity.getDayCount());
+                        activityAccount.setMonthCount(activityOrderEntity.getMonthCount());
+                        activityAccount.setTotalCountSurplus(activityOrderEntity.getTotalCount());
+                        activityAccount.setDayCountSurplus(activityOrderEntity.getDayCount());
+                        activityAccount.setMonthCountSurplus(activityOrderEntity.getMonthCount());
                         activityAccountMapper.insert(activityAccount);
                     } else {
                         // 更新
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount()+activityOrder.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount()+activityOrder.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount()+activityOrder.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus()+activityOrder.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus()+activityOrder.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus()+activityOrder.getDayCount());
                         activityAccountMapper.update(activityAccount, queryWrapper);
                     }
 //                    ActivityAccount dbActivityAccount = new ActivityAccount();
@@ -627,9 +638,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             // 总账户对象
             ActivityAccount activityAccount = new ActivityAccount();
             BeanUtils.copyProperties(activityOrder, activityAccount);
-            activityAccount.setTotalCountSurplus(activityOrder.getTotalCount());
-            activityAccount.setDayCountSurplus(activityOrder.getDayCount());
-            activityAccount.setMonthCountSurplus(activityOrder.getMonthCount());
 
             // 月账户对象
             ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
@@ -667,9 +675,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(query);
                     if (dbActivityAccount == null) {
                         // 创建
+                        activityAccount.setTotalCount(activityOrder.getTotalCount());
+                        activityAccount.setDayCount(activityOrder.getDayCount());
+                        activityAccount.setMonthCount(activityOrder.getMonthCount());
+                        activityAccount.setTotalCountSurplus(activityOrder.getTotalCount());
+                        activityAccount.setDayCountSurplus(activityOrder.getDayCount());
+                        activityAccount.setMonthCountSurplus(activityOrder.getMonthCount());
                         activityAccountMapper.insert(activityAccount);
                     } else {
                         // 更新
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount()+activityOrder.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount()+activityOrder.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount()+activityOrder.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus()+activityOrder.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus()+activityOrder.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus()+activityOrder.getDayCount());
                         activityAccountMapper.update(activityAccount, query);
                     }
 
@@ -690,6 +710,49 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         } finally {
             dbRouter.clear();
             lock.unlock();
+        }
+    }
+
+    @Override
+    public List<SkuProductEntity> querySkuProductEntityListByActivityId(Long activityId) {
+        LambdaQueryWrapper<ActivitySku> queryWrapper = new QueryWrapper<ActivitySku>().lambda()
+                .eq(ActivitySku::getActivityId, activityId);
+        List<ActivitySku> activitySkus = activitySkuMapper.selectList(queryWrapper);
+        ArrayList<SkuProductEntity> skuProductEntities = new ArrayList<>();
+        for (ActivitySku sku : activitySkus) {
+            LambdaQueryWrapper<ActivityCount> wrapper = new QueryWrapper<ActivityCount>().lambda()
+                    .eq(ActivityCount::getActivityCountId, sku.getActivityCountId());
+            ActivityCount activityCount = activityCountMapper.selectOne(wrapper);
+            SkuProductEntity.ActivityCount count = new SkuProductEntity.ActivityCount();
+            BeanUtils.copyProperties(activityCount, count);
+            SkuProductEntity skuProduct = new SkuProductEntity();
+            BeanUtils.copyProperties(sku, skuProduct);
+            skuProduct.setActivityCount(count);
+            skuProductEntities.add(skuProduct);
+        }
+        return skuProductEntities;
+    }
+
+    @Override
+    public UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
+        LambdaQueryWrapper<ActivityOrder> queryWrapper = new QueryWrapper<ActivityOrder>().lambda()
+                .eq(ActivityOrder::getUserId, quotaOrderEntity.getUserId())
+                .eq(ActivityOrder::getSku, quotaOrderEntity.getSku())
+                .eq(ActivityOrder::getState, OrderStateVO.wait_pay);
+        try {
+            dbRouter.doRouter(quotaOrderEntity.getUserId());
+            ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
+            if (activityOrder == null){
+                return null;
+            }
+            return UnpaidQuotaOrderEntity.builder()
+                    .userId(activityOrder.getUserId())
+                    .orderId(activityOrder.getOrderId())
+                    .outBusinessNo(activityOrder.getOutBusinessNo())
+                    .payAmount(activityOrder.getPayAmount())
+                    .build();
+        }finally {
+            dbRouter.clear();
         }
     }
 

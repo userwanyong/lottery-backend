@@ -3,6 +3,7 @@ package com.lottery.domain.activity.service;
 import com.lottery.domain.activity.model.entity.ActivityAccountEntity;
 import com.lottery.domain.activity.model.entity.DeliveryOrderEntity;
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
+import com.lottery.domain.activity.model.entity.UnpaidQuotaOrderEntity;
 
 /**
  * @author 永
@@ -12,7 +13,7 @@ public interface ActivityQuotaService {
     /**
      * 创建 sku 账户充值订单
      */
-    String createQuotaOrder(QuotaOrderEntity quotaOrderEntity);
+    UnpaidQuotaOrderEntity createQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 
     /**
      * 更新 sku 账户充值订单

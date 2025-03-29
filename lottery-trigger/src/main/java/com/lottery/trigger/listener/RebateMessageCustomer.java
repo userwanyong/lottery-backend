@@ -52,8 +52,8 @@ public class RebateMessageCustomer {
                     quotaOrderEntity.setUserId(data.getUserId());
                     quotaOrderEntity.setOutBusinessNo(data.getBizId());
                     quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
-                    String quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-                    log.info("监听用户入账消息，抽奖额度入账成功 topic: {} message: {} quotaOrder: {}", topic, message, quotaOrder);
+                    activityQuotaService.createQuotaOrder(quotaOrderEntity);
+                    log.info("监听用户入账消息，抽奖额度入账成功 topic: {} message: {} ", topic, message);
                     break;
                 case "integral":
                     TradeEntity tradeEntity = new TradeEntity();

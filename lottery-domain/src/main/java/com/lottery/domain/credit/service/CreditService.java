@@ -1,5 +1,6 @@
 package com.lottery.domain.credit.service;
 
+import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.TradeEntity;
 
 /**
@@ -13,4 +14,11 @@ public interface CreditService {
      * @return 单号
      */
     String createCreditOrder(TradeEntity tradeEntity);
+
+    /**
+     * 查询用户积分
+     * @param userId 用户id
+     * @return CreditAccountEntity
+     */
+    CreditAccountEntity queryUserCreditAccount(String userId);
 }

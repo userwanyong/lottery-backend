@@ -48,4 +48,9 @@ public class CreditServiceImpl implements CreditService{
         // 返回单号
         return creditOrderEntity.getOrderId();
     }
+
+    @Override
+    public CreditAccountEntity queryUserCreditAccount(String userId) {
+        return repository.queryUserCreditAccount(userId);
+    }
 }

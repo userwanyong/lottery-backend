@@ -124,4 +124,21 @@ public class CreditRepositoryImpl implements CreditRepository {
             taskMapper.updateTaskSendMessageFail(task);
         }
     }
+
+    @Override
+    public CreditAccountEntity queryUserCreditAccount(String userId) {
+        try {
+            dbRouter.doRouter(userId);
+            LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
+                    .eq(CreditAccount::getUserId, userId);
+            CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
+            return CreditAccountEntity.builder()
+                    .userId(creditAccount.getUserId())
+                    .creditAmount(creditAccount.getTotalAmount())
+                    .build();
+        }finally {
+            dbRouter.clear();
+        }
+
+    }
 }
