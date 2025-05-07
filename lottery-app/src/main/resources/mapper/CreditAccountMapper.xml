@@ -20,4 +20,10 @@
         where user_id = #{userId}
     </update>
 
+    <update id="reduce" parameterType="com.lottery.infrastructure.persistent.po.CreditAccount">
+        update credit_account
+        set  available_amount = available_amount - #{availableAmount}
+        where user_id = #{userId}
+    </update>
+
 </mapper>

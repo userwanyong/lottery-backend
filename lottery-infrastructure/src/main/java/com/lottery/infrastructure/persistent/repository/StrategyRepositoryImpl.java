@@ -315,7 +315,11 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     public Long queryStrategyIdByActivityId(Long activityId) {
         LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
                 .eq(Activity::getActivityId, activityId);
-        return activityMapper.selectOne(queryWrapper).getStrategyId();
+        Activity activity = activityMapper.selectOne(queryWrapper);
+        if(activity==null){
+            return null;
+        }
+        return activity.getStrategyId();
     }
 
     @Override

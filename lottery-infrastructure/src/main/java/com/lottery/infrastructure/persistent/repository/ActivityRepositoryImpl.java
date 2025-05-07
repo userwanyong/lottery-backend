@@ -30,6 +30,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +61,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     private ActivityAccountMonthMapper activityAccountMonthMapper;
     @Resource
     private ActivityAccountDayMapper activityAccountDayMapper;
+    @Resource
+    private CreditAccountMapper creditAccountMapper;
     @Resource
     private UserOrderMapper userOrderMapper;
     @Resource
@@ -185,12 +188,12 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         activityAccountMapper.insert(activityAccount);
                     } else {
                         // 更新
-                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount()+activityOrder.getTotalCount());
-                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount()+activityOrder.getMonthCount());
-                        activityAccount.setDayCount(dbActivityAccount.getDayCount()+activityOrder.getDayCount());
-                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus()+activityOrder.getTotalCount());
-                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus()+activityOrder.getMonthCount());
-                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus()+activityOrder.getDayCount());
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityOrder.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityOrder.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityOrder.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityOrder.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityOrder.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityOrder.getDayCount());
                         activityAccountMapper.update(activityAccount, queryWrapper);
                     }
 //                    ActivityAccount dbActivityAccount = new ActivityAccount();
@@ -631,7 +634,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     .eq(ActivityOrder::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
                     .eq(ActivityOrder::getUserId, deliveryOrderEntity.getUserId());
             ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
-            if (activityOrder == null){
+            if (activityOrder == null) {
                 return;
             }
 
@@ -684,12 +687,12 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         activityAccountMapper.insert(activityAccount);
                     } else {
                         // 更新
-                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount()+activityOrder.getTotalCount());
-                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount()+activityOrder.getMonthCount());
-                        activityAccount.setDayCount(dbActivityAccount.getDayCount()+activityOrder.getDayCount());
-                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus()+activityOrder.getTotalCount());
-                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus()+activityOrder.getMonthCount());
-                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus()+activityOrder.getDayCount());
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityOrder.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityOrder.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityOrder.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityOrder.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityOrder.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityOrder.getDayCount());
                         activityAccountMapper.update(activityAccount, query);
                     }
 
@@ -742,7 +745,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         try {
             dbRouter.doRouter(quotaOrderEntity.getUserId());
             ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
-            if (activityOrder == null){
+            if (activityOrder == null) {
                 return null;
             }
             return UnpaidQuotaOrderEntity.builder()
@@ -751,7 +754,22 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     .outBusinessNo(activityOrder.getOutBusinessNo())
                     .payAmount(activityOrder.getPayAmount())
                     .build();
-        }finally {
+        } finally {
+            dbRouter.clear();
+        }
+    }
+
+    @Override
+    public BigDecimal queryUserCreditAccountAmount(String userId) {
+        try {
+            dbRouter.doRouter(userId);
+            LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>().eq(CreditAccount::getUserId, userId);
+            CreditAccount userCreditAccount = creditAccountMapper.selectOne(queryWrapper);
+            if (userCreditAccount == null) {
+                return BigDecimal.ZERO;
+            }
+            return userCreditAccount.getAvailableAmount();
+        } finally {
             dbRouter.clear();
         }
     }

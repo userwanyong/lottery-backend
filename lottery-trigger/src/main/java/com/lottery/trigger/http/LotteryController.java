@@ -116,7 +116,7 @@ public class LotteryController implements LotteryService {
         try {
             log.info("======================[queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
             // 1.参数校验
-            if (StringUtils.isBlank(requestDTO.getUserId()) || requestDTO.getActivityId() == null) {
+            if (requestDTO.getUserId() == null|| "null".equals(requestDTO.getUserId())) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
             // 2.用户已经参与的抽奖次数

@@ -5,6 +5,7 @@ import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -58,4 +59,6 @@ public interface ActivityRepository {
     List<SkuProductEntity> querySkuProductEntityListByActivityId(Long activityId);
 
     UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity);
+
+    BigDecimal queryUserCreditAccountAmount(String userId);
 }

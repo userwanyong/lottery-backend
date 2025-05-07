@@ -1,6 +1,3 @@
-CREATE database if NOT EXISTS `marketing` default character set utf8mb4 collate utf8mb4_0900_ai_ci;
-use `marketing`;
-
 -- MySQL dump 10.13  Distrib 8.0.35, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: marketing
@@ -133,7 +130,7 @@ LOCK TABLES `activity_sku` WRITE;
 /*!40000 ALTER TABLE `activity_sku`
     DISABLE KEYS */;
 INSERT INTO `activity_sku`
-VALUES (1, 9011, 100301, 11101, 20, 14, 1.99, '2025-03-11 22:12:56', '2025-03-18 21:14:15');
+VALUES (1, 9011, 100301, 11101, 20, 8, -1.99, '2025-03-11 22:12:56', '2025-03-29 14:26:25');
 /*!40000 ALTER TABLE `activity_sku`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -182,6 +179,45 @@ VALUES (1, 101, 'user_credit_random', '1,100', '用户积分【优先透彻规�
         '2025-02-17 13:16:03'),
        (10, 100, 'user_credit_blacklist', '1', '黑名单积分', '2025-02-17 13:16:03', '2025-02-17 13:16:03');
 /*!40000 ALTER TABLE `award`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `behavior_rebate`
+--
+
+DROP TABLE IF EXISTS `behavior_rebate`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `behavior_rebate`
+(
+    `id`            int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `behavior_type` varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`   varchar(128) NOT NULL COMMENT '返利描述',
+    `rebate_type`   varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config` varchar(32)  NOT NULL COMMENT '返利配置',
+    `state`         varchar(12)  NOT NULL COMMENT '状态（open 开启、close 关闭）',
+    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_behavior_type` (`behavior_type`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利活动配置表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `behavior_rebate`
+--
+
+LOCK TABLES `behavior_rebate` WRITE;
+/*!40000 ALTER TABLE `behavior_rebate`
+    DISABLE KEYS */;
+INSERT INTO `behavior_rebate`
+VALUES (1, 'sign', '签到返利-抽奖额度', 'sku', '9011', 'open', '2025-03-28 18:42:59', '2025-03-28 18:42:59'),
+       (2, 'sign', '签到返利-积分', 'integral', '10', 'open', '2025-03-28 18:42:59', '2025-03-28 18:42:59');
+/*!40000 ALTER TABLE `behavior_rebate`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -240,8 +276,8 @@ VALUES (1, 200001, 101, 2, 'rule_random', '1,1000', '随机积分策略', '2025-
        (12, 200001, 106, 2, 'rule_luck_award', '1,60', '兜底奖品60以内随机积分', '2025-02-17 13:16:03',
         '2025-02-17 13:16:03'),
        (13, 200001, NULL, 1, 'rule_weight',
-        '4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108',
-        '消耗6000分，必中奖范围', '2025-02-17 13:16:03', '2025-02-17 13:16:03'),
+        '4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108', '消耗6000分，必中奖范围',
+        '2025-02-17 13:16:03', '2025-02-17 13:16:03'),
        (14, 200001, NULL, 1, 'rule_blacklist', '101:user001,user002,user003', '黑名单抽奖，积分兜底',
         '2025-02-17 13:16:03', '2025-02-17 13:16:03'),
        (15, 200001, 107, 2, 'rule_lock', '1', '抽奖1次后解锁', '2025-02-17 13:16:03', '2025-02-17 13:16:03'),
@@ -503,24 +539,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-20 16:44:47
-
-DROP TABLE IF EXISTS `behavior_rebate`;
-CREATE TABLE `behavior_rebate`
-(
-    `id`            int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `behavior_type` varchar(16)      NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-    `rebate_desc`   varchar(128)     NOT NULL COMMENT '返利描述',
-    `rebate_type`   varchar(16)      NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-    `rebate_config` varchar(32)      NOT NULL COMMENT '返利配置',
-    `state`         varchar(12)      NOT NULL COMMENT '状态（open 开启、close 关闭）',
-    `create_time`   datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime         NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    KEY `idx_behavior_type` (`behavior_type`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4 COMMENT ='返利活动配置表';
-
-INSERT INTO `behavior_rebate` (`id`, `behavior_type`, `rebate_desc`, `rebate_type`, `rebate_config`, `state`)
-VALUES (1, 'sign', '签到返利-抽奖额度', 'sku', '9011', 'open'),
-       (2, 'sign', '签到返利-积分', 'integral', '10', 'open');
+-- Dump completed on 2025-05-06 22:06:46

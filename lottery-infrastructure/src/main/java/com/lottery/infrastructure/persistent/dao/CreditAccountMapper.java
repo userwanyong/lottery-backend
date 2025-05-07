@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CreditAccountMapper extends BaseMapper<CreditAccount> {
 
     int update(CreditAccount creditAccount);
+    int reduce(CreditAccount creditAccount);
 }
 
 

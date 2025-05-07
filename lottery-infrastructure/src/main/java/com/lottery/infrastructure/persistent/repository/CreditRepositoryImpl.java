@@ -8,6 +8,8 @@ import com.lottery.domain.credit.model.aggregate.TradeAggregate;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.CreditOrderEntity;
 import com.lottery.domain.credit.model.entity.TaskEntity;
+import com.lottery.domain.credit.model.valobj.TradeNameVO;
+import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.repository.CreditRepository;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.CreditAccountMapper;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,9 +60,10 @@ public class CreditRepositoryImpl implements CreditRepository {
         TaskEntity taskEntity = tradeAggregate.getTaskEntity();
 
         CreditAccount creditAccount = new CreditAccount();
+        BigDecimal creditAmount = creditAccountEntity.getCreditAmount();
         creditAccount.setUserId(userId);
         creditAccount.setAccountStatus("open");// TODO 暂时设为open，后期更改
-        creditAccount.setTotalAmount(creditAccountEntity.getCreditAmount());
+        creditAccount.setTotalAmount(creditAmount);
         creditAccount.setAvailableAmount(creditAccountEntity.getCreditAmount());
 
         UserCreditOrder userCreditOrder = new UserCreditOrder();
@@ -91,9 +95,13 @@ public class CreditRepositoryImpl implements CreditRepository {
                     if (account == null) {
                         // 新增
                         creditAccountMapper.insert(creditAccount);
-                    } else {
-                        // 更新
+                    }else if (creditOrderEntity.getTradeType() == TradeTypeVO.FORWARD){
+                        // 增加(可用)
                         creditAccountMapper.update(creditAccount);
+                    }
+                    else {
+                        // 减少(可用)
+                        creditAccountMapper.reduce(creditAccount);
                     }
                     // 保存订单
                     userCreditOrderMapper.insert(userCreditOrder);
@@ -132,9 +140,15 @@ public class CreditRepositoryImpl implements CreditRepository {
             LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
                     .eq(CreditAccount::getUserId, userId);
             CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
+            if (creditAccount == null){
+                return CreditAccountEntity.builder()
+                        .userId(userId)
+                        .creditAmount(BigDecimal.ZERO)
+                        .build();
+            }
             return CreditAccountEntity.builder()
                     .userId(creditAccount.getUserId())
-                    .creditAmount(creditAccount.getTotalAmount())
+                    .creditAmount(creditAccount.getAvailableAmount())
                     .build();
         }finally {
             dbRouter.clear();

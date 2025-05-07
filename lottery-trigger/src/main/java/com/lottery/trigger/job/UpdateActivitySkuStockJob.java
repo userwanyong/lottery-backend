@@ -36,7 +36,7 @@ public class UpdateActivitySkuStockJob {
                     }
 
                     if (activitySkuStockKeyVO==null) {
-                        log.info("【定时任务】-暂无更新活动sku库存任务");
+//                        log.info("【定时任务】-暂无更新活动sku库存任务");
                         return;
                     }
                     skuStock.updateActivitySkuStock(activitySkuStockKeyVO.getSku());

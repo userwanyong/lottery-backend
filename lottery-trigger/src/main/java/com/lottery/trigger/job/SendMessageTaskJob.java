@@ -54,6 +54,7 @@ public class SendMessageTaskJob {
                                     taskService.updateTaskSendMessageFail(taskEntity.getUserId(), taskEntity.getMessageId());
                                 }
                             });
+                            log.info("【定时任务】发送MQ任务表消息成功 userId: {} topic: {}", taskEntity.getUserId(), taskEntity.getTopic());
                         }
                     } finally {
                         dbRouter.clear();

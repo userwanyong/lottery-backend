@@ -2,6 +2,7 @@ package com.lottery.domain.activity.service.quota;
 
 import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
+import com.lottery.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.activity.service.quota.policy.TradePolicy;
@@ -12,6 +13,7 @@ import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -53,18 +55,26 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
         // 3.3 查询活动次数表信息
         ActivityCountEntity activityCountEntity = queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
 
-        // 4. 责任链校验
+        // 4. 账户额度 【交易属性的兑换，需要校验额度账户】// todo 考虑责任链？
+        if (OrderTradeTypeVO.credit_pay_trade.equals(quotaOrderEntity.getOrderTradeTypeVO())){
+            BigDecimal availableAmount = activityRepository.queryUserCreditAccountAmount(userId);
+            if (availableAmount.compareTo(activitySkuEntity.getProductAmount()) < 0) {
+                throw new AppException(ResponseCode.USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT.getCode(), ResponseCode.USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT.getMessage());
+            }
+        }
+
+        // 5. 责任链校验
         ActivityChain activityChain = defaultActivityChainFactory.openActivityChain();
         activityChain.action(activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 5. 构建额度单聚合对象
+        // 6. 构建额度单聚合对象
         CreateQuotaOrderAggregate createQuotaOrderAggregate = buildOrderAggregate(quotaOrderEntity, activitySkuEntity, activityEntity, activityCountEntity);
 
-        // 6. 保存额度单
+        // 7. 保存额度单
         TradePolicy tradePolicy = tradePolicyGroup.get(quotaOrderEntity.getOrderTradeTypeVO().getCode());
         tradePolicy.trade(createQuotaOrderAggregate);
 
-        // 7. 返回额度单实体
+        // 8. 返回额度单实体
         ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
         return UnpaidQuotaOrderEntity.builder()
                 .userId(activityOrderEntity.getUserId())

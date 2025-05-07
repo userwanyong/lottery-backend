@@ -205,7 +205,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @GetMapping("/query_sku_product_list_by_activity_id")
-    public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(Long activityId) {
+    public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(@RequestParam Long activityId) {
         try {
             log.info("======================[querySkuProductListByActivityId]查询商品列表开始 activityId:{} ======================", activityId);
             if (activityId == null) {
@@ -233,8 +233,8 @@ public class LotteryActivityController implements LotteryActivityService {
     }
 
     @Override
-    @GetMapping("/credit_pay_exchange_sku")
-    public BaseResponse<BigDecimal> queryUserCreditAccount(String userId) {
+    @GetMapping("/query_user_credit_account")
+    public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestParam String userId) {
         try {
             CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
             log.info("======================[queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
@@ -251,7 +251,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/credit_pay_exchange_sku")
-    public BaseResponse<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request) {
+    public BaseResponse<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
         try {
             log.info("======================[creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
             // 1.创建增加抽奖次数的额度订单

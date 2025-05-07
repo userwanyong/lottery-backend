@@ -36,7 +36,7 @@ public class UpdateAwardStockJob {
                     }
 
                     if (lotteryReqEntity == null) {
-                        log.info("【定时任务】-暂无更新数据库奖品库存任务");
+//                        log.info("【定时任务】-暂无更新数据库奖品库存任务");
                         return;
                     }
                     stock.updateStrategyAwardStock(lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
