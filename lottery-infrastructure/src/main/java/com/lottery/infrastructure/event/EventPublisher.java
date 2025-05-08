@@ -22,9 +22,9 @@ public class EventPublisher {
         try {
             String messageJson = JSON.toJSONString(eventMessage);
             rabbitTemplate.convertAndSend(topic, messageJson);
-            log.info("发送MQ消息 topic:{} message:{}", topic, messageJson);
+            log.info("[EventPublisher]发送MQ消息成功 topic:{} message:{}", topic, messageJson);
         } catch (Exception e) {
-            log.error("发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
+            log.error("[EventPublisher]发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
             throw e;
         }
     }
@@ -32,9 +32,9 @@ public class EventPublisher {
     public void publish(String topic, String eventMessage) {
         try {
             rabbitTemplate.convertAndSend(topic, eventMessage);
-            log.info("发送MQ消息 topic:{} message:{}", topic, eventMessage);
+            log.info("[EventPublisher]发送MQ消息成功 topic:{} message:{}", topic, eventMessage);
         } catch (Exception e) {
-            log.error("发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
+            log.error("[EventPublisher]发送MQ消息失败 topic:{} message:{}", topic, JSON.toJSONString(eventMessage), e);
             throw e;
         }
     }

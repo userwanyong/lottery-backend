@@ -95,19 +95,19 @@ public class LotteryActivityController implements LotteryActivityService {
     @PostMapping("/draw")
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         try {
-            log.info("======================[draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
+            log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
             // 1. 参数校验
             if (StringUtils.isBlank(request.getUserId()) || request.getActivityId() == null) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
-            // 2. 参与活动 - 创建抽奖单
+            // 2. 创建抽奖单
             PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
-            log.info("[draw]抽奖单 orderId:{}", partakeOrder.getOrderId());
-            // 3. 抽奖策略 - 执行抽奖
-            log.info("[draw]执行抽奖");
+            log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getOrderId());
+            // 3. 执行抽奖
+            log.info("[LotteryActivityController-draw]执行抽奖");
             LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
-            log.info("[draw]抽奖结果 {}", lotteryResEntity);
-            // 4. 存放结果 - 写入中奖记录
+            log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
+            // 4. 写入中奖记录
             UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
                     .userId(partakeOrder.getUserId())
                     .activityId(partakeOrder.getActivityId())
@@ -120,20 +120,20 @@ public class LotteryActivityController implements LotteryActivityService {
                     .awardState(AwardStateVO.create)
                     .build();
             userAwardService.saveUserAwardRecord(userAwardRecord);
-            log.info("[draw]记录中奖记录成功");
+            log.info("[LotteryActivityController-draw]写入中奖记录成功");
             // 5. 返回结果
             ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
                     .awardId(Math.toIntExact(lotteryResEntity.getAwardId()))
                     .awardTitle(lotteryResEntity.getAwardTitle())
                     .awardIndex(lotteryResEntity.getSort())
                     .build();
-            log.info("======================[draw]用户抽奖结束 userId:{} activityId:{} award:{} ======================", request.getUserId(), request.getActivityId(), result);
+            log.info("======================[LotteryActivityController-draw]用户抽奖结束 userId:{} activityId:{} award:{} ======================", request.getUserId(), request.getActivityId(), result);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), result);
         } catch (AppException e) {
-            log.error("======================[draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
+            log.error("======================[LotteryActivityController-draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
+            log.error("======================[LotteryActivityController-draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

@@ -10,21 +10,15 @@ import lombok.Data;
 @Data
 @Builder
 public class LotteryResEntity {
-//    /**
-//     * 策略ID
-//     */
-//    private Long strategyId;
 
     /**
      * 抽奖奖品ID
      */
     private Long awardId;
 
-//    /**
-//     * 奖品对接标识（每一个都是一个对应的发奖策略）
-//     */
-//    private String awardKey;
-
+    /**
+     * 奖品名称
+     */
     private String awardTitle;
 
     /**
@@ -32,11 +26,9 @@ public class LotteryResEntity {
      */
     private String awardConfig;
 
-    /** 奖品顺序号 */
+    /**
+     * 奖品顺序号
+     */
     private Integer sort;
-//
-//    /**
-//     * 奖品内容描述
-//     */
-//    private String awardDesc;
+
 }

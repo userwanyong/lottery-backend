@@ -30,7 +30,7 @@ public class SendAwardCustomer {
     @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.send_award}"))
     public void listener(String message) {
         try {
-            log.info("监听用户奖品发送消息 topic: {} message: {}", topic, message);
+            log.info("[SendAwardCustomer]监听到用户发奖消息 topic: {} message: {}", topic, message);
             BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage>>() {
             }.getType());
             SendAwardMessageEvent.SendAwardMessage sendAwardMessage = eventMessage.getData();
@@ -41,8 +41,9 @@ public class SendAwardCustomer {
             distributeAwardEntity.setOrderId(sendAwardMessage.getOrderId());
             distributeAwardEntity.setUserId(sendAwardMessage.getUserId());
             userAwardService.distributeAward(distributeAwardEntity);
+            log.info("[SendAwardCustomer]用户发奖消息，消费成功 topic: {} message: {}", topic, message);
         } catch (Exception e) {
-            log.error("监听用户奖品发送消息，消费失败 topic: {} message: {}", topic, message);
+            log.error("[SendAwardCustomer]用户发奖消息，消费失败 topic: {} message: {}", topic, message);
             throw e;
         }
     }

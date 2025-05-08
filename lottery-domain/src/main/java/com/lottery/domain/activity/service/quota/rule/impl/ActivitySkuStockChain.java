@@ -34,7 +34,7 @@ public class ActivitySkuStockChain extends AbstractActivityChain {
         //扣减总库存
         boolean status = activityService.reduceActivitySkuStock(activitySkuEntity.getSku(), activityEntity.getEndDateTime());
         if (!status) {
-            log.info("【活动责任链】-suk库存扣减失败");
+            log.error("【活动责任链】-suk库存扣减失败");
             throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
         log.info("【活动责任链】-suk库存扣减成功");

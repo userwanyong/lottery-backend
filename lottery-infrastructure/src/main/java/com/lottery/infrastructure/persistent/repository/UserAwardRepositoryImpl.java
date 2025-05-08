@@ -73,7 +73,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         userOrder.setUserId(userAwardRecordEntity.getUserId());
         userOrder.setActivityId(userAwardRecordEntity.getActivityId());
 
-        //写入数据库
+        //将中奖记录和任务写入数据库表，更新抽奖单状态为used已使用
         try {
             dbRouter.doRouter(userAwardRecordEntity.getUserId());
             transactionTemplate.execute(status -> {
@@ -84,13 +84,13 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     int count=userOrderMapper.updateUserOrderStateUsed(userOrder);
                     if (count!=1){
                         status.setRollbackOnly();
-                        log.error("更新抽奖单失败,该抽奖单已被使用");
+                        log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用");
                         return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(),ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("写入中奖记录失败，唯一索引冲突 userId: {} activityId: {} awardId: {}", userAwardRecordEntity.getUserId(), userAwardRecordEntity.getActivityId(), userAwardRecordEntity.getAwardId(), e);
+                    log.error("[UserAwardRepositoryImpl]写入中奖记录失败，唯一索引冲突 userId: {} activityId: {} awardId: {}", userAwardRecordEntity.getUserId(), userAwardRecordEntity.getActivityId(), userAwardRecordEntity.getAwardId(), e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
@@ -102,11 +102,11 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         try {
             // 发送消息【在事务外执行，如果失败还有任务补偿】
             eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-            // 更新数据库记录，task 任务表
+            // 更新数据库记录，task 任务表 状态为 completed 已完成
             taskMapper.updateTaskSendMessageCompleted(task);
-            log.info("写入中奖记录，发送MQ消息成功 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
+            log.debug("[UserAwardRepositoryImpl]写入中奖记录，MQ消息发送成功 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
         } catch (Exception e) {
-            log.error("写入中奖记录，发送MQ消息失败 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
+            log.error("[UserAwardRepositoryImpl]写入中奖记录，MQ消息发送失败 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
             taskMapper.updateTaskSendMessageFail(task);
         }
     }
@@ -139,20 +139,23 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     if (dbCreditAccount==null){
                         // 新增
                         creditAccountMapper.insert(creditAccount);
+                        log.debug("[UserAwardRepositoryImpl]创建积分账户成功 userId:{}", userId);
                     }else {
                         // 更新
                         creditAccountMapper.update(creditAccount);
+                        log.debug("[UserAwardRepositoryImpl]更新积分账户成功 userId:{}", userId);
                     }
-                    // 更新中奖记录
+                    // 更新中奖记录状态为completed 发奖完成
                     int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserId, userId).eq(UserAwardRecord::getOrderId, userAwardRecordEntity.getOrderId()));
+                    log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
                     if (count==0){
-                        log.error("更新中奖记录，失败 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
+                        log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
                         status.setRollbackOnly();
                     }
                     return 1;
                 }catch (DuplicateKeyException e){
                     status.setRollbackOnly();
-                    log.error("更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
+                    log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
                 }
             });

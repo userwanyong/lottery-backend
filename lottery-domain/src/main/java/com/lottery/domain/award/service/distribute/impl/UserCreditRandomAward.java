@@ -8,6 +8,7 @@ import com.lottery.domain.award.model.valobj.AwardStateVO;
 import com.lottery.domain.award.repository.UserAwardRepository;
 import com.lottery.domain.award.service.distribute.DistributeAward;
 import com.lottery.types.common.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import java.math.MathContext;
  * 奖品领域-积分发奖
  */
 @Component(Constants.AwardModel.USER_CREDIT_RANDOM)
+@Slf4j
 public class UserCreditRandomAward implements DistributeAward {
     @Resource
     private UserAwardRepository repository;
@@ -31,6 +33,7 @@ public class UserCreditRandomAward implements DistributeAward {
         }
         String[] split = awardConfig.split(",");
         if (split.length!=2){
+            log.error("[UserCreditRandomAward]award_config 「" + awardConfig + "」配置不是一个范围值，如 1,100");
             throw new RuntimeException("award_config 「" + awardConfig + "」配置不是一个范围值，如 1,100");
         }
         // 生成随机积分

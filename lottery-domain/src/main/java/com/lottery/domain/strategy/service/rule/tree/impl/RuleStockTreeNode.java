@@ -28,12 +28,12 @@ public class RuleStockTreeNode implements LogicTree {
 
     @Override
     public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {
-        log.info("【规则树-库存扣减节点开始执行】");
+        log.debug("【规则树 RuleStockTreeNode-库存扣减节点开始执行】");
         // 扣减库存
         Boolean result = strategyService.reduceAwardStock(strategyId, awardId);
         // 扣减成功，放行
         if (result) {
-            log.info("【规则树】-库存扣减-成功-放行 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
+            log.debug("【规则树 RuleStockTreeNode】-库存扣减-成功-放行 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
             // 写入延迟队列，延迟消费 更新数据库记录
             repository.awardStockConsumeSendQueue(LotteryReqEntity.builder()
                     .strategyId(strategyId)
@@ -48,7 +48,7 @@ public class RuleStockTreeNode implements LogicTree {
                     .build();
         }
         // 否则拦截
-        log.info("【规则树】-库存扣减-失败-拦截 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
+        log.debug("【规则树 RuleStockTreeNode】-库存扣减-失败-拦截 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .build();

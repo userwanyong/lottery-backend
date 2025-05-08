@@ -28,8 +28,8 @@ public interface Lottery {
     List<StrategyAwardEntity> queryLotteryAwardListByActivityId(Long activityId);
 
     /**
-     * @param lotteryFactorEntity 抽奖要素实体，根据入参信息计算抽奖结果
-     * @return 抽奖的奖品
+     * @param lotteryFactorEntity 抽奖请求实体
+     * @return 抽到的奖品实体
      */
     LotteryResEntity performLottery(LotteryReqEntity lotteryFactorEntity);
 

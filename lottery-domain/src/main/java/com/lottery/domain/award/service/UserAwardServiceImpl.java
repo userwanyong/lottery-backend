@@ -65,7 +65,6 @@ public class UserAwardServiceImpl implements UserAwardService{
         if (distributeAward==null) {
             log.error("分发奖品，对应的服务不存在 awardKey:{}", awardKey);
             return;
-//            throw new RuntimeException("分发奖品，奖品" + awardKey + "对应的服务不存在");
         }
         // 调用服务发奖
         distributeAward.giveOutPrizes(distributeAwardEntity);

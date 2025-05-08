@@ -41,7 +41,7 @@ public class RebateMessageCustomer {
     @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.send_rebate}"))
     public void listener(String message) {
         try {
-            log.info("监听用户入账消息 topic: {} message: {}", topic, message);
+            log.info("[RebateMessageCustomer]监听到用户入账消息 topic: {} message: {}", topic, message);
             BaseEvent.EventMessage<SendRebateMessageEvent.RebateMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<SendRebateMessageEvent.RebateMessage>>() {
             }.getType());
             SendRebateMessageEvent.RebateMessage data = eventMessage.getData();
@@ -53,7 +53,7 @@ public class RebateMessageCustomer {
                     quotaOrderEntity.setOutBusinessNo(data.getBizId());
                     quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
                     activityQuotaService.createQuotaOrder(quotaOrderEntity);
-                    log.info("监听用户入账消息，抽奖额度入账成功 topic: {} message: {} ", topic, message);
+                    log.info("[RebateMessageCustomer]用户入账消息，抽奖额度入账成功 topic: {} message: {} ", topic, message);
                     break;
                 case "integral":
                     TradeEntity tradeEntity = new TradeEntity();
@@ -63,17 +63,18 @@ public class RebateMessageCustomer {
                     tradeEntity.setTradeType(TradeTypeVO.FORWARD);
                     tradeEntity.setAmount(new BigDecimal(data.getRebateConfig()));
                     String creditOrder = creditService.createCreditOrder(tradeEntity);
-                    log.info("监听用户入账消息，积分入账成功 topic: {} message: {} creditOrder: {}", topic, message, creditOrder);
+                    log.info("[RebateMessageCustomer]用户入账消息，积分入账成功 topic: {} message: {} creditOrder: {}", topic, message, creditOrder);
                     break;
             }
         } catch (AppException ae) {
             if (ResponseCode.INDEX_DUP.getCode() == ae.getCode()) {
-                log.error("监听用户入账消息，重复消费 topic: {} message: {}", topic, message);
+                log.error("[RebateMessageCustomer]用户入账消息，重复消费 topic: {} message: {}", topic, message);
                 return;
             }
+            log.error("[RebateMessageCustomer]用户入账消息，消费失败 topic: {} message: {} code:{} info:{}", topic, message,ae.getCode(),ae.getMessage());
             throw ae;
         } catch (Exception e) {
-            log.error("监听用户入账消息，消费失败 topic: {} message: {}", topic, message);
+            log.error("[RebateMessageCustomer]用户入账消息，消费失败 topic: {} message: {}", topic, message);
             throw e;
         }
     }

@@ -50,7 +50,8 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
         // 2. 根据规则模型查数据库表构建规则树树根
         RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
         if (ruleTreeVO == null) {
-            throw new RuntimeException("存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
+            log.error("[DefaultLottery]存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
+            throw new RuntimeException("[DefaultLottery]存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
         }
         // 3. 获取规则树引擎
         DecisionTreeEngine decisionTreeEngine = defaultLogicTreeFactory.openLogicTree(ruleTreeVO);

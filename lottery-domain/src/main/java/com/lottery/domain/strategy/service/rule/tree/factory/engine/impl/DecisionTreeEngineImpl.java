@@ -42,7 +42,7 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
             DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId, awardId,ruleTreeNode.getRuleValue());
             RuleLogicCheckTypeVO ruleLogicCheckTypeVO = logicEntity.getRuleLogicCheckType();
             ruleEntity = logicEntity.getRuleEntity(); //当前：兜底奖励or通过-次数锁-库存-后的正常奖励
-            log.info("决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
+            log.debug("[DecisionTreeEngineImpl]决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
             // 3.3. 获取下个节点
             nextNode = getNextNode(ruleLogicCheckTypeVO.getCode(), ruleTreeNode.getTreeNodeLineVOList());
             ruleTreeNode = treeNodeMap.get(nextNode);
