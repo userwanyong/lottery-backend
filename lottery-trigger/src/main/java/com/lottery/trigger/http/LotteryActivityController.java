@@ -205,7 +205,7 @@ public class LotteryActivityController implements LotteryActivityService {
     @GetMapping("/query_sku_product_list_by_activity_id")
     public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(@RequestParam Long activityId) {
         try {
-            log.info("======================[querySkuProductListByActivityId]查询商品列表开始 activityId:{} ======================", activityId);
+            log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表开始 activityId:{} ======================", activityId);
             if (activityId == null) {
                 return new BaseResponse<>(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
@@ -219,13 +219,13 @@ public class LotteryActivityController implements LotteryActivityService {
                 skuProductResponseDTO.setActivityCount(activityCount);
                 skuProductResponseDTOS.add(skuProductResponseDTO);
             }
-            log.info("======================[querySkuProductListByActivityId]查询商品列表成功 activityId:{} ======================", activityId);
+            log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换sku商品列表成功 activityId:{} ======================", activityId);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), skuProductResponseDTOS);
         } catch (AppException e) {
-            log.error("======================[querySkuProductListByActivityId]查询商品列表异常 activityId:{} ======================", activityId, e);
+            log.error("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表异常 activityId:{} ======================", activityId, e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[querySkuProductListByActivityId]查询商品列表异常 activityId:{} ======================", activityId, e);
+            log.error("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表异常 activityId:{} ======================", activityId, e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }
@@ -235,13 +235,13 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestParam String userId) {
         try {
             CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
-            log.info("======================[queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
+            log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
         } catch (AppException e) {
-            log.error("======================[queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
+            log.error("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
+            log.error("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
 
@@ -251,7 +251,7 @@ public class LotteryActivityController implements LotteryActivityService {
     @PostMapping("/credit_pay_exchange_sku")
     public BaseResponse<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
         try {
-            log.info("======================[creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
+            log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
             // 1.创建增加抽奖次数的额度订单
             QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
             quotaOrderEntity.setUserId(request.getUserId());
@@ -259,7 +259,8 @@ public class LotteryActivityController implements LotteryActivityService {
             quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
             quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
             UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-            // 2.创建增加积分的积分订单
+            log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} sku:{} orderId:{}", request.getUserId(), request.getSku(), quotaOrder.getOrderId());
+            // 2.创建扣减积分的积分订单
             TradeEntity tradeEntity = new TradeEntity();
             tradeEntity.setUserId(request.getUserId());
             tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
@@ -267,13 +268,14 @@ public class LotteryActivityController implements LotteryActivityService {
             tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
             tradeEntity.setAmount(quotaOrder.getPayAmount());
             String creditOrder = creditService.createCreditOrder(tradeEntity);
-            log.info("======================[creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
+            log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} sku:{} creditOrder:{}", request.getUserId(), request.getSku(), creditOrder);
+            log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
         } catch (AppException e) {
-            log.error("======================[creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
+            log.error("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
+            log.error("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

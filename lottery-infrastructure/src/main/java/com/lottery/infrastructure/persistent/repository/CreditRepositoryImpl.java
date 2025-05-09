@@ -8,6 +8,7 @@ import com.lottery.domain.credit.model.aggregate.TradeAggregate;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.CreditOrderEntity;
 import com.lottery.domain.credit.model.entity.TaskEntity;
+import com.lottery.domain.credit.model.valobj.CreditAccountStatusVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.repository.CreditRepository;
 import com.lottery.infrastructure.event.EventPublisher;
@@ -61,7 +62,7 @@ public class CreditRepositoryImpl implements CreditRepository {
         CreditAccount creditAccount = new CreditAccount();
         BigDecimal creditAmount = creditAccountEntity.getCreditAmount();
         creditAccount.setUserId(userId);
-        creditAccount.setAccountStatus("open");// TODO 暂时设为open，后期更改
+        creditAccount.setAccountStatus(CreditAccountStatusVO.OPEN.getCode());
         creditAccount.setTotalAmount(creditAmount);
         creditAccount.setAvailableAmount(creditAccountEntity.getCreditAmount());
 
