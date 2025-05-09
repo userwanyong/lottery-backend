@@ -163,7 +163,7 @@ public class LotteryActivityController implements LotteryActivityService {
     @PostMapping("/query_user_activity_account")
     public BaseResponse<UserActivityAccountResponseDTO> queryUserActivityAccount(@RequestBody UserActivityAccountRequestDTO requestDTO) {
         try {
-            log.info("======================[queryUserActivityAccount]查询用户参与次数开始 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
+            log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息开始 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
             // 1.参数校验
             if (StringUtils.isBlank(requestDTO.getUserId()) || requestDTO.getActivityId() == null) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
@@ -173,13 +173,13 @@ public class LotteryActivityController implements LotteryActivityService {
             // 3.返回结果
             UserActivityAccountResponseDTO res = new UserActivityAccountResponseDTO();
             BeanUtils.copyProperties(activityAccountEntity, res);
-            log.info("======================[queryUserActivityAccount]查询用户参与次数成功 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
+            log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息成功 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), res);
         } catch (AppException e) {
-            log.error("======================[queryUserActivityAccount]查询用户参与次数异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
+            log.error("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[queryUserActivityAccount]查询用户参与次数异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
+            log.error("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

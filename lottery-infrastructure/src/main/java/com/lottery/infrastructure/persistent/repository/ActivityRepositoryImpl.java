@@ -584,33 +584,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         }
         ActivityAccountEntity activityAccountEntity = new ActivityAccountEntity();
         BeanUtils.copyProperties(dbActivityAccount, activityAccountEntity);
-        //TODO 这里我感觉不需要，后面数据不一致时在打开试试！
-//        // 2. 查询月账户额度
-//        ActivityAccountMonth activityAccountMonth = activityAccountMonthMapper.queryActivityAccountMonthByUserId(ActivityAccountMonth.builder()
-//                .activityId(activityId)
-//                .userId(userId)
-//                .build());
-//        // 3. 查询日账户额度
-//        ActivityAccountDay activityAccountDay = activityAccountDayMapper.queryActivityAccountDayByUserId(ActivityAccountDay.builder()
-//                .activityId(activityId)
-//                .userId(userId)
-//                .build());
-//        // 如果没有创建日账户，则从总账户中获取日总额度填充。「当新创建日账户时，会获得总账户额度」
-//        if (activityAccountDay==null) {
-//            activityAccountEntity.setDayCount(dbActivityAccount.getDayCount());
-//            activityAccountEntity.setDayCountSurplus(dbActivityAccount.getDayCount());
-//        } else {
-//            activityAccountEntity.setDayCount(activityAccountDay.getDayCount());
-//            activityAccountEntity.setDayCountSurplus(activityAccountDay.getDayCountSurplus());
-//        }
-//        // 如果没有创建月账户，则从总账户中获取月总额度填充。「当新创建日账户时，会获得总账户额度」
-//        if (activityAccountMonth==null) {
-//            activityAccountEntity.setMonthCount(dbActivityAccount.getMonthCount());
-//            activityAccountEntity.setMonthCountSurplus(dbActivityAccount.getMonthCount());
-//        } else {
-//            activityAccountEntity.setMonthCount(activityAccountMonth.getMonthCount());
-//            activityAccountEntity.setMonthCountSurplus(activityAccountMonth.getMonthCountSurplus());
-//        }
         return activityAccountEntity;
     }
 
