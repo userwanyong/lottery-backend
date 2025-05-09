@@ -88,7 +88,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
     @PostMapping("/query_strategy_rule_weight")
     public BaseResponse<List<StrategyRuleWeightResponseDTO>> queryStrategyRuleWeight(@RequestBody StrategyRuleWeightRequestDTO requestDTO) {
         try {
-            log.info("======================[queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
+            log.info("======================[LotteryStrategyController-queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
             // 1.参数校验
             if (requestDTO.getUserId() == null || "null".equals(requestDTO.getUserId())) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
@@ -113,13 +113,13 @@ public class LotteryStrategyController implements LotteryStrategyService {
                 strategyRuleWeightResponseDTO.setStrategyAwards(strategyAwardList);
                 strategyRuleWeightResponseDTOList.add(strategyRuleWeightResponseDTO);
             }
-            log.info("======================[queryStrategyRuleWeight]查询用户抽奖权重成功 userId:{} ======================", requestDTO.getUserId());
+            log.info("======================[LotteryStrategyController-queryStrategyRuleWeight]查询用户抽奖权重成功 userId:{} ======================", requestDTO.getUserId());
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), strategyRuleWeightResponseDTOList);
         } catch (AppException e) {
-            log.error("======================[queryStrategyRuleWeight]查询用户抽奖权重异常 userId:{} ======================", requestDTO.getUserId(), e);
+            log.error("======================[LotteryStrategyController-queryStrategyRuleWeight]查询用户抽奖权重异常 userId:{} ======================", requestDTO.getUserId(), e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[queryStrategyRuleWeight]查询用户抽奖权重异常 userId:{} ======================", requestDTO.getUserId(), e);
+            log.error("======================[LotteryStrategyController-queryStrategyRuleWeight]查询用户抽奖权重异常 userId:{} ======================", requestDTO.getUserId(), e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }
