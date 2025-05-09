@@ -11,7 +11,6 @@ import com.lottery.domain.award.model.entity.TaskEntity;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.entity.UserCreditAwardEntity;
 import com.lottery.domain.award.model.valobj.AccountStatusVO;
-import com.lottery.domain.award.model.valobj.TaskStateVO;
 import com.lottery.domain.award.repository.UserAwardRepository;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.persistent.dao.*;
@@ -81,11 +80,11 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     userAwardRecordMapper.insert(userAwardRecord);
                     taskMapper.insert(task);
                     //更新抽奖单
-                    int count=userOrderMapper.updateUserOrderStateUsed(userOrder);
-                    if (count!=1){
+                    int count = userOrderMapper.updateUserOrderStateUsed(userOrder);
+                    if (count != 1) {
                         status.setRollbackOnly();
                         log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用");
-                        return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(),ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
+                        return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {
@@ -136,11 +135,11 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     // 更新/创建积分账户
                     LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda().eq(CreditAccount::getUserId, userId);
                     CreditAccount dbCreditAccount = creditAccountMapper.selectOne(queryWrapper);
-                    if (dbCreditAccount==null){
+                    if (dbCreditAccount == null) {
                         // 新增
                         creditAccountMapper.insert(creditAccount);
                         log.debug("[UserAwardRepositoryImpl]创建积分账户成功 userId:{}", userId);
-                    }else {
+                    } else {
                         // 更新
                         creditAccountMapper.update(creditAccount);
                         log.debug("[UserAwardRepositoryImpl]更新积分账户成功 userId:{}", userId);
@@ -148,18 +147,18 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     // 更新中奖记录状态为completed 发奖完成
                     int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserId, userId).eq(UserAwardRecord::getOrderId, userAwardRecordEntity.getOrderId()));
                     log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
-                    if (count==0){
+                    if (count == 0) {
                         log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
                         status.setRollbackOnly();
                     }
                     return 1;
-                }catch (DuplicateKeyException e){
+                } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
                 }
             });
-        }finally {
+        } finally {
             dbRouter.clear();
             lock.unlock();
         }

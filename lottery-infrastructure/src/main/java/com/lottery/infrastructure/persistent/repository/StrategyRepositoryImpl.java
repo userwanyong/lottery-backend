@@ -91,9 +91,11 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     public void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable) {
         // 1. 存储 抽奖策略范围值，如1000，用于生成1000以内的随机数
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
+        log.debug("[StrategyRepositoryImpl]存储策略抽奖概率范围值：{}", rateRange);
         // 2. 存储 概率查找表
         Map<Integer, Long> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         cacheRateTable.putAll(strategyAwardSearchRateTable);
+        log.debug("[StrategyRepositoryImpl]存储策略抽奖概率查找表：{}", cacheRateTable);
 
     }
 
@@ -225,6 +227,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
             //lottery_strategy_award_count_key_200001_123 以_分割，提取200001_123
             String[] split = key.split(Constants.UNDERLINE);
             String strategyAward = split[split.length - 2] + "_" + split[split.length - 1];
+            log.debug("[ActivityRepositoryImpl]已无库存，发送MQ消息清空数据库库存 strategyAward: {}", strategyAward);
             eventPublisher.publish(awardStockZeroMessageEvent.topic(), awardStockZeroMessageEvent.buildEventMessage(strategyAward));
         } else if (count < 0) {
             redisService.setAtomicLong(key, 0);
@@ -238,8 +241,9 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         String lockKey = key + Constants.UNDERLINE + count;
         long expireMillis = activity.getEndDateTime().getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
         Boolean lock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
+        log.debug("[ActivityRepositoryImpl]策略奖品库存加锁成功 {}", lockKey);
         if (!lock) {
-            log.info("策略奖品库存加锁失败 {}", lockKey);
+            log.info("[ActivityRepositoryImpl]策略奖品库存加锁失败 {}", lockKey);
         }
         return lock;
     }
@@ -253,6 +257,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         // 将 lotteryReqEntity 添加到延迟队列，并设置延迟时间为3秒
         delayedQueue.offer(lotteryReqEntity, 3, TimeUnit.SECONDS);
+        log.debug("[ActivityRepositoryImpl]延迟队列创建成功 awardId: {}", lotteryReqEntity.getAwardId());
     }
 
     @Override
@@ -261,6 +266,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         // 获取指定键的阻塞队列
         RBlockingQueue<LotteryReqEntity> destinationQueue = redisService.getBlockingQueue(cacheKey);
         // 从队列中取出并返回一个元素
+        log.debug("[ActivityRepositoryImpl]从阻塞队列中取出值 strategyAward: {}", strategyAward);
         return destinationQueue.poll();
     }
 
@@ -275,6 +281,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .eq(StrategyAward::getAwardId, awardId)
                 .gt(StrategyAward::getAwardCountSurplus, 0);
         strategyAwardMapper.update(strategyAward, queryWrapper);
+        log.debug("[ActivityRepositoryImpl]更新策略奖品库存成功 strategyId: {}, awardId: {}", strategyId, awardId);
     }
 
     @Override
@@ -378,6 +385,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .eq(StrategyAward::getStrategyId, split[1])
                 .eq(StrategyAward::getAwardId, split[2]);
         strategyAwardMapper.update(null, updateWrapper);
+        log.debug("[ActivityRepositoryImpl]清空奖品库存成功 strategyId: {}, awardId: {}", split[1], split[2]);
 
     }
 
@@ -388,6 +396,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         blockingQueue.clear();
         RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         delayedQueue.clear();
+        log.debug("[ActivityRepositoryImpl]清空strategyAward库存为0的阻塞队列与延时队列成功 strategyAward: {}", strategyAward);
     }
 
     @Override
