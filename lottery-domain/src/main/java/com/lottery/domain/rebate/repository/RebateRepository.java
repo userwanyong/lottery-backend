@@ -18,4 +18,6 @@ public interface RebateRepository {
     void saveRebateAggregate(List<RebateAggregate> aggregates);
 
     List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
+
+    boolean queryIsHaveRebateOrder(String userId, String outBusinessNo);
 }

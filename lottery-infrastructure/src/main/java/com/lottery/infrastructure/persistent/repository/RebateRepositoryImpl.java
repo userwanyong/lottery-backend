@@ -135,4 +135,19 @@ public class RebateRepositoryImpl implements RebateRepository {
         }
         return rebateOrderEntities;
     }
+
+    @Override
+    public boolean queryIsHaveRebateOrder(String userId, String outBusinessNo) {
+        LambdaQueryWrapper<UserBehaviorRebateOrder> queryWrapper = new QueryWrapper<UserBehaviorRebateOrder>().lambda()
+                .eq(UserBehaviorRebateOrder::getUserId, userId)
+                .eq(UserBehaviorRebateOrder::getOutBusinessNo, outBusinessNo);
+        List<UserBehaviorRebateOrder> userBehaviorRebateOrders;
+        try {
+            dbRouter.doRouter(userId);
+            userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
+        }finally {
+            dbRouter.clear();
+        }
+        return !userBehaviorRebateOrders.isEmpty();
+    }
 }

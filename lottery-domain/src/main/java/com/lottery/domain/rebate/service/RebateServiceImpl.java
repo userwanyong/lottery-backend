@@ -83,4 +83,10 @@ public class RebateServiceImpl implements RebateService {
     public List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo) {
         return rebateRepository.queryRebateOrder(userId,outBusinessNo);
     }
+
+    @Override
+    public boolean queryIsHaveRebateOrder(String userId, String outBusinessNo) {
+        return rebateRepository.queryIsHaveRebateOrder(userId,outBusinessNo);
+    }
+
 }
