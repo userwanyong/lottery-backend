@@ -14,7 +14,7 @@ import java.util.List;
  * @author 永
  * 抽奖相关服务接口
  */
-public interface LotteryService {
+public interface LotteryStrategyService {
 
 //    /**
 //     * 策略装配接口

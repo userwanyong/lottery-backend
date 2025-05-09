@@ -32,7 +32,7 @@ public class StrategyImpl implements StrategyArmory, StrategyService {
         // 缓存奖品库存
         for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
             Long awardId = strategyAwardEntity.getAwardId();
-            Integer awardCount = strategyAwardEntity.getAwardCount();
+            Integer awardCount = strategyAwardEntity.getAwardCountSurplus();
             cacheStrategyAwardCount(strategyId, awardId, awardCount);
         }
         // 2. 生成并保存概率查找表

@@ -76,17 +76,17 @@ public class LotteryActivityController implements LotteryActivityService {
     @GetMapping("/armory")
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
         try {
-            log.info("======================[armory]整体装配开始 activityId:{} ======================", activityId);
-            // 1. 活动装配
+            log.info("======================[LotteryActivityController-armory]整体装配开始 activityId:{} ======================", activityId);
+            // 1. 活动装配 suk库存、对应次数列表、该活动信息 如果已存在缓存中，直接用就行
             activityArmory.assembleActivitySkuByActivityId(activityId);
-            log.info("[armory]活动装配成功 activityId:{}", activityId);
-            // 2. 策略装配
+            log.info("[LotteryActivityController-armory]活动装配成功 activityId:{}", activityId);
+            // 2. 策略装配 该活动奖品列表、每个奖品数量、概率范围值、概率表、概率+权重表
             strategyArmory.assembleLotteryStrategyByActivityId(activityId);
-            log.info("[armory]策略装配成功 activityId:{}", activityId);
-            log.info("======================[armory]整体装配成功 activityId:{} ======================", activityId);
+            log.info("[LotteryActivityController-armory]策略装配成功 activityId:{}", activityId);
+            log.info("======================[LotteryActivityController-armory]整体装配成功 activityId:{} ======================", activityId);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
         } catch (Exception e) {
-            log.error("======================[armory]整体装配失败 activityId:{} ======================", activityId, e);
+            log.error("======================[LotteryActivityController-armory]整体装配失败 activityId:{} ======================", activityId, e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

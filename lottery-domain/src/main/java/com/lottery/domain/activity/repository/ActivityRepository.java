@@ -15,14 +15,18 @@ import java.util.List;
  */
 public interface ActivityRepository {
     ActivitySkuEntity queryActivitySku(Long sku);
+
     ActivityEntity queryActivityByActivityId(Long activityId);
+
     ActivityCountEntity queryActivityCountByActivityCountId(Long activityCountId);
+
     void doSaveNoPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
+
     void doSaveCreditPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
     void cacheActivitySkuStockCount(String key, Integer stockCountSurplus);
 
-    boolean reduceActivitySkuStock(Long sku,String key, Date endDateTime);
+    boolean reduceActivitySkuStock(Long sku, String key, Date endDateTime);
 
     void activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO build);
 

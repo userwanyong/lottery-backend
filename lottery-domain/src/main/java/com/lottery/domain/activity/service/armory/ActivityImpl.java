@@ -22,26 +22,27 @@ public class ActivityImpl implements ActivityArmory,ActivityService{
     private ActivityRepository repository;
     @Override
     public boolean assembleActivitySku(Long sku) {
-        //预热活动sku库存
+        // 将库存数放入缓存
         ActivitySkuEntity activitySkuEntity = repository.queryActivitySku(sku);
         cacheActivitySkuStockCount(sku,activitySkuEntity.getStockCountSurplus());
-        //预热活动(已在查询时放入缓存)
+        // 预热次数，借用查询方法放入缓存
         repository.queryActivityByActivityId(activitySkuEntity.getActivityId());
-        //预热次数(已在查询时放入缓存)
+        // 预热活动，借用查询方法放入缓存
         repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
         return true;
     }
 
     @Override
     public boolean assembleActivitySkuByActivityId(Long activityId) {
-        //查询该活动下的sku列表
+        // 查询该活动下的sku列表
         List<ActivitySkuEntity> activitySkuEntityList = repository.queryActivitySkuListByActivityId(activityId);
         for (ActivitySkuEntity activitySkuEntity : activitySkuEntityList) {
+            // 将库存数放入缓存
             cacheActivitySkuStockCount(activitySkuEntity.getSku(),activitySkuEntity.getStockCountSurplus());
-            //预热次数(已在查询时放入缓存)
+            // 预热次数，借用查询方法放入缓存
             repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
         }
-        //预热活动(已在查询时放入缓存)
+        // 预热活动，借用查询方法放入缓存
         repository.queryActivityByActivityId(activityId);
         return true;
     }

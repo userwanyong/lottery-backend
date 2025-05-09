@@ -527,7 +527,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         LambdaQueryWrapper<ActivitySku> queryWrapper = new QueryWrapper<ActivitySku>().lambda()
                 .eq(ActivitySku::getActivityId, activityId);
         List<ActivitySku> activitySkus = activitySkuMapper.selectList(queryWrapper);
-
+        log.debug("[ActivityRepositoryImpl]根据活动ID查询SUK列表成功 {}", activitySkus);
         return activitySkus.stream()
                 .map(activitySku -> {
                     ActivitySkuEntity activitySkuEntity = new ActivitySkuEntity();

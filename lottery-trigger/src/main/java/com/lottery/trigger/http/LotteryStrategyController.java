@@ -5,8 +5,7 @@ import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.service.Lottery;
 import com.lottery.domain.strategy.service.Rule;
-import com.lottery.domain.strategy.service.armory.StrategyArmory;
-import com.lottery.trigger.api.LotteryService;
+import com.lottery.trigger.api.LotteryStrategyService;
 import com.lottery.trigger.api.dto.req.LotteryAwardListRequestDTO;
 import com.lottery.trigger.api.dto.req.StrategyRuleWeightRequestDTO;
 import com.lottery.trigger.api.dto.res.LotteryAwardListResponseDTO;
@@ -15,7 +14,6 @@ import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +29,8 @@ import java.util.Map;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/lottery")
-public class LotteryController implements LotteryService {
+public class LotteryStrategyController implements LotteryStrategyService {
 
-    @Resource
-    private StrategyArmory strategyArmory;
     @Resource
     private Lottery lottery;
 
@@ -43,17 +39,6 @@ public class LotteryController implements LotteryService {
 
     @Resource
     private ActivityQuotaService activityQuotaService;
-
-//    @Override
-//    @GetMapping("/strategy_armory")
-//    public BaseResponse<Boolean> strategyArmory(@RequestParam Long strategyId) {
-//        try {
-//            boolean result = strategyArmory.assembleLotteryStrategy(strategyId);
-//            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), result);
-//        } catch (Exception e) {
-//            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-//        }
-//    }
 
     @Override
     @PostMapping("/query_lottery_award_list")
@@ -94,29 +79,13 @@ public class LotteryController implements LotteryService {
         }
     }
 
-//    @Override
-//    @PostMapping("/random_lottery")
-//    public BaseResponse<LotteryResponseDTO> randomLottery(@RequestBody LotteryRequestDTO requestDTO) {
-//        try {
-//            LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().strategyId(requestDTO.getStrategyId()).build());
-//            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), LotteryResponseDTO.builder()
-//                    .awardId(lotteryResEntity.getAwardId())
-//                    .awardIndex(lotteryResEntity.getSort())
-//                    .build());
-//        } catch (AppException e) {
-//            return new BaseResponse<>(e.getCode(), e.getMessage());
-//        } catch (Exception e) {
-//            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-//        }
-//    }
-
     @Override
     @PostMapping("/query_strategy_rule_weight")
     public BaseResponse<List<StrategyRuleWeightResponseDTO>> queryStrategyRuleWeight(@RequestBody StrategyRuleWeightRequestDTO requestDTO) {
         try {
             log.info("======================[queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
             // 1.参数校验
-            if (requestDTO.getUserId() == null|| "null".equals(requestDTO.getUserId())) {
+            if (requestDTO.getUserId() == null || "null".equals(requestDTO.getUserId())) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
             }
             // 2.用户已经参与的抽奖次数
