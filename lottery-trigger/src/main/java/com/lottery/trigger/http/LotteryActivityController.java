@@ -142,19 +142,19 @@ public class LotteryActivityController implements LotteryActivityService {
     @PostMapping("/calendar_sign_rebate")
     public BaseResponse<Boolean> calendarSignRebate(@RequestParam String userId) {
         try {
-            log.info("======================[calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
+            log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
             BehaviorEntity behaviorEntity = new BehaviorEntity();
             behaviorEntity.setUserId(userId);
             behaviorEntity.setBehaviorTypeVO(BehaviorTypeVO.SIGN);
             behaviorEntity.setOutBusinessNo(new SimpleDateFormat("yyyyMMdd").format(new Date()));
             List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
-            log.info("======================[calendarSignRebate]用户签到返现成功 userId:{} orderIds:{} ======================", userId, orderIds);
+            log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现成功 userId:{} orderIds:{} ======================", userId, orderIds);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
         } catch (AppException e) {
-            log.error("======================[calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
+            log.error("======================[LotteryActivityController-calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
             return new BaseResponse<>(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            log.error("======================[calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
+            log.error("======================[LotteryActivityController-calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }

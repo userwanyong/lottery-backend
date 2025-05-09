@@ -76,6 +76,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                         UserBehaviorRebateOrder userBehaviorRebateOrder = new UserBehaviorRebateOrder();
                         BeanUtils.copyProperties(rebateOrderEntity, userBehaviorRebateOrder);
                         userBehaviorRebateOrderMapper.insert(userBehaviorRebateOrder);
+                        log.debug("[RebateRepositoryImpl]返利流水记录成功 userId: {}", userId);
                         //保存任务
                         TaskEntity taskEntity = aggregate.getTaskEntity();
                         Task task = new Task();
@@ -83,11 +84,12 @@ public class RebateRepositoryImpl implements RebateRepository {
                         task.setMessage(String.valueOf(taskEntity.getMessage()));
                         task.setState(taskEntity.getState().getCode());
                         taskMapper.insert(task);
+                        log.debug("[RebateRepositoryImpl]返利任务记录成功 userId: {}", userId);
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("写入返利记录失败，唯一索引冲突 userId: {}", userId, e);
+                    log.error("[RebateRepositoryImpl]返利流水记录失败，唯一索引冲突 userId: {}", userId, e);
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
@@ -102,11 +104,12 @@ public class RebateRepositoryImpl implements RebateRepository {
             task.setMessageId(taskEntity.getMessageId());
             try {
                 eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
+                log.debug("[RebateRepositoryImpl]发送返利记录MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
                 //更新数据库
                 taskMapper.updateTaskSendMessageCompleted(task);
-                log.info("写入返利记录，发送MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
+                log.debug("[RebateRepositoryImpl]任务表状态成功 userId: {} topic: {}", userId, task.getTopic());
             }catch (Exception e){
-                log.error("写入返利记录，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
+                log.error("[RebateRepositoryImpl]发送返利记录MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
                 taskMapper.updateTaskSendMessageFail(task);
             }
         }

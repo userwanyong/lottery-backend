@@ -31,24 +31,24 @@ public class CreditAdjustSuccessCustomer {
     @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.credit_adjust_success}"))
     public void listener(String message) {
         try {
-            log.info("监听积分账户调整成功消息，进行交易商品发货 topic: {} message: {}", topic, message);
+            log.info("[CreditAdjustSuccessCustomer]监听到积分账户调整成功消息，进行交易商品发放 topic: {} message: {}", topic, message);
             BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage>>() {
             }.getType());
             CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage creditAdjustSuccessMessage = eventMessage.getData();
-
             // 积分发货
             DeliveryOrderEntity deliveryOrderEntity = new DeliveryOrderEntity();
             deliveryOrderEntity.setUserId(creditAdjustSuccessMessage.getUserId());
             deliveryOrderEntity.setOutBusinessNo(creditAdjustSuccessMessage.getOutBusinessNo());
             activityQuotaService.updateQuotaOrder(deliveryOrderEntity);
+            log.info("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货成功 topic: {} message: {}", topic, message);
         } catch (AppException ae) {
             if (ResponseCode.INDEX_DUP.getCode()==ae.getCode()) {
-                log.warn("监听积分账户调整成功消息，进行交易商品发货，消费重复 topic: {} message: {}", topic, message, ae);
+                log.warn("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货，消费重复 topic: {} message: {}", topic, message, ae);
                 return;
             }
             throw ae;
         } catch (Exception e) {
-            log.error("监听积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", topic, message, e);
+            log.error("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", topic, message, e);
             throw e;
         }
     }

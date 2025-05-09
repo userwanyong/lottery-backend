@@ -22,7 +22,7 @@ import java.util.Date;
 public class ActivityBaseChain extends AbstractActivityChain {
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.info("【活动责任链】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
         //是否开启
         if (!ActivityStateVO.open.equals(activityEntity.getState())) {
             throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(), ResponseCode.ACTIVITY_STATE_ERROR.getMessage());
@@ -36,7 +36,7 @@ public class ActivityBaseChain extends AbstractActivityChain {
         if (activitySkuEntity.getStockCountSurplus() <= 0) {
             throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
-        log.info("【活动责任链】-日期、状态、库存校验通过");
+        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验通过");
         //执行责任链的下一个节点
         return next().action(activitySkuEntity, activityEntity, activityCountEntity);
     }

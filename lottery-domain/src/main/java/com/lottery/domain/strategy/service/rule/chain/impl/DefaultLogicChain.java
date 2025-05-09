@@ -22,7 +22,7 @@ public class DefaultLogicChain extends AbstractLogicChain {
     @Override
     public RuleEntity logic(String userId, Long strategyId) {
         Long awardId = strategyService.getRandomAwardId(strategyId);
-        log.debug("【责任链 DefaultLogicChain】-默认处理 userId: {} strategyId: {} awardId: {} ruleModel: {}", userId, strategyId, awardId, Constants.RuleModel.DEFAULT);
+        log.debug("【抽奖责任链-DefaultLogicChain】-默认处理 userId: {} strategyId: {} awardId: {} ruleModel: {}", userId, strategyId, awardId, Constants.RuleModel.DEFAULT);
         return RuleEntity.builder()
                 .awardId(awardId)
                 .ruleModel(Constants.RuleModel.DEFAULT)

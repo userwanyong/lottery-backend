@@ -95,24 +95,29 @@ public class CreditRepositoryImpl implements CreditRepository {
                     if (account == null) {
                         // 新增
                         creditAccountMapper.insert(creditAccount);
+                        log.debug("[CreditRepositoryImpl]创建积分账户成功 userId:{}", userId);
                     }else if (creditOrderEntity.getTradeType() == TradeTypeVO.FORWARD){
                         // 增加(可用)
                         creditAccountMapper.update(creditAccount);
+                        log.debug("[CreditRepositoryImpl]增加积分账户成功 userId:{}", userId);
                     }
                     else {
                         // 减少(可用)
                         creditAccountMapper.reduce(creditAccount);
+                        log.debug("[CreditRepositoryImpl]减少积分账户成功 userId:{}", userId);
                     }
                     // 保存订单
                     userCreditOrderMapper.insert(userCreditOrder);
+                    log.debug("[CreditRepositoryImpl]保存积分订单成功 userId:{}", userId);
                     // 写入任务
                     taskMapper.insert(task);
+                    log.debug("[CreditRepositoryImpl]写入积分任务成功 userId:{}", userId);
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
+                    log.error("[CreditRepositoryImpl]调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
                 } catch (Exception e) {
                     status.setRollbackOnly();
-                    log.error("调整账户积分额度失败 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
+                    log.error("[CreditRepositoryImpl]调整账户积分额度失败 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
                 }
                 return 1;
             });
@@ -126,9 +131,9 @@ public class CreditRepositoryImpl implements CreditRepository {
             eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
             //更新数据库
             taskMapper.updateTaskSendMessageCompleted(task);
-            log.info("更新账户积分，发送MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
+            log.debug("[CreditRepositoryImpl]发送更新账户积分MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
         } catch (Exception e) {
-            log.error("更新账户积分，发送MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
+            log.error("[CreditRepositoryImpl]发送更新账户积分MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
             taskMapper.updateTaskSendMessageFail(task);
         }
     }

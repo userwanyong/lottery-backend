@@ -21,7 +21,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
 
     @Override
     public RuleEntity logic(String userId, Long strategyId) {
-        log.debug("【责任链 RuleBackListLogicChain】-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
+        log.debug("【抽奖责任链-RuleBackListLogicChain】-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
         // 1. 查询规则的值
         String ruleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_BLACKLIST);
         String[] splitRuleValue = ruleValue.split(Constants.COLON);
@@ -33,7 +33,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
         // 如果用户在黑名单中，进行接管
         for (String userBlackId : userBlackIds) {
             if (userId.equals(userBlackId)) {
-                log.debug("【责任链 RuleBackListLogicChain】-黑名单接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST, awardId);
+                log.debug("【抽奖责任链-RuleBackListLogicChain】-黑名单接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST, awardId);
                 return RuleEntity.builder()
                         .awardId(awardId)
                         .ruleValue("0.01,1")
@@ -42,7 +42,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
             }
         }
         // 否则过滤其他责任链
-        log.debug("【责任链 RuleBackListLogicChain】-黑名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
+        log.debug("【抽奖责任链-RuleBackListLogicChain】-黑名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
         return next().logic(userId, strategyId);
     }
 }

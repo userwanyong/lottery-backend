@@ -32,20 +32,19 @@ public class UpdateActivitySkuStockJob {
                     try{
                         activitySkuStockKeyVO = skuStock.takeQueueValue(sku);
                     }catch (Exception e){
-                        log.error("【定时任务】-更新活动sku库存-失败", e);
+                        log.error("【定时任务-UpdateActivitySkuStockJob】-更新活动sku库存-失败", e);
                     }
 
                     if (activitySkuStockKeyVO==null) {
-//                        log.info("【定时任务】-暂无更新活动sku库存任务");
                         return;
                     }
                     skuStock.updateActivitySkuStock(activitySkuStockKeyVO.getSku());
-                    log.info("【定时任务】-更新活动sku库存-成功 sku:{} activityId:{}", activitySkuStockKeyVO.getSku(), activitySkuStockKeyVO.getActivityId());
+                    log.info("【定时任务-UpdateActivitySkuStockJob】-更新活动sku库存-成功 sku:{} activityId:{}", activitySkuStockKeyVO.getSku(), activitySkuStockKeyVO.getActivityId());
                 });
             }
 
         } catch (Exception e) {
-            log.error("【定时任务】-更新活动sku库存-失败", e);
+            log.error("【定时任务-UpdateActivitySkuStockJob】-更新活动sku库存-失败", e);
         }
     }
 }

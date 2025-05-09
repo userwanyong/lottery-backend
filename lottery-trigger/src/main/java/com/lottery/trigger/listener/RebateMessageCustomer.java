@@ -68,7 +68,7 @@ public class RebateMessageCustomer {
             }
         } catch (AppException ae) {
             if (ResponseCode.INDEX_DUP.getCode() == ae.getCode()) {
-                log.error("[RebateMessageCustomer]用户入账消息，重复消费 topic: {} message: {}", topic, message);
+                log.warn("[RebateMessageCustomer]用户入账消息，重复消费 topic: {} message: {}", topic, message);
                 return;
             }
             log.error("[RebateMessageCustomer]用户入账消息，消费失败 topic: {} message: {} code:{} info:{}", topic, message,ae.getCode(),ae.getMessage());
