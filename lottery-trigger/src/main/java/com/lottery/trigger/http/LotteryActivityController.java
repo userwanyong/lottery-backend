@@ -15,7 +15,6 @@ import com.lottery.domain.credit.model.valobj.TradeNameVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.service.CreditService;
 import com.lottery.domain.rebate.model.entity.BehaviorEntity;
-import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
 import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.rebate.service.RebateService;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;

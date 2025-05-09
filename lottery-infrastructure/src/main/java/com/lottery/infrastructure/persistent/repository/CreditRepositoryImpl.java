@@ -8,7 +8,6 @@ import com.lottery.domain.credit.model.aggregate.TradeAggregate;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.CreditOrderEntity;
 import com.lottery.domain.credit.model.entity.TaskEntity;
-import com.lottery.domain.credit.model.valobj.TradeNameVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.repository.CreditRepository;
 import com.lottery.infrastructure.event.EventPublisher;
@@ -96,12 +95,11 @@ public class CreditRepositoryImpl implements CreditRepository {
                         // 新增
                         creditAccountMapper.insert(creditAccount);
                         log.debug("[CreditRepositoryImpl]创建积分账户成功 userId:{}", userId);
-                    }else if (creditOrderEntity.getTradeType() == TradeTypeVO.FORWARD){
+                    } else if (creditOrderEntity.getTradeType() == TradeTypeVO.FORWARD) {
                         // 增加(可用)
                         creditAccountMapper.update(creditAccount);
                         log.debug("[CreditRepositoryImpl]增加积分账户成功 userId:{}", userId);
-                    }
-                    else {
+                    } else {
                         // 减少(可用)
                         creditAccountMapper.reduce(creditAccount);
                         log.debug("[CreditRepositoryImpl]减少积分账户成功 userId:{}", userId);
@@ -145,7 +143,7 @@ public class CreditRepositoryImpl implements CreditRepository {
             LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
                     .eq(CreditAccount::getUserId, userId);
             CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
-            if (creditAccount == null){
+            if (creditAccount == null) {
                 return CreditAccountEntity.builder()
                         .userId(userId)
                         .creditAmount(BigDecimal.ZERO)
@@ -155,7 +153,7 @@ public class CreditRepositoryImpl implements CreditRepository {
                     .userId(creditAccount.getUserId())
                     .creditAmount(creditAccount.getAvailableAmount())
                     .build();
-        }finally {
+        } finally {
             dbRouter.clear();
         }
 

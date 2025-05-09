@@ -160,7 +160,7 @@ public class StrategyImpl implements StrategyArmory, StrategyService {
     @Override
     public Boolean reduceAwardStock(Long strategyId, Long awardId) {
         String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
-        return repository.reduceAwardStock(key,strategyId);
+        return repository.reduceAwardStock(key, strategyId);
     }
 
 }

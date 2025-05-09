@@ -1,10 +1,8 @@
 package com.lottery.trigger.api;
 
 import com.lottery.trigger.api.dto.req.LotteryAwardListRequestDTO;
-import com.lottery.trigger.api.dto.req.LotteryRequestDTO;
 import com.lottery.trigger.api.dto.req.StrategyRuleWeightRequestDTO;
 import com.lottery.trigger.api.dto.res.LotteryAwardListResponseDTO;
-import com.lottery.trigger.api.dto.res.LotteryResponseDTO;
 import com.lottery.trigger.api.dto.res.StrategyRuleWeightResponseDTO;
 import com.lottery.types.model.BaseResponse;
 
@@ -43,6 +41,7 @@ public interface LotteryStrategyService {
 
     /**
      * 查询活动策略权重(进度条所需信息)
+     *
      * @param requestDTO 请求参数
      * @return StrategyRuleWeightResponseDTO
      */

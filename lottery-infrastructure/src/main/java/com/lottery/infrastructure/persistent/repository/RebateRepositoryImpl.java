@@ -27,7 +27,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author 永
@@ -108,7 +107,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                 //更新数据库
                 taskMapper.updateTaskSendMessageCompleted(task);
                 log.debug("[RebateRepositoryImpl]任务表状态成功 userId: {} topic: {}", userId, task.getTopic());
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error("[RebateRepositoryImpl]发送返利记录MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
                 taskMapper.updateTaskSendMessageFail(task);
             }
@@ -124,7 +123,7 @@ public class RebateRepositoryImpl implements RebateRepository {
         try {
             dbRouter.doRouter(userId);
             userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
-        }finally {
+        } finally {
             dbRouter.clear();
         }
         List<RebateOrderEntity> rebateOrderEntities = new ArrayList<>(userBehaviorRebateOrders.size());
@@ -145,7 +144,7 @@ public class RebateRepositoryImpl implements RebateRepository {
         try {
             dbRouter.doRouter(userId);
             userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
-        }finally {
+        } finally {
             dbRouter.clear();
         }
         return !userBehaviorRebateOrders.isEmpty();
