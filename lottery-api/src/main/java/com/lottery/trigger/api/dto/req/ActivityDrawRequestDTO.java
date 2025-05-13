@@ -2,12 +2,14 @@ package com.lottery.trigger.api.dto.req;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author 永
  * 活动抽奖请求对象
  */
 @Data
-public class ActivityDrawRequestDTO {
+public class ActivityDrawRequestDTO implements Serializable {
     /**
      * 用户ID
      */

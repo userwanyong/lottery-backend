@@ -14,6 +14,7 @@ import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ import java.util.Map;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/lottery")
+@DubboService(version = "1.0")
 public class LotteryStrategyController implements LotteryStrategyService {
 
     @Resource
