@@ -28,6 +28,8 @@ public class Constants {
         public static final String ACTIVITY_ACCOUNT_LOCK = "lottery_activity_account_lock_";
         public static final String ACTIVITY_ACCOUNT_UPDATE_LOCK = "lottery_activity_account_update_lock_";
         public static final String CREDIT_ACCOUNT_LOCK = "lottery_credit_account_lock_";
+        public static final String BLACKLIST = "blacklist:";
+        public static final String RATE_LIMITER = "rate_limiter:";
     }
 
     public static class RuleModel {

@@ -26,6 +26,8 @@ public enum ResponseCode {
     ACTIVITY_ORDER_ERROR(1012, "用户抽奖单已使用过，不可重复抽奖"),
     USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT(1013, "积分不足"),
     DEGRADE_SWITCH(1014, "活动已降级"),
+    RATE_LIMITER(1015, "活动已被限流"),
+    HYSTRIX(1016, "服务已被熔断")
 
     ;
 

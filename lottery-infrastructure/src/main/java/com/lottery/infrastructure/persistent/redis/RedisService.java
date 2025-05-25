@@ -249,12 +249,26 @@ public interface RedisService {
 
     /**
      * 只有该key不存在时才会设置成功
+     *
      * @param key 键
      * @return true/false
      */
     Boolean setNx(String key);
-    Boolean setNx(String key,Long expire, TimeUnit timeUnit);
+
+    Boolean setNx(String key, Long expire, TimeUnit timeUnit);
 
     void setAtomicLong(String key, Integer value);
+
+    RAtomicLong getAtomicLong(String key);
+
+    /**
+     * 获取限流器
+     *
+     * @param key key
+     * @return
+     */
+    RRateLimiter getRateLimiter(String key);
+
+
 }
 

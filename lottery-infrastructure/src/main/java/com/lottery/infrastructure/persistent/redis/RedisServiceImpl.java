@@ -158,12 +158,12 @@ public class RedisServiceImpl implements RedisService {
 
     @Override
     public Boolean setNx(String key) {
-        return redissonClient.getBucket(key).compareAndSet(null,"lock");
+        return redissonClient.getBucket(key).compareAndSet(null, "lock");
     }
 
     @Override
     public Boolean setNx(String key, Long expire, TimeUnit timeUnit) {
-        return redissonClient.getBucket(key).trySet("lock",expire,timeUnit);
+        return redissonClient.getBucket(key).trySet("lock", expire, timeUnit);
     }
 
     @Override
@@ -171,6 +171,15 @@ public class RedisServiceImpl implements RedisService {
         redissonClient.getAtomicLong(key).set(value);
     }
 
+    @Override
+    public RAtomicLong getAtomicLong(String key) {
+        return redissonClient.getAtomicLong(key);
+    }
+
+    @Override
+    public RRateLimiter getRateLimiter(String key) {
+        return redissonClient.getRateLimiter(key);
+    }
 
 }
 
