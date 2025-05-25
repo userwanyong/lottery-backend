@@ -25,6 +25,7 @@ public enum ResponseCode {
     ACCOUNT_DAY_QUOTA_ERROR(1011,"账户日额度不足"),
     ACTIVITY_ORDER_ERROR(1012, "用户抽奖单已使用过，不可重复抽奖"),
     USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT(1013, "积分不足"),
+    DEGRADE_SWITCH(1014, "活动已降级"),
 
     ;
 

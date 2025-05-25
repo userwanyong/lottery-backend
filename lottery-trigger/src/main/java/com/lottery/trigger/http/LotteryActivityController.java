@@ -28,6 +28,7 @@ import com.lottery.trigger.api.dto.req.UserActivityAccountRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
 import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
+import com.lottery.types.annotation.DCCValue;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
@@ -72,6 +73,8 @@ public class LotteryActivityController implements LotteryActivityService {
     private ActivitySkuProductService activitySkuProductService;
     @Resource
     private CreditService creditService;
+    @DCCValue("degradeSwitch:close")
+    private String degradeSwitch;
 
     @Override
     @GetMapping("/armory")
@@ -97,6 +100,10 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         try {
             log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
+            if ("open".equals(degradeSwitch)){
+                log.info("======================[LotteryActivityController-draw]用户抽奖结束,已进行降级处理 ======================");
+                return new BaseResponse<>(ResponseCode.DEGRADE_SWITCH.getCode(), ResponseCode.DEGRADE_SWITCH.getMessage());
+            }
             // 1. 参数校验
             if (StringUtils.isBlank(request.getUserId()) || request.getActivityId() == null) {
                 throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
