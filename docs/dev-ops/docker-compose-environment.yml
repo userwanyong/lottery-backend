@@ -1,6 +1,7 @@
 # 命令执行 docker-compose -f docker-compose-environment.yml up -d
 version: '3.9'
 services:
+  # nacos
   nacos:
     image: nacos/nacos-server
     container_name: nacos
@@ -43,8 +44,8 @@ services:
     ports:
       - "13306:3306"
     volumes:
-      - ./mysql/sql:/docker-entrypoint-initdb.d #将本地目录 ./mysql/sql 挂载到容器内的 /docker-entrypoint-initdb.d 目录，用于初始化数据库
-      - /var/lib/mysql:/var/lib/mysql  # 直接挂载数据卷
+      - ./mysql/my.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./mysql/sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 5s #检查间隔
@@ -53,65 +54,65 @@ services:
       start_period: 10s #在服务启动后等待 10s 再开始健康检查
 
 
-  # phpmyadmin https://hub.docker.com/_/phpmyadmin
-  phpmyadmin:
-    image: phpmyadmin:5.2.1
-    container_name: phpmyadmin
-    hostname: phpmyadmin
-    restart: always
-    ports:
-      - "8899:80"
-    environment:
-      - PMA_HOST=mysql # mysql 的容器名
-      - PMA_PORT=3306
-      - MYSQL_ROOT_PASSWORD=123456
-    depends_on:
-      mysql:
-        condition: service_healthy
-    networks:
-      - my-network
-
-  # Redis
-  redis:
-    image: redis:6.2
-    container_name: redis
-    restart: always
-    hostname: redis
-    privileged: true
-    ports:
-      - "16379:6379"
-    volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: redis-server /usr/local/etc/redis/redis.conf
-    networks:
-      - my-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-
-  # RedisAdmin https://github.com/joeferner/redis-commander
-  redis-admin:
-    image: spryker/redis-commander:0.8.0
-    container_name: redis-admin
-    hostname: redis-commander
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      - REDIS_HOSTS=local:redis:6379
-      - HTTP_USER=admin
-      - HTTP_PASSWORD=admin
-      - LANG=C.UTF-8
-      - LANGUAGE=C.UTF-8
-      - LC_ALL=C.UTF-8
-    networks:
-      - my-network
-    depends_on:
-      redis:
-        condition: service_healthy
+#  # phpmyadmin https://hub.docker.com/_/phpmyadmin
+#  phpmyadmin:
+#    image: phpmyadmin:5.2.1
+#    container_name: phpmyadmin
+#    hostname: phpmyadmin
+#    restart: always
+#    ports:
+#      - "8899:80"
+#    environment:
+#      - PMA_HOST=mysql # mysql 的容器名
+#      - PMA_PORT=3306
+#      - MYSQL_ROOT_PASSWORD=123456
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    networks:
+#      - my-network
+#
+#  # Redis
+#  redis:
+#    image: redis:6.2
+#    container_name: redis
+#    restart: always
+#    hostname: redis
+#    privileged: true
+#    ports:
+#      - "16379:6379"
+#    volumes:
+#      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+#    command: redis-server /usr/local/etc/redis/redis.conf
+#    networks:
+#      - my-network
+#    healthcheck:
+#      test: [ "CMD", "redis-cli", "ping" ]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 3
+#      start_period: 10s
+#
+#  # RedisAdmin https://github.com/joeferner/redis-commander
+#  redis-admin:
+#    image: spryker/redis-commander:0.8.0
+#    container_name: redis-admin
+#    hostname: redis-commander
+#    restart: always
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      - REDIS_HOSTS=local:redis:6379
+#      - HTTP_USER=admin
+#      - HTTP_PASSWORD=admin
+#      - LANG=C.UTF-8
+#      - LANGUAGE=C.UTF-8
+#      - LC_ALL=C.UTF-8
+#    networks:
+#      - my-network
+#    depends_on:
+#      redis:
+#        condition: service_healthy
 
   # RabbitMQ
   rabbitmq:
@@ -143,6 +144,72 @@ services:
       ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
     networks:
       - my-network
+
+  # canal-server 伪装成mysql的从库
+  canal-server:
+    image: canal/canal-server:v1.1.7
+    container_name: canal-server
+    restart: unless-stopped
+    ports:
+      - "11111:11111"
+    volumes:
+      - ./canal-server/instance.properties:/home/admin/canal-server/conf/example/instance.properties
+    depends_on:
+      - mysql
+    networks:
+      - my-network
+
+  # canal-adapter 负责数据分发
+  canal-adapter:
+    image: coopersoft/canal-adapter:v1.1.6
+    container_name: canal-adapter
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    volumes:
+      - ./canal-adapter/application.yml:/opt/canal-adapter/conf/application.yml
+      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml
+      - ./canal-adapter/es7:/opt/canal-adapter/conf/es7
+    depends_on:
+      - canal-server
+    networks:
+      - my-network
+
+  elasticsearch:
+    image: elasticsearch:7.17.14
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - 'cluster.name=elasticsearch' # 设置集群名称为elasticsearch
+      - 'discovery.type=single-node' # 以单一节点模式启动
+      - "cluster.name=docker-cluster" # 设置名称
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m' # 设置使用jvm内存大小
+    networks:
+      - my-network
+
+  kibana:
+    image: kibana:7.17.14
+    container_name: kibana
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - '5601:5601'
+    links:
+      - elasticsearch:es #可以用es这个域名访问elasticsearch服务
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200 #设置访问elasticsearch的地址
+      - I18N_LOCALE=zh-CN
+    networks:
+      - my-network
+    depends_on:
+      - elasticsearch
+
+
 
 
 networks:

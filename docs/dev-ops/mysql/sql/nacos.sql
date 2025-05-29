@@ -17,6 +17,10 @@
 /******************************************/
 /*   表名称 = config_info                  */
 /******************************************/
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `nacos` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `nacos`;
+
+
 CREATE TABLE `config_info`
 (
     `id`                 bigint(20)    NOT NULL AUTO_INCREMENT COMMENT 'id',
