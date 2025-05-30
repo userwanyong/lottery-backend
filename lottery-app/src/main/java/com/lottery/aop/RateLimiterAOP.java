@@ -1,14 +1,11 @@
 package com.lottery.aop;
 
-import com.alibaba.nacos.shaded.com.google.common.cache.Cache;
-import com.alibaba.nacos.shaded.com.google.common.cache.CacheBuilder;
-import com.lottery.infrastructure.persistent.redis.RedisService;
+import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.types.annotation.DCCValue;
 import com.lottery.types.annotation.RateLimiterAccessInterceptor;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.curator.shaded.com.google.common.util.concurrent.RateLimiter;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;

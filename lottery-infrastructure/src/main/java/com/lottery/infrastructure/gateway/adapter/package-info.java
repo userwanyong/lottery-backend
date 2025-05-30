@@ -1,1 +1,0 @@
-package com.lottery.infrastructure.gateway.adapter;

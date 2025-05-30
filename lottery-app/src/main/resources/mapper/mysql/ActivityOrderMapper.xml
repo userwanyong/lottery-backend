@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lottery.infrastructure.dao.ActivityOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.ActivityOrder">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
+            <result property="sku" column="sku" jdbcType="BIGINT"/>
+            <result property="activityName" column="activity_name" jdbcType="VARCHAR"/>
+            <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
+            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="orderTime" column="order_time" jdbcType="TIMESTAMP"/>
+            <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
+            <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
+            <result property="monthCount" column="month_count" jdbcType="INTEGER"/>
+            <result property="payAmount" column="pay_amount" jdbcType="DECIMAL"/>
+            <result property="state" column="state" jdbcType="VARCHAR"/>
+            <result property="outBusinessNo" column="outBusinessNo" jdbcType="VARCHAR"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+</mapper>
