@@ -2,13 +2,16 @@ package com.lottery.trigger.job;
 
 import com.lottery.domain.activity.model.valobj.ActivitySkuStockKeyVO;
 import com.lottery.domain.activity.service.ActivitySkuStockService;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 永
@@ -21,21 +24,32 @@ public class UpdateActivitySkuStockJob {
     private ActivitySkuStockService skuStock;
     @Resource
     private ThreadPoolExecutor executor;
+    @Resource
+    private RedissonClient redissonClient;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    @XxlJob("UpdateActivitySkuStockJob")
     public void exec() {
+        // 为什么加锁？分布式应用N台机器部署互备，任务调度会有N个同时执行，那么这里需要增加抢占机制，谁抢占到谁就执行。完毕后，下一轮继续抢占。
+        RLock lock = redissonClient.getLock("lottery-UpdateActivitySkuStockJob");
+        boolean isLocked = false;
+
         try {
+            isLocked = lock.tryLock(3, 0, TimeUnit.SECONDS);
+            if (!isLocked) {
+                return;
+            }
+
             List<Long> skuList = skuStock.querySkuList();
             for (Long sku : skuList) {
                 executor.execute(() -> {
                     ActivitySkuStockKeyVO activitySkuStockKeyVO = null;
-                    try{
+                    try {
                         activitySkuStockKeyVO = skuStock.takeQueueValue(sku);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         log.error("【定时任务-UpdateActivitySkuStockJob】-更新活动sku库存-失败", e);
                     }
 
-                    if (activitySkuStockKeyVO==null) {
+                    if (activitySkuStockKeyVO == null) {
                         return;
                     }
                     skuStock.updateActivitySkuStock(activitySkuStockKeyVO.getSku());
@@ -45,6 +59,10 @@ public class UpdateActivitySkuStockJob {
 
         } catch (Exception e) {
             log.error("【定时任务-UpdateActivitySkuStockJob】-更新活动sku库存-失败", e);
+        } finally {
+            if (isLocked) {
+                lock.unlock();
+            }
         }
     }
 }
