@@ -1,6 +1,9 @@
 package com.lottery.config;
 
 
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.elasticsearch.xpack.sql.jdbc.EsDataSource;
@@ -43,18 +46,46 @@ public class DataSourceConfig {
 
     @Configuration
     @MapperScan(basePackages = "com.lottery.infrastructure.dao", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
-    static class MysqlMyBatisConfig {
+    static class MysqlMyBatisPlusConfig {
 
         @Bean("mysqlSqlSessionFactory")
         public SqlSessionFactory mysqlSqlSessionFactory(DataSource mysqlDataSource, Interceptor dbRouterDynamicMybatisPlugin) throws Exception {
-            SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+            MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
             factoryBean.setDataSource(mysqlDataSource);
             factoryBean.setPlugins(dbRouterDynamicMybatisPlugin);
-            factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/mysql/*.xml"));
+            factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
+                    .getResources("classpath:mapper/mysql/*.xml"));
+
+            // 使用 GlobalConfig 配置 MyBatis-Plus 特性
+            GlobalConfig globalConfig = new GlobalConfig();
+            globalConfig.setBanner(false); // 关闭启动 banner
+            globalConfig.setDbConfig(new GlobalConfig.DbConfig()
+                    .setTableUnderline(true)); // 下划线转驼峰
+
+            // 将 GlobalConfig 设置到 MybatisSqlSessionFactoryBean 中
+            factoryBean.setGlobalConfig(globalConfig);
+
             return factoryBean.getObject();
         }
-
     }
+
+//    /**
+//     * Mybatis用法
+//     */
+//    @Configuration
+//    @MapperScan(basePackages = "com.lottery.infrastructure.dao", sqlSessionFactoryRef = "mysqlSqlSessionFactory")
+//    static class MysqlMyBatisConfig {
+//
+//        @Bean("mysqlSqlSessionFactory")
+//        public SqlSessionFactory mysqlSqlSessionFactory(DataSource mysqlDataSource, Interceptor dbRouterDynamicMybatisPlugin) throws Exception {
+//            SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+//            factoryBean.setDataSource(mysqlDataSource);
+//            factoryBean.setPlugins(dbRouterDynamicMybatisPlugin);
+//            factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/mysql/*.xml"));
+//            return factoryBean.getObject();
+//        }
+//
+//    }
 
 }
 
