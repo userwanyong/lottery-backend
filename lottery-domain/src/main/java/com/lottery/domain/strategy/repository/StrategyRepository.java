@@ -19,7 +19,7 @@ public interface StrategyRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
 
-    void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable);
+    <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable);
 
     Long getStrategyAwardAssemble(String strategyId, Integer rateKey);
 
@@ -68,4 +68,10 @@ public interface StrategyRepository {
     void clearQueueValue(String strategyAward);
 
     List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
+
+    void cacheStrategyArmoryAlgorithm(String key, String name);
+
+    String queryStrategyArmoryAlgorithmFromCache(String key);
+
+    <K, V> Map<K, V> getMap(String key);
 }

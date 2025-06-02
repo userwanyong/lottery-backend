@@ -88,12 +88,12 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Long> strategyAwardSearchRateTable) {
+    public <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
         // 1. 存储 抽奖策略范围值，如1000，用于生成1000以内的随机数
         redisService.setValue(Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + key, rateRange);
         log.debug("[StrategyRepositoryImpl]存储策略抽奖概率范围值：{}", rateRange);
         // 2. 存储 概率查找表
-        Map<Integer, Long> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
+        Map<K, V> cacheRateTable = redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
         cacheRateTable.putAll(strategyAwardSearchRateTable);
         log.debug("[StrategyRepositoryImpl]存储策略抽奖概率查找表：{}", cacheRateTable);
 
@@ -443,5 +443,25 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         // 放入缓存
         redisService.setValue(cacheKey, newRuleWeightVOList);
         return newRuleWeightVOList;
+    }
+
+    @Override
+    public void cacheStrategyArmoryAlgorithm(String key, String name) {
+        String cacheKey = Constants.RedisKey.STRATEGY_ARMORY_ALGORITHM_KEY + key;
+        redisService.setValue(cacheKey, name);
+    }
+
+    @Override
+    public String queryStrategyArmoryAlgorithmFromCache(String key) {
+        String cacheKey = Constants.RedisKey.STRATEGY_ARMORY_ALGORITHM_KEY + key;
+        if (!redisService.isExists(cacheKey)) {
+            return null;
+        }
+        return redisService.getValue(cacheKey);
+    }
+
+    @Override
+    public <K, V> Map<K, V> getMap(String key) {
+        return redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
     }
 }

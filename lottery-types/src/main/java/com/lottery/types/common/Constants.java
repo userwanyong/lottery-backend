@@ -28,6 +28,7 @@ public class Constants {
         public static final String ACTIVITY_ACCOUNT_LOCK = "lottery_activity_account_lock_";
         public static final String ACTIVITY_ACCOUNT_UPDATE_LOCK = "lottery_activity_account_update_lock_";
         public static final String CREDIT_ACCOUNT_LOCK = "lottery_credit_account_lock_";
+        public static final String STRATEGY_ARMORY_ALGORITHM_KEY = "strategy_armory_algorithm_key_";
         public static final String BLACKLIST = "blacklist:";
         public static final String RATE_LIMITER = "rate_limiter:";
     }
@@ -56,6 +57,10 @@ public class Constants {
         public static final String CREDIT_PAY_TRADE = "credit_pay_trade";
         public static final String REBATE_NO_PAY_TRADE = "rebate_no_pay_trade";
 
+    }
+    public static class Algorithm{
+        public static final String O1 = "o1Algorithm";
+        public static final String OLogN = "oLogNAlgorithm";
     }
 
 }
