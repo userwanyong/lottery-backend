@@ -15,6 +15,7 @@
         <module>lottery-infrastructure</module>
         <module>lottery-types</module>
         <module>lottery-api</module>
+        <module>lottery-querys</module>
     </modules>
 
     <properties>
@@ -174,6 +175,11 @@
             <dependency>
                 <groupId>com.lottery</groupId>
                 <artifactId>lottery-trigger</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lottery</groupId>
+                <artifactId>lottery-querys</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>

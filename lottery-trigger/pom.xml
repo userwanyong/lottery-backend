@@ -69,6 +69,10 @@
             <groupId>com.lottery</groupId>
             <artifactId>lottery-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lottery</groupId>
+            <artifactId>lottery-querys</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

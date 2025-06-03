@@ -20,8 +20,7 @@
     <select id="queryUserOrderListEs" resultMap="BaseResultMap">
         select _user_id, _activity_id, _activity_name, _strategy_id, _order_id, _order_time, _order_state
         from "marketing.user_order"
-        order by _update_time
-        limit 10
+        order by _update_time desc
     </select>
 
 </mapper>
