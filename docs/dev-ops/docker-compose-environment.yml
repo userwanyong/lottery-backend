@@ -168,7 +168,7 @@ services:
       - "8082:8081"
     volumes:
       - ./canal-adapter/application.yml:/opt/canal-adapter/conf/application.yml
-      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml
+      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml3
       - ./canal-adapter/es7:/opt/canal-adapter/conf/es7
     depends_on:
       - canal-server
@@ -228,9 +228,30 @@ services:
     networks:
       - my-network
 
-
-
-
+  # 数据采集
+  prometheus:
+    image: bitnami/prometheus:2.47.2
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9099:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - my-network
+  # 监控界面 账号密码 admin admin
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana:/etc/grafana
+    networks:
+      - my-network
 
 
 networks:

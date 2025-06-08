@@ -382,10 +382,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         LambdaUpdateWrapper<StrategyAward> updateWrapper = new LambdaUpdateWrapper<StrategyAward>()
                 .set(StrategyAward::getAwardCountSurplus, 0)
                 .set(StrategyAward::getUpdateTime, new Date())
-                .eq(StrategyAward::getStrategyId, split[1])
-                .eq(StrategyAward::getAwardId, split[2]);
+                .eq(StrategyAward::getStrategyId, split[0])
+                .eq(StrategyAward::getAwardId, split[1]);
         strategyAwardMapper.update(null, updateWrapper);
-        log.debug("[ActivityRepositoryImpl]清空奖品库存成功 strategyId: {}, awardId: {}", split[1], split[2]);
+        log.debug("[ActivityRepositoryImpl]清空奖品库存成功 strategyId: {}, awardId: {}", split[0], split[1]);
 
     }
 
