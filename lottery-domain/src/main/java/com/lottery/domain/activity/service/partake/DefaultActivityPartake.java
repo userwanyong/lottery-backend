@@ -1,12 +1,12 @@
 package com.lottery.domain.activity.service.partake;
 
+import com.github.yitter.idgen.YitIdHelper;
 import com.lottery.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.UserOrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -87,7 +87,7 @@ public class DefaultActivityPartake extends AbstractActivityPartake {
         partakeOrderResEntity.setActivityId(activityId);
         partakeOrderResEntity.setActivityName(activityEntity.getActivityName());
         partakeOrderResEntity.setStrategyId(activityEntity.getStrategyId());
-        partakeOrderResEntity.setOrderId(RandomStringUtils.randomNumeric(12));
+        partakeOrderResEntity.setOrderId(String.valueOf(YitIdHelper.nextId()));
         partakeOrderResEntity.setOrderTime(currentTime);
         partakeOrderResEntity.setOrderState(UserOrderStateVO.create);
         return partakeOrderResEntity;

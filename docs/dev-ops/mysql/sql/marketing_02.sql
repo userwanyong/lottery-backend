@@ -4,41 +4,43 @@
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
 /*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40103 SET @OLD_TIME_ZONE = @@TIME_ZONE */;
+/*!40103 SET TIME_ZONE = '+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0 */;
+/*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
 
 --
 -- Table structure for table `activity_account`
 --
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `marketing_02` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
-USE `marketing_02`;
 
 DROP TABLE IF EXISTS `activity_account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_account` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `total_count` int NOT NULL COMMENT '总次数',
-  `total_count_surplus` int NOT NULL COMMENT '总次数-剩余',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `day_count_surplus` int NOT NULL COMMENT '日次数-剩余',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `month_count_surplus` int NOT NULL COMMENT '月次数-剩余',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_user_id_activity_id` (`user_id`,`activity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动账户表';
+CREATE TABLE `activity_account`
+(
+    `id`                  bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`             varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`         bigint          NOT NULL COMMENT '活动ID',
+    `total_count`         int             NOT NULL COMMENT '总次数',
+    `total_count_surplus` int             NOT NULL COMMENT '总次数-剩余',
+    `day_count`           int             NOT NULL COMMENT '日次数',
+    `day_count_surplus`   int             NOT NULL COMMENT '日次数-剩余',
+    `month_count`         int             NOT NULL COMMENT '月次数',
+    `month_count_surplus` int             NOT NULL COMMENT '月次数-剩余',
+    `create_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_user_id_activity_id` (`user_id`, `activity_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 7
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,9 +48,23 @@ CREATE TABLE `activity_account` (
 --
 
 LOCK TABLES `activity_account` WRITE;
-/*!40000 ALTER TABLE `activity_account` DISABLE KEYS */;
-INSERT INTO `activity_account` VALUES (1,'yong',100301,230,129,230,129,230,129,'2025-05-07 23:41:37','2025-05-25 23:37:52'),(2,'yong2',100301,40,23,40,23,40,23,'2025-05-08 13:22:29','2025-05-26 00:00:51');
-/*!40000 ALTER TABLE `activity_account` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_account`
+    DISABLE KEYS */;
+INSERT INTO `activity_account`
+VALUES (1, 'yong', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-05-07 23:41:37',
+        '2025-06-09 13:34:52'),
+       (2, 'yong2', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-05-08 13:22:29',
+        '2025-06-09 13:34:53'),
+       (3, 'yong7', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:18',
+        '2025-06-09 13:34:53'),
+       (4, 'yong8', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:20',
+        '2025-06-09 13:34:54'),
+       (5, 'yong9', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:22',
+        '2025-06-09 13:34:54'),
+       (6, 'yong10', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:24',
+        '2025-06-09 13:34:54');
+/*!40000 ALTER TABLE `activity_account`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -56,20 +72,24 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_account_day`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_account_day` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `day` varchar(10) NOT NULL COMMENT '日期（yyyy-mm-dd）',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `day_count_surplus` int NOT NULL COMMENT '日次数-剩余',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_user_id_activity_id_day` (`user_id`,`activity_id`,`day`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动账户表-日次数';
+CREATE TABLE `activity_account_day`
+(
+    `id`                int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`           varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`       bigint       NOT NULL COMMENT '活动ID',
+    `day`               varchar(10)  NOT NULL COMMENT '日期（yyyy-mm-dd）',
+    `day_count`         int          NOT NULL COMMENT '日次数',
+    `day_count_surplus` int          NOT NULL COMMENT '日次数-剩余',
+    `create_time`       datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_user_id_activity_id_day` (`user_id`, `activity_id`, `day`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 35
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-日次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,9 +97,10 @@ CREATE TABLE `activity_account_day` (
 --
 
 LOCK TABLES `activity_account_day` WRITE;
-/*!40000 ALTER TABLE `activity_account_day` DISABLE KEYS */;
-INSERT INTO `activity_account_day` VALUES (1,'yong2',100301,'2025-05-06',27,24,'2025-05-06 23:00:31','2025-05-06 23:44:54'),(2,'yong',100301,'2025-05-07',228,203,'2025-05-07 23:36:05','2025-05-07 23:47:49'),(3,'yong',100301,'2025-05-08',229,201,'2025-05-08 00:02:04','2025-05-08 00:08:35'),(4,'yong2',100301,'2025-05-08',39,7,'2025-05-08 12:01:40','2025-05-08 13:28:57'),(5,'yong',100301,'2025-05-09',230,201,'2025-05-09 14:17:09','2025-05-09 14:17:09'),(9,'yong2',100301,'2025-05-09',40,38,'2025-05-09 14:35:39','2025-05-09 14:36:17'),(10,'yong',100301,'2025-05-13',230,228,'2025-05-13 15:34:46','2025-05-13 15:36:56'),(11,'yong',100301,'2025-05-18',230,228,'2025-05-18 22:57:30','2025-05-18 22:58:54'),(12,'yong',100301,'2025-05-25',230,162,'2025-05-25 22:20:52','2025-05-25 23:37:52'),(13,'yong2',100301,'2025-05-25',40,33,'2025-05-25 23:40:09','2025-05-25 23:59:34'),(14,'yong2',100301,'2025-05-26',40,33,'2025-05-26 00:00:48','2025-05-26 00:00:51');
-/*!40000 ALTER TABLE `activity_account_day` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_account_day`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_account_day`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -87,20 +108,24 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_account_month`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_account_month` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `month` varchar(7) NOT NULL COMMENT '月（yyyy-mm）',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `month_count_surplus` int NOT NULL COMMENT '月次数-剩余',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_user_id_activity_id_month` (`user_id`,`activity_id`,`month`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动账户表-月次数';
+CREATE TABLE `activity_account_month`
+(
+    `id`                  int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`             varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`         bigint       NOT NULL COMMENT '活动ID',
+    `month`               varchar(7)   NOT NULL COMMENT '月（yyyy-mm）',
+    `month_count`         int          NOT NULL COMMENT '月次数',
+    `month_count_surplus` int          NOT NULL COMMENT '月次数-剩余',
+    `create_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_user_id_activity_id_month` (`user_id`, `activity_id`, `month`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 17
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-月次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,9 +133,10 @@ CREATE TABLE `activity_account_month` (
 --
 
 LOCK TABLES `activity_account_month` WRITE;
-/*!40000 ALTER TABLE `activity_account_month` DISABLE KEYS */;
-INSERT INTO `activity_account_month` VALUES (3,'yong2',100301,'2025-05',40,24,'2025-05-09 14:35:39','2025-05-26 00:00:51'),(4,'yong',100301,'2025-05',230,158,'2025-05-13 15:34:46','2025-05-25 23:37:52');
-/*!40000 ALTER TABLE `activity_account_month` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_account_month`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_account_month`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -118,30 +144,34 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_order_000`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_000` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `sku` bigint NOT NULL COMMENT '商品sku',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_id` varchar(12) NOT NULL COMMENT '额度单ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `total_count` int NOT NULL COMMENT '总次数',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `pay_amount` decimal(10,2) DEFAULT NULL COMMENT '支付积分',
-  `state` varchar(10) NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-  `out_business_no` varchar(64) NOT NULL COMMENT '保证幂等，不会重复消费',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`,`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='抽奖额度单表';
+CREATE TABLE `activity_order_000`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
+    `sku`             bigint          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint          NOT NULL COMMENT '抽奖策略ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '额度单ID',
+    `order_time`      datetime        NOT NULL COMMENT '下单时间',
+    `total_count`     int             NOT NULL COMMENT '总次数',
+    `day_count`       int             NOT NULL COMMENT '日次数',
+    `month_count`     int             NOT NULL COMMENT '月次数',
+    `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,8 +179,10 @@ CREATE TABLE `activity_order_000` (
 --
 
 LOCK TABLES `activity_order_000` WRITE;
-/*!40000 ALTER TABLE `activity_order_000` DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_000` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_000`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -158,30 +190,34 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_order_001`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_001` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `sku` bigint NOT NULL COMMENT '商品sku',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '额度单ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `total_count` int NOT NULL COMMENT '总次数',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `pay_amount` decimal(10,2) DEFAULT NULL COMMENT '支付积分',
-  `state` varchar(10) NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-  `out_business_no` varchar(64) NOT NULL COMMENT '保证幂等，不会重复消费',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`,`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='抽奖额度单表';
+CREATE TABLE `activity_order_001`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
+    `sku`             bigint          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `order_time`      datetime        NOT NULL COMMENT '下单时间',
+    `total_count`     int             NOT NULL COMMENT '总次数',
+    `day_count`       int             NOT NULL COMMENT '日次数',
+    `month_count`     int             NOT NULL COMMENT '月次数',
+    `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,8 +225,10 @@ CREATE TABLE `activity_order_001` (
 --
 
 LOCK TABLES `activity_order_001` WRITE;
-/*!40000 ALTER TABLE `activity_order_001` DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_001` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_001`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -198,30 +236,34 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_order_002`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_002` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `sku` bigint NOT NULL COMMENT '商品sku',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '额度单ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `total_count` int NOT NULL COMMENT '总次数',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `pay_amount` decimal(10,2) DEFAULT NULL COMMENT '支付积分',
-  `state` varchar(10) NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-  `out_business_no` varchar(64) NOT NULL COMMENT '保证幂等，不会重复消费',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='抽奖额度单表';
+CREATE TABLE `activity_order_002`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
+    `sku`             bigint          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `order_id`        varchar(16)     NOT NULL COMMENT '订单ID',
+    `order_time`      datetime        NOT NULL COMMENT '下单时间',
+    `total_count`     int             NOT NULL COMMENT '总次数',
+    `day_count`       int             NOT NULL COMMENT '日次数',
+    `month_count`     int             NOT NULL COMMENT '月次数',
+    `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 34
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -229,9 +271,10 @@ CREATE TABLE `activity_order_002` (
 --
 
 LOCK TABLES `activity_order_002` WRITE;
-/*!40000 ALTER TABLE `activity_order_002` DISABLE KEYS */;
-INSERT INTO `activity_order_002` VALUES (1,'yong2',100301,9011,'测试活动',200001,'183753328308','2025-05-06 23:00:25',1,1,1,0.00,'completed','yong2_sku_20250506','2025-05-06 23:00:24','2025-05-06 23:00:24'),(2,'yong2',100301,9011,'测试活动',200001,'428796784107','2025-05-06 23:01:43',1,1,1,-1.99,'completed','015207193366','2025-05-06 23:01:42','2025-05-06 23:01:42'),(3,'yong2',100301,9011,'测试活动',200001,'721379713037','2025-05-06 23:02:22',1,1,1,-1.99,'completed','318243221953','2025-05-06 23:02:22','2025-05-06 23:02:22'),(4,'yong2',100301,9011,'测试活动',200001,'686090383890','2025-05-06 23:02:23',1,1,1,-1.99,'completed','312426769592','2025-05-06 23:02:23','2025-05-06 23:02:23'),(5,'yong2',100301,9011,'测试活动',200001,'101601824399','2025-05-06 23:02:24',1,1,1,-1.99,'completed','321073700563','2025-05-06 23:02:24','2025-05-06 23:02:24'),(6,'yong2',100301,9011,'测试活动',200001,'215523414293','2025-05-06 23:02:25',1,1,1,-1.99,'completed','772781657321','2025-05-06 23:02:24','2025-05-06 23:02:24'),(7,'yong2',100301,9011,'测试活动',200001,'666165379655','2025-05-06 23:02:25',1,1,1,-1.99,'completed','940397166357','2025-05-06 23:02:24','2025-05-06 23:02:24'),(8,'yong2',100301,9011,'测试活动',200001,'796983196677','2025-05-06 23:02:29',1,1,1,-1.99,'completed','448043644619','2025-05-06 23:02:29','2025-05-06 23:02:29'),(9,'yong2',100301,9011,'测试活动',200001,'664031198832','2025-05-06 23:20:17',1,1,1,-1.99,'completed','990493992982','2025-05-06 23:20:16','2025-05-06 23:20:16'),(10,'yong2',100301,9011,'测试活动',200001,'807439570933','2025-05-06 23:20:18',1,1,1,-1.99,'completed','429015315975','2025-05-06 23:20:18','2025-05-06 23:20:18'),(11,'yong2',100301,9011,'测试活动',200001,'939706747375','2025-05-06 23:20:19',1,1,1,-1.99,'completed','367052389423','2025-05-06 23:20:19','2025-05-06 23:20:19'),(12,'yong2',100301,9011,'测试活动',200001,'838135572287','2025-05-06 23:20:20',1,1,1,-1.99,'completed','812169761335','2025-05-06 23:20:19','2025-05-06 23:20:19'),(13,'yong2',100301,9011,'测试活动',200001,'431903425536','2025-05-06 23:20:20',1,1,1,-1.99,'completed','954066085357','2025-05-06 23:20:20','2025-05-06 23:20:20'),(14,'yong2',100301,9011,'测试活动',200001,'035219525038','2025-05-06 23:20:21',1,1,1,-1.99,'completed','407042402291','2025-05-06 23:20:20','2025-05-06 23:20:20'),(15,'yong2',100301,9011,'测试活动',200001,'013375309792','2025-05-06 23:20:22',1,1,1,-1.99,'completed','161115226999','2025-05-06 23:20:22','2025-05-06 23:20:22'),(16,'yong2',100301,9011,'测试活动',200001,'488542152175','2025-05-06 23:34:17',1,1,1,-1.99,'completed','387531367346','2025-05-06 23:34:16','2025-05-06 23:34:16'),(17,'yong2',100301,9011,'测试活动',200001,'304904038544','2025-05-06 23:35:20',1,1,1,-1.99,'completed','524420691289','2025-05-06 23:35:20','2025-05-06 23:35:20'),(18,'yong2',100301,9011,'测试活动',200001,'627786022737','2025-05-06 23:35:48',1,1,1,-1.99,'completed','262339078088','2025-05-06 23:35:48','2025-05-06 23:35:48'),(19,'yong2',100301,9011,'测试活动',200001,'125437393009','2025-05-06 23:41:43',1,1,1,1.99,'completed','207301067978','2025-05-06 23:41:43','2025-05-06 23:41:43'),(20,'yong2',100301,9011,'测试活动',200001,'594707843012','2025-05-06 23:41:48',1,1,1,1.99,'completed','932909450511','2025-05-06 23:41:48','2025-05-06 23:41:48'),(21,'yong2',100301,9011,'测试活动',200001,'498658720209','2025-05-06 23:42:46',1,1,1,1.99,'completed','919766644414','2025-05-06 23:42:45','2025-05-06 23:42:45'),(22,'yong2',100301,9011,'测试活动',200001,'915062386385','2025-05-06 23:43:12',1,1,1,1.99,'completed','074105141693','2025-05-06 23:43:11','2025-05-06 23:43:11'),(23,'yong2',100301,9011,'测试活动',200001,'827861988765','2025-05-06 23:44:50',1,1,1,1.99,'completed','221491041459','2025-05-06 23:44:50','2025-05-06 23:44:50'),(24,'yong2',100301,9011,'测试活动',200001,'152938944650','2025-05-06 23:44:51',1,1,1,1.99,'completed','195748625299','2025-05-06 23:44:51','2025-05-06 23:44:51'),(25,'yong2',100301,9011,'测试活动',200001,'527946501253','2025-05-06 23:44:52',1,1,1,1.99,'completed','838371211111','2025-05-06 23:44:52','2025-05-06 23:44:52'),(26,'yong2',100301,9011,'测试活动',200001,'669909673268','2025-05-06 23:44:53',1,1,1,1.99,'completed','187132758363','2025-05-06 23:44:53','2025-05-06 23:44:53'),(27,'yong2',100301,9011,'测试活动',200001,'902892256430','2025-05-06 23:44:54',1,1,1,1.99,'completed','833969277243','2025-05-06 23:44:53','2025-05-06 23:44:53'),(28,'yong2',100301,9011,'测试活动',200001,'821442151848','2025-05-07 23:18:31',1,1,1,0.00,'completed','yong2_sku_20250507','2025-05-07 23:18:31','2025-05-07 23:18:31'),(29,'yong2',100301,9011,'测试活动',200001,'612565152735','2025-05-08 12:00:43',1,1,1,0.00,'completed','yong2_sku_20250508','2025-05-08 12:00:42','2025-05-08 12:00:42'),(30,'yong2',100301,9012,'测试活动',200001,'653455630154','2025-05-08 13:22:28',5,5,5,5.99,'completed','878807050416','2025-05-08 13:22:28','2025-05-08 13:22:28'),(31,'yong2',100301,9012,'测试活动',200001,'331284154032','2025-05-08 13:22:30',5,5,5,5.99,'completed','087914831520','2025-05-08 13:22:29','2025-05-08 13:22:29'),(32,'yong2',100301,9011,'测试活动',200001,'323885938646','2025-05-09 12:04:44',1,1,1,0.00,'completed','yong2_sku_20250509','2025-05-09 12:04:44','2025-05-09 12:04:44');
-/*!40000 ALTER TABLE `activity_order_002` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_002`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -239,30 +282,34 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `activity_order_003`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_003` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `sku` bigint NOT NULL COMMENT '商品sku',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '额度单ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `total_count` int NOT NULL COMMENT '总次数',
-  `day_count` int NOT NULL COMMENT '日次数',
-  `month_count` int NOT NULL COMMENT '月次数',
-  `pay_amount` decimal(10,2) DEFAULT NULL COMMENT '支付积分',
-  `state` varchar(10) NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-  `out_business_no` varchar(64) NOT NULL COMMENT '保证幂等，不会重复消费',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`,`state`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='抽奖额度单表';
+CREATE TABLE `activity_order_003`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
+    `sku`             bigint          NOT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `order_time`      datetime        NOT NULL COMMENT '下单时间',
+    `total_count`     int             NOT NULL COMMENT '总次数',
+    `day_count`       int             NOT NULL COMMENT '日次数',
+    `month_count`     int             NOT NULL COMMENT '月次数',
+    `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
+    `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 65
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,9 +317,10 @@ CREATE TABLE `activity_order_003` (
 --
 
 LOCK TABLES `activity_order_003` WRITE;
-/*!40000 ALTER TABLE `activity_order_003` DISABLE KEYS */;
-INSERT INTO `activity_order_003` VALUES (5,'yong',100301,9011,'测试活动',200001,'493362807001','2025-03-29 14:25:32',1,1,1,0.00,'completed','yong_sku_20250329','2025-03-29 14:25:32','2025-03-29 14:25:32'),(6,'yong',100301,9011,'测试活动',200001,'342866235201','2025-03-29 14:26:09',1,1,1,-1.99,'completed','428416563416','2025-03-29 14:26:08','2025-03-29 14:26:08'),(7,'yong',100301,9011,'测试活动',200001,'596316871204','2025-03-29 14:26:12',1,1,1,-1.99,'completed','839301174685','2025-03-29 14:26:11','2025-03-29 14:26:11'),(8,'yong',100301,9011,'测试活动',200001,'705191608810','2025-03-29 14:26:13',1,1,1,-1.99,'completed','751928339311','2025-03-29 14:26:13','2025-03-29 14:26:13'),(9,'yong',100301,9011,'测试活动',200001,'194250139179','2025-05-07 23:24:03',1,1,1,0.00,'completed','yong_sku_20250507','2025-05-07 23:24:02','2025-05-07 23:24:02'),(13,'yong',100301,9011,'测试活动',200001,'455989100750','2025-05-07 23:30:41',1,1,1,1.99,'completed','290906454228','2025-05-07 23:30:41','2025-05-07 23:30:41'),(14,'yong',100301,9012,'测试活动',200001,'472583902037','2025-05-07 23:35:00',5,5,5,5.99,'completed','045391705453','2025-05-07 23:35:00','2025-05-07 23:35:00'),(15,'yong',100301,9012,'测试活动',200001,'370135297540','2025-05-07 23:35:05',5,5,5,5.99,'completed','611205895597','2025-05-07 23:35:04','2025-05-07 23:35:04'),(16,'yong',100301,9011,'测试活动',200001,'503909558270','2025-05-07 23:35:12',1,1,1,1.99,'completed','767327792428','2025-05-07 23:35:12','2025-05-07 23:35:12'),(17,'yong',100301,9011,'测试活动',200001,'473419768522','2025-05-07 23:35:13',1,1,1,1.99,'completed','493799059816','2025-05-07 23:35:13','2025-05-07 23:35:13'),(18,'yong',100301,9011,'测试活动',200001,'148929648964','2025-05-07 23:35:14',1,1,1,1.99,'completed','574124022865','2025-05-07 23:35:13','2025-05-07 23:35:13'),(19,'yong',100301,9012,'测试活动',200001,'740924445574','2025-05-07 23:35:15',5,5,5,5.99,'completed','650343107849','2025-05-07 23:35:15','2025-05-07 23:35:15'),(20,'yong',100301,9012,'测试活动',200001,'146056444186','2025-05-07 23:35:16',5,5,5,5.99,'completed','092900185253','2025-05-07 23:35:16','2025-05-07 23:35:16'),(21,'yong',100301,9011,'测试活动',200001,'913884966568','2025-05-07 23:35:49',1,1,1,1.99,'completed','443418511795','2025-05-07 23:35:48','2025-05-07 23:35:48'),(22,'yong',100301,9012,'测试活动',200001,'412579308922','2025-05-07 23:41:31',5,5,5,5.99,'completed','572577268219','2025-05-07 23:41:30','2025-05-07 23:41:30'),(23,'yong',100301,9012,'测试活动',200001,'058338510631','2025-05-07 23:41:31',5,5,5,5.99,'completed','285026258708','2025-05-07 23:41:31','2025-05-07 23:41:31'),(24,'yong',100301,9012,'测试活动',200001,'162921830972','2025-05-07 23:41:32',5,5,5,5.99,'completed','726038736972','2025-05-07 23:41:31','2025-05-07 23:41:31'),(25,'yong',100301,9012,'测试活动',200001,'992792424002','2025-05-07 23:41:32',5,5,5,5.99,'completed','860263649811','2025-05-07 23:41:31','2025-05-07 23:41:31'),(26,'yong',100301,9012,'测试活动',200001,'933420185972','2025-05-07 23:41:32',5,5,5,5.99,'completed','318921021907','2025-05-07 23:41:32','2025-05-07 23:41:32'),(27,'yong',100301,9012,'测试活动',200001,'947260323804','2025-05-07 23:41:32',5,5,5,5.99,'completed','093766860514','2025-05-07 23:41:32','2025-05-07 23:41:32'),(28,'yong',100301,9012,'测试活动',200001,'701274090968','2025-05-07 23:41:32',5,5,5,5.99,'completed','148123617129','2025-05-07 23:41:32','2025-05-07 23:41:32'),(29,'yong',100301,9012,'测试活动',200001,'354343777104','2025-05-07 23:41:32',5,5,5,5.99,'completed','021822458648','2025-05-07 23:41:32','2025-05-07 23:41:32'),(30,'yong',100301,9012,'测试活动',200001,'065779609598','2025-05-07 23:41:33',5,5,5,5.99,'completed','158875587733','2025-05-07 23:41:32','2025-05-07 23:41:32'),(31,'yong',100301,9012,'测试活动',200001,'437875620418','2025-05-07 23:41:33',5,5,5,5.99,'completed','198020839855','2025-05-07 23:41:32','2025-05-07 23:41:32'),(32,'yong',100301,9012,'测试活动',200001,'531246641889','2025-05-07 23:41:33',5,5,5,5.99,'completed','948299985368','2025-05-07 23:41:32','2025-05-07 23:41:32'),(33,'yong',100301,9012,'测试活动',200001,'907485040509','2025-05-07 23:41:33',5,5,5,5.99,'completed','266824521670','2025-05-07 23:41:33','2025-05-07 23:41:33'),(34,'yong',100301,9012,'测试活动',200001,'914376531410','2025-05-07 23:41:33',5,5,5,5.99,'completed','005112715063','2025-05-07 23:41:33','2025-05-07 23:41:33'),(35,'yong',100301,9012,'测试活动',200001,'628050403979','2025-05-07 23:41:33',5,5,5,5.99,'completed','654452531437','2025-05-07 23:41:33','2025-05-07 23:41:33'),(36,'yong',100301,9012,'测试活动',200001,'750409994792','2025-05-07 23:41:34',5,5,5,5.99,'completed','666341147701','2025-05-07 23:41:33','2025-05-07 23:41:33'),(37,'yong',100301,9012,'测试活动',200001,'195835067796','2025-05-07 23:41:34',5,5,5,5.99,'completed','991795879348','2025-05-07 23:41:33','2025-05-07 23:41:33'),(38,'yong',100301,9012,'测试活动',200001,'596373523918','2025-05-07 23:41:34',5,5,5,5.99,'completed','833095067248','2025-05-07 23:41:33','2025-05-07 23:41:33'),(39,'yong',100301,9012,'测试活动',200001,'629105479581','2025-05-07 23:41:34',5,5,5,5.99,'completed','078344354773','2025-05-07 23:41:34','2025-05-07 23:41:34'),(40,'yong',100301,9012,'测试活动',200001,'905569022247','2025-05-07 23:41:34',5,5,5,5.99,'completed','794647920011','2025-05-07 23:41:34','2025-05-07 23:41:34'),(41,'yong',100301,9012,'测试活动',200001,'302559156241','2025-05-07 23:41:34',5,5,5,5.99,'completed','018941106404','2025-05-07 23:41:34','2025-05-07 23:41:34'),(42,'yong',100301,9012,'测试活动',200001,'919356278577','2025-05-07 23:41:35',5,5,5,5.99,'completed','988094753527','2025-05-07 23:41:34','2025-05-07 23:41:34'),(43,'yong',100301,9012,'测试活动',200001,'744138040496','2025-05-07 23:41:35',5,5,5,5.99,'completed','335126221094','2025-05-07 23:41:34','2025-05-07 23:41:34'),(44,'yong',100301,9012,'测试活动',200001,'785036236100','2025-05-07 23:41:35',5,5,5,5.99,'completed','265946452882','2025-05-07 23:41:34','2025-05-07 23:41:34'),(45,'yong',100301,9012,'测试活动',200001,'177964864211','2025-05-07 23:41:35',5,5,5,5.99,'completed','888014988450','2025-05-07 23:41:35','2025-05-07 23:41:35'),(46,'yong',100301,9012,'测试活动',200001,'363653276962','2025-05-07 23:41:35',5,5,5,5.99,'completed','526472652614','2025-05-07 23:41:35','2025-05-07 23:41:35'),(47,'yong',100301,9012,'测试活动',200001,'649242024138','2025-05-07 23:41:35',5,5,5,5.99,'completed','411996304688','2025-05-07 23:41:35','2025-05-07 23:41:35'),(48,'yong',100301,9012,'测试活动',200001,'114034158611','2025-05-07 23:41:36',5,5,5,5.99,'completed','483056517180','2025-05-07 23:41:35','2025-05-07 23:41:35'),(49,'yong',100301,9012,'测试活动',200001,'244778146220','2025-05-07 23:41:36',5,5,5,5.99,'completed','191650764658','2025-05-07 23:41:35','2025-05-07 23:41:35'),(50,'yong',100301,9012,'测试活动',200001,'669044013244','2025-05-07 23:41:36',5,5,5,5.99,'completed','566902272080','2025-05-07 23:41:35','2025-05-07 23:41:35'),(51,'yong',100301,9012,'测试活动',200001,'861955786344','2025-05-07 23:41:36',5,5,5,5.99,'completed','854525053612','2025-05-07 23:41:36','2025-05-07 23:41:36'),(52,'yong',100301,9012,'测试活动',200001,'952112514411','2025-05-07 23:41:36',5,5,5,5.99,'completed','394727985562','2025-05-07 23:41:36','2025-05-07 23:41:36'),(53,'yong',100301,9012,'测试活动',200001,'887999392189','2025-05-07 23:41:36',5,5,5,5.99,'completed','956432947009','2025-05-07 23:41:36','2025-05-07 23:41:36'),(54,'yong',100301,9012,'测试活动',200001,'262916037172','2025-05-07 23:41:37',5,5,5,5.99,'completed','907621528749','2025-05-07 23:41:36','2025-05-07 23:41:36'),(55,'yong',100301,9012,'测试活动',200001,'159553473819','2025-05-07 23:41:37',5,5,5,5.99,'completed','775530795683','2025-05-07 23:41:36','2025-05-07 23:41:36'),(56,'yong',100301,9012,'测试活动',200001,'369828812593','2025-05-07 23:41:37',5,5,5,5.99,'completed','884311394704','2025-05-07 23:41:36','2025-05-07 23:41:36'),(57,'yong',100301,9012,'测试活动',200001,'405621128652','2025-05-07 23:41:37',5,5,5,5.99,'completed','480485516563','2025-05-07 23:41:37','2025-05-07 23:41:37'),(58,'yong',100301,9012,'测试活动',200001,'618303399045','2025-05-07 23:41:37',5,5,5,5.99,'completed','226686154109','2025-05-07 23:41:37','2025-05-07 23:41:37'),(59,'yong',100301,9012,'测试活动',200001,'125933245276','2025-05-07 23:41:37',5,5,5,5.99,'completed','382616420144','2025-05-07 23:41:37','2025-05-07 23:41:37'),(60,'yong',100301,9012,'测试活动',200001,'680728825232','2025-05-07 23:41:37',5,5,5,5.99,'completed','643269337468','2025-05-07 23:41:37','2025-05-07 23:41:37'),(61,'yong',100301,9011,'测试活动',200001,'229663628823','2025-05-08 00:01:58',1,1,1,0.00,'completed','yong_sku_20250508','2025-05-08 00:01:57','2025-05-08 00:01:57'),(62,'yong',100301,9011,'测试活动',200001,'292437943385','2025-05-09 12:21:28',1,1,1,0.00,'completed','yong_sku_20250509','2025-05-09 12:21:28','2025-05-09 12:21:28');
-/*!40000 ALTER TABLE `activity_order_003` ENABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `activity_order_003`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -280,18 +328,22 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `credit_account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `credit_account` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `total_amount` decimal(10,2) NOT NULL COMMENT '总积分，显示总账户值，记得一个人获得的总积分',
-  `available_amount` decimal(10,2) NOT NULL COMMENT '可用积分，每次扣减的值',
-  `account_status` varchar(8) NOT NULL COMMENT '账户状态【open - 可用，close - 冻结】',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='积分账户表';
+CREATE TABLE `credit_account`
+(
+    `id`               bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`          varchar(32)     NOT NULL COMMENT '用户ID',
+    `total_amount`     decimal(10, 2)  NOT NULL COMMENT '总积分，显示总账户值，记得一个人获得的总积分',
+    `available_amount` decimal(10, 2)  NOT NULL COMMENT '可用积分，每次扣减的值',
+    `account_status`   varchar(8)      NOT NULL COMMENT '账户状态【open - 可用，close - 冻结】',
+    `create_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 10
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='积分账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -299,9 +351,10 @@ CREATE TABLE `credit_account` (
 --
 
 LOCK TABLES `credit_account` WRITE;
-/*!40000 ALTER TABLE `credit_account` DISABLE KEYS */;
-INSERT INTO `credit_account` VALUES (1,'yong',2406.94,2139.42,'open','2025-03-29 14:17:16','2025-05-25 23:37:51'),(2,'yong2',891.55,877.63,'open','2025-05-06 23:00:24','2025-05-26 00:00:50');
-/*!40000 ALTER TABLE `credit_account` ENABLE KEYS */;
+/*!40000 ALTER TABLE `credit_account`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_account`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -309,22 +362,26 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `task` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `topic` varchar(32) NOT NULL COMMENT '消息主题',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `message_id` varchar(11) NOT NULL COMMENT '消息编号',
-  `message` varchar(512) NOT NULL COMMENT '消息主体',
-  `state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '任务状态；create-创建、completed-完成、fail-失败',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_message_id` (`message_id`),
-  KEY `idx_state` (`state`),
-  KEY `idx_create_time` (`update_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=277 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='任务表，发送MQ';
+CREATE TABLE `task`
+(
+    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `topic`       varchar(32)  NOT NULL COMMENT '消息主题',
+    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
+    `message_id`  varchar(11)  NOT NULL COMMENT '消息编号',
+    `message`     varchar(512) NOT NULL COMMENT '消息主体',
+    `state`       varchar(16)  NOT NULL DEFAULT 'create' COMMENT '任务状态；create-创建、completed-完成、fail-失败',
+    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_message_id` (`message_id`),
+    KEY `idx_state` (`state`),
+    KEY `idx_create_time` (`update_time`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 7261
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='任务表，发送MQ';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,9 +389,10 @@ CREATE TABLE `task` (
 --
 
 LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (10,'send_rebate','yong','91074438929','BaseEvent.EventMessage(id=91074438929, timestamp=Sat Mar 29 14:24:55 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250329))','completed','2025-03-29 14:24:55','2025-03-29 14:24:55'),(11,'send_rebate','yong','86012037463','BaseEvent.EventMessage(id=86012037463, timestamp=Sat Mar 29 14:24:55 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250329))','completed','2025-03-29 14:24:55','2025-03-29 14:24:55'),(12,'credit_adjust_success','yong','28911157907','{\"data\":{\"amount\":10,\"orderId\":\"761466706309\",\"outBusinessNo\":\"yong_integral_20250329\",\"userId\":\"yong\"},\"id\":\"28911157907\",\"timestamp\":1743229495932}','completed','2025-03-29 14:24:55','2025-03-29 14:24:55'),(13,'send_rebate','yong','75811355518','BaseEvent.EventMessage(id=75811355518, timestamp=Sat Mar 29 14:25:32 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250329))','completed','2025-03-29 14:25:32','2025-03-29 14:25:32'),(14,'send_rebate','yong','95188223160','BaseEvent.EventMessage(id=95188223160, timestamp=Sat Mar 29 14:25:32 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250329))','completed','2025-03-29 14:25:32','2025-03-29 14:25:32'),(15,'credit_adjust_success','yong','59671939751','{\"data\":{\"amount\":10,\"orderId\":\"726476987818\",\"outBusinessNo\":\"yong_integral_20250329\",\"userId\":\"yong\"},\"id\":\"59671939751\",\"timestamp\":1743229532378}','completed','2025-03-29 14:25:32','2025-03-29 14:25:32'),(16,'credit_adjust_success','yong','27397338862','{\"data\":{\"amount\":-1.99,\"orderId\":\"667476948971\",\"outBusinessNo\":\"428416563416\",\"userId\":\"yong\"},\"id\":\"27397338862\",\"timestamp\":1743229568559}','completed','2025-03-29 14:26:08','2025-03-29 14:26:08'),(17,'credit_adjust_success','yong','76592333205','{\"data\":{\"amount\":-1.99,\"orderId\":\"066127599272\",\"outBusinessNo\":\"839301174685\",\"userId\":\"yong\"},\"id\":\"76592333205\",\"timestamp\":1743229572003}','completed','2025-03-29 14:26:12','2025-03-29 14:26:12'),(18,'credit_adjust_success','yong','86944231987','{\"data\":{\"amount\":-1.99,\"orderId\":\"519450013047\",\"outBusinessNo\":\"751928339311\",\"userId\":\"yong\"},\"id\":\"86944231987\",\"timestamp\":1743229573109}','completed','2025-03-29 14:26:13','2025-03-29 14:26:13'),(19,'send_rebate','yong2','20588729553','BaseEvent.EventMessage(id=20588729553, timestamp=Tue May 06 23:00:24 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong2_sku_20250506))','completed','2025-05-06 23:00:24','2025-05-06 23:00:24'),(20,'send_rebate','yong2','40533638031','BaseEvent.EventMessage(id=40533638031, timestamp=Tue May 06 23:00:24 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong2_integral_20250506))','completed','2025-05-06 23:00:24','2025-05-06 23:00:24'),(21,'credit_adjust_success','yong2','12284719633','{\"data\":{\"amount\":10,\"orderId\":\"820925798483\",\"outBusinessNo\":\"yong2_integral_20250506\",\"userId\":\"yong2\"},\"id\":\"12284719633\",\"timestamp\":1746543624654}','completed','2025-05-06 23:00:24','2025-05-06 23:00:24'),(22,'send_award','yong2','75080864466','BaseEvent.EventMessage(id=75080864466, timestamp=Tue May 06 23:00:31 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=849738166026, awardConfig=null))','completed','2025-05-06 23:00:31','2025-05-06 23:00:31'),(23,'credit_adjust_success','yong2','64158708544','{\"data\":{\"amount\":-1.99,\"orderId\":\"846648199244\",\"outBusinessNo\":\"015207193366\",\"userId\":\"yong2\"},\"id\":\"64158708544\",\"timestamp\":1746543702750}','completed','2025-05-06 23:01:42','2025-05-06 23:01:42'),(24,'credit_adjust_success','yong2','47229503623','{\"data\":{\"amount\":-1.99,\"orderId\":\"546560549154\",\"outBusinessNo\":\"318243221953\",\"userId\":\"yong2\"},\"id\":\"47229503623\",\"timestamp\":1746543742326}','completed','2025-05-06 23:02:22','2025-05-06 23:02:22'),(25,'credit_adjust_success','yong2','90922204150','{\"data\":{\"amount\":-1.99,\"orderId\":\"366573641138\",\"outBusinessNo\":\"312426769592\",\"userId\":\"yong2\"},\"id\":\"90922204150\",\"timestamp\":1746543743322}','completed','2025-05-06 23:02:23','2025-05-06 23:02:23'),(26,'credit_adjust_success','yong2','44118547490','{\"data\":{\"amount\":-1.99,\"orderId\":\"750627280356\",\"outBusinessNo\":\"321073700563\",\"userId\":\"yong2\"},\"id\":\"44118547490\",\"timestamp\":1746543744082}','completed','2025-05-06 23:02:24','2025-05-06 23:02:24'),(27,'credit_adjust_success','yong2','01292671686','{\"data\":{\"amount\":-1.99,\"orderId\":\"806914720962\",\"outBusinessNo\":\"772781657321\",\"userId\":\"yong2\"},\"id\":\"01292671686\",\"timestamp\":1746543744787}','completed','2025-05-06 23:02:24','2025-05-06 23:02:24'),(28,'credit_adjust_success','yong2','04677955688','{\"data\":{\"amount\":-1.99,\"orderId\":\"780302740621\",\"outBusinessNo\":\"940397166357\",\"userId\":\"yong2\"},\"id\":\"04677955688\",\"timestamp\":1746543745000}','completed','2025-05-06 23:02:25','2025-05-06 23:02:25'),(29,'credit_adjust_success','yong2','73157776805','{\"data\":{\"amount\":-1.99,\"orderId\":\"895179957176\",\"outBusinessNo\":\"448043644619\",\"userId\":\"yong2\"},\"id\":\"73157776805\",\"timestamp\":1746543749085}','completed','2025-05-06 23:02:29','2025-05-06 23:02:29'),(30,'send_award','yong2','75671027581','BaseEvent.EventMessage(id=75671027581, timestamp=Tue May 06 23:03:32 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=247620732826, awardConfig=null))','completed','2025-05-06 23:03:32','2025-05-06 23:03:32'),(31,'send_award','yong2','66654843719','BaseEvent.EventMessage(id=66654843719, timestamp=Tue May 06 23:03:39 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=238290428015, awardConfig=null))','completed','2025-05-06 23:03:39','2025-05-06 23:03:39'),(32,'credit_adjust_success','yong2','31205882320','{\"data\":{\"amount\":-1.99,\"orderId\":\"968648682772\",\"outBusinessNo\":\"990493992982\",\"userId\":\"yong2\"},\"id\":\"31205882320\",\"timestamp\":1746544816939}','completed','2025-05-06 23:20:17','2025-05-06 23:20:17'),(33,'credit_adjust_success','yong2','14855772244','{\"data\":{\"amount\":-1.99,\"orderId\":\"881789871673\",\"outBusinessNo\":\"429015315975\",\"userId\":\"yong2\"},\"id\":\"14855772244\",\"timestamp\":1746544818150}','completed','2025-05-06 23:20:18','2025-05-06 23:20:18'),(34,'credit_adjust_success','yong2','16804695443','{\"data\":{\"amount\":-1.99,\"orderId\":\"696023909884\",\"outBusinessNo\":\"367052389423\",\"userId\":\"yong2\"},\"id\":\"16804695443\",\"timestamp\":1746544819147}','completed','2025-05-06 23:20:19','2025-05-06 23:20:19'),(35,'credit_adjust_success','yong2','25265891758','{\"data\":{\"amount\":-1.99,\"orderId\":\"289139389507\",\"outBusinessNo\":\"812169761335\",\"userId\":\"yong2\"},\"id\":\"25265891758\",\"timestamp\":1746544819838}','completed','2025-05-06 23:20:19','2025-05-06 23:20:19'),(36,'credit_adjust_success','yong2','31909690504','{\"data\":{\"amount\":-1.99,\"orderId\":\"470222604027\",\"outBusinessNo\":\"954066085357\",\"userId\":\"yong2\"},\"id\":\"31909690504\",\"timestamp\":1746544820067}','completed','2025-05-06 23:20:20','2025-05-06 23:20:20'),(37,'credit_adjust_success','yong2','30237271763','{\"data\":{\"amount\":-1.99,\"orderId\":\"455291306872\",\"outBusinessNo\":\"407042402291\",\"userId\":\"yong2\"},\"id\":\"30237271763\",\"timestamp\":1746544820899}','completed','2025-05-06 23:20:20','2025-05-06 23:20:20'),(38,'credit_adjust_success','yong2','77018792393','{\"data\":{\"amount\":-1.99,\"orderId\":\"963228202678\",\"outBusinessNo\":\"161115226999\",\"userId\":\"yong2\"},\"id\":\"77018792393\",\"timestamp\":1746544822334}','completed','2025-05-06 23:20:22','2025-05-06 23:20:22'),(39,'credit_adjust_success','yong2','48900690225','{\"data\":{\"amount\":-1.99,\"orderId\":\"969172523875\",\"outBusinessNo\":\"387531367346\",\"userId\":\"yong2\"},\"id\":\"48900690225\",\"timestamp\":1746545656766}','completed','2025-05-06 23:34:27','2025-05-06 23:34:35'),(40,'credit_adjust_success','yong2','27456796908','{\"data\":{\"amount\":-1.99,\"orderId\":\"868514016440\",\"outBusinessNo\":\"524420691289\",\"userId\":\"yong2\"},\"id\":\"27456796908\",\"timestamp\":1746545720298}','completed','2025-05-06 23:35:20','2025-05-06 23:35:20'),(41,'credit_adjust_success','yong2','99419580198','{\"data\":{\"amount\":-1.99,\"orderId\":\"393448724791\",\"outBusinessNo\":\"262339078088\",\"userId\":\"yong2\"},\"id\":\"99419580198\",\"timestamp\":1746545748207}','completed','2025-05-06 23:35:48','2025-05-06 23:35:48'),(42,'credit_adjust_success','yong2','11845126685','{\"data\":{\"amount\":1.99,\"orderId\":\"022605260468\",\"outBusinessNo\":\"207301067978\",\"userId\":\"yong2\"},\"id\":\"11845126685\",\"timestamp\":1746546103109}','completed','2025-05-06 23:41:43','2025-05-06 23:41:43'),(43,'credit_adjust_success','yong2','45140815643','{\"data\":{\"amount\":1.99,\"orderId\":\"662206767449\",\"outBusinessNo\":\"932909450511\",\"userId\":\"yong2\"},\"id\":\"45140815643\",\"timestamp\":1746546108108}','completed','2025-05-06 23:41:48','2025-05-06 23:41:48'),(44,'credit_adjust_success','yong2','96269779775','{\"data\":{\"amount\":1.99,\"orderId\":\"325183385811\",\"outBusinessNo\":\"919766644414\",\"userId\":\"yong2\"},\"id\":\"96269779775\",\"timestamp\":1746546165633}','completed','2025-05-06 23:42:45','2025-05-06 23:42:45'),(45,'credit_adjust_success','yong2','37513754793','{\"data\":{\"amount\":1.99,\"orderId\":\"748682309260\",\"outBusinessNo\":\"074105141693\",\"userId\":\"yong2\"},\"id\":\"37513754793\",\"timestamp\":1746546191638}','completed','2025-05-06 23:43:45','2025-05-06 23:43:55'),(46,'credit_adjust_success','yong2','32839473111','{\"data\":{\"amount\":1.99,\"orderId\":\"549919636285\",\"outBusinessNo\":\"221491041459\",\"userId\":\"yong2\"},\"id\":\"32839473111\",\"timestamp\":1746546290273}','completed','2025-05-06 23:44:50','2025-05-06 23:44:50'),(47,'credit_adjust_success','yong2','64422473612','{\"data\":{\"amount\":1.99,\"orderId\":\"433445033289\",\"outBusinessNo\":\"195748625299\",\"userId\":\"yong2\"},\"id\":\"64422473612\",\"timestamp\":1746546291420}','completed','2025-05-06 23:44:51','2025-05-06 23:44:51'),(48,'credit_adjust_success','yong2','23035847581','{\"data\":{\"amount\":1.99,\"orderId\":\"987576701202\",\"outBusinessNo\":\"838371211111\",\"userId\":\"yong2\"},\"id\":\"23035847581\",\"timestamp\":1746546292225}','completed','2025-05-06 23:44:52','2025-05-06 23:44:52'),(49,'credit_adjust_success','yong2','85827883715','{\"data\":{\"amount\":1.99,\"orderId\":\"563112677714\",\"outBusinessNo\":\"187132758363\",\"userId\":\"yong2\"},\"id\":\"85827883715\",\"timestamp\":1746546293082}','completed','2025-05-06 23:44:53','2025-05-06 23:44:53'),(50,'credit_adjust_success','yong2','71580509000','{\"data\":{\"amount\":1.99,\"orderId\":\"978655416517\",\"outBusinessNo\":\"833969277243\",\"userId\":\"yong2\"},\"id\":\"71580509000\",\"timestamp\":1746546294001}','completed','2025-05-06 23:44:54','2025-05-06 23:44:54'),(51,'send_rebate','yong2','92035230736','BaseEvent.EventMessage(id=92035230736, timestamp=Wed May 07 23:18:31 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong2_sku_20250507))','completed','2025-05-07 23:18:31','2025-05-07 23:18:31'),(52,'send_rebate','yong2','78753440686','BaseEvent.EventMessage(id=78753440686, timestamp=Wed May 07 23:18:31 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong2_integral_20250507))','completed','2025-05-07 23:18:31','2025-05-07 23:18:31'),(53,'credit_adjust_success','yong2','88180381195','{\"data\":{\"amount\":10,\"orderId\":\"365754707698\",\"outBusinessNo\":\"yong2_integral_20250507\",\"userId\":\"yong2\"},\"id\":\"88180381195\",\"timestamp\":1746631111275}','completed','2025-05-07 23:18:31','2025-05-07 23:18:31'),(54,'send_rebate','yong','31144336076','BaseEvent.EventMessage(id=31144336076, timestamp=Wed May 07 23:24:02 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250507))','completed','2025-05-07 23:24:02','2025-05-07 23:24:02'),(55,'send_rebate','yong','51423733008','BaseEvent.EventMessage(id=51423733008, timestamp=Wed May 07 23:24:02 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250507))','completed','2025-05-07 23:24:02','2025-05-07 23:24:02'),(56,'credit_adjust_success','yong','41251844140','{\"data\":{\"amount\":10,\"orderId\":\"548583528522\",\"outBusinessNo\":\"yong_integral_20250507\",\"userId\":\"yong\"},\"id\":\"41251844140\",\"timestamp\":1746631442655}','completed','2025-05-07 23:24:02','2025-05-07 23:24:02'),(57,'send_rebate','yong','75077166338','BaseEvent.EventMessage(id=75077166338, timestamp=Wed May 07 23:25:56 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250507))','completed','2025-05-07 23:25:56','2025-05-07 23:25:56'),(58,'send_rebate','yong','61968403260','BaseEvent.EventMessage(id=61968403260, timestamp=Wed May 07 23:25:56 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250507))','completed','2025-05-07 23:25:56','2025-05-07 23:25:56'),(59,'credit_adjust_success','yong','14392500101','{\"data\":{\"amount\":10,\"orderId\":\"949738758293\",\"outBusinessNo\":\"yong_integral_20250507\",\"userId\":\"yong\"},\"id\":\"14392500101\",\"timestamp\":1746631556985}','completed','2025-05-07 23:25:56','2025-05-07 23:25:56'),(60,'send_rebate','yong','19726705841','BaseEvent.EventMessage(id=19726705841, timestamp=Wed May 07 23:28:13 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250507))','completed','2025-05-07 23:28:13','2025-05-07 23:28:13'),(61,'send_rebate','yong','75905723443','BaseEvent.EventMessage(id=75905723443, timestamp=Wed May 07 23:28:13 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250507))','completed','2025-05-07 23:28:13','2025-05-07 23:28:13'),(62,'credit_adjust_success','yong','25713673321','{\"data\":{\"amount\":10,\"orderId\":\"241632932028\",\"outBusinessNo\":\"yong_integral_20250507\",\"userId\":\"yong\"},\"id\":\"25713673321\",\"timestamp\":1746631693751}','completed','2025-05-07 23:28:47','2025-05-07 23:28:55'),(63,'send_rebate','yong','60425034354','BaseEvent.EventMessage(id=60425034354, timestamp=Wed May 07 23:30:20 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250507))','completed','2025-05-07 23:30:20','2025-05-07 23:30:20'),(64,'send_rebate','yong','85086283725','BaseEvent.EventMessage(id=85086283725, timestamp=Wed May 07 23:30:20 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250507))','completed','2025-05-07 23:30:20','2025-05-07 23:30:20'),(65,'credit_adjust_success','yong','51734191549','{\"data\":{\"amount\":10,\"orderId\":\"349156902749\",\"outBusinessNo\":\"yong_integral_20250507\",\"userId\":\"yong\"},\"id\":\"51734191549\",\"timestamp\":1746631820403}','completed','2025-05-07 23:30:20','2025-05-07 23:30:20'),(66,'credit_adjust_success','yong','46668383703','{\"data\":{\"amount\":1.99,\"orderId\":\"302018881559\",\"outBusinessNo\":\"290906454228\",\"userId\":\"yong\"},\"id\":\"46668383703\",\"timestamp\":1746631841341}','completed','2025-05-07 23:30:41','2025-05-07 23:30:41'),(67,'credit_adjust_success','yong','84771679959','{\"data\":{\"amount\":5.99,\"orderId\":\"560185010825\",\"outBusinessNo\":\"045391705453\",\"userId\":\"yong\"},\"id\":\"84771679959\",\"timestamp\":1746632100493}','completed','2025-05-07 23:35:00','2025-05-07 23:35:00'),(68,'credit_adjust_success','yong','91764406502','{\"data\":{\"amount\":5.99,\"orderId\":\"031298432106\",\"outBusinessNo\":\"611205895597\",\"userId\":\"yong\"},\"id\":\"91764406502\",\"timestamp\":1746632104620}','completed','2025-05-07 23:35:04','2025-05-07 23:35:04'),(69,'credit_adjust_success','yong','69632572312','{\"data\":{\"amount\":1.99,\"orderId\":\"143465901480\",\"outBusinessNo\":\"767327792428\",\"userId\":\"yong\"},\"id\":\"69632572312\",\"timestamp\":1746632112337}','completed','2025-05-07 23:35:12','2025-05-07 23:35:12'),(70,'credit_adjust_success','yong','55339027522','{\"data\":{\"amount\":1.99,\"orderId\":\"851362021390\",\"outBusinessNo\":\"493799059816\",\"userId\":\"yong\"},\"id\":\"55339027522\",\"timestamp\":1746632113156}','completed','2025-05-07 23:35:13','2025-05-07 23:35:13'),(71,'credit_adjust_success','yong','94578779527','{\"data\":{\"amount\":1.99,\"orderId\":\"389259166879\",\"outBusinessNo\":\"574124022865\",\"userId\":\"yong\"},\"id\":\"94578779527\",\"timestamp\":1746632113992}','completed','2025-05-07 23:35:14','2025-05-07 23:35:14'),(72,'credit_adjust_success','yong','23331940473','{\"data\":{\"amount\":5.99,\"orderId\":\"243857904811\",\"outBusinessNo\":\"650343107849\",\"userId\":\"yong\"},\"id\":\"23331940473\",\"timestamp\":1746632115019}','completed','2025-05-07 23:35:15','2025-05-07 23:35:15'),(73,'credit_adjust_success','yong','13568024169','{\"data\":{\"amount\":5.99,\"orderId\":\"043136701737\",\"outBusinessNo\":\"092900185253\",\"userId\":\"yong\"},\"id\":\"13568024169\",\"timestamp\":1746632116014}','completed','2025-05-07 23:35:16','2025-05-07 23:35:16'),(74,'credit_adjust_success','yong','75998259728','{\"data\":{\"amount\":1.99,\"orderId\":\"618891689241\",\"outBusinessNo\":\"443418511795\",\"userId\":\"yong\"},\"id\":\"75998259728\",\"timestamp\":1746632148888}','completed','2025-05-07 23:35:49','2025-05-07 23:35:49'),(75,'send_award','yong','44682780932','BaseEvent.EventMessage(id=44682780932, timestamp=Wed May 07 23:36:05 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=071833006476, awardConfig=null))','completed','2025-05-07 23:36:05','2025-05-07 23:36:05'),(76,'send_award','yong','30851119156','BaseEvent.EventMessage(id=30851119156, timestamp=Wed May 07 23:38:11 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=460010081812, awardConfig=null))','completed','2025-05-07 23:38:11','2025-05-07 23:38:11'),(77,'send_award','yong','20179761353','BaseEvent.EventMessage(id=20179761353, timestamp=Wed May 07 23:38:19 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=614012564676, awardConfig=null))','completed','2025-05-07 23:38:19','2025-05-07 23:38:19'),(78,'send_award','yong','32947835132','BaseEvent.EventMessage(id=32947835132, timestamp=Wed May 07 23:39:02 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=041763502016, awardConfig=null))','completed','2025-05-07 23:39:02','2025-05-07 23:39:02'),(79,'send_award','yong','11005930937','BaseEvent.EventMessage(id=11005930937, timestamp=Wed May 07 23:39:09 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=288198710169, awardConfig=null))','completed','2025-05-07 23:39:09','2025-05-07 23:39:09'),(80,'send_award','yong','30146088052','BaseEvent.EventMessage(id=30146088052, timestamp=Wed May 07 23:39:36 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=802536751587, awardConfig=null))','completed','2025-05-07 23:39:36','2025-05-07 23:39:36'),(81,'send_award','yong','32729699176','BaseEvent.EventMessage(id=32729699176, timestamp=Wed May 07 23:39:44 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=108, awardTitle=暴走玩偶, orderId=646172746124, awardConfig=null))','completed','2025-05-07 23:39:44','2025-05-07 23:39:44'),(82,'send_award','yong','92726044440','BaseEvent.EventMessage(id=92726044440, timestamp=Wed May 07 23:39:59 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=106, awardTitle=轻奢办公椅, orderId=789684612741, awardConfig=null))','completed','2025-05-07 23:39:59','2025-05-07 23:39:59'),(83,'send_award','yong','36790150534','BaseEvent.EventMessage(id=36790150534, timestamp=Wed May 07 23:40:06 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=861750308725, awardConfig=null))','completed','2025-05-07 23:40:06','2025-05-07 23:40:06'),(84,'send_award','yong','47070424960','BaseEvent.EventMessage(id=47070424960, timestamp=Wed May 07 23:40:52 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=072503007926, awardConfig=null))','completed','2025-05-07 23:40:52','2025-05-07 23:40:52'),(85,'send_award','yong','77326550605','BaseEvent.EventMessage(id=77326550605, timestamp=Wed May 07 23:40:59 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=963201816093, awardConfig=null))','completed','2025-05-07 23:40:59','2025-05-07 23:40:59'),(86,'send_award','yong','77606739849','BaseEvent.EventMessage(id=77606739849, timestamp=Wed May 07 23:41:07 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=623282844607, awardConfig=null))','completed','2025-05-07 23:41:07','2025-05-07 23:41:07'),(87,'send_award','yong','96427999548','BaseEvent.EventMessage(id=96427999548, timestamp=Wed May 07 23:41:16 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=972320399571, awardConfig=null))','completed','2025-05-07 23:41:16','2025-05-07 23:41:16'),(88,'send_award','yong','92622219571','BaseEvent.EventMessage(id=92622219571, timestamp=Wed May 07 23:41:24 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=171067574652, awardConfig=null))','completed','2025-05-07 23:41:24','2025-05-07 23:41:24'),(89,'credit_adjust_success','yong','85874771692','{\"data\":{\"amount\":5.99,\"orderId\":\"063083263502\",\"outBusinessNo\":\"572577268219\",\"userId\":\"yong\"},\"id\":\"85874771692\",\"timestamp\":1746632490797}','completed','2025-05-07 23:41:30','2025-05-07 23:41:30'),(90,'credit_adjust_success','yong','14311164676','{\"data\":{\"amount\":5.99,\"orderId\":\"969740667778\",\"outBusinessNo\":\"285026258708\",\"userId\":\"yong\"},\"id\":\"14311164676\",\"timestamp\":1746632491315}','completed','2025-05-07 23:41:31','2025-05-07 23:41:31'),(91,'credit_adjust_success','yong','10585460004','{\"data\":{\"amount\":5.99,\"orderId\":\"389690111668\",\"outBusinessNo\":\"726038736972\",\"userId\":\"yong\"},\"id\":\"10585460004\",\"timestamp\":1746632491730}','completed','2025-05-07 23:41:31','2025-05-07 23:41:31'),(92,'credit_adjust_success','yong','28528759755','{\"data\":{\"amount\":5.99,\"orderId\":\"746598588710\",\"outBusinessNo\":\"860263649811\",\"userId\":\"yong\"},\"id\":\"28528759755\",\"timestamp\":1746632491893}','completed','2025-05-07 23:41:31','2025-05-07 23:41:31'),(93,'credit_adjust_success','yong','54826930675','{\"data\":{\"amount\":5.99,\"orderId\":\"231027496437\",\"outBusinessNo\":\"318921021907\",\"userId\":\"yong\"},\"id\":\"54826930675\",\"timestamp\":1746632492059}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(94,'credit_adjust_success','yong','06985014077','{\"data\":{\"amount\":5.99,\"orderId\":\"180804799093\",\"outBusinessNo\":\"093766860514\",\"userId\":\"yong\"},\"id\":\"06985014077\",\"timestamp\":1746632492207}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(95,'credit_adjust_success','yong','97073338022','{\"data\":{\"amount\":5.99,\"orderId\":\"811223988403\",\"outBusinessNo\":\"148123617129\",\"userId\":\"yong\"},\"id\":\"97073338022\",\"timestamp\":1746632492360}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(96,'credit_adjust_success','yong','77814789922','{\"data\":{\"amount\":5.99,\"orderId\":\"804419079006\",\"outBusinessNo\":\"021822458648\",\"userId\":\"yong\"},\"id\":\"77814789922\",\"timestamp\":1746632492513}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(97,'credit_adjust_success','yong','92195392216','{\"data\":{\"amount\":5.99,\"orderId\":\"634119007631\",\"outBusinessNo\":\"158875587733\",\"userId\":\"yong\"},\"id\":\"92195392216\",\"timestamp\":1746632492662}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(98,'credit_adjust_success','yong','07593723525','{\"data\":{\"amount\":5.99,\"orderId\":\"668637383740\",\"outBusinessNo\":\"198020839855\",\"userId\":\"yong\"},\"id\":\"07593723525\",\"timestamp\":1746632492815}','completed','2025-05-07 23:41:32','2025-05-07 23:41:32'),(99,'credit_adjust_success','yong','68985911562','{\"data\":{\"amount\":5.99,\"orderId\":\"514881897179\",\"outBusinessNo\":\"948299985368\",\"userId\":\"yong\"},\"id\":\"68985911562\",\"timestamp\":1746632492984}','completed','2025-05-07 23:41:32','2025-05-07 23:41:33'),(100,'credit_adjust_success','yong','55807006981','{\"data\":{\"amount\":5.99,\"orderId\":\"645795536058\",\"outBusinessNo\":\"266824521670\",\"userId\":\"yong\"},\"id\":\"55807006981\",\"timestamp\":1746632493135}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(101,'credit_adjust_success','yong','86408906902','{\"data\":{\"amount\":5.99,\"orderId\":\"822562947647\",\"outBusinessNo\":\"005112715063\",\"userId\":\"yong\"},\"id\":\"86408906902\",\"timestamp\":1746632493289}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(102,'credit_adjust_success','yong','87154762024','{\"data\":{\"amount\":5.99,\"orderId\":\"210889896021\",\"outBusinessNo\":\"654452531437\",\"userId\":\"yong\"},\"id\":\"87154762024\",\"timestamp\":1746632493462}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(103,'credit_adjust_success','yong','83842673836','{\"data\":{\"amount\":5.99,\"orderId\":\"713416270967\",\"outBusinessNo\":\"666341147701\",\"userId\":\"yong\"},\"id\":\"83842673836\",\"timestamp\":1746632493626}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(104,'credit_adjust_success','yong','61438463707','{\"data\":{\"amount\":5.99,\"orderId\":\"763671086633\",\"outBusinessNo\":\"991795879348\",\"userId\":\"yong\"},\"id\":\"61438463707\",\"timestamp\":1746632493782}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(105,'credit_adjust_success','yong','88070312071','{\"data\":{\"amount\":5.99,\"orderId\":\"140537537541\",\"outBusinessNo\":\"833095067248\",\"userId\":\"yong\"},\"id\":\"88070312071\",\"timestamp\":1746632493941}','completed','2025-05-07 23:41:33','2025-05-07 23:41:33'),(106,'credit_adjust_success','yong','30247368666','{\"data\":{\"amount\":5.99,\"orderId\":\"711032471419\",\"outBusinessNo\":\"078344354773\",\"userId\":\"yong\"},\"id\":\"30247368666\",\"timestamp\":1746632494097}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(107,'credit_adjust_success','yong','54740209293','{\"data\":{\"amount\":5.99,\"orderId\":\"433507068189\",\"outBusinessNo\":\"794647920011\",\"userId\":\"yong\"},\"id\":\"54740209293\",\"timestamp\":1746632494241}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(108,'credit_adjust_success','yong','02601053446','{\"data\":{\"amount\":5.99,\"orderId\":\"502227105914\",\"outBusinessNo\":\"018941106404\",\"userId\":\"yong\"},\"id\":\"02601053446\",\"timestamp\":1746632494425}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(109,'credit_adjust_success','yong','95081238311','{\"data\":{\"amount\":5.99,\"orderId\":\"815010051278\",\"outBusinessNo\":\"988094753527\",\"userId\":\"yong\"},\"id\":\"95081238311\",\"timestamp\":1746632494583}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(110,'credit_adjust_success','yong','52590764286','{\"data\":{\"amount\":5.99,\"orderId\":\"007015757376\",\"outBusinessNo\":\"335126221094\",\"userId\":\"yong\"},\"id\":\"52590764286\",\"timestamp\":1746632494730}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(111,'credit_adjust_success','yong','75384574102','{\"data\":{\"amount\":5.99,\"orderId\":\"019358385584\",\"outBusinessNo\":\"265946452882\",\"userId\":\"yong\"},\"id\":\"75384574102\",\"timestamp\":1746632494905}','completed','2025-05-07 23:41:34','2025-05-07 23:41:34'),(112,'credit_adjust_success','yong','78002902056','{\"data\":{\"amount\":5.99,\"orderId\":\"520566329184\",\"outBusinessNo\":\"888014988450\",\"userId\":\"yong\"},\"id\":\"78002902056\",\"timestamp\":1746632495059}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(113,'credit_adjust_success','yong','97147414327','{\"data\":{\"amount\":5.99,\"orderId\":\"099503973686\",\"outBusinessNo\":\"526472652614\",\"userId\":\"yong\"},\"id\":\"97147414327\",\"timestamp\":1746632495229}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(114,'credit_adjust_success','yong','13910590840','{\"data\":{\"amount\":5.99,\"orderId\":\"884331943799\",\"outBusinessNo\":\"411996304688\",\"userId\":\"yong\"},\"id\":\"13910590840\",\"timestamp\":1746632495374}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(115,'credit_adjust_success','yong','07431551644','{\"data\":{\"amount\":5.99,\"orderId\":\"149789697194\",\"outBusinessNo\":\"483056517180\",\"userId\":\"yong\"},\"id\":\"07431551644\",\"timestamp\":1746632495551}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(116,'credit_adjust_success','yong','46558176324','{\"data\":{\"amount\":5.99,\"orderId\":\"601189046748\",\"outBusinessNo\":\"191650764658\",\"userId\":\"yong\"},\"id\":\"46558176324\",\"timestamp\":1746632495706}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(117,'credit_adjust_success','yong','80351647828','{\"data\":{\"amount\":5.99,\"orderId\":\"592250726993\",\"outBusinessNo\":\"566902272080\",\"userId\":\"yong\"},\"id\":\"80351647828\",\"timestamp\":1746632495869}','completed','2025-05-07 23:41:35','2025-05-07 23:41:35'),(118,'credit_adjust_success','yong','15006798278','{\"data\":{\"amount\":5.99,\"orderId\":\"428149981444\",\"outBusinessNo\":\"854525053612\",\"userId\":\"yong\"},\"id\":\"15006798278\",\"timestamp\":1746632496030}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(119,'credit_adjust_success','yong','52679748096','{\"data\":{\"amount\":5.99,\"orderId\":\"118470660924\",\"outBusinessNo\":\"394727985562\",\"userId\":\"yong\"},\"id\":\"52679748096\",\"timestamp\":1746632496194}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(120,'credit_adjust_success','yong','80757796542','{\"data\":{\"amount\":5.99,\"orderId\":\"464084705784\",\"outBusinessNo\":\"956432947009\",\"userId\":\"yong\"},\"id\":\"80757796542\",\"timestamp\":1746632496363}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(121,'credit_adjust_success','yong','28618185516','{\"data\":{\"amount\":5.99,\"orderId\":\"417621947875\",\"outBusinessNo\":\"907621528749\",\"userId\":\"yong\"},\"id\":\"28618185516\",\"timestamp\":1746632496536}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(122,'credit_adjust_success','yong','53642895184','{\"data\":{\"amount\":5.99,\"orderId\":\"320884931796\",\"outBusinessNo\":\"775530795683\",\"userId\":\"yong\"},\"id\":\"53642895184\",\"timestamp\":1746632496693}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(123,'credit_adjust_success','yong','07205901853','{\"data\":{\"amount\":5.99,\"orderId\":\"404749878299\",\"outBusinessNo\":\"884311394704\",\"userId\":\"yong\"},\"id\":\"07205901853\",\"timestamp\":1746632496862}','completed','2025-05-07 23:41:36','2025-05-07 23:41:36'),(124,'credit_adjust_success','yong','25507359322','{\"data\":{\"amount\":5.99,\"orderId\":\"524048430890\",\"outBusinessNo\":\"480485516563\",\"userId\":\"yong\"},\"id\":\"25507359322\",\"timestamp\":1746632497017}','completed','2025-05-07 23:41:37','2025-05-07 23:41:37'),(125,'credit_adjust_success','yong','40802660155','{\"data\":{\"amount\":5.99,\"orderId\":\"659689441826\",\"outBusinessNo\":\"226686154109\",\"userId\":\"yong\"},\"id\":\"40802660155\",\"timestamp\":1746632497190}','completed','2025-05-07 23:41:37','2025-05-07 23:41:37'),(126,'credit_adjust_success','yong','41907908390','{\"data\":{\"amount\":5.99,\"orderId\":\"812185053732\",\"outBusinessNo\":\"382616420144\",\"userId\":\"yong\"},\"id\":\"41907908390\",\"timestamp\":1746632497332}','completed','2025-05-07 23:41:37','2025-05-07 23:41:37'),(127,'credit_adjust_success','yong','21827132186','{\"data\":{\"amount\":5.99,\"orderId\":\"912494685511\",\"outBusinessNo\":\"643269337468\",\"userId\":\"yong\"},\"id\":\"21827132186\",\"timestamp\":1746632497499}','completed','2025-05-07 23:41:37','2025-05-07 23:41:37'),(128,'send_award','yong','36460380183','BaseEvent.EventMessage(id=36460380183, timestamp=Wed May 07 23:41:49 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=857746840461, awardConfig=null))','completed','2025-05-07 23:41:49','2025-05-07 23:41:49'),(129,'send_award','yong','56568819550','BaseEvent.EventMessage(id=56568819550, timestamp=Wed May 07 23:42:09 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=597114059178, awardConfig=null))','completed','2025-05-07 23:42:09','2025-05-07 23:42:09'),(130,'send_award','yong','78217712198','BaseEvent.EventMessage(id=78217712198, timestamp=Wed May 07 23:42:16 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=328638031568, awardConfig=null))','completed','2025-05-07 23:42:16','2025-05-07 23:42:16'),(131,'send_award','yong','81903053184','BaseEvent.EventMessage(id=81903053184, timestamp=Wed May 07 23:42:22 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=287689694704, awardConfig=null))','completed','2025-05-07 23:42:22','2025-05-07 23:42:22'),(132,'send_award','yong','18956059015','BaseEvent.EventMessage(id=18956059015, timestamp=Wed May 07 23:42:29 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=723410827138, awardConfig=null))','completed','2025-05-07 23:42:29','2025-05-07 23:42:29'),(133,'send_award','yong','09153594966','BaseEvent.EventMessage(id=09153594966, timestamp=Wed May 07 23:42:35 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=652176157503, awardConfig=null))','completed','2025-05-07 23:42:35','2025-05-07 23:42:35'),(134,'send_award','yong','56603324498','BaseEvent.EventMessage(id=56603324498, timestamp=Wed May 07 23:42:41 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=903832400487, awardConfig=null))','completed','2025-05-07 23:42:41','2025-05-07 23:42:41'),(135,'send_award','yong','29011674740','BaseEvent.EventMessage(id=29011674740, timestamp=Wed May 07 23:46:37 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=009850269447, awardConfig=null))','completed','2025-05-07 23:46:37','2025-05-07 23:46:37'),(136,'send_award','yong','21051922374','BaseEvent.EventMessage(id=21051922374, timestamp=Wed May 07 23:47:41 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=952482690690, awardConfig=null))','completed','2025-05-07 23:47:41','2025-05-07 23:47:41'),(137,'send_award','yong','99877876748','BaseEvent.EventMessage(id=99877876748, timestamp=Wed May 07 23:47:48 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=548607520205, awardConfig=null))','completed','2025-05-07 23:47:48','2025-05-07 23:47:48'),(138,'send_rebate','yong','26089470158','BaseEvent.EventMessage(id=26089470158, timestamp=Thu May 08 00:01:57 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250508))','completed','2025-05-08 00:01:57','2025-05-08 00:01:57'),(139,'send_rebate','yong','27238240338','BaseEvent.EventMessage(id=27238240338, timestamp=Thu May 08 00:01:57 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250508))','completed','2025-05-08 00:01:57','2025-05-08 00:01:57'),(140,'credit_adjust_success','yong','07814985872','{\"data\":{\"amount\":10,\"orderId\":\"156904317481\",\"outBusinessNo\":\"yong_integral_20250508\",\"userId\":\"yong\"},\"id\":\"07814985872\",\"timestamp\":1746633717570}','completed','2025-05-08 00:01:57','2025-05-08 00:01:57'),(141,'send_award','yong','03253797554','BaseEvent.EventMessage(id=03253797554, timestamp=Thu May 08 00:04:16 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=011038891328, awardConfig=null))','completed','2025-05-08 00:04:16','2025-05-08 00:04:17'),(142,'send_award','yong','94040478042','BaseEvent.EventMessage(id=94040478042, timestamp=Thu May 08 00:08:25 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=857315390021, awardConfig=null))','completed','2025-05-08 00:08:25','2025-05-08 00:08:25'),(143,'send_award','yong','42095599309','BaseEvent.EventMessage(id=42095599309, timestamp=Thu May 08 00:08:40 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=187556577024, awardConfig=null))','completed','2025-05-08 00:08:40','2025-05-08 00:08:40'),(144,'send_rebate','yong2','21560145915','BaseEvent.EventMessage(id=21560145915, timestamp=Thu May 08 11:07:54 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong2_sku_20250508))','completed','2025-05-08 11:07:54','2025-05-08 11:07:54'),(145,'send_rebate','yong2','02722292180','BaseEvent.EventMessage(id=02722292180, timestamp=Thu May 08 11:07:54 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong2_integral_20250508))','completed','2025-05-08 11:07:54','2025-05-08 11:07:54'),(146,'credit_adjust_success','yong2','80113342603','{\"data\":{\"amount\":10,\"orderId\":\"569203332450\",\"outBusinessNo\":\"yong2_integral_20250508\",\"userId\":\"yong2\"},\"id\":\"80113342603\",\"timestamp\":1746676842905}','completed','2025-05-08 12:00:42','2025-05-08 12:00:42'),(147,'send_award','yong2','09118315792','BaseEvent.EventMessage(id=09118315792, timestamp=Thu May 08 12:01:40 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=517536743562, awardConfig=null))','completed','2025-05-08 12:01:40','2025-05-08 12:01:40'),(148,'send_award','yong2','00643916997','BaseEvent.EventMessage(id=00643916997, timestamp=Thu May 08 12:05:40 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=781771002497, awardConfig=null))','completed','2025-05-08 12:05:40','2025-05-08 12:05:41'),(149,'send_award','yong2','19969850664','BaseEvent.EventMessage(id=19969850664, timestamp=Thu May 08 12:11:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=071260771659, awardConfig=null))','completed','2025-05-08 12:11:53','2025-05-08 12:11:53'),(150,'send_award','yong2','25313965050','BaseEvent.EventMessage(id=25313965050, timestamp=Thu May 08 12:20:04 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=490177063592, awardConfig=null))','completed','2025-05-08 12:20:05','2025-05-08 12:20:05'),(151,'send_award','yong2','28242343956','BaseEvent.EventMessage(id=28242343956, timestamp=Thu May 08 12:20:43 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=290401390971, awardConfig=null))','completed','2025-05-08 12:20:43','2025-05-08 12:20:43'),(152,'send_award','yong2','83925580141','BaseEvent.EventMessage(id=83925580141, timestamp=Thu May 08 12:20:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=328321243101, awardConfig=null))','completed','2025-05-08 12:20:53','2025-05-08 12:20:53'),(153,'send_award','yong2','49447962213','BaseEvent.EventMessage(id=49447962213, timestamp=Thu May 08 12:21:03 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=105, awardTitle=小米su7周体验, orderId=443697566170, awardConfig=null))','completed','2025-05-08 12:21:03','2025-05-08 12:21:03'),(154,'send_award','yong2','63867137125','BaseEvent.EventMessage(id=63867137125, timestamp=Thu May 08 12:21:11 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=958621788471, awardConfig=null))','completed','2025-05-08 12:21:11','2025-05-08 12:21:11'),(155,'send_award','yong2','42160858760','BaseEvent.EventMessage(id=42160858760, timestamp=Thu May 08 12:21:19 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=041689364662, awardConfig=null))','completed','2025-05-08 12:21:19','2025-05-08 12:21:19'),(156,'send_award','yong2','09111504398','BaseEvent.EventMessage(id=09111504398, timestamp=Thu May 08 12:27:24 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=625784872805, awardConfig=null))','completed','2025-05-08 12:27:24','2025-05-08 12:27:24'),(157,'send_award','yong2','85271694089','BaseEvent.EventMessage(id=85271694089, timestamp=Thu May 08 12:32:20 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=106, awardTitle=轻奢办公椅, orderId=095970240241, awardConfig=null))','completed','2025-05-08 12:32:20','2025-05-08 12:32:20'),(158,'send_award','yong2','05321226103','BaseEvent.EventMessage(id=05321226103, timestamp=Thu May 08 12:33:46 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=600958928961, awardConfig=null))','completed','2025-05-08 12:33:46','2025-05-08 12:33:46'),(159,'send_award','yong2','23521133456','BaseEvent.EventMessage(id=23521133456, timestamp=Thu May 08 12:38:33 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=105, awardTitle=小米su7周体验, orderId=866920818569, awardConfig=null))','completed','2025-05-08 12:38:33','2025-05-08 12:38:33'),(160,'send_award','yong2','94087196677','BaseEvent.EventMessage(id=94087196677, timestamp=Thu May 08 12:42:26 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=248235906964, awardConfig=null))','completed','2025-05-08 12:42:26','2025-05-08 12:42:26'),(161,'send_award','yong2','12959158353','BaseEvent.EventMessage(id=12959158353, timestamp=Thu May 08 12:44:31 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=623039741645, awardConfig=null))','completed','2025-05-08 12:44:31','2025-05-08 12:44:31'),(162,'send_award','yong2','13595484781','BaseEvent.EventMessage(id=13595484781, timestamp=Thu May 08 12:44:58 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=961044735993, awardConfig=null))','completed','2025-05-08 12:44:58','2025-05-08 12:44:58'),(163,'send_award','yong2','11727398903','BaseEvent.EventMessage(id=11727398903, timestamp=Thu May 08 12:47:05 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=919013499909, awardConfig=null))','completed','2025-05-08 12:47:05','2025-05-08 12:47:05'),(164,'send_award','yong2','17289183642','BaseEvent.EventMessage(id=17289183642, timestamp=Thu May 08 12:51:15 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=107, awardTitle=小霸王游戏机, orderId=926064568901, awardConfig=null))','completed','2025-05-08 12:51:15','2025-05-08 12:51:15'),(165,'send_award','yong2','97867945444','BaseEvent.EventMessage(id=97867945444, timestamp=Thu May 08 12:53:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=105, awardTitle=小米su7周体验, orderId=564159762365, awardConfig=null))','completed','2025-05-08 12:53:56','2025-05-08 12:53:56'),(166,'send_award','yong2','98780832969','BaseEvent.EventMessage(id=98780832969, timestamp=Thu May 08 12:54:12 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=959100204908, awardConfig=null))','completed','2025-05-08 12:54:12','2025-05-08 12:54:12'),(167,'send_award','yong2','23238610380','BaseEvent.EventMessage(id=23238610380, timestamp=Thu May 08 12:55:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=105, awardTitle=小米su7周体验, orderId=257053355477, awardConfig=null))','completed','2025-05-08 12:55:53','2025-05-08 12:55:53'),(168,'send_award','yong2','15859558011','BaseEvent.EventMessage(id=15859558011, timestamp=Thu May 08 12:57:05 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=628357243740, awardConfig=null))','completed','2025-05-08 12:57:05','2025-05-08 12:57:05'),(169,'send_award','yong2','96626368578','BaseEvent.EventMessage(id=96626368578, timestamp=Thu May 08 12:59:03 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=512468444337, awardConfig=null))','completed','2025-05-08 12:59:03','2025-05-08 12:59:03'),(170,'send_award','yong2','26420095428','BaseEvent.EventMessage(id=26420095428, timestamp=Thu May 08 13:14:09 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=728577959249, awardConfig=null))','completed','2025-05-08 13:14:09','2025-05-08 13:14:09'),(171,'send_award','yong2','68905117803','BaseEvent.EventMessage(id=68905117803, timestamp=Thu May 08 13:16:42 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=155688480914, awardConfig=null))','completed','2025-05-08 13:16:42','2025-05-08 13:16:42'),(172,'send_award','yong2','46670169225','BaseEvent.EventMessage(id=46670169225, timestamp=Thu May 08 13:21:48 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=850983735867, awardConfig=null))','completed','2025-05-08 13:21:48','2025-05-08 13:21:48'),(173,'credit_adjust_success','yong2','07390748136','{\"data\":{\"amount\":5.99,\"orderId\":\"787861120755\",\"outBusinessNo\":\"878807050416\",\"userId\":\"yong2\"},\"id\":\"07390748136\",\"timestamp\":1746681748305}','completed','2025-05-08 13:22:28','2025-05-08 13:22:28'),(174,'credit_adjust_success','yong2','81997146077','{\"data\":{\"amount\":5.99,\"orderId\":\"879489726730\",\"outBusinessNo\":\"087914831520\",\"userId\":\"yong2\"},\"id\":\"81997146077\",\"timestamp\":1746681749549}','completed','2025-05-08 13:22:29','2025-05-08 13:22:29'),(175,'send_award','yong2','74039696457','BaseEvent.EventMessage(id=74039696457, timestamp=Thu May 08 13:22:36 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=944108390064, awardConfig=null))','completed','2025-05-08 13:22:36','2025-05-08 13:22:36'),(176,'send_award','yong2','71450386964','BaseEvent.EventMessage(id=71450386964, timestamp=Thu May 08 13:28:04 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=107, awardTitle=小霸王游戏机, orderId=976354199188, awardConfig=null))','completed','2025-05-08 13:28:04','2025-05-08 13:28:04'),(177,'send_award','yong2','78399562540','BaseEvent.EventMessage(id=78399562540, timestamp=Thu May 08 13:28:57 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=355476439222, awardConfig=null))','completed','2025-05-08 13:28:57','2025-05-08 13:28:57'),(178,'send_rebate','yong2','04330562373','BaseEvent.EventMessage(id=04330562373, timestamp=Fri May 09 12:04:43 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong2_sku_20250509))','completed','2025-05-09 12:04:43','2025-05-09 12:04:43'),(179,'send_rebate','yong2','15159306538','BaseEvent.EventMessage(id=15159306538, timestamp=Fri May 09 12:04:43 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong2, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong2_integral_20250509))','completed','2025-05-09 12:04:43','2025-05-09 12:04:43'),(180,'credit_adjust_success','yong2','80838547466','{\"data\":{\"amount\":10,\"orderId\":\"247474989030\",\"outBusinessNo\":\"yong2_integral_20250509\",\"userId\":\"yong2\"},\"id\":\"80838547466\",\"timestamp\":1746763484219}','completed','2025-05-09 12:04:44','2025-05-09 12:04:44'),(181,'send_rebate','yong','85605096528','BaseEvent.EventMessage(id=85605096528, timestamp=Fri May 09 12:21:28 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-抽奖额度, rebateType=sku, rebateConfig=9011, bizId=yong_sku_20250509))','completed','2025-05-09 12:21:28','2025-05-09 12:21:28'),(182,'send_rebate','yong','50902740298','BaseEvent.EventMessage(id=50902740298, timestamp=Fri May 09 12:21:28 CST 2025, data=SendRebateMessageEvent.RebateMessage(userId=yong, rebateDesc=签到返利-积分, rebateType=integral, rebateConfig=10, bizId=yong_integral_20250509))','completed','2025-05-09 12:21:28','2025-05-09 12:21:28'),(183,'credit_adjust_success','yong','13645319149','{\"data\":{\"amount\":10,\"orderId\":\"652954393911\",\"outBusinessNo\":\"yong_integral_20250509\",\"userId\":\"yong\"},\"id\":\"13645319149\",\"timestamp\":1746764488429}','completed','2025-05-09 12:21:28','2025-05-09 12:21:28'),(184,'send_award','yong','41884949429','BaseEvent.EventMessage(id=41884949429, timestamp=Fri May 09 14:17:09 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=412790918850, awardConfig=null))','completed','2025-05-09 14:17:09','2025-05-09 14:17:09'),(185,'send_award','yong2','76974040271','BaseEvent.EventMessage(id=76974040271, timestamp=Fri May 09 14:18:27 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=523949503067, awardConfig=null))','completed','2025-05-09 14:18:27','2025-05-09 14:18:27'),(186,'send_award','yong2','72302135367','BaseEvent.EventMessage(id=72302135367, timestamp=Fri May 09 14:32:13 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=438869840930, awardConfig=null))','completed','2025-05-09 14:32:13','2025-05-09 14:32:13'),(187,'send_award','yong2','03790015028','BaseEvent.EventMessage(id=03790015028, timestamp=Fri May 09 14:34:03 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=983692346461, awardConfig=null))','completed','2025-05-09 14:34:03','2025-05-09 14:34:03'),(188,'send_award','yong2','34553873884','BaseEvent.EventMessage(id=34553873884, timestamp=Fri May 09 14:35:39 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=456758711886, awardConfig=null))','completed','2025-05-09 14:35:39','2025-05-09 14:35:39'),(189,'send_award','yong2','91076113081','BaseEvent.EventMessage(id=91076113081, timestamp=Fri May 09 14:36:17 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=046228658010, awardConfig=null))','completed','2025-05-09 14:36:17','2025-05-09 14:36:17'),(190,'send_award','yong','76275378879','BaseEvent.EventMessage(id=76275378879, timestamp=Tue May 13 15:34:46 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=054920628704, awardConfig=null))','completed','2025-05-13 15:34:46','2025-05-13 15:34:46'),(191,'send_award','yong','76959862951','BaseEvent.EventMessage(id=76959862951, timestamp=Tue May 13 15:36:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=762486912242, awardConfig=null))','completed','2025-05-13 15:36:56','2025-05-13 15:36:56'),(192,'send_award','yong','01462132844','BaseEvent.EventMessage(id=01462132844, timestamp=Sun May 18 22:57:30 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=862789759277, awardConfig=null))','completed','2025-05-18 22:57:30','2025-05-18 22:57:30'),(193,'send_award','yong','97100801049','BaseEvent.EventMessage(id=97100801049, timestamp=Sun May 18 22:58:54 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=527469743573, awardConfig=null))','completed','2025-05-18 22:58:54','2025-05-18 22:58:54'),(194,'send_award','yong','06140225259','BaseEvent.EventMessage(id=06140225259, timestamp=Sun May 25 22:20:52 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=182175685213, awardConfig=null))','completed','2025-05-25 22:20:52','2025-05-25 22:20:52'),(195,'send_award','yong','62064347816','BaseEvent.EventMessage(id=62064347816, timestamp=Sun May 25 22:20:55 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=431144102449, awardConfig=null))','completed','2025-05-25 22:20:55','2025-05-25 22:20:55'),(196,'send_award','yong','41780440480','BaseEvent.EventMessage(id=41780440480, timestamp=Sun May 25 22:20:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=108, awardTitle=暴走玩偶, orderId=028887855637, awardConfig=null))','completed','2025-05-25 22:20:56','2025-05-25 22:20:56'),(197,'send_award','yong','24827725273','BaseEvent.EventMessage(id=24827725273, timestamp=Sun May 25 22:20:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=333940744717, awardConfig=null))','completed','2025-05-25 22:20:56','2025-05-25 22:20:56'),(198,'send_award','yong','49209557185','BaseEvent.EventMessage(id=49209557185, timestamp=Sun May 25 22:20:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=375100872626, awardConfig=null))','completed','2025-05-25 22:20:56','2025-05-25 22:20:56'),(199,'send_award','yong','00198532720','BaseEvent.EventMessage(id=00198532720, timestamp=Sun May 25 22:20:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=740600505982, awardConfig=null))','completed','2025-05-25 22:20:56','2025-05-25 22:20:56'),(200,'send_award','yong','33369829087','BaseEvent.EventMessage(id=33369829087, timestamp=Sun May 25 22:20:56 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=358373173370, awardConfig=null))','completed','2025-05-25 22:20:56','2025-05-25 22:20:56'),(201,'send_award','yong','10286522538','BaseEvent.EventMessage(id=10286522538, timestamp=Sun May 25 22:20:57 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=358511846294, awardConfig=null))','completed','2025-05-25 22:20:57','2025-05-25 22:20:57'),(204,'send_award','yong','72835019219','BaseEvent.EventMessage(id=72835019219, timestamp=Sun May 25 22:24:48 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=744595636568, awardConfig=null))','completed','2025-05-25 22:24:48','2025-05-25 22:24:48'),(205,'send_award','yong','56736722000','BaseEvent.EventMessage(id=56736722000, timestamp=Sun May 25 22:24:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=804526496577, awardConfig=null))','completed','2025-05-25 22:24:53','2025-05-25 22:24:53'),(206,'send_award','yong','73733865102','BaseEvent.EventMessage(id=73733865102, timestamp=Sun May 25 22:24:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=852246258395, awardConfig=null))','completed','2025-05-25 22:24:53','2025-05-25 22:24:53'),(207,'send_award','yong','23817843960','BaseEvent.EventMessage(id=23817843960, timestamp=Sun May 25 22:24:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=439152877110, awardConfig=null))','completed','2025-05-25 22:24:53','2025-05-25 22:24:53'),(208,'send_award','yong','65593691799','BaseEvent.EventMessage(id=65593691799, timestamp=Sun May 25 22:24:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=106, awardTitle=轻奢办公椅, orderId=474124553826, awardConfig=null))','completed','2025-05-25 22:24:53','2025-05-25 22:24:53'),(209,'send_award','yong','03544012956','BaseEvent.EventMessage(id=03544012956, timestamp=Sun May 25 22:24:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=196661738904, awardConfig=null))','completed','2025-05-25 22:24:53','2025-05-25 22:24:53'),(210,'send_award','yong','47273470952','BaseEvent.EventMessage(id=47273470952, timestamp=Sun May 25 22:24:54 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=635267913782, awardConfig=null))','completed','2025-05-25 22:24:54','2025-05-25 22:24:54'),(211,'send_award','yong','48835600220','BaseEvent.EventMessage(id=48835600220, timestamp=Sun May 25 22:24:54 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=108, awardTitle=暴走玩偶, orderId=771422093377, awardConfig=null))','completed','2025-05-25 22:24:54','2025-05-25 22:24:54'),(212,'send_award','yong','74879438013','BaseEvent.EventMessage(id=74879438013, timestamp=Sun May 25 22:25:31 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=019471718766, awardConfig=null))','completed','2025-05-25 22:25:31','2025-05-25 22:25:31'),(213,'send_award','yong','30069370070','BaseEvent.EventMessage(id=30069370070, timestamp=Sun May 25 22:26:12 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=411207404139, awardConfig=null))','completed','2025-05-25 22:26:12','2025-05-25 22:26:12'),(214,'send_award','yong','61870284964','BaseEvent.EventMessage(id=61870284964, timestamp=Sun May 25 22:59:35 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=228767648086, awardConfig=null))','completed','2025-05-25 22:59:35','2025-05-25 22:59:35'),(215,'send_award','yong','13759891592','BaseEvent.EventMessage(id=13759891592, timestamp=Sun May 25 23:00:21 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=387895353235, awardConfig=null))','completed','2025-05-25 23:00:21','2025-05-25 23:00:21'),(216,'send_award','yong','98892628263','BaseEvent.EventMessage(id=98892628263, timestamp=Sun May 25 23:06:06 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=324790409809, awardConfig=null))','completed','2025-05-25 23:06:06','2025-05-25 23:06:07'),(217,'send_award','yong','87331541608','BaseEvent.EventMessage(id=87331541608, timestamp=Sun May 25 23:08:29 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=152673277174, awardConfig=null))','completed','2025-05-25 23:08:29','2025-05-25 23:08:29'),(218,'send_award','yong','08271397004','BaseEvent.EventMessage(id=08271397004, timestamp=Sun May 25 23:10:45 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=786476479051, awardConfig=null))','completed','2025-05-25 23:10:45','2025-05-25 23:10:45'),(219,'send_award','yong','35917460852','BaseEvent.EventMessage(id=35917460852, timestamp=Sun May 25 23:11:01 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=459757669025, awardConfig=null))','completed','2025-05-25 23:11:01','2025-05-25 23:11:01'),(220,'send_award','yong','11105606432','BaseEvent.EventMessage(id=11105606432, timestamp=Sun May 25 23:12:28 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=713576369004, awardConfig=null))','completed','2025-05-25 23:12:28','2025-05-25 23:12:28'),(221,'send_award','yong','70555233611','BaseEvent.EventMessage(id=70555233611, timestamp=Sun May 25 23:12:46 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=065616933342, awardConfig=null))','completed','2025-05-25 23:12:46','2025-05-25 23:12:46'),(222,'send_award','yong','48278344832','BaseEvent.EventMessage(id=48278344832, timestamp=Sun May 25 23:12:51 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=307340911327, awardConfig=null))','completed','2025-05-25 23:12:51','2025-05-25 23:12:51'),(223,'send_award','yong','12007544808','BaseEvent.EventMessage(id=12007544808, timestamp=Sun May 25 23:15:45 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=678206778758, awardConfig=null))','completed','2025-05-25 23:15:45','2025-05-25 23:15:45'),(224,'send_award','yong','75335057120','BaseEvent.EventMessage(id=75335057120, timestamp=Sun May 25 23:16:01 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=835363333121, awardConfig=null))','completed','2025-05-25 23:16:01','2025-05-25 23:16:01'),(225,'send_award','yong','63723384907','BaseEvent.EventMessage(id=63723384907, timestamp=Sun May 25 23:16:18 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=327986546196, awardConfig=null))','completed','2025-05-25 23:16:18','2025-05-25 23:16:18'),(226,'send_award','yong','39430132678','BaseEvent.EventMessage(id=39430132678, timestamp=Sun May 25 23:20:20 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=891214073626, awardConfig=null))','completed','2025-05-25 23:20:20','2025-05-25 23:20:20'),(227,'send_award','yong','51663996260','BaseEvent.EventMessage(id=51663996260, timestamp=Sun May 25 23:20:21 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=640620844632, awardConfig=null))','completed','2025-05-25 23:20:21','2025-05-25 23:20:21'),(228,'send_award','yong','28441743273','BaseEvent.EventMessage(id=28441743273, timestamp=Sun May 25 23:20:22 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=724868529100, awardConfig=null))','completed','2025-05-25 23:20:22','2025-05-25 23:20:22'),(229,'send_award','yong','12189338304','BaseEvent.EventMessage(id=12189338304, timestamp=Sun May 25 23:27:35 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=573652444322, awardConfig=null))','completed','2025-05-25 23:27:35','2025-05-25 23:27:35'),(230,'send_award','yong','68204124653','BaseEvent.EventMessage(id=68204124653, timestamp=Sun May 25 23:28:01 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=900096269860, awardConfig=null))','completed','2025-05-25 23:28:01','2025-05-25 23:28:01'),(231,'send_award','yong','72869636801','BaseEvent.EventMessage(id=72869636801, timestamp=Sun May 25 23:28:02 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=344454176929, awardConfig=null))','completed','2025-05-25 23:28:02','2025-05-25 23:28:02'),(232,'send_award','yong','85352448983','BaseEvent.EventMessage(id=85352448983, timestamp=Sun May 25 23:29:27 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=108, awardTitle=暴走玩偶, orderId=047133111932, awardConfig=null))','completed','2025-05-25 23:29:27','2025-05-25 23:29:27'),(233,'send_award','yong','93061268928','BaseEvent.EventMessage(id=93061268928, timestamp=Sun May 25 23:29:50 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=298586904666, awardConfig=null))','completed','2025-05-25 23:29:50','2025-05-25 23:29:50'),(234,'send_award','yong','44692435826','BaseEvent.EventMessage(id=44692435826, timestamp=Sun May 25 23:29:51 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=088548532925, awardConfig=null))','completed','2025-05-25 23:29:51','2025-05-25 23:29:51'),(235,'send_award','yong','55904274857','BaseEvent.EventMessage(id=55904274857, timestamp=Sun May 25 23:31:35 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=686565641732, awardConfig=null))','completed','2025-05-25 23:31:35','2025-05-25 23:31:35'),(236,'send_award','yong','47654655283','BaseEvent.EventMessage(id=47654655283, timestamp=Sun May 25 23:31:44 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=417132023374, awardConfig=null))','completed','2025-05-25 23:31:44','2025-05-25 23:31:44'),(237,'send_award','yong','02328344937','BaseEvent.EventMessage(id=02328344937, timestamp=Sun May 25 23:32:08 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=818133059302, awardConfig=null))','completed','2025-05-25 23:32:08','2025-05-25 23:32:08'),(238,'send_award','yong','15153547601','BaseEvent.EventMessage(id=15153547601, timestamp=Sun May 25 23:33:18 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=208391779173, awardConfig=null))','completed','2025-05-25 23:33:18','2025-05-25 23:33:18'),(239,'send_award','yong','88388521097','BaseEvent.EventMessage(id=88388521097, timestamp=Sun May 25 23:33:20 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=564765528201, awardConfig=null))','completed','2025-05-25 23:33:20','2025-05-25 23:33:20'),(240,'send_award','yong','08720728205','BaseEvent.EventMessage(id=08720728205, timestamp=Sun May 25 23:33:23 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=310590020276, awardConfig=null))','completed','2025-05-25 23:33:23','2025-05-25 23:33:23'),(241,'send_award','yong','29649913949','BaseEvent.EventMessage(id=29649913949, timestamp=Sun May 25 23:33:25 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=200891140677, awardConfig=null))','completed','2025-05-25 23:33:25','2025-05-25 23:33:25'),(242,'send_award','yong','94062479422','BaseEvent.EventMessage(id=94062479422, timestamp=Sun May 25 23:33:47 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=203264532499, awardConfig=null))','completed','2025-05-25 23:33:47','2025-05-25 23:33:47'),(243,'send_award','yong','26617001297','BaseEvent.EventMessage(id=26617001297, timestamp=Sun May 25 23:33:47 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=104, awardTitle=小米台灯, orderId=405672802041, awardConfig=null))','completed','2025-05-25 23:33:47','2025-05-25 23:33:47'),(244,'send_award','yong','13346219215','BaseEvent.EventMessage(id=13346219215, timestamp=Sun May 25 23:33:47 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=107, awardTitle=小霸王游戏机, orderId=755126313580, awardConfig=null))','completed','2025-05-25 23:33:47','2025-05-25 23:33:47'),(245,'send_award','yong','09514917494','BaseEvent.EventMessage(id=09514917494, timestamp=Sun May 25 23:33:49 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=141590213447, awardConfig=null))','completed','2025-05-25 23:33:49','2025-05-25 23:33:49'),(246,'send_award','yong','47190284627','BaseEvent.EventMessage(id=47190284627, timestamp=Sun May 25 23:33:51 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=678462568881, awardConfig=null))','completed','2025-05-25 23:33:51','2025-05-25 23:33:51'),(247,'send_award','yong','07369501730','BaseEvent.EventMessage(id=07369501730, timestamp=Sun May 25 23:33:52 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=320737477828, awardConfig=null))','completed','2025-05-25 23:33:52','2025-05-25 23:33:52'),(248,'send_award','yong','47331037380','BaseEvent.EventMessage(id=47331037380, timestamp=Sun May 25 23:33:52 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=245379552813, awardConfig=null))','completed','2025-05-25 23:33:52','2025-05-25 23:33:52'),(249,'send_award','yong','52193908230','BaseEvent.EventMessage(id=52193908230, timestamp=Sun May 25 23:33:52 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=000737439133, awardConfig=null))','completed','2025-05-25 23:33:52','2025-05-25 23:33:52'),(250,'send_award','yong','69541532756','BaseEvent.EventMessage(id=69541532756, timestamp=Sun May 25 23:33:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=103, awardTitle=支付优惠券, orderId=825541311362, awardConfig=null))','completed','2025-05-25 23:33:53','2025-05-25 23:33:53'),(251,'send_award','yong','78183083749','BaseEvent.EventMessage(id=78183083749, timestamp=Sun May 25 23:33:53 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=431546235979, awardConfig=null))','completed','2025-05-25 23:33:53','2025-05-25 23:33:53'),(252,'send_award','yong','58936069283','BaseEvent.EventMessage(id=58936069283, timestamp=Sun May 25 23:33:54 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=594636690923, awardConfig=null))','completed','2025-05-25 23:33:54','2025-05-25 23:33:54'),(253,'send_award','yong','78247919423','BaseEvent.EventMessage(id=78247919423, timestamp=Sun May 25 23:34:13 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=372992993257, awardConfig=null))','completed','2025-05-25 23:34:13','2025-05-25 23:34:13'),(254,'send_award','yong','90127985111','BaseEvent.EventMessage(id=90127985111, timestamp=Sun May 25 23:34:17 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=924075023623, awardConfig=null))','completed','2025-05-25 23:34:17','2025-05-25 23:34:17'),(255,'send_award','yong','50592358359','BaseEvent.EventMessage(id=50592358359, timestamp=Sun May 25 23:34:19 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=040778726490, awardConfig=null))','completed','2025-05-25 23:34:19','2025-05-25 23:34:19'),(256,'send_award','yong','25588087514','BaseEvent.EventMessage(id=25588087514, timestamp=Sun May 25 23:34:20 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=266835200304, awardConfig=null))','completed','2025-05-25 23:34:20','2025-05-25 23:34:20'),(257,'send_award','yong','46437856572','BaseEvent.EventMessage(id=46437856572, timestamp=Sun May 25 23:34:21 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=757936619831, awardConfig=null))','completed','2025-05-25 23:34:21','2025-05-25 23:34:21'),(258,'send_award','yong','79312771385','BaseEvent.EventMessage(id=79312771385, timestamp=Sun May 25 23:34:29 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=105, awardTitle=小米su7周体验, orderId=689152754884, awardConfig=null))','completed','2025-05-25 23:34:29','2025-05-25 23:34:29'),(259,'send_award','yong','09896592510','BaseEvent.EventMessage(id=09896592510, timestamp=Sun May 25 23:34:30 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=870191757716, awardConfig=null))','completed','2025-05-25 23:34:30','2025-05-25 23:34:30'),(260,'send_award','yong','94133149195','BaseEvent.EventMessage(id=94133149195, timestamp=Sun May 25 23:34:30 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=102, awardTitle=OpenAI会员卡, orderId=771666000382, awardConfig=null))','completed','2025-05-25 23:34:30','2025-05-25 23:34:30'),(261,'send_award','yong','14208664769','BaseEvent.EventMessage(id=14208664769, timestamp=Sun May 25 23:37:51 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=893158807865, awardConfig=null))','completed','2025-05-25 23:37:51','2025-05-25 23:37:51'),(262,'send_award','yong','83934196762','BaseEvent.EventMessage(id=83934196762, timestamp=Sun May 25 23:37:51 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong, awardId=101, awardTitle=随机积分, orderId=327532728615, awardConfig=null))','completed','2025-05-25 23:37:51','2025-05-25 23:37:51'),(263,'send_award','yong2','48201262012','BaseEvent.EventMessage(id=48201262012, timestamp=Sun May 25 23:40:09 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=348311495402, awardConfig=null))','completed','2025-05-25 23:40:09','2025-05-25 23:40:09'),(264,'send_award','yong2','95422886130','BaseEvent.EventMessage(id=95422886130, timestamp=Sun May 25 23:41:45 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=104, awardTitle=小米台灯, orderId=398505607789, awardConfig=null))','completed','2025-05-25 23:41:45','2025-05-25 23:41:45'),(265,'send_award','yong2','24853521171','BaseEvent.EventMessage(id=24853521171, timestamp=Sun May 25 23:42:26 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=440038113158, awardConfig=null))','completed','2025-05-25 23:42:26','2025-05-25 23:42:26'),(266,'send_award','yong2','07936683567','BaseEvent.EventMessage(id=07936683567, timestamp=Sun May 25 23:42:35 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=105, awardTitle=小米su7周体验, orderId=568228348756, awardConfig=null))','completed','2025-05-25 23:42:35','2025-05-25 23:42:35'),(267,'send_award','yong2','97834769985','BaseEvent.EventMessage(id=97834769985, timestamp=Sun May 25 23:58:38 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=858133614333, awardConfig=null))','completed','2025-05-25 23:58:38','2025-05-25 23:58:38'),(268,'send_award','yong2','96368750818','BaseEvent.EventMessage(id=96368750818, timestamp=Sun May 25 23:59:31 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=764178803635, awardConfig=null))','completed','2025-05-25 23:59:31','2025-05-25 23:59:31'),(269,'send_award','yong2','35109352874','BaseEvent.EventMessage(id=35109352874, timestamp=Sun May 25 23:59:33 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=102, awardTitle=OpenAI会员卡, orderId=255980567707, awardConfig=null))','completed','2025-05-25 23:59:33','2025-05-25 23:59:33'),(270,'send_award','yong2','19029457703','BaseEvent.EventMessage(id=19029457703, timestamp=Mon May 26 00:00:48 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=752441106869, awardConfig=1,100))','completed','2025-05-26 00:00:48','2025-05-26 00:00:48'),(271,'send_award','yong2','21756648669','BaseEvent.EventMessage(id=21756648669, timestamp=Mon May 26 00:00:49 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=501620765877, awardConfig=null))','completed','2025-05-26 00:00:49','2025-05-26 00:00:49'),(272,'send_award','yong2','24484631022','BaseEvent.EventMessage(id=24484631022, timestamp=Mon May 26 00:00:49 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=103, awardTitle=支付优惠券, orderId=886204709756, awardConfig=null))','completed','2025-05-26 00:00:49','2025-05-26 00:00:49'),(273,'send_award','yong2','84880673492','BaseEvent.EventMessage(id=84880673492, timestamp=Mon May 26 00:00:49 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=107, awardTitle=小霸王游戏机, orderId=677121039161, awardConfig=null))','completed','2025-05-26 00:00:49','2025-05-26 00:00:49'),(274,'send_award','yong2','16168955678','BaseEvent.EventMessage(id=16168955678, timestamp=Mon May 26 00:00:50 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=222266818929, awardConfig=null))','completed','2025-05-26 00:00:50','2025-05-26 00:00:50'),(275,'send_award','yong2','08107292689','BaseEvent.EventMessage(id=08107292689, timestamp=Mon May 26 00:00:50 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=106, awardTitle=轻奢办公椅, orderId=398887339246, awardConfig=null))','completed','2025-05-26 00:00:50','2025-05-26 00:00:50'),(276,'send_award','yong2','63801958708','BaseEvent.EventMessage(id=63801958708, timestamp=Mon May 26 00:00:50 CST 2025, data=SendAwardMessageEvent.SendAwardMessage(userId=yong2, awardId=101, awardTitle=随机积分, orderId=218524185772, awardConfig=null))','completed','2025-05-26 00:00:50','2025-05-26 00:00:50');
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
+/*!40000 ALTER TABLE `task`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `task`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -342,26 +400,30 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_award_record_000`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_award_record_000` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-  `award_id` bigint NOT NULL COMMENT '奖品ID',
-  `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-  `award_time` datetime NOT NULL COMMENT '中奖时间',
-  `award_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_activity_id` (`activity_id`),
-  KEY `idx_award_id` (`strategy_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户中奖记录表';
+CREATE TABLE `user_award_record_000`
+(
+    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id` bigint       NOT NULL COMMENT '活动ID',
+    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
+    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
+    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_activity_id` (`activity_id`),
+    KEY `idx_award_id` (`strategy_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -369,8 +431,10 @@ CREATE TABLE `user_award_record_000` (
 --
 
 LOCK TABLES `user_award_record_000` WRITE;
-/*!40000 ALTER TABLE `user_award_record_000` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_award_record_000` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_000`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -378,26 +442,30 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_award_record_001`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_award_record_001` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-  `award_id` bigint NOT NULL COMMENT '奖品ID',
-  `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-  `award_time` datetime NOT NULL COMMENT '中奖时间',
-  `award_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_activity_id` (`activity_id`),
-  KEY `idx_award_id` (`strategy_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户中奖记录表';
+CREATE TABLE `user_award_record_001`
+(
+    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id` bigint       NOT NULL COMMENT '活动ID',
+    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
+    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
+    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_activity_id` (`activity_id`),
+    KEY `idx_award_id` (`strategy_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -405,8 +473,10 @@ CREATE TABLE `user_award_record_001` (
 --
 
 LOCK TABLES `user_award_record_001` WRITE;
-/*!40000 ALTER TABLE `user_award_record_001` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_award_record_001` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_001`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -414,26 +484,30 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_award_record_002`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_award_record_002` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-  `award_id` bigint NOT NULL COMMENT '奖品ID',
-  `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-  `award_time` datetime NOT NULL COMMENT '中奖时间',
-  `award_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_activity_id` (`activity_id`),
-  KEY `idx_award_id` (`strategy_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户中奖记录表';
+CREATE TABLE `user_award_record_002`
+(
+    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id` bigint       NOT NULL COMMENT '活动ID',
+    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
+    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
+    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_activity_id` (`activity_id`),
+    KEY `idx_award_id` (`strategy_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 76
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -441,9 +515,10 @@ CREATE TABLE `user_award_record_002` (
 --
 
 LOCK TABLES `user_award_record_002` WRITE;
-/*!40000 ALTER TABLE `user_award_record_002` DISABLE KEYS */;
-INSERT INTO `user_award_record_002` VALUES (1,'yong2',100301,200001,'849738166026',102,'OpenAI会员卡','2025-05-06 23:00:31','create','2025-05-06 23:00:31','2025-05-06 23:00:31'),(2,'yong2',100301,200001,'247620732826',103,'支付优惠券','2025-05-06 23:03:33','create','2025-05-06 23:03:32','2025-05-06 23:03:32'),(3,'yong2',100301,200001,'238290428015',102,'OpenAI会员卡','2025-05-06 23:03:40','create','2025-05-06 23:03:39','2025-05-06 23:03:39'),(4,'yong2',100301,200001,'517536743562',101,'随机积分','2025-05-08 12:01:41','complete','2025-05-08 12:01:40','2025-05-08 12:01:40'),(5,'yong2',100301,200001,'781771002497',103,'支付优惠券','2025-05-08 12:05:41','create','2025-05-08 12:05:40','2025-05-08 12:05:40'),(6,'yong2',100301,200001,'071260771659',101,'随机积分','2025-05-08 12:11:54','complete','2025-05-08 12:11:53','2025-05-08 12:11:54'),(7,'yong2',100301,200001,'490177063592',103,'支付优惠券','2025-05-08 12:20:05','create','2025-05-08 12:20:05','2025-05-08 12:20:05'),(8,'yong2',100301,200001,'290401390971',102,'OpenAI会员卡','2025-05-08 12:20:43','create','2025-05-08 12:20:43','2025-05-08 12:20:43'),(9,'yong2',100301,200001,'328321243101',104,'小米台灯','2025-05-08 12:20:53','create','2025-05-08 12:20:53','2025-05-08 12:20:53'),(10,'yong2',100301,200001,'443697566170',105,'小米su7周体验','2025-05-08 12:21:03','create','2025-05-08 12:21:03','2025-05-08 12:21:03'),(11,'yong2',100301,200001,'958621788471',104,'小米台灯','2025-05-08 12:21:12','create','2025-05-08 12:21:11','2025-05-08 12:21:11'),(12,'yong2',100301,200001,'041689364662',101,'随机积分','2025-05-08 12:21:20','complete','2025-05-08 12:21:19','2025-05-08 12:21:19'),(13,'yong2',100301,200001,'625784872805',101,'随机积分','2025-05-08 12:27:24','complete','2025-05-08 12:27:24','2025-05-08 12:27:24'),(14,'yong2',100301,200001,'095970240241',106,'轻奢办公椅','2025-05-08 12:32:20','create','2025-05-08 12:32:20','2025-05-08 12:32:20'),(15,'yong2',100301,200001,'600958928961',104,'小米台灯','2025-05-08 12:33:46','create','2025-05-08 12:33:46','2025-05-08 12:33:46'),(16,'yong2',100301,200001,'866920818569',105,'小米su7周体验','2025-05-08 12:38:33','create','2025-05-08 12:38:33','2025-05-08 12:38:33'),(17,'yong2',100301,200001,'248235906964',102,'OpenAI会员卡','2025-05-08 12:42:26','create','2025-05-08 12:42:26','2025-05-08 12:42:26'),(18,'yong2',100301,200001,'623039741645',104,'小米台灯','2025-05-08 12:44:31','create','2025-05-08 12:44:31','2025-05-08 12:44:31'),(19,'yong2',100301,200001,'961044735993',103,'支付优惠券','2025-05-08 12:44:58','create','2025-05-08 12:44:58','2025-05-08 12:44:58'),(20,'yong2',100301,200001,'919013499909',101,'随机积分','2025-05-08 12:47:06','complete','2025-05-08 12:47:05','2025-05-08 12:47:05'),(21,'yong2',100301,200001,'926064568901',107,'小霸王游戏机','2025-05-08 12:51:16','create','2025-05-08 12:51:15','2025-05-08 12:51:15'),(22,'yong2',100301,200001,'564159762365',105,'小米su7周体验','2025-05-08 12:53:56','create','2025-05-08 12:53:56','2025-05-08 12:53:56'),(23,'yong2',100301,200001,'959100204908',101,'随机积分','2025-05-08 12:54:13','complete','2025-05-08 12:54:12','2025-05-08 12:54:12'),(24,'yong2',100301,200001,'257053355477',105,'小米su7周体验','2025-05-08 12:55:54','create','2025-05-08 12:55:53','2025-05-08 12:55:53'),(25,'yong2',100301,200001,'628357243740',103,'支付优惠券','2025-05-08 12:57:05','create','2025-05-08 12:57:05','2025-05-08 12:57:05'),(26,'yong2',100301,200001,'512468444337',101,'随机积分','2025-05-08 12:59:03','complete','2025-05-08 12:59:03','2025-05-08 12:59:03'),(27,'yong2',100301,200001,'728577959249',101,'随机积分','2025-05-08 13:14:09','complete','2025-05-08 13:14:09','2025-05-08 13:14:09'),(28,'yong2',100301,200001,'155688480914',101,'随机积分','2025-05-08 13:16:42','complete','2025-05-08 13:16:42','2025-05-08 13:16:42'),(29,'yong2',100301,200001,'850983735867',104,'小米台灯','2025-05-08 13:21:48','create','2025-05-08 13:21:48','2025-05-08 13:21:48'),(30,'yong2',100301,200001,'944108390064',101,'随机积分','2025-05-08 13:22:37','complete','2025-05-08 13:22:36','2025-05-08 13:22:36'),(31,'yong2',100301,200001,'976354199188',107,'小霸王游戏机','2025-05-08 13:28:05','create','2025-05-08 13:28:04','2025-05-08 13:28:04'),(32,'yong2',100301,200001,'355476439222',101,'随机积分','2025-05-08 13:28:57','complete','2025-05-08 13:28:57','2025-05-08 13:28:57'),(33,'yong2',100301,200001,'523949503067',101,'随机积分','2025-05-09 14:18:27','complete','2025-05-09 14:18:27','2025-05-09 14:18:27'),(34,'yong2',100301,200001,'438869840930',104,'小米台灯','2025-05-09 14:32:13','create','2025-05-09 14:32:13','2025-05-09 14:32:13'),(35,'yong2',100301,200001,'983692346461',104,'小米台灯','2025-05-09 14:34:04','create','2025-05-09 14:34:03','2025-05-09 14:34:03'),(36,'yong2',100301,200001,'456758711886',101,'随机积分','2025-05-09 14:35:40','complete','2025-05-09 14:35:39','2025-05-09 14:35:39'),(37,'yong2',100301,200001,'046228658010',101,'随机积分','2025-05-09 14:36:17','complete','2025-05-09 14:36:17','2025-05-09 14:36:17'),(38,'yong2',100301,200001,'348311495402',101,'随机积分','2025-05-25 23:40:09','complete','2025-05-25 23:40:09','2025-05-25 23:40:09'),(39,'yong2',100301,200001,'398505607789',104,'小米台灯','2025-05-25 23:41:45','create','2025-05-25 23:41:45','2025-05-25 23:41:45'),(40,'yong2',100301,200001,'440038113158',101,'随机积分','2025-05-25 23:42:27','complete','2025-05-25 23:42:26','2025-05-25 23:42:26'),(41,'yong2',100301,200001,'568228348756',105,'小米su7周体验','2025-05-25 23:42:35','create','2025-05-25 23:42:35','2025-05-25 23:42:35'),(42,'yong2',100301,200001,'858133614333',101,'随机积分','2025-05-25 23:58:38','complete','2025-05-25 23:58:38','2025-05-25 23:58:38'),(43,'yong2',100301,200001,'764178803635',102,'OpenAI会员卡','2025-05-25 23:59:31','create','2025-05-25 23:59:31','2025-05-25 23:59:31'),(44,'yong2',100301,200001,'255980567707',102,'OpenAI会员卡','2025-05-25 23:59:34','create','2025-05-25 23:59:33','2025-05-25 23:59:33'),(45,'yong2',100301,200001,'752441106869',101,'随机积分','2025-05-26 00:00:48','complete','2025-05-26 00:00:48','2025-05-26 00:00:48'),(46,'yong2',100301,200001,'501620765877',103,'支付优惠券','2025-05-26 00:00:49','create','2025-05-26 00:00:49','2025-05-26 00:00:49'),(47,'yong2',100301,200001,'886204709756',103,'支付优惠券','2025-05-26 00:00:49','create','2025-05-26 00:00:49','2025-05-26 00:00:49'),(48,'yong2',100301,200001,'677121039161',107,'小霸王游戏机','2025-05-26 00:00:50','create','2025-05-26 00:00:49','2025-05-26 00:00:49'),(49,'yong2',100301,200001,'222266818929',101,'随机积分','2025-05-26 00:00:50','complete','2025-05-26 00:00:50','2025-05-26 00:00:50'),(50,'yong2',100301,200001,'398887339246',106,'轻奢办公椅','2025-05-26 00:00:50','create','2025-05-26 00:00:50','2025-05-26 00:00:50'),(51,'yong2',100301,200001,'218524185772',101,'随机积分','2025-05-26 00:00:51','complete','2025-05-26 00:00:50','2025-05-26 00:00:50');
-/*!40000 ALTER TABLE `user_award_record_002` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_002`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -451,26 +526,30 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_award_record_003`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_award_record_003` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-  `award_id` bigint NOT NULL COMMENT '奖品ID',
-  `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-  `award_time` datetime NOT NULL COMMENT '中奖时间',
-  `award_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_activity_id` (`activity_id`),
-  KEY `idx_award_id` (`strategy_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户中奖记录表';
+CREATE TABLE `user_award_record_003`
+(
+    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id` bigint       NOT NULL COMMENT '活动ID',
+    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
+    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
+    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_activity_id` (`activity_id`),
+    KEY `idx_award_id` (`strategy_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 8596
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -478,9 +557,10 @@ CREATE TABLE `user_award_record_003` (
 --
 
 LOCK TABLES `user_award_record_003` WRITE;
-/*!40000 ALTER TABLE `user_award_record_003` DISABLE KEYS */;
-INSERT INTO `user_award_record_003` VALUES (1,'yong',100301,200001,'071833006476',102,'OpenAI会员卡','2025-05-07 23:36:06','create','2025-05-07 23:36:05','2025-05-07 23:36:05'),(2,'yong',100301,200001,'460010081812',104,'小米台灯','2025-05-07 23:38:12','create','2025-05-07 23:38:11','2025-05-07 23:38:11'),(3,'yong',100301,200001,'614012564676',107,'小霸王游戏机','2025-05-07 23:38:19','create','2025-05-07 23:38:19','2025-05-07 23:38:19'),(4,'yong',100301,200001,'041763502016',102,'OpenAI会员卡','2025-05-07 23:39:02','create','2025-05-07 23:39:02','2025-05-07 23:39:02'),(5,'yong',100301,200001,'288198710169',102,'OpenAI会员卡','2025-05-07 23:39:09','create','2025-05-07 23:39:09','2025-05-07 23:39:09'),(6,'yong',100301,200001,'802536751587',104,'小米台灯','2025-05-07 23:39:37','create','2025-05-07 23:39:36','2025-05-07 23:39:36'),(7,'yong',100301,200001,'646172746124',108,'暴走玩偶','2025-05-07 23:39:44','create','2025-05-07 23:39:44','2025-05-07 23:39:44'),(8,'yong',100301,200001,'789684612741',106,'轻奢办公椅','2025-05-07 23:40:00','create','2025-05-07 23:39:59','2025-05-07 23:39:59'),(9,'yong',100301,200001,'861750308725',101,'随机积分','2025-05-07 23:40:07','complete','2025-05-07 23:40:06','2025-05-07 23:40:06'),(10,'yong',100301,200001,'072503007926',103,'支付优惠券','2025-05-07 23:40:53','create','2025-05-07 23:40:52','2025-05-07 23:40:52'),(11,'yong',100301,200001,'963201816093',103,'支付优惠券','2025-05-07 23:41:00','create','2025-05-07 23:40:59','2025-05-07 23:40:59'),(12,'yong',100301,200001,'623282844607',103,'支付优惠券','2025-05-07 23:41:07','create','2025-05-07 23:41:07','2025-05-07 23:41:07'),(13,'yong',100301,200001,'972320399571',101,'随机积分','2025-05-07 23:41:16','complete','2025-05-07 23:41:16','2025-05-07 23:41:16'),(14,'yong',100301,200001,'171067574652',101,'随机积分','2025-05-07 23:41:24','complete','2025-05-07 23:41:24','2025-05-07 23:41:24'),(15,'yong',100301,200001,'857746840461',101,'随机积分','2025-05-07 23:41:49','complete','2025-05-07 23:41:49','2025-05-07 23:41:49'),(16,'yong',100301,200001,'597114059178',104,'小米台灯','2025-05-07 23:42:10','create','2025-05-07 23:42:09','2025-05-07 23:42:09'),(17,'yong',100301,200001,'328638031568',101,'随机积分','2025-05-07 23:42:16','complete','2025-05-07 23:42:16','2025-05-07 23:42:16'),(18,'yong',100301,200001,'287689694704',104,'小米台灯','2025-05-07 23:42:23','create','2025-05-07 23:42:22','2025-05-07 23:42:22'),(19,'yong',100301,200001,'723410827138',101,'随机积分','2025-05-07 23:42:29','complete','2025-05-07 23:42:29','2025-05-07 23:42:29'),(20,'yong',100301,200001,'652176157503',101,'随机积分','2025-05-07 23:42:35','complete','2025-05-07 23:42:35','2025-05-07 23:42:35'),(21,'yong',100301,200001,'903832400487',101,'随机积分','2025-05-07 23:42:42','complete','2025-05-07 23:42:41','2025-05-07 23:42:41'),(22,'yong',100301,200001,'009850269447',103,'支付优惠券','2025-05-07 23:46:37','create','2025-05-07 23:46:37','2025-05-07 23:46:37'),(23,'yong',100301,200001,'952482690690',101,'随机积分','2025-05-07 23:47:41','complete','2025-05-07 23:47:41','2025-05-07 23:47:41'),(24,'yong',100301,200001,'548607520205',101,'随机积分','2025-05-07 23:47:49','complete','2025-05-07 23:47:48','2025-05-07 23:47:49'),(25,'yong',100301,200001,'011038891328',107,'小霸王游戏机','2025-05-08 00:04:17','create','2025-05-08 00:04:16','2025-05-08 00:04:16'),(26,'yong',100301,200001,'857315390021',101,'随机积分','2025-05-08 00:08:26','complete','2025-05-08 00:08:25','2025-05-08 00:08:25'),(27,'yong',100301,200001,'187556577024',105,'小米su7周体验','2025-05-08 00:08:41','create','2025-05-08 00:08:40','2025-05-08 00:08:40'),(28,'yong',100301,200001,'412790918850',105,'小米su7周体验','2025-05-09 14:17:10','create','2025-05-09 14:17:09','2025-05-09 14:17:09'),(29,'yong',100301,200001,'054920628704',101,'随机积分','2025-05-13 15:34:46','complete','2025-05-13 15:34:46','2025-05-13 15:34:46'),(30,'yong',100301,200001,'762486912242',104,'小米台灯','2025-05-13 15:36:56','create','2025-05-13 15:36:56','2025-05-13 15:36:56'),(31,'yong',100301,200001,'862789759277',101,'随机积分','2025-05-18 22:57:31','complete','2025-05-18 22:57:30','2025-05-18 22:57:30'),(32,'yong',100301,200001,'527469743573',103,'支付优惠券','2025-05-18 22:58:54','create','2025-05-18 22:58:54','2025-05-18 22:58:54'),(33,'yong',100301,200001,'182175685213',101,'随机积分','2025-05-25 22:20:53','complete','2025-05-25 22:20:52','2025-05-25 22:20:52'),(34,'yong',100301,200001,'431144102449',101,'随机积分','2025-05-25 22:20:55','complete','2025-05-25 22:20:55','2025-05-25 22:20:55'),(35,'yong',100301,200001,'028887855637',108,'暴走玩偶','2025-05-25 22:20:56','create','2025-05-25 22:20:56','2025-05-25 22:20:56'),(36,'yong',100301,200001,'333940744717',101,'随机积分','2025-05-25 22:20:56','complete','2025-05-25 22:20:56','2025-05-25 22:20:56'),(37,'yong',100301,200001,'375100872626',104,'小米台灯','2025-05-25 22:20:56','create','2025-05-25 22:20:56','2025-05-25 22:20:56'),(38,'yong',100301,200001,'740600505982',107,'小霸王游戏机','2025-05-25 22:20:57','create','2025-05-25 22:20:56','2025-05-25 22:20:56'),(39,'yong',100301,200001,'358373173370',105,'小米su7周体验','2025-05-25 22:20:57','create','2025-05-25 22:20:56','2025-05-25 22:20:56'),(40,'yong',100301,200001,'358511846294',101,'随机积分','2025-05-25 22:20:57','complete','2025-05-25 22:20:57','2025-05-25 22:20:57'),(43,'yong',100301,200001,'744595636568',107,'小霸王游戏机','2025-05-25 22:24:48','create','2025-05-25 22:24:48','2025-05-25 22:24:48'),(44,'yong',100301,200001,'804526496577',105,'小米su7周体验','2025-05-25 22:24:53','create','2025-05-25 22:24:53','2025-05-25 22:24:53'),(45,'yong',100301,200001,'852246258395',105,'小米su7周体验','2025-05-25 22:24:53','create','2025-05-25 22:24:53','2025-05-25 22:24:53'),(46,'yong',100301,200001,'439152877110',107,'小霸王游戏机','2025-05-25 22:24:53','create','2025-05-25 22:24:53','2025-05-25 22:24:53'),(47,'yong',100301,200001,'474124553826',106,'轻奢办公椅','2025-05-25 22:24:54','create','2025-05-25 22:24:53','2025-05-25 22:24:53'),(48,'yong',100301,200001,'196661738904',101,'随机积分','2025-05-25 22:24:54','complete','2025-05-25 22:24:53','2025-05-25 22:24:53'),(49,'yong',100301,200001,'635267913782',101,'随机积分','2025-05-25 22:24:54','complete','2025-05-25 22:24:54','2025-05-25 22:24:54'),(50,'yong',100301,200001,'771422093377',108,'暴走玩偶','2025-05-25 22:24:54','create','2025-05-25 22:24:54','2025-05-25 22:24:54'),(51,'yong',100301,200001,'019471718766',101,'随机积分','2025-05-25 22:25:32','complete','2025-05-25 22:25:31','2025-05-25 22:25:31'),(52,'yong',100301,200001,'411207404139',103,'支付优惠券','2025-05-25 22:26:12','create','2025-05-25 22:26:12','2025-05-25 22:26:12'),(53,'yong',100301,200001,'228767648086',101,'随机积分','2025-05-25 22:59:35','complete','2025-05-25 22:59:35','2025-05-25 22:59:35'),(54,'yong',100301,200001,'387895353235',104,'小米台灯','2025-05-25 23:00:21','create','2025-05-25 23:00:21','2025-05-25 23:00:21'),(55,'yong',100301,200001,'324790409809',101,'随机积分','2025-05-25 23:06:07','complete','2025-05-25 23:06:06','2025-05-25 23:06:07'),(56,'yong',100301,200001,'152673277174',107,'小霸王游戏机','2025-05-25 23:08:29','create','2025-05-25 23:08:29','2025-05-25 23:08:29'),(57,'yong',100301,200001,'786476479051',105,'小米su7周体验','2025-05-25 23:10:46','create','2025-05-25 23:10:45','2025-05-25 23:10:45'),(58,'yong',100301,200001,'459757669025',101,'随机积分','2025-05-25 23:11:02','complete','2025-05-25 23:11:01','2025-05-25 23:11:01'),(59,'yong',100301,200001,'713576369004',103,'支付优惠券','2025-05-25 23:12:29','create','2025-05-25 23:12:28','2025-05-25 23:12:28'),(60,'yong',100301,200001,'065616933342',107,'小霸王游戏机','2025-05-25 23:12:47','create','2025-05-25 23:12:46','2025-05-25 23:12:46'),(61,'yong',100301,200001,'307340911327',101,'随机积分','2025-05-25 23:12:51','complete','2025-05-25 23:12:51','2025-05-25 23:12:51'),(62,'yong',100301,200001,'678206778758',101,'随机积分','2025-05-25 23:15:45','complete','2025-05-25 23:15:45','2025-05-25 23:15:45'),(63,'yong',100301,200001,'835363333121',101,'随机积分','2025-05-25 23:16:01','complete','2025-05-25 23:16:01','2025-05-25 23:16:01'),(64,'yong',100301,200001,'327986546196',105,'小米su7周体验','2025-05-25 23:16:18','create','2025-05-25 23:16:18','2025-05-25 23:16:18'),(65,'yong',100301,200001,'891214073626',101,'随机积分','2025-05-25 23:20:20','complete','2025-05-25 23:20:20','2025-05-25 23:20:20'),(66,'yong',100301,200001,'640620844632',101,'随机积分','2025-05-25 23:20:21','complete','2025-05-25 23:20:21','2025-05-25 23:20:21'),(67,'yong',100301,200001,'724868529100',104,'小米台灯','2025-05-25 23:20:22','create','2025-05-25 23:20:22','2025-05-25 23:20:22'),(68,'yong',100301,200001,'573652444322',104,'小米台灯','2025-05-25 23:27:35','create','2025-05-25 23:27:35','2025-05-25 23:27:35'),(69,'yong',100301,200001,'900096269860',101,'随机积分','2025-05-25 23:28:01','complete','2025-05-25 23:28:01','2025-05-25 23:28:01'),(70,'yong',100301,200001,'344454176929',101,'随机积分','2025-05-25 23:28:03','complete','2025-05-25 23:28:02','2025-05-25 23:28:02'),(71,'yong',100301,200001,'047133111932',108,'暴走玩偶','2025-05-25 23:29:27','create','2025-05-25 23:29:27','2025-05-25 23:29:27'),(72,'yong',100301,200001,'298586904666',102,'OpenAI会员卡','2025-05-25 23:29:51','create','2025-05-25 23:29:50','2025-05-25 23:29:50'),(73,'yong',100301,200001,'088548532925',101,'随机积分','2025-05-25 23:29:52','complete','2025-05-25 23:29:51','2025-05-25 23:29:51'),(74,'yong',100301,200001,'686565641732',101,'随机积分','2025-05-25 23:31:35','complete','2025-05-25 23:31:35','2025-05-25 23:31:35'),(75,'yong',100301,200001,'417132023374',104,'小米台灯','2025-05-25 23:31:45','create','2025-05-25 23:31:44','2025-05-25 23:31:44'),(76,'yong',100301,200001,'818133059302',101,'随机积分','2025-05-25 23:32:09','complete','2025-05-25 23:32:08','2025-05-25 23:32:08'),(77,'yong',100301,200001,'208391779173',103,'支付优惠券','2025-05-25 23:33:18','create','2025-05-25 23:33:18','2025-05-25 23:33:18'),(78,'yong',100301,200001,'564765528201',101,'随机积分','2025-05-25 23:33:21','complete','2025-05-25 23:33:20','2025-05-25 23:33:20'),(79,'yong',100301,200001,'310590020276',105,'小米su7周体验','2025-05-25 23:33:23','create','2025-05-25 23:33:23','2025-05-25 23:33:23'),(80,'yong',100301,200001,'200891140677',101,'随机积分','2025-05-25 23:33:25','complete','2025-05-25 23:33:25','2025-05-25 23:33:25'),(81,'yong',100301,200001,'203264532499',105,'小米su7周体验','2025-05-25 23:33:47','create','2025-05-25 23:33:47','2025-05-25 23:33:47'),(82,'yong',100301,200001,'405672802041',104,'小米台灯','2025-05-25 23:33:48','create','2025-05-25 23:33:47','2025-05-25 23:33:47'),(83,'yong',100301,200001,'755126313580',107,'小霸王游戏机','2025-05-25 23:33:48','create','2025-05-25 23:33:47','2025-05-25 23:33:47'),(84,'yong',100301,200001,'141590213447',101,'随机积分','2025-05-25 23:33:50','complete','2025-05-25 23:33:49','2025-05-25 23:33:49'),(85,'yong',100301,200001,'678462568881',105,'小米su7周体验','2025-05-25 23:33:51','create','2025-05-25 23:33:51','2025-05-25 23:33:51'),(86,'yong',100301,200001,'320737477828',102,'OpenAI会员卡','2025-05-25 23:33:52','create','2025-05-25 23:33:52','2025-05-25 23:33:52'),(87,'yong',100301,200001,'245379552813',101,'随机积分','2025-05-25 23:33:53','complete','2025-05-25 23:33:52','2025-05-25 23:33:52'),(88,'yong',100301,200001,'000737439133',101,'随机积分','2025-05-25 23:33:53','complete','2025-05-25 23:33:52','2025-05-25 23:33:52'),(89,'yong',100301,200001,'825541311362',103,'支付优惠券','2025-05-25 23:33:53','create','2025-05-25 23:33:53','2025-05-25 23:33:53'),(90,'yong',100301,200001,'431546235979',101,'随机积分','2025-05-25 23:33:54','complete','2025-05-25 23:33:53','2025-05-25 23:33:53'),(91,'yong',100301,200001,'594636690923',101,'随机积分','2025-05-25 23:33:54','complete','2025-05-25 23:33:54','2025-05-25 23:33:54'),(92,'yong',100301,200001,'372992993257',105,'小米su7周体验','2025-05-25 23:34:14','create','2025-05-25 23:34:13','2025-05-25 23:34:13'),(93,'yong',100301,200001,'924075023623',101,'随机积分','2025-05-25 23:34:17','complete','2025-05-25 23:34:17','2025-05-25 23:34:17'),(94,'yong',100301,200001,'040778726490',102,'OpenAI会员卡','2025-05-25 23:34:19','create','2025-05-25 23:34:19','2025-05-25 23:34:19'),(95,'yong',100301,200001,'266835200304',101,'随机积分','2025-05-25 23:34:20','complete','2025-05-25 23:34:20','2025-05-25 23:34:20'),(96,'yong',100301,200001,'757936619831',101,'随机积分','2025-05-25 23:34:21','complete','2025-05-25 23:34:21','2025-05-25 23:34:21'),(97,'yong',100301,200001,'689152754884',105,'小米su7周体验','2025-05-25 23:34:30','create','2025-05-25 23:34:29','2025-05-25 23:34:29'),(98,'yong',100301,200001,'870191757716',101,'随机积分','2025-05-25 23:34:30','complete','2025-05-25 23:34:30','2025-05-25 23:34:30'),(99,'yong',100301,200001,'771666000382',102,'OpenAI会员卡','2025-05-25 23:34:30','create','2025-05-25 23:34:30','2025-05-25 23:34:30'),(100,'yong',100301,200001,'893158807865',101,'随机积分','2025-05-25 23:37:51','complete','2025-05-25 23:37:51','2025-05-25 23:37:51'),(101,'yong',100301,200001,'327532728615',101,'随机积分','2025-05-25 23:37:52','complete','2025-05-25 23:37:51','2025-05-25 23:37:51');
-/*!40000 ALTER TABLE `user_award_record_003` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_award_record_003`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -488,25 +568,29 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_behavior_rebate_order_000`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_behavior_rebate_order_000` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `behavior_type` varchar(16) NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-  `rebate_desc` varchar(128) NOT NULL COMMENT '返利描述',
-  `rebate_type` varchar(16) NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-  `rebate_config` varchar(32) NOT NULL COMMENT '返利配置【sku值，积分值】',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-  `biz_id` varchar(64) NOT NULL COMMENT '业务ID - 拼接的唯一值',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_biz_id` (`biz_id`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户行为返利流水表';
+CREATE TABLE `user_behavior_rebate_order_000`
+(
+    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
+    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_biz_id` (`biz_id`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 5
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -514,8 +598,10 @@ CREATE TABLE `user_behavior_rebate_order_000` (
 --
 
 LOCK TABLES `user_behavior_rebate_order_000` WRITE;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_000` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_000` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_000`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -523,25 +609,29 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_behavior_rebate_order_001`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_behavior_rebate_order_001` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `behavior_type` varchar(16) NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-  `rebate_desc` varchar(128) NOT NULL COMMENT '返利描述',
-  `rebate_type` varchar(16) NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-  `rebate_config` varchar(32) NOT NULL COMMENT '返利配置【sku值，积分值】',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-  `biz_id` varchar(64) NOT NULL COMMENT '业务ID - 拼接的唯一值',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_biz_id` (`biz_id`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户行为返利流水表';
+CREATE TABLE `user_behavior_rebate_order_001`
+(
+    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
+    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_biz_id` (`biz_id`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -549,8 +639,10 @@ CREATE TABLE `user_behavior_rebate_order_001` (
 --
 
 LOCK TABLES `user_behavior_rebate_order_001` WRITE;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_001` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_001` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_001`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -558,25 +650,29 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_behavior_rebate_order_002`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_behavior_rebate_order_002` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `behavior_type` varchar(16) NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-  `rebate_desc` varchar(128) NOT NULL COMMENT '返利描述',
-  `rebate_type` varchar(16) NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-  `rebate_config` varchar(32) NOT NULL COMMENT '返利配置【sku值，积分值】',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-  `biz_id` varchar(64) NOT NULL COMMENT '业务ID - 拼接的唯一值',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_biz_id` (`biz_id`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户行为返利流水表';
+CREATE TABLE `user_behavior_rebate_order_002`
+(
+    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
+    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_biz_id` (`biz_id`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 11
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -584,9 +680,10 @@ CREATE TABLE `user_behavior_rebate_order_002` (
 --
 
 LOCK TABLES `user_behavior_rebate_order_002` WRITE;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_002` DISABLE KEYS */;
-INSERT INTO `user_behavior_rebate_order_002` VALUES (1,'yong2','435679680172','sign','签到返利-抽奖额度','sku','9011','20250506','yong2_sku_20250506','2025-05-06 23:00:24','2025-05-06 23:00:24'),(2,'yong2','313717801039','sign','签到返利-积分','integral','10','20250506','yong2_integral_20250506','2025-05-06 23:00:24','2025-05-06 23:00:24'),(3,'yong2','409919870181','sign','签到返利-抽奖额度','sku','9011','20250507','yong2_sku_20250507','2025-05-07 23:18:31','2025-05-07 23:18:31'),(4,'yong2','549018941301','sign','签到返利-积分','integral','10','20250507','yong2_integral_20250507','2025-05-07 23:18:31','2025-05-07 23:18:31'),(5,'yong2','322436248220','sign','签到返利-抽奖额度','sku','9011','20250508','yong2_sku_20250508','2025-05-08 11:07:54','2025-05-08 11:07:54'),(6,'yong2','248363743852','sign','签到返利-积分','integral','10','20250508','yong2_integral_20250508','2025-05-08 11:07:54','2025-05-08 11:07:54'),(7,'yong2','664074180144','sign','签到返利-抽奖额度','sku','9011','20250509','yong2_sku_20250509','2025-05-09 12:04:43','2025-05-09 12:04:43'),(8,'yong2','970995095107','sign','签到返利-积分','integral','10','20250509','yong2_integral_20250509','2025-05-09 12:04:43','2025-05-09 12:04:43');
-/*!40000 ALTER TABLE `user_behavior_rebate_order_002` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_002`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -594,25 +691,29 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_behavior_rebate_order_003`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_behavior_rebate_order_003` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `behavior_type` varchar(16) NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-  `rebate_desc` varchar(128) NOT NULL COMMENT '返利描述',
-  `rebate_type` varchar(16) NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-  `rebate_config` varchar(32) NOT NULL COMMENT '返利配置【sku值，积分值】',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-  `biz_id` varchar(64) NOT NULL COMMENT '业务ID - 拼接的唯一值',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_biz_id` (`biz_id`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户行为返利流水表';
+CREATE TABLE `user_behavior_rebate_order_003`
+(
+    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
+    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_biz_id` (`biz_id`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 27
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,9 +721,10 @@ CREATE TABLE `user_behavior_rebate_order_003` (
 --
 
 LOCK TABLES `user_behavior_rebate_order_003` WRITE;
-/*!40000 ALTER TABLE `user_behavior_rebate_order_003` DISABLE KEYS */;
-INSERT INTO `user_behavior_rebate_order_003` VALUES (9,'yong','050951071257','sign','签到返利-抽奖额度','sku','9011','20250329','yong_sku_20250329','2025-03-29 14:25:32','2025-03-29 14:25:32'),(10,'yong','742588255840','sign','签到返利-积分','integral','10','20250329','yong_integral_20250329','2025-03-29 14:25:32','2025-03-29 14:25:32'),(17,'yong','985769232402','sign','签到返利-抽奖额度','sku','9011','20250507','yong_sku_20250507','2025-05-07 23:30:20','2025-05-07 23:30:20'),(18,'yong','619609768115','sign','签到返利-积分','integral','10','20250507','yong_integral_20250507','2025-05-07 23:30:20','2025-05-07 23:30:20'),(19,'yong','813237837409','sign','签到返利-抽奖额度','sku','9011','20250508','yong_sku_20250508','2025-05-08 00:01:57','2025-05-08 00:01:57'),(20,'yong','923403112580','sign','签到返利-积分','integral','10','20250508','yong_integral_20250508','2025-05-08 00:01:57','2025-05-08 00:01:57'),(21,'yong','828216555657','sign','签到返利-抽奖额度','sku','9011','20250509','yong_sku_20250509','2025-05-09 12:21:28','2025-05-09 12:21:28'),(22,'yong','574729737395','sign','签到返利-积分','integral','10','20250509','yong_integral_20250509','2025-05-09 12:21:28','2025-05-09 12:21:28');
-/*!40000 ALTER TABLE `user_behavior_rebate_order_003` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_behavior_rebate_order_003`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -630,23 +732,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_credit_order_000`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_000` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `trade_name` varchar(32) NOT NULL COMMENT '交易名称',
-  `trade_type` varchar(8) NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-  `trade_amount` decimal(10,2) NOT NULL COMMENT '交易金额',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户积分流水表';
+CREATE TABLE `user_credit_order_000`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -654,8 +760,10 @@ CREATE TABLE `user_credit_order_000` (
 --
 
 LOCK TABLES `user_credit_order_000` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_000` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_000` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_000`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -663,23 +771,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_credit_order_001`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_001` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `trade_name` varchar(32) NOT NULL COMMENT '交易名称',
-  `trade_type` varchar(8) NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-  `trade_amount` decimal(10,2) NOT NULL COMMENT '交易金额',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户积分流水表';
+CREATE TABLE `user_credit_order_001`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -687,8 +799,10 @@ CREATE TABLE `user_credit_order_001` (
 --
 
 LOCK TABLES `user_credit_order_001` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_001` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_001` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_001`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -696,23 +810,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_credit_order_002`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_002` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `trade_name` varchar(32) NOT NULL COMMENT '交易名称',
-  `trade_type` varchar(8) NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-  `trade_amount` decimal(10,2) NOT NULL COMMENT '交易金额',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户积分流水表';
+CREATE TABLE `user_credit_order_002`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 34
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -720,9 +838,10 @@ CREATE TABLE `user_credit_order_002` (
 --
 
 LOCK TABLES `user_credit_order_002` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_002` DISABLE KEYS */;
-INSERT INTO `user_credit_order_002` VALUES (1,'yong2','820925798483','每日签到','forward',10.00,'yong2_integral_20250506','2025-05-06 23:00:24','2025-05-06 23:00:24'),(2,'yong2','846648199244','积分兑换','reverse',-1.99,'015207193366','2025-05-06 23:01:42','2025-05-06 23:01:42'),(3,'yong2','546560549154','积分兑换','reverse',-1.99,'318243221953','2025-05-06 23:02:22','2025-05-06 23:02:22'),(4,'yong2','366573641138','积分兑换','reverse',-1.99,'312426769592','2025-05-06 23:02:23','2025-05-06 23:02:23'),(5,'yong2','750627280356','积分兑换','reverse',-1.99,'321073700563','2025-05-06 23:02:24','2025-05-06 23:02:24'),(6,'yong2','806914720962','积分兑换','reverse',-1.99,'772781657321','2025-05-06 23:02:24','2025-05-06 23:02:24'),(7,'yong2','780302740621','积分兑换','reverse',-1.99,'940397166357','2025-05-06 23:02:25','2025-05-06 23:02:25'),(8,'yong2','895179957176','积分兑换','reverse',-1.99,'448043644619','2025-05-06 23:02:29','2025-05-06 23:02:29'),(9,'yong2','968648682772','积分兑换','reverse',-1.99,'990493992982','2025-05-06 23:20:17','2025-05-06 23:20:17'),(10,'yong2','881789871673','积分兑换','reverse',-1.99,'429015315975','2025-05-06 23:20:18','2025-05-06 23:20:18'),(11,'yong2','696023909884','积分兑换','reverse',-1.99,'367052389423','2025-05-06 23:20:19','2025-05-06 23:20:19'),(12,'yong2','289139389507','积分兑换','reverse',-1.99,'812169761335','2025-05-06 23:20:19','2025-05-06 23:20:19'),(13,'yong2','470222604027','积分兑换','reverse',-1.99,'954066085357','2025-05-06 23:20:20','2025-05-06 23:20:20'),(14,'yong2','455291306872','积分兑换','reverse',-1.99,'407042402291','2025-05-06 23:20:20','2025-05-06 23:20:20'),(15,'yong2','963228202678','积分兑换','reverse',-1.99,'161115226999','2025-05-06 23:20:22','2025-05-06 23:20:22'),(16,'yong2','969172523875','积分兑换','reverse',-1.99,'387531367346','2025-05-06 23:34:27','2025-05-06 23:34:27'),(17,'yong2','868514016440','积分兑换','reverse',-1.99,'524420691289','2025-05-06 23:35:20','2025-05-06 23:35:20'),(18,'yong2','393448724791','积分兑换','reverse',-1.99,'262339078088','2025-05-06 23:35:48','2025-05-06 23:35:48'),(19,'yong2','022605260468','积分兑换','reverse',1.99,'207301067978','2025-05-06 23:41:43','2025-05-06 23:41:43'),(20,'yong2','662206767449','积分兑换','reverse',1.99,'932909450511','2025-05-06 23:41:48','2025-05-06 23:41:48'),(21,'yong2','325183385811','积分兑换','reverse',1.99,'919766644414','2025-05-06 23:42:45','2025-05-06 23:42:45'),(22,'yong2','748682309260','积分兑换','reverse',1.99,'074105141693','2025-05-06 23:43:45','2025-05-06 23:43:45'),(23,'yong2','549919636285','积分兑换','reverse',1.99,'221491041459','2025-05-06 23:44:50','2025-05-06 23:44:50'),(24,'yong2','433445033289','积分兑换','reverse',1.99,'195748625299','2025-05-06 23:44:51','2025-05-06 23:44:51'),(25,'yong2','987576701202','积分兑换','reverse',1.99,'838371211111','2025-05-06 23:44:52','2025-05-06 23:44:52'),(26,'yong2','563112677714','积分兑换','reverse',1.99,'187132758363','2025-05-06 23:44:53','2025-05-06 23:44:53'),(27,'yong2','978655416517','积分兑换','reverse',1.99,'833969277243','2025-05-06 23:44:54','2025-05-06 23:44:54'),(28,'yong2','365754707698','每日签到','forward',10.00,'yong2_integral_20250507','2025-05-07 23:18:31','2025-05-07 23:18:31'),(29,'yong2','569203332450','每日签到','forward',10.00,'yong2_integral_20250508','2025-05-08 12:00:42','2025-05-08 12:00:42'),(30,'yong2','787861120755','积分兑换','reverse',5.99,'878807050416','2025-05-08 13:22:28','2025-05-08 13:22:28'),(31,'yong2','879489726730','积分兑换','reverse',5.99,'087914831520','2025-05-08 13:22:29','2025-05-08 13:22:29'),(32,'yong2','247474989030','每日签到','forward',10.00,'yong2_integral_20250509','2025-05-09 12:04:44','2025-05-09 12:04:44');
-/*!40000 ALTER TABLE `user_credit_order_002` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_002`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -730,23 +849,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_credit_order_003`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_003` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(12) NOT NULL COMMENT '订单ID',
-  `trade_name` varchar(32) NOT NULL COMMENT '交易名称',
-  `trade_type` varchar(8) NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-  `trade_amount` decimal(10,2) NOT NULL COMMENT '交易金额',
-  `out_business_no` varchar(64) NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-  KEY `idx_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户积分流水表';
+CREATE TABLE `user_credit_order_003`
+(
+    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 65
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -754,9 +877,10 @@ CREATE TABLE `user_credit_order_003` (
 --
 
 LOCK TABLES `user_credit_order_003` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_003` DISABLE KEYS */;
-INSERT INTO `user_credit_order_003` VALUES (5,'yong','726476987818','每日签到','forward',10.00,'yong_integral_20250329','2025-03-29 14:25:32','2025-03-29 14:25:32'),(6,'yong','667476948971','积分兑换','reverse',-1.99,'428416563416','2025-03-29 14:26:08','2025-03-29 14:26:08'),(7,'yong','066127599272','积分兑换','reverse',-1.99,'839301174685','2025-03-29 14:26:12','2025-03-29 14:26:12'),(8,'yong','519450013047','积分兑换','reverse',-1.99,'751928339311','2025-03-29 14:26:13','2025-03-29 14:26:13'),(12,'yong','349156902749','每日签到','forward',10.00,'yong_integral_20250507','2025-05-07 23:30:20','2025-05-07 23:30:20'),(13,'yong','302018881559','积分兑换','reverse',1.99,'290906454228','2025-05-07 23:30:41','2025-05-07 23:30:41'),(14,'yong','560185010825','积分兑换','reverse',5.99,'045391705453','2025-05-07 23:35:00','2025-05-07 23:35:00'),(15,'yong','031298432106','积分兑换','reverse',5.99,'611205895597','2025-05-07 23:35:04','2025-05-07 23:35:04'),(16,'yong','143465901480','积分兑换','reverse',1.99,'767327792428','2025-05-07 23:35:12','2025-05-07 23:35:12'),(17,'yong','851362021390','积分兑换','reverse',1.99,'493799059816','2025-05-07 23:35:13','2025-05-07 23:35:13'),(18,'yong','389259166879','积分兑换','reverse',1.99,'574124022865','2025-05-07 23:35:13','2025-05-07 23:35:13'),(19,'yong','243857904811','积分兑换','reverse',5.99,'650343107849','2025-05-07 23:35:15','2025-05-07 23:35:15'),(20,'yong','043136701737','积分兑换','reverse',5.99,'092900185253','2025-05-07 23:35:16','2025-05-07 23:35:16'),(21,'yong','618891689241','积分兑换','reverse',1.99,'443418511795','2025-05-07 23:35:49','2025-05-07 23:35:49'),(22,'yong','063083263502','积分兑换','reverse',5.99,'572577268219','2025-05-07 23:41:30','2025-05-07 23:41:30'),(23,'yong','969740667778','积分兑换','reverse',5.99,'285026258708','2025-05-07 23:41:31','2025-05-07 23:41:31'),(24,'yong','389690111668','积分兑换','reverse',5.99,'726038736972','2025-05-07 23:41:31','2025-05-07 23:41:31'),(25,'yong','746598588710','积分兑换','reverse',5.99,'860263649811','2025-05-07 23:41:31','2025-05-07 23:41:31'),(26,'yong','231027496437','积分兑换','reverse',5.99,'318921021907','2025-05-07 23:41:32','2025-05-07 23:41:32'),(27,'yong','180804799093','积分兑换','reverse',5.99,'093766860514','2025-05-07 23:41:32','2025-05-07 23:41:32'),(28,'yong','811223988403','积分兑换','reverse',5.99,'148123617129','2025-05-07 23:41:32','2025-05-07 23:41:32'),(29,'yong','804419079006','积分兑换','reverse',5.99,'021822458648','2025-05-07 23:41:32','2025-05-07 23:41:32'),(30,'yong','634119007631','积分兑换','reverse',5.99,'158875587733','2025-05-07 23:41:32','2025-05-07 23:41:32'),(31,'yong','668637383740','积分兑换','reverse',5.99,'198020839855','2025-05-07 23:41:32','2025-05-07 23:41:32'),(32,'yong','514881897179','积分兑换','reverse',5.99,'948299985368','2025-05-07 23:41:32','2025-05-07 23:41:32'),(33,'yong','645795536058','积分兑换','reverse',5.99,'266824521670','2025-05-07 23:41:33','2025-05-07 23:41:33'),(34,'yong','822562947647','积分兑换','reverse',5.99,'005112715063','2025-05-07 23:41:33','2025-05-07 23:41:33'),(35,'yong','210889896021','积分兑换','reverse',5.99,'654452531437','2025-05-07 23:41:33','2025-05-07 23:41:33'),(36,'yong','713416270967','积分兑换','reverse',5.99,'666341147701','2025-05-07 23:41:33','2025-05-07 23:41:33'),(37,'yong','763671086633','积分兑换','reverse',5.99,'991795879348','2025-05-07 23:41:33','2025-05-07 23:41:33'),(38,'yong','140537537541','积分兑换','reverse',5.99,'833095067248','2025-05-07 23:41:33','2025-05-07 23:41:33'),(39,'yong','711032471419','积分兑换','reverse',5.99,'078344354773','2025-05-07 23:41:34','2025-05-07 23:41:34'),(40,'yong','433507068189','积分兑换','reverse',5.99,'794647920011','2025-05-07 23:41:34','2025-05-07 23:41:34'),(41,'yong','502227105914','积分兑换','reverse',5.99,'018941106404','2025-05-07 23:41:34','2025-05-07 23:41:34'),(42,'yong','815010051278','积分兑换','reverse',5.99,'988094753527','2025-05-07 23:41:34','2025-05-07 23:41:34'),(43,'yong','007015757376','积分兑换','reverse',5.99,'335126221094','2025-05-07 23:41:34','2025-05-07 23:41:34'),(44,'yong','019358385584','积分兑换','reverse',5.99,'265946452882','2025-05-07 23:41:34','2025-05-07 23:41:34'),(45,'yong','520566329184','积分兑换','reverse',5.99,'888014988450','2025-05-07 23:41:35','2025-05-07 23:41:35'),(46,'yong','099503973686','积分兑换','reverse',5.99,'526472652614','2025-05-07 23:41:35','2025-05-07 23:41:35'),(47,'yong','884331943799','积分兑换','reverse',5.99,'411996304688','2025-05-07 23:41:35','2025-05-07 23:41:35'),(48,'yong','149789697194','积分兑换','reverse',5.99,'483056517180','2025-05-07 23:41:35','2025-05-07 23:41:35'),(49,'yong','601189046748','积分兑换','reverse',5.99,'191650764658','2025-05-07 23:41:35','2025-05-07 23:41:35'),(50,'yong','592250726993','积分兑换','reverse',5.99,'566902272080','2025-05-07 23:41:35','2025-05-07 23:41:35'),(51,'yong','428149981444','积分兑换','reverse',5.99,'854525053612','2025-05-07 23:41:36','2025-05-07 23:41:36'),(52,'yong','118470660924','积分兑换','reverse',5.99,'394727985562','2025-05-07 23:41:36','2025-05-07 23:41:36'),(53,'yong','464084705784','积分兑换','reverse',5.99,'956432947009','2025-05-07 23:41:36','2025-05-07 23:41:36'),(54,'yong','417621947875','积分兑换','reverse',5.99,'907621528749','2025-05-07 23:41:36','2025-05-07 23:41:36'),(55,'yong','320884931796','积分兑换','reverse',5.99,'775530795683','2025-05-07 23:41:36','2025-05-07 23:41:36'),(56,'yong','404749878299','积分兑换','reverse',5.99,'884311394704','2025-05-07 23:41:36','2025-05-07 23:41:36'),(57,'yong','524048430890','积分兑换','reverse',5.99,'480485516563','2025-05-07 23:41:37','2025-05-07 23:41:37'),(58,'yong','659689441826','积分兑换','reverse',5.99,'226686154109','2025-05-07 23:41:37','2025-05-07 23:41:37'),(59,'yong','812185053732','积分兑换','reverse',5.99,'382616420144','2025-05-07 23:41:37','2025-05-07 23:41:37'),(60,'yong','912494685511','积分兑换','reverse',5.99,'643269337468','2025-05-07 23:41:37','2025-05-07 23:41:37'),(61,'yong','156904317481','每日签到','forward',10.00,'yong_integral_20250508','2025-05-08 00:01:57','2025-05-08 00:01:57'),(62,'yong','652954393911','每日签到','forward',10.00,'yong_integral_20250509','2025-05-09 12:21:28','2025-05-09 12:21:28');
-/*!40000 ALTER TABLE `user_credit_order_003` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_credit_order_003`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -764,23 +888,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_order_000`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_order_000` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `order_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户抽奖单表';
+CREATE TABLE `user_order_000`
+(
+    `id`            int unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
+    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
+    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_time`    datetime     NOT NULL COMMENT '下单时间',
+    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 3
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -788,8 +916,10 @@ CREATE TABLE `user_order_000` (
 --
 
 LOCK TABLES `user_order_000` WRITE;
-/*!40000 ALTER TABLE `user_order_000` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_order_000` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_000`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -797,23 +927,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_order_001`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_order_001` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `order_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户抽奖单表';
+CREATE TABLE `user_order_001`
+(
+    `id`            int unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
+    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
+    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_time`    datetime     NOT NULL COMMENT '下单时间',
+    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 2
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -821,8 +955,10 @@ CREATE TABLE `user_order_001` (
 --
 
 LOCK TABLES `user_order_001` WRITE;
-/*!40000 ALTER TABLE `user_order_001` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_order_001` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_001`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -830,23 +966,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_order_002`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_order_002` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `order_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户抽奖单表';
+CREATE TABLE `user_order_002`
+(
+    `id`            int unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
+    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
+    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_time`    datetime     NOT NULL COMMENT '下单时间',
+    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 77
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -854,9 +994,10 @@ CREATE TABLE `user_order_002` (
 --
 
 LOCK TABLES `user_order_002` WRITE;
-/*!40000 ALTER TABLE `user_order_002` DISABLE KEYS */;
-INSERT INTO `user_order_002` VALUES (1,'yong2',100301,'849738166026','测试活动',200001,'2025-05-06 23:00:31','used','2025-05-06 23:00:31','2025-05-06 23:00:31'),(2,'yong2',100301,'247620732826','测试活动',200001,'2025-05-06 23:03:33','used','2025-05-06 23:03:32','2025-05-06 23:03:32'),(3,'yong2',100301,'238290428015','测试活动',200001,'2025-05-06 23:03:40','used','2025-05-06 23:03:39','2025-05-06 23:03:39'),(4,'yong2',100301,'517536743562','测试活动',200001,'2025-05-08 12:01:41','used','2025-05-08 12:01:40','2025-05-08 12:01:40'),(5,'yong2',100301,'781771002497','测试活动',200001,'2025-05-08 12:05:41','used','2025-05-08 12:05:40','2025-05-08 12:05:40'),(6,'yong2',100301,'071260771659','测试活动',200001,'2025-05-08 12:11:54','used','2025-05-08 12:11:53','2025-05-08 12:11:53'),(7,'yong2',100301,'490177063592','测试活动',200001,'2025-05-08 12:20:05','used','2025-05-08 12:20:04','2025-05-08 12:20:05'),(8,'yong2',100301,'290401390971','测试活动',200001,'2025-05-08 12:20:43','used','2025-05-08 12:20:43','2025-05-08 12:20:43'),(9,'yong2',100301,'328321243101','测试活动',200001,'2025-05-08 12:20:53','used','2025-05-08 12:20:53','2025-05-08 12:20:53'),(10,'yong2',100301,'443697566170','测试活动',200001,'2025-05-08 12:21:03','used','2025-05-08 12:21:03','2025-05-08 12:21:03'),(11,'yong2',100301,'958621788471','测试活动',200001,'2025-05-08 12:21:12','used','2025-05-08 12:21:11','2025-05-08 12:21:11'),(12,'yong2',100301,'041689364662','测试活动',200001,'2025-05-08 12:21:20','used','2025-05-08 12:21:19','2025-05-08 12:21:19'),(13,'yong2',100301,'625784872805','测试活动',200001,'2025-05-08 12:27:24','used','2025-05-08 12:27:24','2025-05-08 12:27:24'),(14,'yong2',100301,'095970240241','测试活动',200001,'2025-05-08 12:32:20','used','2025-05-08 12:32:20','2025-05-08 12:32:20'),(15,'yong2',100301,'600958928961','测试活动',200001,'2025-05-08 12:33:46','used','2025-05-08 12:33:46','2025-05-08 12:33:46'),(16,'yong2',100301,'866920818569','测试活动',200001,'2025-05-08 12:38:33','used','2025-05-08 12:38:33','2025-05-08 12:38:33'),(17,'yong2',100301,'248235906964','测试活动',200001,'2025-05-08 12:42:26','used','2025-05-08 12:42:26','2025-05-08 12:42:26'),(18,'yong2',100301,'623039741645','测试活动',200001,'2025-05-08 12:44:31','used','2025-05-08 12:44:31','2025-05-08 12:44:31'),(19,'yong2',100301,'961044735993','测试活动',200001,'2025-05-08 12:44:58','used','2025-05-08 12:44:57','2025-05-08 12:44:58'),(20,'yong2',100301,'919013499909','测试活动',200001,'2025-05-08 12:47:06','used','2025-05-08 12:47:05','2025-05-08 12:47:05'),(21,'yong2',100301,'926064568901','测试活动',200001,'2025-05-08 12:51:15','used','2025-05-08 12:51:15','2025-05-08 12:51:15'),(22,'yong2',100301,'564159762365','测试活动',200001,'2025-05-08 12:53:56','used','2025-05-08 12:53:56','2025-05-08 12:53:56'),(23,'yong2',100301,'959100204908','测试活动',200001,'2025-05-08 12:54:13','used','2025-05-08 12:54:12','2025-05-08 12:54:12'),(24,'yong2',100301,'257053355477','测试活动',200001,'2025-05-08 12:55:54','used','2025-05-08 12:55:53','2025-05-08 12:55:53'),(25,'yong2',100301,'628357243740','测试活动',200001,'2025-05-08 12:57:05','used','2025-05-08 12:57:05','2025-05-08 12:57:05'),(26,'yong2',100301,'512468444337','测试活动',200001,'2025-05-08 12:59:03','used','2025-05-08 12:59:02','2025-05-08 12:59:03'),(27,'yong2',100301,'728577959249','测试活动',200001,'2025-05-08 13:14:09','used','2025-05-08 13:14:09','2025-05-08 13:14:09'),(28,'yong2',100301,'155688480914','测试活动',200001,'2025-05-08 13:16:42','used','2025-05-08 13:16:42','2025-05-08 13:16:42'),(29,'yong2',100301,'850983735867','测试活动',200001,'2025-05-08 13:21:48','used','2025-05-08 13:21:48','2025-05-08 13:21:48'),(30,'yong2',100301,'944108390064','测试活动',200001,'2025-05-08 13:22:37','used','2025-05-08 13:22:36','2025-05-08 13:22:36'),(31,'yong2',100301,'976354199188','测试活动',200001,'2025-05-08 13:28:05','used','2025-05-08 13:28:04','2025-05-08 13:28:04'),(32,'yong2',100301,'355476439222','测试活动',200001,'2025-05-08 13:28:57','used','2025-05-08 13:28:57','2025-05-08 13:28:57'),(33,'yong2',100301,'523949503067','测试活动test',200001,'2025-05-09 14:18:27','used','2025-05-09 14:18:27','2025-05-09 14:18:27'),(34,'yong2',100301,'438869840930','测试活动test',200001,'2025-05-09 14:32:13','used','2025-05-09 14:32:13','2025-05-09 14:32:13'),(35,'yong2',100301,'983692346461','测试活动test',200001,'2025-05-09 14:34:04','used','2025-05-09 14:34:03','2025-05-09 14:34:03'),(36,'yong2',100301,'456758711886','测试活动test',200001,'2025-05-09 14:35:20','used','2025-05-09 14:35:39','2025-05-09 14:35:39'),(37,'yong2',100301,'046228658010','测试活动test',200001,'2025-05-09 14:36:17','used','2025-05-09 14:36:17','2025-05-09 14:36:17'),(38,'yong2',100301,'348311495402','测试活动test',200001,'2025-05-25 23:40:09','used','2025-05-25 23:40:09','2025-05-25 23:40:09'),(39,'yong2',100301,'398505607789','测试活动test',200001,'2025-05-25 23:41:45','used','2025-05-25 23:41:45','2025-05-25 23:41:45'),(40,'yong2',100301,'440038113158','测试活动test',200001,'2025-05-25 23:42:27','used','2025-05-25 23:42:26','2025-05-25 23:42:26'),(41,'yong2',100301,'568228348756','测试活动test',200001,'2025-05-25 23:42:35','used','2025-05-25 23:42:35','2025-05-25 23:42:35'),(42,'yong2',100301,'858133614333','测试活动test',200001,'2025-05-25 23:51:39','used','2025-05-25 23:51:39','2025-05-25 23:58:38'),(43,'yong2',100301,'764178803635','测试活动test',200001,'2025-05-25 23:59:31','used','2025-05-25 23:59:31','2025-05-25 23:59:31'),(44,'yong2',100301,'255980567707','测试活动test',200001,'2025-05-25 23:59:34','used','2025-05-25 23:59:33','2025-05-25 23:59:33'),(45,'yong2',100301,'752441106869','测试活动test',200001,'2025-05-26 00:00:48','used','2025-05-26 00:00:48','2025-05-26 00:00:48'),(46,'yong2',100301,'501620765877','测试活动test',200001,'2025-05-26 00:00:49','used','2025-05-26 00:00:49','2025-05-26 00:00:49'),(47,'yong2',100301,'886204709756','测试活动test',200001,'2025-05-26 00:00:49','used','2025-05-26 00:00:49','2025-05-26 00:00:49'),(48,'yong2',100301,'677121039161','测试活动test',200001,'2025-05-26 00:00:50','used','2025-05-26 00:00:49','2025-05-26 00:00:49'),(49,'yong2',100301,'222266818929','测试活动test',200001,'2025-05-26 00:00:50','used','2025-05-26 00:00:50','2025-05-26 00:00:50'),(50,'yong2',100301,'398887339246','测试活动test',200001,'2025-05-26 00:00:50','used','2025-05-26 00:00:50','2025-05-26 00:00:50'),(51,'yong2',100301,'218524185772','测试活动test',200001,'2025-05-26 00:00:51','used','2025-05-26 00:00:50','2025-05-26 00:00:50');
-/*!40000 ALTER TABLE `user_order_002` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_002`
+    ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -864,23 +1005,27 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user_order_003`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_order_003` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(32) NOT NULL COMMENT '用户ID',
-  `activity_id` bigint NOT NULL COMMENT '活动ID',
-  `order_id` varchar(12) NOT NULL COMMENT '抽奖单ID',
-  `activity_name` varchar(64) NOT NULL COMMENT '活动名称',
-  `strategy_id` bigint NOT NULL COMMENT '抽奖策略ID',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `order_state` varchar(16) NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_order_id` (`order_id`),
-  KEY `idx_user_id_activity_id` (`user_id`,`activity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户抽奖单表';
+CREATE TABLE `user_order_003`
+(
+    `id`            int unsigned NOT NULL AUTO_INCREMENT,
+    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
+    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
+    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
+    `order_time`    datetime     NOT NULL COMMENT '下单时间',
+    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_order_id` (`order_id`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 4002
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -888,18 +1033,19 @@ CREATE TABLE `user_order_003` (
 --
 
 LOCK TABLES `user_order_003` WRITE;
-/*!40000 ALTER TABLE `user_order_003` DISABLE KEYS */;
-INSERT INTO `user_order_003` VALUES (1,'yong',100301,'071833006476','测试活动',200001,'2025-05-07 23:36:05','used','2025-05-07 23:36:05','2025-05-07 23:36:05'),(2,'yong',100301,'460010081812','测试活动',200001,'2025-05-07 23:38:11','used','2025-05-07 23:38:11','2025-05-07 23:38:11'),(3,'yong',100301,'614012564676','测试活动',200001,'2025-05-07 23:38:19','used','2025-05-07 23:38:19','2025-05-07 23:38:19'),(4,'yong',100301,'041763502016','测试活动',200001,'2025-05-07 23:38:33','used','2025-05-07 23:38:33','2025-05-07 23:39:02'),(5,'yong',100301,'288198710169','测试活动',200001,'2025-05-07 23:39:09','used','2025-05-07 23:39:09','2025-05-07 23:39:09'),(6,'yong',100301,'802536751587','测试活动',200001,'2025-05-07 23:39:36','used','2025-05-07 23:39:36','2025-05-07 23:39:36'),(7,'yong',100301,'646172746124','测试活动',200001,'2025-05-07 23:39:44','used','2025-05-07 23:39:44','2025-05-07 23:39:44'),(8,'yong',100301,'789684612741','测试活动',200001,'2025-05-07 23:40:00','used','2025-05-07 23:39:59','2025-05-07 23:39:59'),(9,'yong',100301,'861750308725','测试活动',200001,'2025-05-07 23:40:07','used','2025-05-07 23:40:06','2025-05-07 23:40:06'),(10,'yong',100301,'072503007926','测试活动',200001,'2025-05-07 23:40:53','used','2025-05-07 23:40:52','2025-05-07 23:40:52'),(11,'yong',100301,'963201816093','测试活动',200001,'2025-05-07 23:41:00','used','2025-05-07 23:40:59','2025-05-07 23:40:59'),(12,'yong',100301,'623282844607','测试活动',200001,'2025-05-07 23:41:07','used','2025-05-07 23:41:07','2025-05-07 23:41:07'),(13,'yong',100301,'972320399571','测试活动',200001,'2025-05-07 23:41:16','used','2025-05-07 23:41:15','2025-05-07 23:41:16'),(14,'yong',100301,'171067574652','测试活动',200001,'2025-05-07 23:41:24','used','2025-05-07 23:41:24','2025-05-07 23:41:24'),(15,'yong',100301,'857746840461','测试活动',200001,'2025-05-07 23:41:49','used','2025-05-07 23:41:49','2025-05-07 23:41:49'),(16,'yong',100301,'597114059178','测试活动',200001,'2025-05-07 23:42:10','used','2025-05-07 23:42:09','2025-05-07 23:42:09'),(17,'yong',100301,'328638031568','测试活动',200001,'2025-05-07 23:42:16','used','2025-05-07 23:42:16','2025-05-07 23:42:16'),(18,'yong',100301,'287689694704','测试活动',200001,'2025-05-07 23:42:23','used','2025-05-07 23:42:22','2025-05-07 23:42:22'),(19,'yong',100301,'723410827138','测试活动',200001,'2025-05-07 23:42:29','used','2025-05-07 23:42:29','2025-05-07 23:42:29'),(20,'yong',100301,'652176157503','测试活动',200001,'2025-05-07 23:42:35','used','2025-05-07 23:42:35','2025-05-07 23:42:35'),(21,'yong',100301,'903832400487','测试活动',200001,'2025-05-07 23:42:42','used','2025-05-07 23:42:41','2025-05-07 23:42:41'),(22,'yong',100301,'009850269447','测试活动',200001,'2025-05-07 23:46:37','used','2025-05-07 23:46:37','2025-05-07 23:46:37'),(23,'yong',100301,'952482690690','测试活动',200001,'2025-05-07 23:47:41','used','2025-05-07 23:47:41','2025-05-07 23:47:41'),(24,'yong',100301,'548607520205','测试活动',200001,'2025-05-07 23:47:49','used','2025-05-07 23:47:48','2025-05-07 23:47:48'),(25,'yong',100301,'011038891328','测试活动',200001,'2025-05-08 00:02:05','used','2025-05-08 00:02:04','2025-05-08 00:04:16'),(26,'yong',100301,'857315390021','测试活动',200001,'2025-05-08 00:04:23','used','2025-05-08 00:04:23','2025-05-08 00:08:25'),(27,'yong',100301,'187556577024','测试活动',200001,'2025-05-08 00:08:35','used','2025-05-08 00:08:34','2025-05-08 00:08:40'),(28,'yong',100301,'412790918850','测试活动test',200001,'2025-05-09 14:17:10','used','2025-05-09 14:17:09','2025-05-09 14:17:09'),(29,'yong',100301,'054920628704','测试活动test',200001,'2025-05-13 15:34:46','used','2025-05-13 15:34:46','2025-05-13 15:34:46'),(30,'yong',100301,'762486912242','测试活动test',200001,'2025-05-13 15:36:56','used','2025-05-13 15:36:56','2025-05-13 15:36:56'),(31,'yong',100301,'862789759277','测试活动test',200001,'2025-05-18 22:57:30','used','2025-05-18 22:57:30','2025-05-18 22:57:30'),(32,'yong',100301,'527469743573','测试活动test',200001,'2025-05-18 22:58:54','used','2025-05-18 22:58:54','2025-05-18 22:58:54'),(33,'yong',100301,'182175685213','测试活动test',200001,'2025-05-25 22:20:53','used','2025-05-25 22:20:52','2025-05-25 22:20:52'),(34,'yong',100301,'431144102449','测试活动test',200001,'2025-05-25 22:20:55','used','2025-05-25 22:20:55','2025-05-25 22:20:55'),(35,'yong',100301,'028887855637','测试活动test',200001,'2025-05-25 22:20:56','used','2025-05-25 22:20:56','2025-05-25 22:20:56'),(36,'yong',100301,'333940744717','测试活动test',200001,'2025-05-25 22:20:56','used','2025-05-25 22:20:56','2025-05-25 22:20:56'),(37,'yong',100301,'375100872626','测试活动test',200001,'2025-05-25 22:20:56','used','2025-05-25 22:20:56','2025-05-25 22:20:56'),(38,'yong',100301,'740600505982','测试活动test',200001,'2025-05-25 22:20:57','used','2025-05-25 22:20:56','2025-05-25 22:20:56'),(39,'yong',100301,'358373173370','测试活动test',200001,'2025-05-25 22:20:57','used','2025-05-25 22:20:56','2025-05-25 22:20:56'),(40,'yong',100301,'358511846294','测试活动test',200001,'2025-05-25 22:20:57','used','2025-05-25 22:20:57','2025-05-25 22:20:57'),(41,'yong',100301,'684319185564','测试活动test',200001,'2025-05-25 22:21:18','used','2025-05-25 22:21:17','2025-05-25 22:24:39'),(42,'yong',100301,'744595636568','测试活动test',200001,'2025-05-25 22:21:18','used','2025-05-25 22:21:17','2025-05-25 22:24:48'),(43,'yong',100301,'804526496577','测试活动test',200001,'2025-05-25 22:24:53','used','2025-05-25 22:24:53','2025-05-25 22:24:53'),(44,'yong',100301,'852246258395','测试活动test',200001,'2025-05-25 22:24:53','used','2025-05-25 22:24:53','2025-05-25 22:24:53'),(45,'yong',100301,'439152877110','测试活动test',200001,'2025-05-25 22:24:53','used','2025-05-25 22:24:53','2025-05-25 22:24:53'),(46,'yong',100301,'474124553826','测试活动test',200001,'2025-05-25 22:24:54','used','2025-05-25 22:24:53','2025-05-25 22:24:53'),(47,'yong',100301,'196661738904','测试活动test',200001,'2025-05-25 22:24:54','used','2025-05-25 22:24:53','2025-05-25 22:24:53'),(48,'yong',100301,'635267913782','测试活动test',200001,'2025-05-25 22:24:54','used','2025-05-25 22:24:54','2025-05-25 22:24:54'),(49,'yong',100301,'771422093377','测试活动test',200001,'2025-05-25 22:24:54','used','2025-05-25 22:24:54','2025-05-25 22:24:54'),(50,'yong',100301,'019471718766','测试活动test',200001,'2025-05-25 22:25:32','used','2025-05-25 22:25:31','2025-05-25 22:25:31'),(51,'yong',100301,'411207404139','测试活动test',200001,'2025-05-25 22:26:12','used','2025-05-25 22:26:12','2025-05-25 22:26:12'),(52,'yong',100301,'228767648086','测试活动test',200001,'2025-05-25 22:59:35','used','2025-05-25 22:59:35','2025-05-25 22:59:35'),(53,'yong',100301,'387895353235','测试活动test',200001,'2025-05-25 23:00:21','used','2025-05-25 23:00:21','2025-05-25 23:00:21'),(54,'yong',100301,'324790409809','测试活动test',200001,'2025-05-25 23:06:07','used','2025-05-25 23:06:06','2025-05-25 23:06:06'),(55,'yong',100301,'152673277174','测试活动test',200001,'2025-05-25 23:08:29','used','2025-05-25 23:08:29','2025-05-25 23:08:29'),(56,'yong',100301,'786476479051','测试活动test',200001,'2025-05-25 23:10:45','used','2025-05-25 23:10:45','2025-05-25 23:10:45'),(57,'yong',100301,'459757669025','测试活动test',200001,'2025-05-25 23:11:02','used','2025-05-25 23:11:01','2025-05-25 23:11:01'),(58,'yong',100301,'713576369004','测试活动test',200001,'2025-05-25 23:12:29','used','2025-05-25 23:12:28','2025-05-25 23:12:28'),(59,'yong',100301,'065616933342','测试活动test',200001,'2025-05-25 23:12:47','used','2025-05-25 23:12:46','2025-05-25 23:12:46'),(60,'yong',100301,'307340911327','测试活动test',200001,'2025-05-25 23:12:51','used','2025-05-25 23:12:51','2025-05-25 23:12:51'),(61,'yong',100301,'678206778758','测试活动test',200001,'2025-05-25 23:15:45','used','2025-05-25 23:15:45','2025-05-25 23:15:45'),(62,'yong',100301,'835363333121','测试活动test',200001,'2025-05-25 23:16:01','used','2025-05-25 23:16:01','2025-05-25 23:16:01'),(63,'yong',100301,'327986546196','测试活动test',200001,'2025-05-25 23:16:18','used','2025-05-25 23:16:17','2025-05-25 23:16:18'),(64,'yong',100301,'891214073626','测试活动test',200001,'2025-05-25 23:20:20','used','2025-05-25 23:20:20','2025-05-25 23:20:20'),(65,'yong',100301,'640620844632','测试活动test',200001,'2025-05-25 23:20:21','used','2025-05-25 23:20:21','2025-05-25 23:20:21'),(66,'yong',100301,'724868529100','测试活动test',200001,'2025-05-25 23:20:22','used','2025-05-25 23:20:22','2025-05-25 23:20:22'),(67,'yong',100301,'573652444322','测试活动test',200001,'2025-05-25 23:27:35','used','2025-05-25 23:27:35','2025-05-25 23:27:35'),(68,'yong',100301,'900096269860','测试活动test',200001,'2025-05-25 23:28:01','used','2025-05-25 23:28:00','2025-05-25 23:28:01'),(69,'yong',100301,'344454176929','测试活动test',200001,'2025-05-25 23:28:03','used','2025-05-25 23:28:02','2025-05-25 23:28:02'),(70,'yong',100301,'047133111932','测试活动test',200001,'2025-05-25 23:29:27','used','2025-05-25 23:29:27','2025-05-25 23:29:27'),(71,'yong',100301,'298586904666','测试活动test',200001,'2025-05-25 23:29:50','used','2025-05-25 23:29:50','2025-05-25 23:29:50'),(72,'yong',100301,'088548532925','测试活动test',200001,'2025-05-25 23:29:52','used','2025-05-25 23:29:51','2025-05-25 23:29:51'),(73,'yong',100301,'686565641732','测试活动test',200001,'2025-05-25 23:31:35','used','2025-05-25 23:31:35','2025-05-25 23:31:35'),(74,'yong',100301,'417132023374','测试活动test',200001,'2025-05-25 23:31:45','used','2025-05-25 23:31:44','2025-05-25 23:31:44'),(75,'yong',100301,'818133059302','测试活动test',200001,'2025-05-25 23:32:09','used','2025-05-25 23:32:08','2025-05-25 23:32:08'),(76,'yong',100301,'208391779173','测试活动test',200001,'2025-05-25 23:33:18','used','2025-05-25 23:33:18','2025-05-25 23:33:18'),(77,'yong',100301,'564765528201','测试活动test',200001,'2025-05-25 23:33:21','used','2025-05-25 23:33:20','2025-05-25 23:33:20'),(78,'yong',100301,'310590020276','测试活动test',200001,'2025-05-25 23:33:23','used','2025-05-25 23:33:23','2025-05-25 23:33:23'),(79,'yong',100301,'200891140677','测试活动test',200001,'2025-05-25 23:33:25','used','2025-05-25 23:33:24','2025-05-25 23:33:25'),(80,'yong',100301,'203264532499','测试活动test',200001,'2025-05-25 23:33:47','used','2025-05-25 23:33:47','2025-05-25 23:33:47'),(81,'yong',100301,'405672802041','测试活动test',200001,'2025-05-25 23:33:48','used','2025-05-25 23:33:47','2025-05-25 23:33:47'),(82,'yong',100301,'755126313580','测试活动test',200001,'2025-05-25 23:33:48','used','2025-05-25 23:33:47','2025-05-25 23:33:47'),(83,'yong',100301,'141590213447','测试活动test',200001,'2025-05-25 23:33:50','used','2025-05-25 23:33:49','2025-05-25 23:33:49'),(84,'yong',100301,'678462568881','测试活动test',200001,'2025-05-25 23:33:51','used','2025-05-25 23:33:51','2025-05-25 23:33:51'),(85,'yong',100301,'320737477828','测试活动test',200001,'2025-05-25 23:33:52','used','2025-05-25 23:33:52','2025-05-25 23:33:52'),(86,'yong',100301,'245379552813','测试活动test',200001,'2025-05-25 23:33:53','used','2025-05-25 23:33:52','2025-05-25 23:33:52'),(87,'yong',100301,'000737439133','测试活动test',200001,'2025-05-25 23:33:53','used','2025-05-25 23:33:52','2025-05-25 23:33:52'),(88,'yong',100301,'825541311362','测试活动test',200001,'2025-05-25 23:33:53','used','2025-05-25 23:33:53','2025-05-25 23:33:53'),(89,'yong',100301,'431546235979','测试活动test',200001,'2025-05-25 23:33:54','used','2025-05-25 23:33:53','2025-05-25 23:33:53'),(90,'yong',100301,'594636690923','测试活动test',200001,'2025-05-25 23:33:54','used','2025-05-25 23:33:54','2025-05-25 23:33:54'),(91,'yong',100301,'372992993257','测试活动test',200001,'2025-05-25 23:34:14','used','2025-05-25 23:34:13','2025-05-25 23:34:13'),(92,'yong',100301,'924075023623','测试活动test',200001,'2025-05-25 23:34:17','used','2025-05-25 23:34:17','2025-05-25 23:34:17'),(93,'yong',100301,'040778726490','测试活动test',200001,'2025-05-25 23:34:19','used','2025-05-25 23:34:19','2025-05-25 23:34:19'),(94,'yong',100301,'266835200304','测试活动test',200001,'2025-05-25 23:34:20','used','2025-05-25 23:34:20','2025-05-25 23:34:20'),(95,'yong',100301,'757936619831','测试活动test',200001,'2025-05-25 23:34:21','used','2025-05-25 23:34:21','2025-05-25 23:34:21'),(96,'yong',100301,'689152754884','测试活动test',200001,'2025-05-25 23:34:30','used','2025-05-25 23:34:29','2025-05-25 23:34:29'),(97,'yong',100301,'870191757716','测试活动test',200001,'2025-05-25 23:34:30','used','2025-05-25 23:34:29','2025-05-25 23:34:30'),(98,'yong',100301,'771666000382','测试活动test',200001,'2025-05-25 23:34:30','used','2025-05-25 23:34:30','2025-05-25 23:34:30'),(99,'yong',100301,'893158807865','测试活动test',200001,'2025-05-25 23:37:51','used','2025-05-25 23:37:51','2025-05-25 23:37:51'),(100,'yong',100301,'327532728615','测试活动test',200001,'2025-05-25 23:37:52','used','2025-05-25 23:37:51','2025-05-25 23:37:51');
-/*!40000 ALTER TABLE `user_order_003` ENABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_order_003`
+    ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE = @OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT = @OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS = @OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-29 12:22:28
+-- Dump completed on 2025-06-09 13:58:00

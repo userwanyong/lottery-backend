@@ -27,6 +27,7 @@ public class Constants {
         public static final String STRATEGY_RULE_WEIGHT_KEY = "lottery_strategy_rule_weight_key_";
         public static final String ACTIVITY_ACCOUNT_LOCK = "lottery_activity_account_lock_";
         public static final String ACTIVITY_ACCOUNT_UPDATE_LOCK = "lottery_activity_account_update_lock_";
+        public static final String USER_ORDER_LOCK = "user_order_lock_";
         public static final String CREDIT_ACCOUNT_LOCK = "lottery_credit_account_lock_";
         public static final String STRATEGY_ARMORY_ALGORITHM_KEY = "strategy_armory_algorithm_key_";
         public static final String BLACKLIST = "blacklist:";

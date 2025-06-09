@@ -69,9 +69,9 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         task.setState(taskEntity.getState().getCode());
 
         UserOrder userOrder = new UserOrder();
+        userOrder.setOrderId(userAwardRecordEntity.getOrderId());
         userOrder.setUserId(userAwardRecordEntity.getUserId());
         userOrder.setActivityId(userAwardRecordEntity.getActivityId());
-
         //将中奖记录和任务写入数据库表，更新抽奖单状态为used已使用
         try {
             dbRouter.doRouter(userAwardRecordEntity.getUserId());
@@ -83,7 +83,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     int count = userOrderMapper.updateUserOrderStateUsed(userOrder);
                     if (count != 1) {
                         status.setRollbackOnly();
-                        log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用");
+                        log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用 orderId: {}", userOrder.getOrderId());
                         return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
                     }
                     return 1;

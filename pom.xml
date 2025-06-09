@@ -150,6 +150,12 @@
                 <artifactId>xxl-job-core</artifactId>
                 <version>3.1.0</version>
             </dependency>
+            <!--雪花id-->
+            <dependency>
+                <groupId>com.github.yitter</groupId>
+                <artifactId>yitter-idgenerator</artifactId>
+                <version>1.0.6</version>
+            </dependency>
 
             <!-- 工程模块 -->
             <dependency>

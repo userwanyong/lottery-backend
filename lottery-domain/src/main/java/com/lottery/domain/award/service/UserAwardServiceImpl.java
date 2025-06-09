@@ -66,6 +66,7 @@ public class UserAwardServiceImpl implements UserAwardService{
             log.error("分发奖品，对应的服务不存在 awardKey:{}", awardKey);
             return;
         }
+        // TODO 目前只有积分发奖，只能更新积分发奖的中奖记录为已完成
         // 调用服务发奖
         distributeAward.giveOutPrizes(distributeAwardEntity);
 

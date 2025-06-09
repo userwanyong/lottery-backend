@@ -404,7 +404,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate) {
-        try {
+           try {
+
             String userId = createPartakeOrderAggregate.getUserId();
             Long activityId = createPartakeOrderAggregate.getActivityId();
             ActivityAccountEntity activityAccountEntity = createPartakeOrderAggregate.getActivityAccountEntity();
@@ -523,6 +524,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             });
         } finally {
             dbRouter.clear();
+
         }
 
     }

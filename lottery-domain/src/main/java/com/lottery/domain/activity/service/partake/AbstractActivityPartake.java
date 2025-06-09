@@ -20,6 +20,7 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
 
     protected ActivityRepository activityRepository;
 
+
     public AbstractActivityPartake(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
