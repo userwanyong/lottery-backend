@@ -72,26 +72,26 @@ services:
 #    networks:
 #      - my-network
 #
-#  # Redis
-#  redis:
-#    image: redis:6.2
-#    container_name: redis
-#    restart: always
-#    hostname: redis
-#    privileged: true
-#    ports:
-#      - "16379:6379"
-#    volumes:
-#      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-#    command: redis-server /usr/local/etc/redis/redis.conf
-#    networks:
-#      - my-network
-#    healthcheck:
-#      test: [ "CMD", "redis-cli", "ping" ]
-#      interval: 5s
-#      timeout: 5s
-#      retries: 3
-#      start_period: 10s
+  # Redis
+  redis:
+    image: redis:6.2
+    container_name: redis
+    restart: always
+    hostname: redis
+    privileged: true
+    ports:
+      - "16379:6379"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - my-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 #
 #  # RedisAdmin https://github.com/joeferner/redis-commander
 #  redis-admin:
@@ -168,7 +168,7 @@ services:
       - "8082:8081"
     volumes:
       - ./canal-adapter/application.yml:/opt/canal-adapter/conf/application.yml
-      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml3
+      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml
       - ./canal-adapter/es7:/opt/canal-adapter/conf/es7
     depends_on:
       - canal-server

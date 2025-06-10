@@ -1,0 +1,18 @@
+dataSourceKey: marketing_02
+destination: example
+groupId: g1
+esMapping:
+  _index: marketing.activity_account_day
+  _id: _id
+sql: "SELECT 
+        id AS _id,
+        user_id AS _user_id,
+        activity_id AS _activity_id,
+        day AS _day,
+        day_count AS _day_count,
+        day_count_surplus AS _day_count_surplus,
+        create_time AS _create_time,
+        update_time AS _update_time 
+      FROM activity_account_day t"
+etlCondition: "WHERE t.update_time >= {}"
+commitBatch: 3000

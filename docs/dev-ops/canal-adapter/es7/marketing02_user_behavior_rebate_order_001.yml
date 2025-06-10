@@ -1,0 +1,21 @@
+dataSourceKey: marketing_02
+destination: example
+groupId: g1
+esMapping:
+  _index: marketing.user_behavior_rebate_order
+  _id: _id
+sql: "SELECT 
+        id AS _id,
+        user_id AS _user_id,
+        order_id AS _order_id,
+        behavior_type AS _behavior_type,
+        rebate_desc AS _rebate_desc,
+        rebate_type AS _rebate_type,
+        rebate_config AS _rebate_config,
+        out_business_no AS _out_business_no,
+        biz_id AS _biz_id,
+        create_time AS _create_time,
+        update_time AS _update_time 
+      FROM user_behavior_rebate_order_001 t"
+etlCondition: "WHERE t.update_time >= {}"
+commitBatch: 3000
