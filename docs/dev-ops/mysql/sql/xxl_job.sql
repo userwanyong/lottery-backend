@@ -100,13 +100,10 @@ INSERT INTO `xxl_job_info` (`id`, `job_group`, `job_desc`, `add_time`, `update_t
 VALUES (1, 1, '更新奖品库存任务', '2018-11-03 22:21:31', '2024-08-10 09:17:47', 'XXL', '', 'CRON', '0/5 * * * * ?',
         'DO_NOTHING', 'FIRST', 'updateAwardStockJob', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '', 'GLUE代码初始化',
         '2018-11-03 22:21:31', '', 0, 0, 0),
-       (2, 1, '发送MQ消息任务队列(DB1)', '2024-08-10 09:09:27', '2024-08-10 09:15:44', 'XXL', '', 'CRON',
-        '0/5 * * * * ?', 'DO_NOTHING', 'FIRST', 'SendMessageTaskJob_DB1', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '',
+       (2, 1, '发送MQ消息任务队列', '2024-08-10 09:09:27', '2024-08-10 09:15:44', 'XXL', '', 'CRON',
+        '0/5 * * * * ?', 'DO_NOTHING', 'FIRST', 'SendMessageTaskJob', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '',
         'GLUE代码初始化', '2024-08-10 09:09:27', '', 1, 1723252715000, 1723252720000),
-       (3, 1, '发送MQ消息任务队列(DB2)', '2024-08-10 09:09:38', '2024-08-10 09:15:40', 'XXL', '', 'CRON',
-        '0/5 * * * * ?', 'DO_NOTHING', 'FIRST', 'SendMessageTaskJob_DB2', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '',
-        'GLUE代码初始化', '2024-08-10 09:09:38', '', 1, 1723252715000, 1723252720000),
-       (4, 1, '更新活动sku库存任务', '2024-08-10 09:10:09', '2024-08-10 09:15:00', 'XXL', '', 'CRON', '0/5 * * * * ?',
+       (3, 1, '更新活动sku库存任务', '2024-08-10 09:10:09', '2024-08-10 09:15:00', 'XXL', '', 'CRON', '0/5 * * * * ?',
         'DO_NOTHING', 'FIRST', 'UpdateActivitySkuStockJob', '', 'SERIAL_EXECUTION', 0, 0, 'BEAN', '', 'GLUE代码初始化',
         '2024-08-10 09:10:09', '', 1, 1723252715000, 1723252720000);
 

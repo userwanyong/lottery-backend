@@ -3,7 +3,8 @@
 -- Host: 127.0.0.1    Database: marketing_01
 -- ------------------------------------------------------
 -- Server version	8.0.32
-
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `marketing_01` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `marketing_01`;
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
