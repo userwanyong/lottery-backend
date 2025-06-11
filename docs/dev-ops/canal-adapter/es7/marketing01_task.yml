@@ -4,15 +4,14 @@ groupId: g1
 esMapping:
   _index: marketing.task
   _id: _id
-sql: "SELECT 
-        id AS _id,
-        topic AS _topic,
-        user_id AS _user_id,
-        message_id AS _message_id,
-        message AS _message,
-        state AS _state,
-        create_time AS _create_time,
-        update_time AS _update_time 
-      FROM task t"
-etlCondition: "WHERE t.update_time >= {}"
-commitBatch: 3000
+  sql: "select  t.id AS _id,
+                t.topic AS _topic,
+                t.user_id AS _user_id,
+                t.message_id AS _message_id,
+                t.message AS _message,
+                t.state AS _state,
+                t.create_time AS _create_time,
+                t.update_time AS _update_time 
+        from task t"
+  etlCondition: "where t.update_time>={}"
+  commitBatch: 3000
