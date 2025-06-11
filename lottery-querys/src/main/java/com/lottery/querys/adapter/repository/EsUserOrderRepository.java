@@ -1,6 +1,7 @@
 package com.lottery.querys.adapter.repository;
 
 
+import com.lottery.querys.model.valobj.EsActivityAccountVO;
 import com.lottery.querys.model.valobj.EsUserOrderVO;
 
 import java.util.List;
@@ -10,4 +11,7 @@ import java.util.List;
  */
 public interface EsUserOrderRepository {
     List<EsUserOrderVO> queryEsUserOrderVOList();
+
+    List<EsActivityAccountVO> queryEsActivityAccountVOList();
+
 }

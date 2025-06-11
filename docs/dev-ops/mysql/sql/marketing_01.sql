@@ -35,7 +35,7 @@ CREATE TABLE `activity_account`
     `month_count`         int             NOT NULL COMMENT '月次数',
     `month_count_surplus` int             NOT NULL COMMENT '月次数-剩余',
     `create_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB

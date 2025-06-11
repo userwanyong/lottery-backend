@@ -18,7 +18,7 @@
     </resultMap>
 
     <select id="queryUserOrderListEs" resultMap="BaseResultMap">
-        select _user_id, _activity_id, _activity_name, _strategy_id, _order_id, _order_time, _order_state
+        select _user_id, _activity_id, _activity_name, _strategy_id, _order_id, _order_time, _order_state, _create_time, _update_time
         from "marketing.user_order"
         order by _update_time desc
     </select>
