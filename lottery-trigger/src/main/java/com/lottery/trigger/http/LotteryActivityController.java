@@ -117,7 +117,7 @@ public class LotteryActivityController implements LotteryActivityService {
             }
             // 2. 创建抽奖单
             PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
-            log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getOrderId());
+            log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
             // 3. 执行抽奖
             log.info("[LotteryActivityController-draw]执行抽奖");
             LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
@@ -127,7 +127,7 @@ public class LotteryActivityController implements LotteryActivityService {
                     .userId(partakeOrder.getUserId())
                     .activityId(partakeOrder.getActivityId())
                     .strategyId(partakeOrder.getStrategyId())
-                    .orderId(partakeOrder.getOrderId())
+                    .userOrderId(partakeOrder.getId())
                     .awardConfig(lotteryResEntity.getAwardConfig())
                     .awardId(lotteryResEntity.getAwardId())
                     .awardTitle(lotteryResEntity.getAwardTitle())

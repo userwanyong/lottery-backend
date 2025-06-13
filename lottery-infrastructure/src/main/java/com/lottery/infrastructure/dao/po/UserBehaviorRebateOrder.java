@@ -19,20 +19,16 @@ import lombok.Data;
 @Data
 public class UserBehaviorRebateOrder implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 用户ID
      */
     private String userId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
 
     /**
      * 行为类型（sign 签到、openai_pay 支付）

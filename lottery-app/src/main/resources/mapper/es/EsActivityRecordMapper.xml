@@ -2,17 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lottery.infrastructure.es.EsActivityOrderMapper">
+<mapper namespace="com.lottery.infrastructure.es.EsActivityRecordMapper">
 
-    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsActivityOrder">
+    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsActivityRecord">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
         <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
         <result property="sku" column="_sku" jdbcType="BIGINT"/>
         <result property="activityName" column="_activity_name" jdbcType="VARCHAR"/>
         <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
-        <result property="orderId" column="_order_id" jdbcType="VARCHAR"/>
-        <result property="orderTime" column="_order_time" jdbcType="TIMESTAMP"/>
         <result property="totalCount" column="_total_count" jdbcType="INTEGER"/>
         <result property="dayCount" column="_day_count" jdbcType="INTEGER"/>
         <result property="monthCount" column="_month_count" jdbcType="INTEGER"/>

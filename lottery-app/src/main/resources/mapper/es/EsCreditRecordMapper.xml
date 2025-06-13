@@ -2,11 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lottery.infrastructure.es.EsUserCreditOrderMapper">
-    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsUserCreditOrder">
+<mapper namespace="com.lottery.infrastructure.es.EsCreditRecordMapper">
+    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsCreditRecord">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
-        <result property="orderId" column="_order_id" jdbcType="VARCHAR"/>
         <result property="tradeName" column="_trade_name" jdbcType="VARCHAR"/>
         <result property="tradeType" column="_trade_type" jdbcType="VARCHAR"/>
         <result property="tradeAmount" column="_trade_amount" jdbcType="DECIMAL"/>

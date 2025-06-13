@@ -15,7 +15,7 @@ public class EsUserAwardRecord {
     /**
      * 自增ID
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户ID
@@ -35,7 +35,7 @@ public class EsUserAwardRecord {
     /**
      * 抽奖订单ID【作为幂等使用】
      */
-    private String orderId;
+    private Long userOrderId;
 
     /**
      * 奖品ID

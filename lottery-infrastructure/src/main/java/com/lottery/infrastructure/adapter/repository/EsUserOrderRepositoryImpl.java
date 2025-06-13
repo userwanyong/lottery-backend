@@ -4,7 +4,6 @@ package com.lottery.infrastructure.adapter.repository;
 import com.lottery.infrastructure.es.EsActivityAccountMapper;
 import com.lottery.infrastructure.es.EsUserOrderMapper;
 import com.lottery.infrastructure.es.po.EsActivityAccount;
-import com.lottery.infrastructure.es.po.EsActivityOrder;
 import com.lottery.infrastructure.es.po.EsUserOrder;
 import com.lottery.querys.adapter.repository.EsUserOrderRepository;
 import com.lottery.querys.model.valobj.EsActivityAccountVO;

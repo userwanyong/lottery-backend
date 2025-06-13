@@ -8,7 +8,7 @@ esMapping:
                 t.user_id AS _user_id,
                 t.activity_id AS _activity_id,
                 t.strategy_id AS _strategy_id,
-                t.order_id AS _order_id,
+                t.user_order_id AS _user_order_id,
                 t.award_id AS _award_id,
                 t.award_title AS _award_title,
                 t.award_time AS _award_time,

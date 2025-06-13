@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 public class EsActivityAccount {
     /**
-     * 自增ID
+     * 雪花ID
      */
     private Long id;
 

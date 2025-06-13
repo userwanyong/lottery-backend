@@ -13,9 +13,9 @@ import java.util.Date;
 @Data
 public class EsActivityAccountMonth {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户ID

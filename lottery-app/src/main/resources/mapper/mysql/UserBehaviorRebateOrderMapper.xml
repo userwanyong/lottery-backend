@@ -5,9 +5,8 @@
 <mapper namespace="com.lottery.infrastructure.dao.UserBehaviorRebateOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.UserBehaviorRebateOrder">
-            <id property="id" column="id" jdbcType="INTEGER"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
             <result property="behaviorType" column="behavior_type" jdbcType="VARCHAR"/>
             <result property="rebateDesc" column="rebate_desc" jdbcType="VARCHAR"/>
             <result property="rebateType" column="rebate_type" jdbcType="VARCHAR"/>

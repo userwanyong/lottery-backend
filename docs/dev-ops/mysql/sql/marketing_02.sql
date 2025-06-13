@@ -1,10 +1,11 @@
+CREATE DATABASE /*!32312 IF NOT EXISTS */ `marketing_02` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `marketing_02`;
 -- MySQL dump 10.13  Distrib 8.0.35, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: marketing_02
 -- ------------------------------------------------------
 -- Server version	8.0.32
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `marketing_02` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
-USE `marketing_02`;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT = @@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS = @@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION = @@COLLATION_CONNECTION */;
@@ -25,7 +26,7 @@ DROP TABLE IF EXISTS `activity_account`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `activity_account`
 (
-    `id`                  bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`                  bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`             varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`         bigint          NOT NULL COMMENT '活动ID',
     `total_count`         int             NOT NULL COMMENT '总次数',
@@ -39,7 +40,6 @@ CREATE TABLE `activity_account`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 7
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -51,19 +51,6 @@ CREATE TABLE `activity_account`
 LOCK TABLES `activity_account` WRITE;
 /*!40000 ALTER TABLE `activity_account`
     DISABLE KEYS */;
-INSERT INTO `activity_account`
-VALUES (1, 'yong', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-05-07 23:41:37',
-        '2025-06-09 13:34:52'),
-       (2, 'yong2', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-05-08 13:22:29',
-        '2025-06-09 13:34:53'),
-       (3, 'yong7', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:18',
-        '2025-06-09 13:34:53'),
-       (4, 'yong8', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:20',
-        '2025-06-09 13:34:54'),
-       (5, 'yong9', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:22',
-        '2025-06-09 13:34:54'),
-       (6, 'yong10', 100301, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, '2025-06-09 13:21:24',
-        '2025-06-09 13:34:54');
 /*!40000 ALTER TABLE `activity_account`
     ENABLE KEYS */;
 UNLOCK TABLES;
@@ -77,18 +64,17 @@ DROP TABLE IF EXISTS `activity_account_day`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `activity_account_day`
 (
-    `id`                int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`           varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`       bigint       NOT NULL COMMENT '活动ID',
-    `day`               varchar(10)  NOT NULL COMMENT '日期（yyyy-mm-dd）',
-    `day_count`         int          NOT NULL COMMENT '日次数',
-    `day_count_surplus` int          NOT NULL COMMENT '日次数-剩余',
-    `create_time`       datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`       datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`                bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`           varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`       bigint          NOT NULL COMMENT '活动ID',
+    `day`               varchar(10)     NOT NULL COMMENT '日期（yyyy-mm-dd）',
+    `day_count`         int             NOT NULL COMMENT '日次数',
+    `day_count_surplus` int             NOT NULL COMMENT '日次数-剩余',
+    `create_time`       datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`       datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id_day` (`user_id`, `activity_id`, `day`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 35
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-日次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -113,18 +99,17 @@ DROP TABLE IF EXISTS `activity_account_month`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `activity_account_month`
 (
-    `id`                  int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`             varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`         bigint       NOT NULL COMMENT '活动ID',
-    `month`               varchar(7)   NOT NULL COMMENT '月（yyyy-mm）',
-    `month_count`         int          NOT NULL COMMENT '月次数',
-    `month_count_surplus` int          NOT NULL COMMENT '月次数-剩余',
-    `create_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`                  bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`             varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`         bigint          NOT NULL COMMENT '活动ID',
+    `month`               varchar(7)      NOT NULL COMMENT '月（yyyy-mm）',
+    `month_count`         int             NOT NULL COMMENT '月次数',
+    `month_count_surplus` int             NOT NULL COMMENT '月次数-剩余',
+    `create_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_user_id_activity_id_month` (`user_id`, `activity_id`, `month`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 17
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-月次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -141,22 +126,20 @@ LOCK TABLES `activity_account_month` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `activity_order_000`
+-- Table structure for table `activity_record_000`
 --
 
-DROP TABLE IF EXISTS `activity_order_000`;
+DROP TABLE IF EXISTS `activity_record_000`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_000`
+CREATE TABLE `activity_record_000`
 (
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `sku`             bigint          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
     `strategy_id`     bigint          NOT NULL COMMENT '抽奖策略ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '额度单ID',
-    `order_time`      datetime        NOT NULL COMMENT '下单时间',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
@@ -166,43 +149,39 @@ CREATE TABLE `activity_order_000`
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `activity_order_000`
+-- Dumping data for table `activity_record_000`
 --
 
-LOCK TABLES `activity_order_000` WRITE;
-/*!40000 ALTER TABLE `activity_order_000`
+LOCK TABLES `activity_record_000` WRITE;
+/*!40000 ALTER TABLE `activity_record_000`
     DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_000`
+/*!40000 ALTER TABLE `activity_record_000`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `activity_order_001`
+-- Table structure for table `activity_record_001`
 --
 
-DROP TABLE IF EXISTS `activity_order_001`;
+DROP TABLE IF EXISTS `activity_record_001`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_001`
+CREATE TABLE `activity_record_001`
 (
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `sku`             bigint          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
     `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `order_time`      datetime        NOT NULL COMMENT '下单时间',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
@@ -212,43 +191,39 @@ CREATE TABLE `activity_order_001`
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `activity_order_001`
+-- Dumping data for table `activity_record_001`
 --
 
-LOCK TABLES `activity_order_001` WRITE;
-/*!40000 ALTER TABLE `activity_order_001`
+LOCK TABLES `activity_record_001` WRITE;
+/*!40000 ALTER TABLE `activity_record_001`
     DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_001`
+/*!40000 ALTER TABLE `activity_record_001`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `activity_order_002`
+-- Table structure for table `activity_record_002`
 --
 
-DROP TABLE IF EXISTS `activity_order_002`;
+DROP TABLE IF EXISTS `activity_record_002`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_002`
+CREATE TABLE `activity_record_002`
 (
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `sku`             bigint          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
     `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
-    `order_id`        varchar(16)     NOT NULL COMMENT '订单ID',
-    `order_time`      datetime        NOT NULL COMMENT '下单时间',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
@@ -258,43 +233,39 @@ CREATE TABLE `activity_order_002`
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 34
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `activity_order_002`
+-- Dumping data for table `activity_record_002`
 --
 
-LOCK TABLES `activity_order_002` WRITE;
-/*!40000 ALTER TABLE `activity_order_002`
+LOCK TABLES `activity_record_002` WRITE;
+/*!40000 ALTER TABLE `activity_record_002`
     DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_002`
+/*!40000 ALTER TABLE `activity_record_002`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `activity_order_003`
+-- Table structure for table `activity_record_003`
 --
 
-DROP TABLE IF EXISTS `activity_order_003`;
+DROP TABLE IF EXISTS `activity_record_003`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `activity_order_003`
+CREATE TABLE `activity_record_003`
 (
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `sku`             bigint          NOT NULL COMMENT '商品sku',
     `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
     `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `order_time`      datetime        NOT NULL COMMENT '下单时间',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
@@ -304,23 +275,21 @@ CREATE TABLE `activity_order_003`
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 65
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖额度单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `activity_order_003`
+-- Dumping data for table `activity_record_003`
 --
 
-LOCK TABLES `activity_order_003` WRITE;
-/*!40000 ALTER TABLE `activity_order_003`
+LOCK TABLES `activity_record_003` WRITE;
+/*!40000 ALTER TABLE `activity_record_003`
     DISABLE KEYS */;
-/*!40000 ALTER TABLE `activity_order_003`
+/*!40000 ALTER TABLE `activity_record_003`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -333,7 +302,7 @@ DROP TABLE IF EXISTS `credit_account`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `credit_account`
 (
-    `id`               bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+    `id`               bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`          varchar(32)     NOT NULL COMMENT '用户ID',
     `total_amount`     decimal(10, 2)  NOT NULL COMMENT '总积分，显示总账户值，记得一个人获得的总积分',
     `available_amount` decimal(10, 2)  NOT NULL COMMENT '可用积分，每次扣减的值',
@@ -342,7 +311,6 @@ CREATE TABLE `credit_account`
     `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 10
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='积分账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -359,6 +327,150 @@ LOCK TABLES `credit_account` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `credit_record_000`
+--
+
+DROP TABLE IF EXISTS `credit_record_000`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `credit_record_000`
+(
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分记录表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credit_record_000`
+--
+
+LOCK TABLES `credit_record_000` WRITE;
+/*!40000 ALTER TABLE `credit_record_000`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_record_000`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `credit_record_001`
+--
+
+DROP TABLE IF EXISTS `credit_record_001`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `credit_record_001`
+(
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分记录表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credit_record_001`
+--
+
+LOCK TABLES `credit_record_001` WRITE;
+/*!40000 ALTER TABLE `credit_record_001`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_record_001`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `credit_record_002`
+--
+
+DROP TABLE IF EXISTS `credit_record_002`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `credit_record_002`
+(
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分记录表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credit_record_002`
+--
+
+LOCK TABLES `credit_record_002` WRITE;
+/*!40000 ALTER TABLE `credit_record_002`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_record_002`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `credit_record_003`
+--
+
+DROP TABLE IF EXISTS `credit_record_003`;
+/*!40101 SET @saved_cs_client = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `credit_record_003`
+(
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
+    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
+    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分记录表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credit_record_003`
+--
+
+LOCK TABLES `credit_record_003` WRITE;
+/*!40000 ALTER TABLE `credit_record_003`
+    DISABLE KEYS */;
+/*!40000 ALTER TABLE `credit_record_003`
+    ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `task`
 --
 
@@ -370,7 +482,7 @@ CREATE TABLE `task`
     `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
     `topic`       varchar(32)  NOT NULL COMMENT '消息主题',
     `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
-    `message_id`  varchar(11)  NOT NULL COMMENT '消息编号',
+    `message_id`  varchar(16)  NOT NULL COMMENT '消息编号',
     `message`     varchar(512) NOT NULL COMMENT '消息主体',
     `state`       varchar(16)  NOT NULL DEFAULT 'create' COMMENT '任务状态；create-创建、completed-完成、fail-失败',
     `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -380,7 +492,7 @@ CREATE TABLE `task`
     KEY `idx_state` (`state`),
     KEY `idx_create_time` (`update_time`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 7261
+  AUTO_INCREMENT = 126
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='任务表，发送MQ';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -405,26 +517,25 @@ DROP TABLE IF EXISTS `user_award_record_000`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_award_record_000`
 (
-    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id` bigint       NOT NULL COMMENT '活动ID',
-    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
-    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
-    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `user_order_id` bigint          NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`      bigint          NOT NULL COMMENT '奖品ID',
+    `award_title`   varchar(128)    NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`    datetime        NOT NULL COMMENT '中奖时间',
+    `award_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
     KEY `idx_award_id` (`strategy_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖流水表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -447,24 +558,23 @@ DROP TABLE IF EXISTS `user_award_record_001`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_award_record_001`
 (
-    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id` bigint       NOT NULL COMMENT '活动ID',
-    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
-    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
-    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `user_order_id` bigint          NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`      bigint          NOT NULL COMMENT '奖品ID',
+    `award_title`   varchar(128)    NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`    datetime        NOT NULL COMMENT '中奖时间',
+    `award_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
     KEY `idx_award_id` (`strategy_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -489,24 +599,23 @@ DROP TABLE IF EXISTS `user_award_record_002`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_award_record_002`
 (
-    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id` bigint       NOT NULL COMMENT '活动ID',
-    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
-    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
-    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `user_order_id` bigint          NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`      bigint          NOT NULL COMMENT '奖品ID',
+    `award_title`   varchar(128)    NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`    datetime        NOT NULL COMMENT '中奖时间',
+    `award_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
     KEY `idx_award_id` (`strategy_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 76
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -531,24 +640,23 @@ DROP TABLE IF EXISTS `user_award_record_003`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_award_record_003`
 (
-    `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id` bigint       NOT NULL COMMENT '活动ID',
-    `strategy_id` bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_id`    varchar(16)  NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
-    `award_id`    bigint       NOT NULL COMMENT '奖品ID',
-    `award_title` varchar(128) NOT NULL COMMENT '奖品标题（名称）',
-    `award_time`  datetime     NOT NULL COMMENT '中奖时间',
-    `award_state` varchar(16)  NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
-    `create_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `user_order_id` bigint          NOT NULL COMMENT '抽奖单ID【作为幂等使用】',
+    `award_id`      bigint          NOT NULL COMMENT '奖品ID',
+    `award_title`   varchar(128)    NOT NULL COMMENT '奖品标题（名称）',
+    `award_time`    datetime        NOT NULL COMMENT '中奖时间',
+    `award_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '奖品状态；create-创建、completed-发奖完成、、fail-发奖失败',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
+    UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
     KEY `idx_award_id` (`strategy_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 8596
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -573,25 +681,22 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_000`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_behavior_rebate_order_000`
 (
-    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
-    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
-    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
-    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
     KEY `idx_user_id` (`user_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 5
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -614,25 +719,22 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_001`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_behavior_rebate_order_001`
 (
-    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
-    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
-    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
-    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
     KEY `idx_user_id` (`user_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -655,25 +757,22 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_002`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_behavior_rebate_order_002`
 (
-    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
-    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
-    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
-    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
     KEY `idx_user_id` (`user_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 11
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -696,25 +795,22 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_003`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_behavior_rebate_order_003`
 (
-    `id`              int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)  NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)  NOT NULL COMMENT '订单ID',
-    `behavior_type`   varchar(16)  NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
-    `rebate_desc`     varchar(128) NOT NULL COMMENT '返利描述',
-    `rebate_type`     varchar(16)  NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
-    `rebate_config`   varchar(32)  NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)  NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
-    `biz_id`          varchar(64)  NOT NULL COMMENT '业务ID - 拼接的唯一值',
-    `create_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
+    `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
+    `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
+    `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
+    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
+    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
     KEY `idx_user_id` (`user_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 27
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户行为返利流水表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -729,162 +825,6 @@ LOCK TABLES `user_behavior_rebate_order_003` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `user_credit_order_000`
---
-
-DROP TABLE IF EXISTS `user_credit_order_000`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_000`
-(
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
-    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
-    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id` (`user_id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_credit_order_000`
---
-
-LOCK TABLES `user_credit_order_000` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_000`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_000`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_credit_order_001`
---
-
-DROP TABLE IF EXISTS `user_credit_order_001`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_001`
-(
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
-    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
-    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id` (`user_id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 2
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_credit_order_001`
---
-
-LOCK TABLES `user_credit_order_001` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_001`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_001`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_credit_order_002`
---
-
-DROP TABLE IF EXISTS `user_credit_order_002`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_002`
-(
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
-    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
-    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id` (`user_id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 34
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_credit_order_002`
---
-
-LOCK TABLES `user_credit_order_002` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_002`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_002`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_credit_order_003`
---
-
-DROP TABLE IF EXISTS `user_credit_order_003`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_credit_order_003`
-(
-    `id`              bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-    `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
-    `order_id`        varchar(12)     NOT NULL COMMENT '订单ID',
-    `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
-    `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
-    `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
-    `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
-    UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id` (`user_id`)
-) ENGINE = InnoDB
-  AUTO_INCREMENT = 65
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户积分流水表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_credit_order_003`
---
-
-LOCK TABLES `user_credit_order_003` WRITE;
-/*!40000 ALTER TABLE `user_credit_order_003`
-    DISABLE KEYS */;
-/*!40000 ALTER TABLE `user_credit_order_003`
-    ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user_order_000`
 --
 
@@ -893,23 +833,19 @@ DROP TABLE IF EXISTS `user_order_000`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_order_000`
 (
-    `id`            int unsigned NOT NULL AUTO_INCREMENT,
-    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
-    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_time`    datetime     NOT NULL COMMENT '下单时间',
-    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `activity_name` varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `order_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 3
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -932,23 +868,19 @@ DROP TABLE IF EXISTS `user_order_001`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_order_001`
 (
-    `id`            int unsigned NOT NULL AUTO_INCREMENT,
-    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
-    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_time`    datetime     NOT NULL COMMENT '下单时间',
-    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `activity_name` varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `order_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 2
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -971,23 +903,19 @@ DROP TABLE IF EXISTS `user_order_002`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_order_002`
 (
-    `id`            int unsigned NOT NULL AUTO_INCREMENT,
-    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
-    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_time`    datetime     NOT NULL COMMENT '下单时间',
-    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `activity_name` varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `order_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 77
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1010,23 +938,19 @@ DROP TABLE IF EXISTS `user_order_003`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_order_003`
 (
-    `id`            int unsigned NOT NULL AUTO_INCREMENT,
-    `user_id`       varchar(32)  NOT NULL COMMENT '用户ID',
-    `activity_id`   bigint       NOT NULL COMMENT '活动ID',
-    `order_id`      varchar(16)  NOT NULL COMMENT '抽奖单ID',
-    `activity_name` varchar(64)  NOT NULL COMMENT '活动名称',
-    `strategy_id`   bigint       NOT NULL COMMENT '抽奖策略ID',
-    `order_time`    datetime     NOT NULL COMMENT '下单时间',
-    `order_state`   varchar(16)  NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
-    `create_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `id`            bigint unsigned NOT NULL COMMENT '雪花ID',
+    `user_id`       varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`   bigint          NOT NULL COMMENT '活动ID',
+    `activity_name` varchar(64)     NOT NULL COMMENT '活动名称',
+    `strategy_id`   bigint          NOT NULL COMMENT '抽奖策略ID',
+    `order_state`   varchar(16)     NOT NULL DEFAULT 'create' COMMENT '订单状态；create-创建、used-已使用、cancel-已作废',
+    `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uq_order_id` (`order_id`),
     KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 4002
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖单表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1049,4 +973,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-09 13:58:00
+-- Dump completed on 2025-06-13 19:35:49

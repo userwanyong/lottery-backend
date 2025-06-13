@@ -16,6 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserAwardRecordEntity {
+    private Long id;
     /**
      * 用户ID
      */
@@ -34,7 +35,7 @@ public class UserAwardRecordEntity {
     /**
      * 抽奖订单ID【作为幂等使用】
      */
-    private String orderId;
+    private Long userOrderId;
 
     /**
      * 奖品ID

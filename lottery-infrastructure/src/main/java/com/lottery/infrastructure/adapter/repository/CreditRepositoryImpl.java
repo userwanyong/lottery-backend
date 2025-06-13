@@ -11,13 +11,13 @@ import com.lottery.domain.credit.model.entity.TaskEntity;
 import com.lottery.domain.credit.model.valobj.CreditAccountStatusVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.repository.CreditRepository;
+import com.lottery.infrastructure.dao.po.CreditRecord;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.dao.CreditAccountMapper;
 import com.lottery.infrastructure.dao.TaskMapper;
-import com.lottery.infrastructure.dao.UserCreditOrderMapper;
+import com.lottery.infrastructure.dao.CreditRecordMapper;
 import com.lottery.infrastructure.dao.po.CreditAccount;
 import com.lottery.infrastructure.dao.po.Task;
-import com.lottery.infrastructure.dao.po.UserCreditOrder;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class CreditRepositoryImpl implements CreditRepository {
     @Resource
     private CreditAccountMapper creditAccountMapper;
     @Resource
-    private UserCreditOrderMapper userCreditOrderMapper;
+    private CreditRecordMapper creditRecordMapper;
     @Resource
     private TaskMapper taskMapper;
     @Resource
@@ -66,13 +66,12 @@ public class CreditRepositoryImpl implements CreditRepository {
         creditAccount.setTotalAmount(creditAmount);
         creditAccount.setAvailableAmount(creditAccountEntity.getCreditAmount());
 
-        UserCreditOrder userCreditOrder = new UserCreditOrder();
-        userCreditOrder.setUserId(userId);
-        userCreditOrder.setOrderId(creditOrderEntity.getOrderId());
-        userCreditOrder.setTradeName(creditOrderEntity.getTradeName().getName());
-        userCreditOrder.setTradeType(creditOrderEntity.getTradeType().getCode());
-        userCreditOrder.setTradeAmount(creditOrderEntity.getTradeAmount());
-        userCreditOrder.setOutBusinessNo(creditOrderEntity.getOutBusinessNo());
+        CreditRecord creditRecord = new CreditRecord();
+        creditRecord.setUserId(userId);
+        creditRecord.setTradeName(creditOrderEntity.getTradeName().getName());
+        creditRecord.setTradeType(creditOrderEntity.getTradeType().getCode());
+        creditRecord.setTradeAmount(creditOrderEntity.getTradeAmount());
+        creditRecord.setOutBusinessNo(creditOrderEntity.getOutBusinessNo());
 
         Task task = new Task();
         task.setUserId(taskEntity.getUserId());
@@ -106,7 +105,7 @@ public class CreditRepositoryImpl implements CreditRepository {
                         log.debug("[CreditRepositoryImpl]减少积分账户成功 userId:{}", userId);
                     }
                     // 保存订单
-                    userCreditOrderMapper.insert(userCreditOrder);
+                    creditRecordMapper.insert(creditRecord);
                     log.debug("[CreditRepositoryImpl]保存积分订单成功 userId:{}", userId);
                     // 写入任务
                     taskMapper.insert(task);

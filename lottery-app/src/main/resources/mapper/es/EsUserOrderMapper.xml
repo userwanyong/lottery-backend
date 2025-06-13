@@ -5,13 +5,11 @@
 <mapper namespace="com.lottery.infrastructure.es.EsUserOrderMapper">
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsUserOrder">
-        <id property="id" column="id" jdbcType="INTEGER"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
         <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
-        <result property="orderId" column="_order_id" jdbcType="VARCHAR"/>
         <result property="activityName" column="_activity_name" jdbcType="VARCHAR"/>
         <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
-        <result property="orderTime" column="_order_time" jdbcType="TIMESTAMP"/>
         <result property="orderState" column="_order_state" jdbcType="VARCHAR"/>
         <result property="createTime" column="_create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>

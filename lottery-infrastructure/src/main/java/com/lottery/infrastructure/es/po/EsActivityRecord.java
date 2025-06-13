@@ -12,7 +12,7 @@ import java.util.Date;
  * @TableName activity_order
  */
 @Data
-public class EsActivityOrder {
+public class EsActivityRecord {
     private Long id;
 
     /**
@@ -40,15 +40,6 @@ public class EsActivityOrder {
      */
     private Long strategyId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
-
-    /**
-     * 下单时间
-     */
-    private Date orderTime;
 
     /**
      * 总次数

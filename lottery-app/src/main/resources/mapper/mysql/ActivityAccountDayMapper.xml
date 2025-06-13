@@ -5,7 +5,7 @@
 <mapper namespace="com.lottery.infrastructure.dao.ActivityAccountDayMapper">
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.ActivityAccountDay">
-            <id property="id" column="id" jdbcType="INTEGER"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="day" column="day" jdbcType="VARCHAR"/>

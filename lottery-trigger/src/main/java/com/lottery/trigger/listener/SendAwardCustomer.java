@@ -38,7 +38,7 @@ public class SendAwardCustomer {
             DistributeAwardEntity distributeAwardEntity = new DistributeAwardEntity();
             distributeAwardEntity.setAwardConfig(sendAwardMessage.getAwardConfig());
             distributeAwardEntity.setAwardId(sendAwardMessage.getAwardId());
-            distributeAwardEntity.setOrderId(sendAwardMessage.getOrderId());
+            distributeAwardEntity.setUserOrderId(sendAwardMessage.getUserOrderId());
             distributeAwardEntity.setUserId(sendAwardMessage.getUserId());
             userAwardService.distributeAward(distributeAwardEntity);
             log.info("[SendAwardCustomer]用户发奖消息，消费成功 topic: {} message: {}", topic, message);

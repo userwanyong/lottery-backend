@@ -15,7 +15,7 @@ public class EsUserOrder {
     /**
      * id
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户ID
@@ -28,11 +28,6 @@ public class EsUserOrder {
     private Long activityId;
 
     /**
-     * 订单ID
-     */
-    private String orderId;
-
-    /**
      * 活动名称
      */
     private String activityName;
@@ -41,11 +36,6 @@ public class EsUserOrder {
      * 抽奖策略ID
      */
     private Long strategyId;
-
-    /**
-     * 下单时间
-     */
-    private Date orderTime;
 
     /**
      * 订单状态；create-创建、used-已使用、cancel-已作废

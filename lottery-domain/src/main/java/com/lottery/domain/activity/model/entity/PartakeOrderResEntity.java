@@ -11,6 +11,7 @@ import java.util.Date;
  */
 @Data
 public class PartakeOrderResEntity {
+    private Long id;
 
     /**
      * 用户ID
@@ -21,10 +22,10 @@ public class PartakeOrderResEntity {
      */
     private Long activityId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
+//    /**
+//     * 订单ID
+//     */
+//    private Long orderId;
 
     /**
      * 活动名称

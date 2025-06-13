@@ -9,8 +9,6 @@ esMapping:
                 t.activity_id as _activity_id,
                 t.activity_name as _activity_name,
                 t.strategy_id as _strategy_id,
-                t.order_id as _order_id,
-                t.order_time as _order_time,
                 t.order_state as _order_state,
                 t.create_time as _create_time,
                 t.update_time as _update_time

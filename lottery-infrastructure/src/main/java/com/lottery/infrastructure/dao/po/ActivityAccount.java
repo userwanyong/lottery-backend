@@ -20,9 +20,9 @@ import java.util.Date;
 @Data
 public class ActivityAccount implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

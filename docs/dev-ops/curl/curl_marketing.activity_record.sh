@@ -1,5 +1,5 @@
-# bash curl_marketing.activity_order.sh
-curl -X PUT "http://127.0.0.1:9200/marketing.activity_order" -H 'Content-Type: application/json' -d'
+# bash curl_marketing.activity_record.sh
+curl -X PUT "http://127.0.0.1:9200/marketing.activity_record" -H 'Content-Type: application/json' -d'
 {
     "mappings": {
       "properties": {
@@ -8,8 +8,6 @@ curl -X PUT "http://127.0.0.1:9200/marketing.activity_order" -H 'Content-Type: a
         "_activity_id":{"type": "text"},
         "_activity_name":{"type": "text"},
         "_strategy_id":{"type": "text"},
-        "_order_id":{"type": "text"},
-        "_order_time":{"type": "text"},
         "_total_count":{"type": "text"},
         "_day_count":{"type": "text"},
         "_month_count":{"type": "text"},

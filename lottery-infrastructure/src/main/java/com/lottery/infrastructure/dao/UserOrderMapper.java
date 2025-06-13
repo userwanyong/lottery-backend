@@ -21,7 +21,7 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
     UserOrder queryNoUsedPartakeOrder(UserOrder userOrder);
 
     @DBRouter
-    @Update("update user_order set order_state = 'used' where user_id = #{userId} and activity_id = #{activityId} and order_id=#{orderId} and order_state='create'")
+    @Update("update user_order set order_state = 'used' where user_id = #{userId} and activity_id = #{activityId} and id=#{id} and order_state='create'")
     int updateUserOrderStateUsed(UserOrder userOrder);
 }
 

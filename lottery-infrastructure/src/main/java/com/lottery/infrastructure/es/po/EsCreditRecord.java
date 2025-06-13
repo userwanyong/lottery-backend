@@ -9,10 +9,10 @@ import java.util.Date;
  * 用户积分订单记录
  *
  * @author 永
- * @TableName user_credit_order
+ * @TableName credit_record
  */
 @Data
-public class EsUserCreditOrder {
+public class EsCreditRecord {
     /**
      * 自增ID
      */
@@ -22,11 +22,6 @@ public class EsUserCreditOrder {
      * 用户ID
      */
     private String userId;
-
-    /**
-     * 订单ID
-     */
-    private String orderId;
 
     /**
      * 交易名称

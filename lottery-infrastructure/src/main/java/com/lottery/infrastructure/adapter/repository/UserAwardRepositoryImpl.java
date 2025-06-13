@@ -12,6 +12,9 @@ import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.entity.UserCreditAwardEntity;
 import com.lottery.domain.award.model.valobj.AccountStatusVO;
 import com.lottery.domain.award.repository.UserAwardRepository;
+import com.lottery.domain.credit.model.valobj.TradeNameVO;
+import com.lottery.domain.credit.model.valobj.TradeTypeVO;
+import com.lottery.domain.rebate.model.valobj.RebateTypeVO;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
 import com.lottery.infrastructure.event.EventPublisher;
@@ -27,6 +30,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,6 +59,8 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     private EventPublisher eventPublisher;
     @Resource
     private RedisService redisService;
+    @Resource
+    private CreditRecordMapper creditRecordMapper;
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {
@@ -69,7 +76,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         task.setState(taskEntity.getState().getCode());
 
         UserOrder userOrder = new UserOrder();
-        userOrder.setOrderId(userAwardRecordEntity.getOrderId());
+        userOrder.setId(userAwardRecordEntity.getUserOrderId());
         userOrder.setUserId(userAwardRecordEntity.getUserId());
         userOrder.setActivityId(userAwardRecordEntity.getActivityId());
         //将中奖记录和任务写入数据库表，更新抽奖单状态为used已使用
@@ -83,7 +90,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     int count = userOrderMapper.updateUserOrderStateUsed(userOrder);
                     if (count != 1) {
                         status.setRollbackOnly();
-                        log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用 orderId: {}", userOrder.getOrderId());
+                        log.error("[UserAwardRepositoryImpl]更新抽奖单失败,该抽奖单已被使用 orderId: {}", userOrder.getId());
                         return new AppException(ResponseCode.ACTIVITY_ORDER_ERROR.getCode(), ResponseCode.ACTIVITY_ORDER_ERROR.getMessage());
                     }
                     return 1;
@@ -117,21 +124,30 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         UserCreditAwardEntity userCreditAwardEntity = giveOutPrizesAggregate.getUserCreditAwardEntity();
         // 更新发奖状态
         UserAwardRecord userAwardRecord = new UserAwardRecord();
-        userAwardRecord.setUserId(userId);
         userAwardRecord.setAwardState(userAwardRecordEntity.getAwardState().getCode());
-        userAwardRecord.setOrderId(userAwardRecordEntity.getOrderId());
-        // 更新用户积分 「首次则插入数据」
+        // 更新用户积分
         CreditAccount creditAccount = new CreditAccount();
         creditAccount.setUserId(userId);
         creditAccount.setTotalAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAvailableAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAccountStatus(AccountStatusVO.open.getCode());
+        // 写入积分记录
+        CreditRecord creditRecord = new CreditRecord();
+        creditRecord.setUserId(userId);
+        creditRecord.setTradeName(TradeNameVO.LOTTERY_AWARD.getName());
+        creditRecord.setTradeType(TradeTypeVO.FORWARD.getCode());
+        creditRecord.setTradeAmount(userCreditAwardEntity.getCreditAmount());
+        // 可重复抽取到积分，所以精确到秒
+        creditRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.LOTTERY.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {
             lock.lock(3, TimeUnit.SECONDS);
             dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
                 try {
+                    // 写入积分记录表
+                    creditRecordMapper.insert(creditRecord);
+                    log.debug("[UserAwardRepositoryImpl]写入积分记录成功 userId:{}", userId);
                     // 更新/创建积分账户
                     LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda().eq(CreditAccount::getUserId, userId);
                     CreditAccount dbCreditAccount = creditAccountMapper.selectOne(queryWrapper);
@@ -145,7 +161,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                         log.debug("[UserAwardRepositoryImpl]更新积分账户成功 userId:{}", userId);
                     }
                     // 更新中奖记录状态为completed 发奖完成
-                    int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserId, userId).eq(UserAwardRecord::getOrderId, userAwardRecordEntity.getOrderId()));
+                    int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserOrderId, userAwardRecordEntity.getUserOrderId()));
                     log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));
                     if (count == 0) {
                         log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{} giveOutPrizesAggregate:{}", userId, JSON.toJSONString(giveOutPrizesAggregate));

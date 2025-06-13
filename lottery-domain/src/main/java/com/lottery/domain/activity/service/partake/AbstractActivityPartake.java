@@ -56,8 +56,8 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
         CreatePartakeOrderAggregate createPartakeOrderAggregate = this.doFilterAccount(userId, activityId, currentTime);
         createPartakeOrderAggregate.setPartakeOrderResEntity(userOrderRes);
         //保存聚合对象
-        activityRepository.saveCreatePartakeOrderAggregate(createPartakeOrderAggregate);
-
+        Long userOrderId =activityRepository.saveCreatePartakeOrderAggregate(createPartakeOrderAggregate);
+        userOrderRes.setId(userOrderId);
         return userOrderRes;
     }
 

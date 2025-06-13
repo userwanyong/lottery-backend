@@ -54,7 +54,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Resource
     private ActivityCountMapper activityCountMapper;
     @Resource
-    private ActivityOrderMapper activityOrderMapper;
+    private ActivityRecordMapper activityRecordMapper;
     @Resource
     private ActivityAccountMapper activityAccountMapper;
     @Resource
@@ -126,23 +126,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             lock.lock(3, TimeUnit.SECONDS);
             // 额度单对象
             ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
-            ActivityOrder activityOrder = new ActivityOrder();
-            activityOrder.setUserId(activityOrderEntity.getUserId());
-            activityOrder.setSku(activityOrderEntity.getSku());
-            activityOrder.setActivityId(activityOrderEntity.getActivityId());
-            activityOrder.setActivityName(activityOrderEntity.getActivityName());
-            activityOrder.setStrategyId(activityOrderEntity.getStrategyId());
-            activityOrder.setOrderId(activityOrderEntity.getOrderId());
-            activityOrder.setOrderTime(activityOrderEntity.getOrderTime());
-            activityOrder.setTotalCount(activityOrderEntity.getTotalCount());
-            activityOrder.setDayCount(activityOrderEntity.getDayCount());
-            activityOrder.setMonthCount(activityOrderEntity.getMonthCount());
-            activityOrder.setTotalCount(createQuotaOrderAggregate.getTotalCount());
-            activityOrder.setPayAmount(activityOrderEntity.getPayAmount());
-            activityOrder.setDayCount(createQuotaOrderAggregate.getDayCount());
-            activityOrder.setMonthCount(createQuotaOrderAggregate.getMonthCount());
-            activityOrder.setState(activityOrderEntity.getState().getCode());
-            activityOrder.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
+            ActivityRecord activityRecord = new ActivityRecord();
+            activityRecord.setUserId(activityOrderEntity.getUserId());
+            activityRecord.setSku(activityOrderEntity.getSku());
+            activityRecord.setActivityId(activityOrderEntity.getActivityId());
+            activityRecord.setActivityName(activityOrderEntity.getActivityName());
+            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
+            activityRecord.setTotalCount(activityOrderEntity.getTotalCount());
+            activityRecord.setDayCount(activityOrderEntity.getDayCount());
+            activityRecord.setMonthCount(activityOrderEntity.getMonthCount());
+            activityRecord.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityRecord.setPayAmount(activityOrderEntity.getPayAmount());
+            activityRecord.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityRecord.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityRecord.setState(activityOrderEntity.getState().getCode());
+            activityRecord.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
 
             // 总账户对象
             ActivityAccount activityAccount = new ActivityAccount();
@@ -171,7 +169,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             transactionTemplate.execute(status -> {
                 try {
                     // 1. 创建抽奖额度单
-                    activityOrderMapper.insert(activityOrder);
+                    activityRecordMapper.insert(activityRecord);
                     log.debug("[ActivityRepositoryImpl]创建抽奖额度单成功");
                     // 2. 更新总账户
                     LambdaQueryWrapper<ActivityAccount> queryWrapper = new QueryWrapper<ActivityAccount>().lambda()
@@ -190,12 +188,12 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         log.debug("[ActivityRepositoryImpl]创建总账户成功");
                     } else {
                         // 更新
-                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityOrder.getTotalCount());
-                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityOrder.getMonthCount());
-                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityOrder.getDayCount());
-                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityOrder.getTotalCount());
-                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityOrder.getMonthCount());
-                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityOrder.getDayCount());
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityRecord.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityRecord.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityRecord.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityRecord.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityRecord.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityRecord.getDayCount());
                         activityAccountMapper.update(activityAccount, queryWrapper);
                         log.debug("[ActivityRepositoryImpl]更新总账户成功");
                     }
@@ -225,23 +223,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             lock.lock(3, TimeUnit.SECONDS);
             // 额度单对象
             ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
-            ActivityOrder activityOrder = new ActivityOrder();
-            activityOrder.setUserId(activityOrderEntity.getUserId());
-            activityOrder.setSku(activityOrderEntity.getSku());
-            activityOrder.setActivityId(activityOrderEntity.getActivityId());
-            activityOrder.setActivityName(activityOrderEntity.getActivityName());
-            activityOrder.setStrategyId(activityOrderEntity.getStrategyId());
-            activityOrder.setOrderId(activityOrderEntity.getOrderId());
-            activityOrder.setOrderTime(activityOrderEntity.getOrderTime());
-            activityOrder.setTotalCount(activityOrderEntity.getTotalCount());
-            activityOrder.setDayCount(activityOrderEntity.getDayCount());
-            activityOrder.setMonthCount(activityOrderEntity.getMonthCount());
-            activityOrder.setTotalCount(createQuotaOrderAggregate.getTotalCount());
-            activityOrder.setDayCount(createQuotaOrderAggregate.getDayCount());
-            activityOrder.setMonthCount(createQuotaOrderAggregate.getMonthCount());
-            activityOrder.setState(activityOrderEntity.getState().getCode());
-            activityOrder.setPayAmount(activityOrderEntity.getPayAmount());
-            activityOrder.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
+            ActivityRecord activityRecord = new ActivityRecord();
+            activityRecord.setUserId(activityOrderEntity.getUserId());
+            activityRecord.setSku(activityOrderEntity.getSku());
+            activityRecord.setActivityId(activityOrderEntity.getActivityId());
+            activityRecord.setActivityName(activityOrderEntity.getActivityName());
+            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
+            activityRecord.setTotalCount(activityOrderEntity.getTotalCount());
+            activityRecord.setDayCount(activityOrderEntity.getDayCount());
+            activityRecord.setMonthCount(activityOrderEntity.getMonthCount());
+            activityRecord.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityRecord.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityRecord.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityRecord.setState(activityOrderEntity.getState().getCode());
+            activityRecord.setPayAmount(activityOrderEntity.getPayAmount());
+            activityRecord.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
 
             // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
             dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
@@ -249,7 +245,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             transactionTemplate.execute(status -> {
                 try {
                     // 1. 写入抽奖额度单
-                    activityOrderMapper.insert(activityOrder);
+                    activityRecordMapper.insert(activityRecord);
                     log.debug("[ActivityRepositoryImpl]创建抽奖额度单成功");
                     return 1;
                 } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
@@ -403,9 +399,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public void saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate) {
-           try {
-
+    public Long saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate) {
+        final Long[] userOrderId = {null};
+        try {
             String userId = createPartakeOrderAggregate.getUserId();
             Long activityId = createPartakeOrderAggregate.getActivityId();
             ActivityAccountEntity activityAccountEntity = createPartakeOrderAggregate.getActivityAccountEntity();
@@ -514,6 +510,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     BeanUtils.copyProperties(partakeOrderResEntity, userOrder);
                     userOrder.setOrderState(partakeOrderResEntity.getOrderState().getCode());
                     userOrderMapper.insert(userOrder);
+                    userOrderId[0] =userOrder.getId();
                     log.debug("[ActivityRepositoryImpl]创建抽奖单成功 userId: {} activityId: {}", userId, activityId);
                     return 1;
                 } catch (DuplicateKeyException e) {
@@ -524,8 +521,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             });
         } finally {
             dbRouter.clear();
-
         }
+        return userOrderId[0];
 
     }
 
@@ -609,43 +606,43 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             dbRouter.doRouter(deliveryOrderEntity.getUserId());
             lock.lock(3, TimeUnit.SECONDS);
             // 查询订单
-            LambdaQueryWrapper<ActivityOrder> queryWrapper = new QueryWrapper<ActivityOrder>().lambda()
-                    .eq(ActivityOrder::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
-                    .eq(ActivityOrder::getUserId, deliveryOrderEntity.getUserId());
-            ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
-            if (activityOrder == null) {
+            LambdaQueryWrapper<ActivityRecord> queryWrapper = new QueryWrapper<ActivityRecord>().lambda()
+                    .eq(ActivityRecord::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
+                    .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId());
+            ActivityRecord activityRecord = activityRecordMapper.selectOne(queryWrapper);
+            if (activityRecord == null) {
                 return;
             }
 
             // 总账户对象
             ActivityAccount activityAccount = new ActivityAccount();
-            BeanUtils.copyProperties(activityOrder, activityAccount);
+            BeanUtils.copyProperties(activityRecord, activityAccount);
 
             // 月账户对象
             ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
-            activityAccountMonth.setUserId(activityOrder.getUserId());
-            activityAccountMonth.setActivityId(activityOrder.getActivityId());
+            activityAccountMonth.setUserId(activityRecord.getUserId());
+            activityAccountMonth.setActivityId(activityRecord.getActivityId());
             activityAccountMonth.setMonth(new SimpleDateFormat("yyyy-MM").format(new Date()));
-            activityAccountMonth.setMonthCount(activityOrder.getMonthCount());
-            activityAccountMonth.setMonthCountSurplus(activityOrder.getMonthCount());
+            activityAccountMonth.setMonthCount(activityRecord.getMonthCount());
+            activityAccountMonth.setMonthCountSurplus(activityRecord.getMonthCount());
 
             // 日账户对象
             ActivityAccountDay activityAccountDay = new ActivityAccountDay();
-            activityAccountDay.setUserId(activityOrder.getUserId());
-            activityAccountDay.setActivityId(activityOrder.getActivityId());
+            activityAccountDay.setUserId(activityRecord.getUserId());
+            activityAccountDay.setActivityId(activityRecord.getActivityId());
             activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-            activityAccountDay.setDayCount(activityOrder.getDayCount());
-            activityAccountDay.setDayCountSurplus(activityOrder.getDayCount());
+            activityAccountDay.setDayCount(activityRecord.getDayCount());
+            activityAccountDay.setDayCountSurplus(activityRecord.getDayCount());
 
             transactionTemplate.execute(status -> {
                 try {
                     // 1. 更新抽奖单
-                    LambdaUpdateWrapper<ActivityOrder> updateWrapper = new LambdaUpdateWrapper<ActivityOrder>()
-                            .eq(ActivityOrder::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
-                            .eq(ActivityOrder::getUserId, deliveryOrderEntity.getUserId())
-                            .eq(ActivityOrder::getState, OrderStateVO.wait_pay)
-                            .set(ActivityOrder::getState, OrderStateVO.completed);
-                    int updateCount = activityOrderMapper.update(null, updateWrapper);
+                    LambdaUpdateWrapper<ActivityRecord> updateWrapper = new LambdaUpdateWrapper<ActivityRecord>()
+                            .eq(ActivityRecord::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
+                            .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId())
+                            .eq(ActivityRecord::getState, OrderStateVO.wait_pay)
+                            .set(ActivityRecord::getState, OrderStateVO.completed);
+                    int updateCount = activityRecordMapper.update(null, updateWrapper);
                     if (1 != updateCount) {
                         status.setRollbackOnly();
                         return 1;
@@ -658,22 +655,22 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(query);
                     if (dbActivityAccount == null) {
                         // 创建
-                        activityAccount.setTotalCount(activityOrder.getTotalCount());
-                        activityAccount.setDayCount(activityOrder.getDayCount());
-                        activityAccount.setMonthCount(activityOrder.getMonthCount());
-                        activityAccount.setTotalCountSurplus(activityOrder.getTotalCount());
-                        activityAccount.setDayCountSurplus(activityOrder.getDayCount());
-                        activityAccount.setMonthCountSurplus(activityOrder.getMonthCount());
+                        activityAccount.setTotalCount(activityRecord.getTotalCount());
+                        activityAccount.setDayCount(activityRecord.getDayCount());
+                        activityAccount.setMonthCount(activityRecord.getMonthCount());
+                        activityAccount.setTotalCountSurplus(activityRecord.getTotalCount());
+                        activityAccount.setDayCountSurplus(activityRecord.getDayCount());
+                        activityAccount.setMonthCountSurplus(activityRecord.getMonthCount());
                         activityAccountMapper.insert(activityAccount);
                         log.debug("[ActivityRepositoryImpl]创建总账户成功");
                     } else {
                         // 更新
-                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityOrder.getTotalCount());
-                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityOrder.getMonthCount());
-                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityOrder.getDayCount());
-                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityOrder.getTotalCount());
-                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityOrder.getMonthCount());
-                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityOrder.getDayCount());
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + activityRecord.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + activityRecord.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + activityRecord.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + activityRecord.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + activityRecord.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + activityRecord.getDayCount());
                         activityAccountMapper.update(activityAccount, query);
                         log.debug("[ActivityRepositoryImpl]更新总账户成功");
                     }
@@ -721,21 +718,20 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
-        LambdaQueryWrapper<ActivityOrder> queryWrapper = new QueryWrapper<ActivityOrder>().lambda()
-                .eq(ActivityOrder::getUserId, quotaOrderEntity.getUserId())
-                .eq(ActivityOrder::getSku, quotaOrderEntity.getSku())
-                .eq(ActivityOrder::getState, OrderStateVO.wait_pay);
+        LambdaQueryWrapper<ActivityRecord> queryWrapper = new QueryWrapper<ActivityRecord>().lambda()
+                .eq(ActivityRecord::getUserId, quotaOrderEntity.getUserId())
+                .eq(ActivityRecord::getSku, quotaOrderEntity.getSku())
+                .eq(ActivityRecord::getState, OrderStateVO.wait_pay);
         try {
             dbRouter.doRouter(quotaOrderEntity.getUserId());
-            ActivityOrder activityOrder = activityOrderMapper.selectOne(queryWrapper);
-            if (activityOrder == null) {
+            ActivityRecord activityRecord = activityRecordMapper.selectOne(queryWrapper);
+            if (activityRecord == null) {
                 return null;
             }
             return UnpaidQuotaOrderEntity.builder()
-                    .userId(activityOrder.getUserId())
-                    .orderId(activityOrder.getOrderId())
-                    .outBusinessNo(activityOrder.getOutBusinessNo())
-                    .payAmount(activityOrder.getPayAmount())
+                    .userId(activityRecord.getUserId())
+                    .outBusinessNo(activityRecord.getOutBusinessNo())
+                    .payAmount(activityRecord.getPayAmount())
                     .build();
         } finally {
             dbRouter.clear();

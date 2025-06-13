@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @description es查询
  */
 @Mapper
-public interface EsActivityOrderMapper {
+public interface EsActivityRecordMapper {
 }
 
 

@@ -14,15 +14,15 @@ import lombok.Data;
 /**
  * 用户积分订单记录
  * @author 永
- * @TableName user_credit_order
+ * @TableName credit_record
  */
-@TableName(value ="user_credit_order")
+@TableName(value ="credit_record")
 @Data
-public class UserCreditOrder implements Serializable {
+public class CreditRecord implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -30,10 +30,6 @@ public class UserCreditOrder implements Serializable {
      */
     private String userId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
 
     /**
      * 交易名称

@@ -5,11 +5,11 @@
 <mapper namespace="com.lottery.infrastructure.es.EsUserAwardRecordMapper">
 
         <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsUserAwardRecord">
-                <id property="id" column="id" jdbcType="INTEGER"/>
+                <id property="id" column="id" jdbcType="BIGINT"/>
                 <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
                 <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
                 <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
-                <result property="orderId" column="_order_id" jdbcType="VARCHAR"/>
+                <result property="userOrderId" column="_user_order_id" jdbcType="BIGINT"/>
                 <result property="awardId" column="_award_id" jdbcType="BIGINT"/>
                 <result property="awardTitle" column="_award_title" jdbcType="VARCHAR"/>
                 <result property="awardTime" column="_award_time" jdbcType="TIMESTAMP"/>

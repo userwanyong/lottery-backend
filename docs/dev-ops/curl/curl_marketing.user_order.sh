@@ -7,8 +7,6 @@ curl -X PUT "http://127.0.0.1:9200/marketing.user_order" -H 'Content-Type: appli
         "_activity_id":{"type": "text"},
         "_activity_name":{"type": "text"},
         "_strategy_id":{"type": "text"},
-        "_order_id":{"type": "text"},
-        "_order_time":{"type": "date"},
         "_order_state":{"type": "text"},
         "_create_time":{"type": "date"},
         "_update_time":{"type": "date"}

@@ -87,7 +87,6 @@ public class DefaultActivityPartake extends AbstractActivityPartake {
         partakeOrderResEntity.setActivityId(activityId);
         partakeOrderResEntity.setActivityName(activityEntity.getActivityName());
         partakeOrderResEntity.setStrategyId(activityEntity.getStrategyId());
-        partakeOrderResEntity.setOrderId(String.valueOf(YitIdHelper.nextId()));
         partakeOrderResEntity.setOrderTime(currentTime);
         partakeOrderResEntity.setOrderState(UserOrderStateVO.create);
         return partakeOrderResEntity;

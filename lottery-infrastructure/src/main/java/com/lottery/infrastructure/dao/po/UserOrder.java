@@ -19,10 +19,10 @@ import lombok.Data;
 @Data
 public class UserOrder implements Serializable {
     /**
-     * id
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 用户ID
@@ -35,11 +35,6 @@ public class UserOrder implements Serializable {
     private Long activityId;
 
     /**
-     * 订单ID
-     */
-    private String orderId;
-
-    /**
      * 活动名称
      */
     private String activityName;
@@ -49,10 +44,6 @@ public class UserOrder implements Serializable {
      */
     private Long strategyId;
 
-    /**
-     * 下单时间
-     */
-    private Date orderTime;
 
     /**
      * 订单状态；create-创建、used-已使用、cancel-已作废

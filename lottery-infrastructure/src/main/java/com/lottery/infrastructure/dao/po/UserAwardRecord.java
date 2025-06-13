@@ -19,10 +19,10 @@ import lombok.Data;
 @Data
 public class UserAwardRecord implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 用户ID
@@ -42,7 +42,7 @@ public class UserAwardRecord implements Serializable {
     /**
      * 抽奖订单ID【作为幂等使用】
      */
-    private String orderId;
+    private Long userOrderId;
 
     /**
      * 奖品ID

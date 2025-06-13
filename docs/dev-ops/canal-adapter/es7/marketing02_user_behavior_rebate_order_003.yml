@@ -6,7 +6,6 @@ esMapping:
   _id: _id
   sql: "select  t.id AS _id,
                 t.user_id AS _user_id,
-                t.order_id AS _order_id,
                 t.behavior_type AS _behavior_type,
                 t.rebate_desc AS _rebate_desc,
                 t.rebate_type AS _rebate_type,

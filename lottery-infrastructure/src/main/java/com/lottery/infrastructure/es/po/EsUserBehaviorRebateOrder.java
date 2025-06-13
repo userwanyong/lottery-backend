@@ -13,19 +13,15 @@ import java.util.Date;
 @Data
 public class EsUserBehaviorRebateOrder {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 用户ID
      */
     private String userId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
 
     /**
      * 行为类型（sign 签到、openai_pay 支付）

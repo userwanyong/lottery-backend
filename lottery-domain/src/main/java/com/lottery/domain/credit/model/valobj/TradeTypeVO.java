@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TradeTypeVO {
-    FORWARD("forward", "正向交易，+ 积分"),
-    REVERSE("reverse", "逆向交易，- 积分"),
+    FORWARD("forward", "增加积分"),
+    REVERSE("reverse", "扣减积分"),
     ;
     private final String code;
     private final String desc;

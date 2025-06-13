@@ -14,15 +14,15 @@ import lombok.Data;
 /**
  * 抽奖活动单
  * @author 永
- * @TableName activity_order_000
+ * @TableName activity_record
  */
-@TableName(value ="activity_order")
+@TableName(value ="activity_record")
 @Data
-public class ActivityOrder implements Serializable {
+public class ActivityRecord implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -50,15 +50,6 @@ public class ActivityOrder implements Serializable {
      */
     private Long strategyId;
 
-    /**
-     * 订单ID
-     */
-    private String orderId;
-
-    /**
-     * 下单时间
-     */
-    private Date orderTime;
 
     /**
      * 总次数

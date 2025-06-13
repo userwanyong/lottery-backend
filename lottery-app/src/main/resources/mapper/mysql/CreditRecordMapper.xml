@@ -2,12 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lottery.infrastructure.dao.UserCreditOrderMapper">
+<mapper namespace="com.lottery.infrastructure.dao.CreditRecordMapper">
 
-    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.UserCreditOrder">
+    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.CreditRecord">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
-            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
             <result property="tradeName" column="trade_name" jdbcType="VARCHAR"/>
             <result property="tradeType" column="trade_type" jdbcType="VARCHAR"/>
             <result property="tradeAmount" column="trade_amount" jdbcType="DECIMAL"/>

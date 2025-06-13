@@ -26,10 +26,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActivityAccountDay implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 用户ID

@@ -1,7 +1,7 @@
 package com.lottery.infrastructure.es;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lottery.infrastructure.dao.po.UserCreditOrder;
+import com.lottery.infrastructure.dao.po.CreditRecord;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @description es查询
  */
 @Mapper
-public interface EsUserCreditOrderMapper extends BaseMapper<UserCreditOrder> {
+public interface EsCreditRecordMapper extends BaseMapper<CreditRecord> {
 
 }
 

@@ -20,9 +20,9 @@ import lombok.Data;
 @Data
 public class CreditAccount implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

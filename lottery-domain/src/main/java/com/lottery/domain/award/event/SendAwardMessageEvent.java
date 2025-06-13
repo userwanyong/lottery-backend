@@ -54,7 +54,7 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
         /**
          * 订单ID
          */
-        private String orderId;
+        private Long userOrderId;
         /**
          * 奖品配置信息
          */

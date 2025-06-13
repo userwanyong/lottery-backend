@@ -8,6 +8,7 @@ import lombok.Data;
  */
 @Data
 public class DistributeAwardEntity {
+    private Long id;
     /**
      * 用户ID
      */
@@ -15,7 +16,7 @@ public class DistributeAwardEntity {
     /**
      * 订单ID
      */
-    private String orderId;
+    private Long userOrderId;
     /**
      * 奖品ID
      */

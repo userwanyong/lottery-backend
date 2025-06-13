@@ -5,11 +5,11 @@
 <mapper namespace="com.lottery.infrastructure.dao.UserAwardRecordMapper">
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.UserAwardRecord">
-            <id property="id" column="id" jdbcType="INTEGER"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
-            <result property="orderId" column="order_id" jdbcType="VARCHAR"/>
+            <result property="userOrderId" column="user_order_id" jdbcType="BIGINT"/>
             <result property="awardId" column="award_id" jdbcType="INTEGER"/>
             <result property="awardTitle" column="award_title" jdbcType="VARCHAR"/>
             <result property="awardTime" column="award_time" jdbcType="TIMESTAMP"/>
