@@ -4,7 +4,7 @@ groupId: g1
 esMapping:
   _index: marketing.activity_record
   _id: _id
-  sql: "select  t.order_id as _id, 
+  sql: "select  t.id as _id, 
                   t.user_id as _user_id,
                   t.sku as _sku,
                   t.activity_id as _activity_id,
