@@ -184,7 +184,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     @Override
     public String queryAwardKey(Long awardId) {
         LambdaQueryWrapper<Award> queryWrapper = new QueryWrapper<Award>().lambda()
-                .eq(Award::getAwardId, awardId);
+                .eq(Award::getId, awardId);
         Award award = awardMapper.selectOne(queryWrapper);
         return award.getAwardKey();
     }
@@ -192,7 +192,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     @Override
     public String queryAwardConfig(Long awardId) {
         LambdaQueryWrapper<Award> queryWrapper = new QueryWrapper<Award>().lambda()
-                .eq(Award::getAwardId, awardId);
+                .eq(Award::getId, awardId);
         Award award = awardMapper.selectOne(queryWrapper);
         return award.getAwardConfig();
     }

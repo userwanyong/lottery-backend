@@ -23,14 +23,11 @@ public class Strategy implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
-    /**
-     * 抽奖策略ID
-     */
-    private Long strategyId;
+
     /**
      * 抽奖策略描述
      */

@@ -31,7 +31,7 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
         ActivityOrderEntity activityOrderEntity = new ActivityOrderEntity();
         activityOrderEntity.setUserId(quotaOrderEntity.getUserId());
         activityOrderEntity.setSku(quotaOrderEntity.getSku());
-        activityOrderEntity.setActivityId(activityEntity.getActivityId());
+        activityOrderEntity.setActivityId(activityEntity.getId());
         activityOrderEntity.setActivityName(activityEntity.getActivityName());
         activityOrderEntity.setStrategyId(activityEntity.getStrategyId());
         activityOrderEntity.setOrderId(RandomStringUtils.randomNumeric(12));

@@ -14,7 +14,7 @@ public class ActivityEntity {
     /**
      * 活动ID
      */
-    private Long activityId;
+    private Long id;
 
     /**
      * 活动名称

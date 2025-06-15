@@ -30,7 +30,7 @@ public class ActivitySkuStockChain extends AbstractActivityChain {
 
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.debug("【活动责任链-ActivitySkuStockChain】-suk库存扣减开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        log.debug("【活动责任链-ActivitySkuStockChain】-suk库存扣减开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getId());
         //扣减总库存
         boolean status = activityService.reduceActivitySkuStock(activitySkuEntity.getSku(), activityEntity.getEndDateTime());
         if (!status) {
@@ -41,7 +41,7 @@ public class ActivitySkuStockChain extends AbstractActivityChain {
         // 写入延迟队列，通过redis延迟队列更新数据库
         repository.activitySkuStockConsumeSendQueue(ActivitySkuStockKeyVO.builder()
                 .sku(activitySkuEntity.getSku())
-                .activityId(activityEntity.getActivityId())
+                .activityId(activityEntity.getId())
                 .build());
 
         return true;

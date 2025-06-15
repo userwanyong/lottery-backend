@@ -19,15 +19,10 @@ import lombok.Data;
 @Data
 public class ActivityCount implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
-
-    /**
-     * 活动参与次数id
-     */
-    private Long activityCountId;
 
     /**
      * 总次数

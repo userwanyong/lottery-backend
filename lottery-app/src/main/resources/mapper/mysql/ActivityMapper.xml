@@ -6,7 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.Activity">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="activityName" column="activity_name" jdbcType="VARCHAR"/>
             <result property="activityDesc" column="activity_desc" jdbcType="VARCHAR"/>
             <result property="beginDateTime" column="begin_date_time" jdbcType="TIMESTAMP"/>

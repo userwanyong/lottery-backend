@@ -6,7 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.ActivityCount">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="activityCountId" column="activity_count_id" jdbcType="BIGINT"/>
             <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
             <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
             <result property="monthCount" column="month_count" jdbcType="INTEGER"/>

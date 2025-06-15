@@ -77,7 +77,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public ActivitySkuEntity queryActivitySku(Long sku) {
-        LambdaQueryWrapper<ActivitySku> queryWrapper = new QueryWrapper<ActivitySku>().lambda().eq(ActivitySku::getSku, sku);
+        LambdaQueryWrapper<ActivitySku> queryWrapper = new QueryWrapper<ActivitySku>().lambda().eq(ActivitySku::getId, sku);
         ActivitySku activitySku = activitySkuMapper.selectOne(queryWrapper);
         ActivitySkuEntity activitySkuEntity = new ActivitySkuEntity();
         BeanUtils.copyProperties(activitySku, activitySkuEntity);
@@ -93,7 +93,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             return activityEntity;
         }
         // 从库中获取数据
-        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda().eq(Activity::getActivityId, activityId);
+        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda().eq(Activity::getId, activityId);
         Activity activity = activityMapper.selectOne(queryWrapper);
         ActivityEntity dbActivityEntity = new ActivityEntity();
         BeanUtils.copyProperties(activity, dbActivityEntity);
@@ -111,7 +111,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             return activityCountEntity;
         }
         // 从库中获取数据
-        LambdaQueryWrapper<ActivityCount> queryWrapper = new QueryWrapper<ActivityCount>().lambda().eq(ActivityCount::getActivityCountId, activityCountId);
+        LambdaQueryWrapper<ActivityCount> queryWrapper = new QueryWrapper<ActivityCount>().lambda().eq(ActivityCount::getId, activityCountId);
         ActivityCount activityCount = activityCountMapper.selectOne(queryWrapper);
         ActivityCountEntity dbActivityCountEntity = new ActivityCountEntity();
         BeanUtils.copyProperties(activityCount, dbActivityCountEntity);
@@ -314,7 +314,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         LambdaUpdateWrapper<ActivitySku> queryWrapper = new LambdaUpdateWrapper<ActivitySku>()
                 .setSql("stock_count_surplus = stock_count_surplus - 1")
                 .set(ActivitySku::getUpdateTime, new Date())
-                .eq(ActivitySku::getSku, sku)
+                .eq(ActivitySku::getId, sku)
                 .gt(ActivitySku::getStockCountSurplus, 0);
         activitySkuMapper.update(null, queryWrapper);
         log.debug("[ActivityRepositoryImpl]更新活动sku库存成功 sku: {}", sku);
@@ -335,7 +335,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         LambdaUpdateWrapper<ActivitySku> queryWrapper = new LambdaUpdateWrapper<ActivitySku>()
                 .set(ActivitySku::getStockCountSurplus, 0)
                 .set(ActivitySku::getUpdateTime, new Date())
-                .eq(ActivitySku::getSku, sku);
+                .eq(ActivitySku::getId, sku);
         activitySkuMapper.update(null, queryWrapper);
         log.debug("[ActivityRepositoryImpl]清空活动sku库存成功 sku: {}", sku);
     }
@@ -562,7 +562,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         }
         //查sku数据库全部列表的id
         List<ActivitySku> activitySkus = activitySkuMapper.selectList(null);
-        resultValue = activitySkus.stream().map(ActivitySku::getSku).collect(Collectors.toList());
+        resultValue = activitySkus.stream().map(ActivitySku::getId).collect(Collectors.toList());
         redisService.setValue(cacheKey, resultValue);
         return resultValue;
     }
@@ -704,7 +704,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         ArrayList<SkuProductEntity> skuProductEntities = new ArrayList<>();
         for (ActivitySku sku : activitySkus) {
             LambdaQueryWrapper<ActivityCount> wrapper = new QueryWrapper<ActivityCount>().lambda()
-                    .eq(ActivityCount::getActivityCountId, sku.getActivityCountId());
+                    .eq(ActivityCount::getId, sku.getActivityCountId());
             ActivityCount activityCount = activityCountMapper.selectOne(wrapper);
             SkuProductEntity.ActivityCount count = new SkuProductEntity.ActivityCount();
             BeanUtils.copyProperties(activityCount, count);

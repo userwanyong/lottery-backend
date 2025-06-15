@@ -22,7 +22,7 @@ import java.util.Date;
 public class ActivityBaseChain extends AbstractActivityChain {
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getActivityId());
+        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getId());
         //是否开启
         if (!ActivityStateVO.open.equals(activityEntity.getState())) {
             throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(), ResponseCode.ACTIVITY_STATE_ERROR.getMessage());

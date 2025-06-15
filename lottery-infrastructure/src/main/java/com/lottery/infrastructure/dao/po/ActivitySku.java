@@ -20,15 +20,10 @@ import lombok.Data;
 @Data
 public class ActivitySku implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
-
-    /**
-     * 商品sku - 把每一个组合当做一个商品
-     */
-    private Long sku;
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
 
     /**
      * 活动ID

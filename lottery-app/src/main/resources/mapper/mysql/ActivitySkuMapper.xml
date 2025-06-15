@@ -5,8 +5,7 @@
 <mapper namespace="com.lottery.infrastructure.dao.ActivitySkuMapper">
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.ActivitySku">
-            <id property="id" column="id" jdbcType="INTEGER"/>
-            <result property="sku" column="sku" jdbcType="BIGINT"/>
+            <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="activityCountId" column="activity_count_id" jdbcType="BIGINT"/>
             <result property="stockCount" column="stock_count" jdbcType="INTEGER"/>

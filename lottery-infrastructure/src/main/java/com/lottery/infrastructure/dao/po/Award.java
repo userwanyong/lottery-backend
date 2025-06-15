@@ -23,14 +23,10 @@ public class Award implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
-    /**
-     * 抽奖奖品ID（内部流转使用）
-     */
-    private Long awardId;
     /**
      * 奖品对接标识（每一个都是一个对应的发奖策略）
      */

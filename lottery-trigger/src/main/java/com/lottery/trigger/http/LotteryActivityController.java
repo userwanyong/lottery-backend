@@ -33,8 +33,6 @@ import com.lottery.types.annotation.RateLimiterAccessInterceptor;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -82,75 +80,63 @@ public class LotteryActivityController implements LotteryActivityService {
     @Override
     @GetMapping("/armory")
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
-        try {
-            log.info("======================[LotteryActivityController-armory]整体装配开始 activityId:{} ======================", activityId);
-            // 1. 活动装配 suk库存、对应次数列表、该活动信息 如果已存在缓存中，直接用就行
-            activityArmory.assembleActivitySkuByActivityId(activityId);
-            log.info("[LotteryActivityController-armory]活动装配成功 activityId:{}", activityId);
-            // 2. 策略装配 该活动奖品列表、每个奖品数量、概率范围值、概率表、概率+权重表
-            strategyArmory.assembleLotteryStrategyByActivityId(activityId);
-            log.info("[LotteryActivityController-armory]策略装配成功 activityId:{}", activityId);
-            log.info("======================[LotteryActivityController-armory]整体装配成功 activityId:{} ======================", activityId);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-armory]整体装配失败 activityId:{} ======================", activityId, e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-        }
+        log.info("======================[LotteryActivityController-armory]整体装配开始 activityId:{} ======================", activityId);
+        // 1. 活动装配 suk库存、对应次数列表、该活动信息 如果已存在缓存中，直接用就行
+        activityArmory.assembleActivitySkuByActivityId(activityId);
+        log.info("[LotteryActivityController-armory]活动装配成功 activityId:{}", activityId);
+        // 2. 策略装配 该活动奖品列表、每个奖品数量、概率范围值、概率表、概率+权重表
+        strategyArmory.assembleLotteryStrategyByActivityId(activityId);
+        log.info("[LotteryActivityController-armory]策略装配成功 activityId:{}", activityId);
+        log.info("======================[LotteryActivityController-armory]整体装配成功 activityId:{} ======================", activityId);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
     @Override
     @PostMapping("/draw")
-    @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 2, blacklistCount = 3) //每秒超过2次，频次限制 累计这种情况3次，黑名单拦截 24小时后解封
+    @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 2, blacklistCount = 3)
+    //每秒超过2次，频次限制 累计这种情况3次，黑名单拦截 24小时后解封
 //    @HystrixCommand(commandProperties = {
 //            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "600")
 //    }, fallbackMethod = "drawHystrixError")
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
-        try {
-            log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
-            if ("open".equals(degradeSwitch)){
-                log.info("======================[LotteryActivityController-draw]用户抽奖结束,已进行降级处理 ======================");
-                return new BaseResponse<>(ResponseCode.DEGRADE_SWITCH.getCode(), ResponseCode.DEGRADE_SWITCH.getMessage());
-            }
-            // 1. 参数校验
-            if (StringUtils.isBlank(request.getUserId()) || request.getActivityId() == null) {
-                throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
-            }
-            // 2. 创建抽奖单
-            PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
-            log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
-            // 3. 执行抽奖
-            log.info("[LotteryActivityController-draw]执行抽奖");
-            LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
-            log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
-            // 4. 写入中奖记录
-            UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
-                    .userId(partakeOrder.getUserId())
-                    .activityId(partakeOrder.getActivityId())
-                    .strategyId(partakeOrder.getStrategyId())
-                    .userOrderId(partakeOrder.getId())
-                    .awardConfig(lotteryResEntity.getAwardConfig())
-                    .awardId(lotteryResEntity.getAwardId())
-                    .awardTitle(lotteryResEntity.getAwardTitle())
-                    .awardTime(new Date())
-                    .awardState(AwardStateVO.create)
-                    .build();
-            userAwardService.saveUserAwardRecord(userAwardRecord);
-            log.info("[LotteryActivityController-draw]写入中奖记录成功");
-            // 5. 返回结果
-            ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
-                    .awardId(Math.toIntExact(lotteryResEntity.getAwardId()))
-                    .awardTitle(lotteryResEntity.getAwardTitle())
-                    .awardIndex(lotteryResEntity.getSort())
-                    .build();
-            log.info("======================[LotteryActivityController-draw]用户抽奖结束 userId:{} activityId:{} award:{} ======================", request.getUserId(), request.getActivityId(), result);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), result);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-draw]用户抽奖异常 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId(), e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
+        if ("open".equals(degradeSwitch)) {
+            log.info("======================[LotteryActivityController-draw]用户抽奖结束,已进行降级处理 ======================");
+            return new BaseResponse<>(ResponseCode.DEGRADE_SWITCH.getCode(), ResponseCode.DEGRADE_SWITCH.getMessage());
         }
+        // 1. 参数校验
+        if (StringUtils.isBlank(request.getUserId()) || request.getActivityId() == null) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+        }
+        // 2. 创建抽奖单
+        PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
+        log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
+        // 3. 执行抽奖
+        log.info("[LotteryActivityController-draw]执行抽奖");
+        LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
+        log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
+        // 4. 写入中奖记录
+        UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
+                .userId(partakeOrder.getUserId())
+                .activityId(partakeOrder.getActivityId())
+                .strategyId(partakeOrder.getStrategyId())
+                .userOrderId(partakeOrder.getId())
+                .awardConfig(lotteryResEntity.getAwardConfig())
+                .awardId(lotteryResEntity.getAwardId())
+                .awardTitle(lotteryResEntity.getAwardTitle())
+                .awardTime(new Date())
+                .awardState(AwardStateVO.create)
+                .build();
+        userAwardService.saveUserAwardRecord(userAwardRecord);
+        log.info("[LotteryActivityController-draw]写入中奖记录成功");
+        // 5. 返回结果
+        ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
+                .awardId(Math.toIntExact(lotteryResEntity.getAwardId()))
+                .awardTitle(lotteryResEntity.getAwardTitle())
+                .awardIndex(lotteryResEntity.getSort())
+                .build();
+        log.info("======================[LotteryActivityController-draw]用户抽奖结束 userId:{} activityId:{} award:{} ======================", request.getUserId(), request.getActivityId(), result);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), result);
     }
 
     public BaseResponse<ActivityDrawResponseDTO> drawRateLimiterError(ActivityDrawRequestDTO request) {
@@ -166,144 +152,96 @@ public class LotteryActivityController implements LotteryActivityService {
     @Override
     @PostMapping("/calendar_sign_rebate")
     public BaseResponse<Boolean> calendarSignRebate(@RequestParam String userId) {
-        try {
-            log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
-            BehaviorEntity behaviorEntity = new BehaviorEntity();
-            behaviorEntity.setUserId(userId);
-            behaviorEntity.setBehaviorTypeVO(BehaviorTypeVO.SIGN);
-            behaviorEntity.setOutBusinessNo(new SimpleDateFormat("yyyyMMdd").format(new Date()));
-            List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
-            log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现成功 userId:{} orderIds:{} ======================", userId, orderIds);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-calendarSignRebate]用户签到返现异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-        }
+        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
+        BehaviorEntity behaviorEntity = new BehaviorEntity();
+        behaviorEntity.setUserId(userId);
+        behaviorEntity.setBehaviorTypeVO(BehaviorTypeVO.SIGN);
+        behaviorEntity.setOutBusinessNo(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
+        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现成功 userId:{} orderIds:{} ======================", userId, orderIds);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
     @Override
     @PostMapping("/query_user_activity_account")
     public BaseResponse<UserActivityAccountResponseDTO> queryUserActivityAccount(@RequestBody UserActivityAccountRequestDTO requestDTO) {
-        try {
-            log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息开始 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
-            // 1.参数校验
-            if (StringUtils.isBlank(requestDTO.getUserId()) || requestDTO.getActivityId() == null) {
-                throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
-            }
-            // 2.查询
-            ActivityAccountEntity activityAccountEntity = activityQuotaService.queryUserActivityAccount(requestDTO.getUserId(), requestDTO.getActivityId());
-            // 3.返回结果
-            UserActivityAccountResponseDTO res = new UserActivityAccountResponseDTO();
-            BeanUtils.copyProperties(activityAccountEntity, res);
-            log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息成功 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), res);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息异常 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId(), e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息开始 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
+        // 1.参数校验
+        if (StringUtils.isBlank(requestDTO.getUserId()) || requestDTO.getActivityId() == null) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
+        // 2.查询
+        ActivityAccountEntity activityAccountEntity = activityQuotaService.queryUserActivityAccount(requestDTO.getUserId(), requestDTO.getActivityId());
+        // 3.返回结果
+        UserActivityAccountResponseDTO res = new UserActivityAccountResponseDTO();
+        BeanUtils.copyProperties(activityAccountEntity, res);
+        log.info("======================[LotteryActivityController-queryUserActivityAccount]查询用户抽奖次数信息成功 userId:{} activityId:{} ======================", requestDTO.getUserId(), requestDTO.getActivityId());
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), res);
     }
 
     @Override
     @PostMapping("/is_calendar_sign_rebate")
     public BaseResponse<Boolean> isCalendarSignRebate(@RequestParam String userId) {
-        try {
-            log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} ======================", userId);
-            String outBusinessNo = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            boolean b = rebateService.queryIsHaveRebateOrder(userId, outBusinessNo);
-            log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} 当日是否已签到:{} ======================", userId, b);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), b);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-        }
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} ======================", userId);
+        String outBusinessNo = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        boolean b = rebateService.queryIsHaveRebateOrder(userId, outBusinessNo);
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} 当日是否已签到:{} ======================", userId, b);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), b);
     }
 
     @Override
     @GetMapping("/query_sku_product_list_by_activity_id")
     public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(@RequestParam Long activityId) {
-        try {
-            log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表开始 activityId:{} ======================", activityId);
-            if (activityId == null) {
-                return new BaseResponse<>(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
-            }
-            List<SkuProductEntity> skuProductEntities = activitySkuProductService.querySkuProductEntityListByActivityId(activityId);
-            ArrayList<SkuProductResponseDTO> skuProductResponseDTOS = new ArrayList<>();
-            for (SkuProductEntity skuProductEntity : skuProductEntities) {
-                SkuProductResponseDTO.ActivityCount activityCount = new SkuProductResponseDTO.ActivityCount();
-                BeanUtils.copyProperties(skuProductEntity.getActivityCount(), activityCount);
-                SkuProductResponseDTO skuProductResponseDTO = new SkuProductResponseDTO();
-                BeanUtils.copyProperties(skuProductEntity, skuProductResponseDTO);
-                skuProductResponseDTO.setActivityCount(activityCount);
-                skuProductResponseDTOS.add(skuProductResponseDTO);
-            }
-            log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换sku商品列表成功 activityId:{} ======================", activityId);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), skuProductResponseDTOS);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表异常 activityId:{} ======================", activityId, e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表异常 activityId:{} ======================", activityId, e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+
+        log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表开始 activityId:{} ======================", activityId);
+        if (activityId == null) {
+            return new BaseResponse<>(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
+        List<SkuProductEntity> skuProductEntities = activitySkuProductService.querySkuProductEntityListByActivityId(activityId);
+        ArrayList<SkuProductResponseDTO> skuProductResponseDTOS = new ArrayList<>();
+        for (SkuProductEntity skuProductEntity : skuProductEntities) {
+            SkuProductResponseDTO.ActivityCount activityCount = new SkuProductResponseDTO.ActivityCount();
+            BeanUtils.copyProperties(skuProductEntity.getActivityCount(), activityCount);
+            SkuProductResponseDTO skuProductResponseDTO = new SkuProductResponseDTO();
+            BeanUtils.copyProperties(skuProductEntity, skuProductResponseDTO);
+            skuProductResponseDTO.setActivityCount(activityCount);
+            skuProductResponseDTOS.add(skuProductResponseDTO);
+        }
+        log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换sku商品列表成功 activityId:{} ======================", activityId);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), skuProductResponseDTOS);
     }
 
     @Override
     @GetMapping("/query_user_credit_account")
     public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestParam String userId) {
-        try {
-            CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
-            log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分异常 userId:{} ======================", userId, e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-        }
-
+        CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
+        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
     }
 
     @Override
     @PostMapping("/credit_pay_exchange_sku")
     public BaseResponse<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
-        try {
-            log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
-            // 1.创建增加抽奖次数的额度订单
-            QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
-            quotaOrderEntity.setUserId(request.getUserId());
-            quotaOrderEntity.setSku(request.getSku());
-            quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
-            quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
-            UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-            log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} sku:{} orderId:{}", request.getUserId(), request.getSku(), quotaOrder.getOrderId());
-            // 2.创建扣减积分的积分订单
-            TradeEntity tradeEntity = new TradeEntity();
-            tradeEntity.setUserId(request.getUserId());
-            tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
-            tradeEntity.setTradeType(TradeTypeVO.REVERSE);
-            tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
-            tradeEntity.setAmount(quotaOrder.getPayAmount());
-            String creditOrder = creditService.createCreditOrder(tradeEntity);
-            log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} sku:{} creditOrder:{}", request.getUserId(), request.getSku(), creditOrder);
-            log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
-            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
-        } catch (AppException e) {
-            log.error("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
-            return new BaseResponse<>(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            log.error("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品异常 userId:{} ======================", request.getUserId(), e);
-            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
-        }
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
+        // 1.创建增加抽奖次数的额度订单
+        QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
+        quotaOrderEntity.setUserId(request.getUserId());
+        quotaOrderEntity.setSku(request.getSku());
+        quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
+        quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
+        UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} sku:{} orderId:{}", request.getUserId(), request.getSku(), quotaOrder.getOrderId());
+        // 2.创建扣减积分的积分订单
+        TradeEntity tradeEntity = new TradeEntity();
+        tradeEntity.setUserId(request.getUserId());
+        tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
+        tradeEntity.setTradeType(TradeTypeVO.REVERSE);
+        tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
+        tradeEntity.setAmount(quotaOrder.getPayAmount());
+        String creditOrder = creditService.createCreditOrder(tradeEntity);
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} sku:{} creditOrder:{}", request.getUserId(), request.getSku(), creditOrder);
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
 }

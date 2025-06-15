@@ -118,7 +118,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
             return strategyEntity;
         }
         LambdaQueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>().lambda()
-                .eq(Strategy::getStrategyId, strategyId);
+                .eq(Strategy::getId, strategyId);
         Strategy strategy = strategyMapper.selectOne(queryWrapper);
         StrategyEntity newStrategyEntity = new StrategyEntity();
         BeanUtils.copyProperties(strategy, newStrategyEntity);
@@ -318,7 +318,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public Long queryStrategyIdByActivityId(Long activityId) {
         LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
-                .eq(Activity::getActivityId, activityId);
+                .eq(Activity::getId, activityId);
         Activity activity = activityMapper.selectOne(queryWrapper);
         if (activity == null) {
             return null;
@@ -331,7 +331,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         //获取活动id
         LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
                 .eq(Activity::getStrategyId, strategyId);
-        Long activityId = activityMapper.selectOne(queryWrapper).getActivityId();
+        Long activityId = activityMapper.selectOne(queryWrapper).getId();
         // 封装参数
         ActivityAccountDay activityAccountDay = new ActivityAccountDay();
         activityAccountDay.setUserId(userId);
