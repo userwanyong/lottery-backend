@@ -37,8 +37,8 @@ public class RebateServiceImpl implements RebateService {
         List<String> rebateOrders = new ArrayList<>();
         List<RebateAggregate> aggregates = new ArrayList<>();
         for (RebateVO rebateVO : rebateVOList) {
-            // 业务id 用户ID_返利类型_外部透彻业务ID
-            String bizId = behaviorEntity.getUserId() + Constants.UNDERLINE + rebateVO.getRebateType() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
+            // 业务id 用户ID_返利类型_config_外部透彻业务ID
+            String bizId = behaviorEntity.getUserId()+ Constants.UNDERLINE+ rebateVO.getRebateType()+ Constants.UNDERLINE+rebateVO.getRebateConfig() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
             // 构建返利单
             RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
             BeanUtils.copyProperties(rebateVO, rebateOrderEntity);

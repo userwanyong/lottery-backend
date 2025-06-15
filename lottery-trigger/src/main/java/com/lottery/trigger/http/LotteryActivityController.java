@@ -78,7 +78,7 @@ public class LotteryActivityController implements LotteryActivityService {
     private String degradeSwitch;
 
     @Override
-    @GetMapping("/armory")
+    @PostMapping("/armory")
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
         log.info("======================[LotteryActivityController-armory]整体装配开始 activityId:{} ======================", activityId);
         // 1. 活动装配 suk库存、对应次数列表、该活动信息 如果已存在缓存中，直接用就行
@@ -113,7 +113,7 @@ public class LotteryActivityController implements LotteryActivityService {
         log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
         // 3. 执行抽奖
         log.info("[LotteryActivityController-draw]执行抽奖");
-        LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).build());
+        LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).activityId(partakeOrder.getActivityId()).build());
         log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
         // 4. 写入中奖记录
         UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()

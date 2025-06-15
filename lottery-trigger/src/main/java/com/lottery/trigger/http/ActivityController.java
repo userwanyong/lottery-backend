@@ -49,7 +49,7 @@ public class ActivityController implements ActivityService {
         log.info("======================[ErpOperateController-add]运营端 添加活动开始 ======================");
         // 1. 参数校验
         if (StringUtils.isBlank(request.getActivityName()) || StringUtils.isBlank(request.getActivityDesc()) ||
-                request.getActivityId() == null || request.getStrategyId() == null || request.getBeginDateTime() == null ||
+                request.getStrategyId() == null || request.getBeginDateTime() == null ||
                 request.getEndDateTime() == null || request.getState() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
@@ -66,7 +66,7 @@ public class ActivityController implements ActivityService {
         log.info("======================[ErpOperateController-update]运营端 修改活动开始 ======================");
         // 1. 参数校验
         if (StringUtils.isBlank(request.getActivityName()) || StringUtils.isBlank(request.getActivityDesc()) ||
-                request.getActivityId() == null || request.getStrategyId() == null || request.getBeginDateTime() == null ||
+                request.getStrategyId() == null || request.getBeginDateTime() == null ||
                 request.getEndDateTime() == null || request.getState() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
@@ -78,8 +78,8 @@ public class ActivityController implements ActivityService {
     }
 
     @Override
-    @PostMapping("/delete_activity")
-    public BaseResponse<Boolean> deleteActivity(Long activityId) {
+    @PostMapping("/delete_activity/{activityId}")
+    public BaseResponse<Boolean> deleteActivity(@PathVariable("activityId") Long activityId) {
         log.info("======================[ErpOperateController-delete]运营端 删除活动开始 ======================");
         repository.deleteActivityVO(activityId);
         log.info("======================[ErpOperateController-delete]运营端 删除活动成功 ======================");

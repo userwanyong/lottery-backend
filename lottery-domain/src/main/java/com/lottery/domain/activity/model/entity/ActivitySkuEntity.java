@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Data
 public class ActivitySkuEntity {
     /** 商品sku */
-    private Long sku;
+    private Long id;
     /** 活动ID */
     private Long activityId;
     /** 活动个人参数ID；在这个活动上，一个人可参与多少次活动（总、日、月） */

@@ -277,7 +277,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             eventPublisher.publish(activitySkuStockZeroMessageEvent.topic(), activitySkuStockZeroMessageEvent.buildEventMessage(sku));
         } else if (count < 0) {
             redisService.setAtomicLong(key, 0);
-            return false;
+            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
         String lockKey = key + Constants.UNDERLINE + count;
         //过期时间为活动结束后一天

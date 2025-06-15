@@ -16,11 +16,6 @@ public class ActivityVO {
     private Long id;
 
     /**
-     * 活动ID
-     */
-    private Long activityId;
-
-    /**
      * 活动名称
      */
     private String activityName;

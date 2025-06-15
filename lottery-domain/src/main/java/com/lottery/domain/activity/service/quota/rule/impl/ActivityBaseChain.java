@@ -22,7 +22,7 @@ import java.util.Date;
 public class ActivityBaseChain extends AbstractActivityChain {
     @Override
     public boolean action(ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
-        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验开始 sku:{} activityId:{}", activitySkuEntity.getSku(), activityEntity.getId());
+        log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验开始 sukId:{} activityId:{}", activitySkuEntity.getId(), activityEntity.getId());
         //是否开启
         if (!ActivityStateVO.open.equals(activityEntity.getState())) {
             throw new AppException(ResponseCode.ACTIVITY_STATE_ERROR.getCode(), ResponseCode.ACTIVITY_STATE_ERROR.getMessage());
@@ -34,7 +34,7 @@ public class ActivityBaseChain extends AbstractActivityChain {
         }
         //校验是否还存在sku库存
         if (activitySkuEntity.getStockCountSurplus() <= 0) {
-            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
+            throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ZERO.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ZERO.getMessage());
         }
         log.debug("【活动责任链-ActivityBaseChain】-日期、状态、库存校验通过");
         //执行责任链的下一个节点

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class RuleLuckAwardTreeNode implements LogicTree {
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId,Long activityId, Long awardId, String ruleValue) {
         log.debug("【规则树 RuleLuckAwardTreeNode-兜底奖节点开始执行】");
         String[] split = ruleValue.split(Constants.COLON);
         if (split.length == 0) {

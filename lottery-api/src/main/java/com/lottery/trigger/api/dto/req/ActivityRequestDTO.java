@@ -12,11 +12,7 @@ import java.util.Date;
  */
 @Data
 public class ActivityRequestDTO {
-
-    /**
-     * 活动ID
-     */
-    private Long activityId;
+    private Long id;
 
     /**
      * 活动名称

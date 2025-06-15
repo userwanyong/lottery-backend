@@ -23,6 +23,10 @@ public class LotteryReqEntity {
      */
     private Long strategyId;
     /**
+     * 活动ID
+     */
+    private Long activityId;
+    /**
      * 抽奖奖品ID
      */
     private Long awardId;

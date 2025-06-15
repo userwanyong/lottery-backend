@@ -27,10 +27,10 @@ public class RuleStockTreeNode implements LogicTree {
     private StrategyRepository repository;
 
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId,Long activityId, Long awardId, String ruleValue) {
         log.debug("【规则树 RuleStockTreeNode-库存扣减节点开始执行】");
         // 扣减库存
-        Boolean result = strategyService.reduceAwardStock(strategyId, awardId);
+        Boolean result = strategyService.reduceAwardStock(strategyId, activityId,awardId);
         // 扣减成功，放行
         if (result) {
             log.debug("【规则树 RuleStockTreeNode】-库存扣减-成功-放行 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);

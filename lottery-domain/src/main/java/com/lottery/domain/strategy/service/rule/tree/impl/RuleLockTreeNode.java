@@ -21,11 +21,11 @@ public class RuleLockTreeNode implements LogicTree {
     @Resource
     private StrategyRepository repository;
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long awardId, String ruleValue) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId,Long activityId, Long awardId, String ruleValue) {
         log.debug("【规则树 RuleLockTreeNode-次数锁节点开始执行】");
         // 判断用户抽奖次数
         // 查询用户抽奖次数 - 当天的；策略ID:活动ID 1:1 的配置，可以直接用 strategyId 查询。
-        Integer userLotteryCount = repository.queryTodayUserLotteryCount(userId, strategyId);
+        Integer userLotteryCount = repository.queryTodayUserLotteryCount(userId, strategyId,activityId);
         // 小于等于该值，拦截
         if (userLotteryCount < Long.parseLong(ruleValue)) {
             log.debug("【规则树 RuleLockTreeNode】-次数锁拦截 userId:{} strategyId:{} ruleModel:{} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_LOCK,101);

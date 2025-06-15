@@ -38,7 +38,7 @@ public class ActivityImpl implements ActivityArmory,ActivityService{
         List<ActivitySkuEntity> activitySkuEntityList = repository.queryActivitySkuListByActivityId(activityId);
         for (ActivitySkuEntity activitySkuEntity : activitySkuEntityList) {
             // 将库存数放入缓存
-            cacheActivitySkuStockCount(activitySkuEntity.getSku(),activitySkuEntity.getStockCountSurplus());
+            cacheActivitySkuStockCount(activitySkuEntity.getId(),activitySkuEntity.getStockCountSurplus());
             // 预热次数，借用查询方法放入缓存
             repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
         }

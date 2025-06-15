@@ -11,7 +11,7 @@ public class ActivityCountEntity {
     /**
      * 活动次数编号
      */
-    private Long activityCountId;
+    private Long id;
 
     /**
      * 总次数

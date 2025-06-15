@@ -39,7 +39,7 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     }
 
     @Override
-    public RuleEntity lotteryLogicTree(String userId, Long strategyId, Long awardId) {
+    public RuleEntity lotteryLogicTree(String userId, Long strategyId,Long activityId, Long awardId) {
         // 1. 查规则模型，如果为空，说明未设置规则，直接返回抽到的奖品实体
         StrategyRuleModelVO strategyRuleModelVO = repository.queryRuleModelVO(strategyId, awardId);
         if (strategyRuleModelVO == null) {
@@ -56,7 +56,7 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
         // 3. 获取规则树引擎
         DecisionTreeEngine decisionTreeEngine = defaultLogicTreeFactory.openLogicTree(ruleTreeVO);
         // 4. 执行规则树
-        return decisionTreeEngine.process(userId, strategyId, awardId);
+        return decisionTreeEngine.process(userId, strategyId, activityId,awardId);
     }
 
 

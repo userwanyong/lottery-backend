@@ -37,6 +37,6 @@ public interface StrategyService {
      * @param awardId    奖品ID
      * @return 扣减结果
      */
-    Boolean reduceAwardStock(Long strategyId, Long awardId);
+    Boolean reduceAwardStock(Long strategyId, Long activityId,Long awardId);
 
 }

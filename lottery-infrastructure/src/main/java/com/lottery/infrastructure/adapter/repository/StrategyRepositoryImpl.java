@@ -221,7 +221,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public Boolean reduceAwardStock(String key, Long strategyId) {
+    public Boolean reduceAwardStock(String key, Long strategyId,Long activityId) {
         long count = redisService.decr(key);
         if (count == 0) {
             //lottery_strategy_award_count_key_200001_123 以_分割，提取200001_123
@@ -234,7 +234,8 @@ public class StrategyRepositoryImpl implements StrategyRepository {
             return false;
         }
         LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
-                .eq(Activity::getStrategyId, strategyId);
+                .eq(Activity::getStrategyId, strategyId)
+                .eq(Activity::getId, activityId);
         Activity activity = activityMapper.selectOne(queryWrapper);
         // 1. 按照cacheKey decr 后的值，如 99、98、97 和 key 组成为库存锁的key进行使用
         // 2. 加锁为了兜底，如果后续有恢复库存，手动处理等，也不会超卖。因为所有的可用库存key，都被加锁了
@@ -327,12 +328,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public Integer queryTodayUserLotteryCount(String userId, Long strategyId) {
-        //获取活动id
-        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
-                .eq(Activity::getStrategyId, strategyId);
-        Long activityId = activityMapper.selectOne(queryWrapper).getId();
-        // 封装参数
+    public Integer queryTodayUserLotteryCount(String userId, Long strategyId,Long activityId) {
         ActivityAccountDay activityAccountDay = new ActivityAccountDay();
         activityAccountDay.setUserId(userId);
         activityAccountDay.setActivityId(activityId);

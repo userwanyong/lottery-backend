@@ -27,7 +27,7 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
         this.ruleTreeVO = ruleTreeVO;
     }
     @Override
-    public RuleEntity process(String userId, Long strategyId, Long awardId) {
+    public RuleEntity process(String userId, Long strategyId,Long activityId, Long awardId) {
         RuleEntity ruleEntity = null;
         // 1. 获取基础信息（根节点、所有规则树节点的Map集合）
         String nextNode = ruleTreeVO.getTreeRootRuleNode();
@@ -39,7 +39,7 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
             // 3.1. 获取规则树的节点
             LogicTree logicTreeNode = logicTreeNodeGroup.get(ruleTreeNode.getRuleName());
             // 3.2. 节点计算，判断走向
-            DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId, awardId,ruleTreeNode.getRuleValue());
+            DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId,activityId, awardId,ruleTreeNode.getRuleValue());
             RuleLogicCheckTypeVO ruleLogicCheckTypeVO = logicEntity.getRuleLogicCheckType();
             ruleEntity = logicEntity.getRuleEntity(); //当前：兜底奖励or通过-次数锁-库存-后的正常奖励
             log.debug("[DecisionTreeEngineImpl]决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
