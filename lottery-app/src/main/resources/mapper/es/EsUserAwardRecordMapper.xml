@@ -4,17 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lottery.infrastructure.es.EsUserAwardRecordMapper">
 
-        <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsUserAwardRecord">
-                <id property="id" column="id" jdbcType="BIGINT"/>
-                <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
-                <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
-                <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
-                <result property="userOrderId" column="_user_order_id" jdbcType="BIGINT"/>
-                <result property="awardId" column="_award_id" jdbcType="BIGINT"/>
-                <result property="awardTitle" column="_award_title" jdbcType="VARCHAR"/>
-                <result property="awardTime" column="_award_time" jdbcType="TIMESTAMP"/>
-                <result property="awardState" column="_award_state" jdbcType="VARCHAR"/>
-                <result property="createTime" column="_create_time" jdbcType="TIMESTAMP"/>
-                <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>
-        </resultMap>
+    <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsUserAwardRecord">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
+            <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
+            <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
+            <result property="userOrderId" column="_user_order_id" jdbcType="BIGINT"/>
+            <result property="awardId" column="_award_id" jdbcType="BIGINT"/>
+            <result property="awardTitle" column="_award_title" jdbcType="VARCHAR"/>
+            <result property="awardTime" column="_award_time" jdbcType="TIMESTAMP"/>
+            <result property="awardState" column="_award_state" jdbcType="VARCHAR"/>
+            <result property="createTime" column="_create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="queryUserAwardRecordVOListEs" resultMap="BaseResultMap">
+        select _user_id, _activity_id, _strategy_id, _user_order_id, _award_id, _award_title, _award_time, _award_state, _create_time, _update_time
+        from "marketing.user_award_record"
+        order by _update_time desc
+    </select>
 </mapper>

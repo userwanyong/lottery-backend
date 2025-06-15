@@ -12,4 +12,9 @@
         <result property="createTime" column="_create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
+    <select id="queryCreditAccount" resultMap="BaseResultMap">
+        select _user_id, _total_amount, _available_amount, _account_status, _create_time, _update_time
+        from "marketing.credit_account"
+        order by _update_time desc
+    </select>
 </mapper>

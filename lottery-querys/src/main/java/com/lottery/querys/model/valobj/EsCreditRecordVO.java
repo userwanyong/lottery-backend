@@ -1,4 +1,5 @@
-package com.lottery.infrastructure.es.po;
+package com.lottery.querys.model.valobj;
+
 
 import lombok.Data;
 
@@ -6,14 +7,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 用户积分订单记录
- *
  * @author 永
- * @TableName credit_record
  */
 @Data
-public class EsCreditRecord {
-
+public class EsCreditRecordVO {
     private Long id;
 
     /**
@@ -50,5 +47,4 @@ public class EsCreditRecord {
      * 更新时间
      */
     private Date updateTime;
-
 }

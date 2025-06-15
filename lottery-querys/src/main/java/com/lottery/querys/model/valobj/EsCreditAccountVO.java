@@ -1,4 +1,5 @@
-package com.lottery.infrastructure.es.po;
+package com.lottery.querys.model.valobj;
+
 
 import lombok.Data;
 
@@ -6,14 +7,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 积分账户表
- *
  * @author 永
- * @TableName credit_account
  */
 @Data
-public class EsCreditAccount {
-
+public class EsCreditAccountVO {
     private Long id;
 
     /**

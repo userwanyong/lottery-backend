@@ -1,8 +1,7 @@
 package com.lottery.trigger.api;
 
 
-import com.lottery.trigger.api.dto.res.EsActivityAccountResponseDTO;
-import com.lottery.trigger.api.dto.res.EsUserOrderResponseDTO;
+import com.lottery.trigger.api.dto.res.*;
 import com.lottery.types.model.BaseResponse;
 
 import java.util.List;
@@ -14,4 +13,9 @@ import java.util.List;
 public interface ErpOperateService {
     BaseResponse<List<EsUserOrderResponseDTO>> queryUserOrder();
     BaseResponse<List<EsActivityAccountResponseDTO>> queryActivityAccount();
+    BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecord();
+    BaseResponse<List<EsCreditAccountResponseDTO>> queryCreditAccount();
+    BaseResponse<List<EsCreditRecordResponseDTO>> queryCreditRecord();
+    BaseResponse<List<EsActivityRecordResponseDTO>> queryActivityRecord();
+    BaseResponse<List<EsUserBehaviorRebateOrderResponseDTO>> queryUserBehaviorRebateOrder();
 }

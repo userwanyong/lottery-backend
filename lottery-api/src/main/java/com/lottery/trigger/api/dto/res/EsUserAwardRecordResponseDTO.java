@@ -1,18 +1,15 @@
-package com.lottery.infrastructure.es.po;
+package com.lottery.trigger.api.dto.res;
+
 
 import lombok.Data;
 
 import java.util.Date;
 
 /**
- * 用户中奖记录表
- *
  * @author 永
- * @TableName user_award_record
  */
 @Data
-public class EsUserAwardRecord {
-
+public class EsUserAwardRecordResponseDTO {
     private Long id;
 
     /**
@@ -64,5 +61,4 @@ public class EsUserAwardRecord {
      * 更新时间
      */
     private Date updateTime;
-
 }

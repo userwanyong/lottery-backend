@@ -1,6 +1,9 @@
 package com.lottery.infrastructure.es;
 
+import com.lottery.infrastructure.es.po.EsActivityRecord;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * @author 永
@@ -8,6 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface EsActivityRecordMapper {
+    List<EsActivityRecord> queryActivityRecordVOListEs();
 }
 
 
