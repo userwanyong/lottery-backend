@@ -47,7 +47,7 @@ public class ErpOperateController implements ErpOperateService {
     @Override
     @GetMapping("/query_activity_account")
     public BaseResponse<List<EsActivityAccountResponseDTO>> queryActivityAccount() {
-        log.info("======================[ErpOperateController-queryActivityAccount]运营端 查询活动账户开始 ======================");
+        log.info("======================[ErpOperateController-queryActivityAccount]运营端 查询抽奖账户开始 ======================");
         List<EsActivityAccountVO> esActivityAccounts = repository.queryEsActivityAccountVOList();
         ArrayList<EsActivityAccountResponseDTO> list = new ArrayList<>();
         for (EsActivityAccountVO esActivityAccountVO : esActivityAccounts) {
@@ -55,7 +55,7 @@ public class ErpOperateController implements ErpOperateService {
             BeanUtils.copyProperties(esActivityAccountVO, esActivityAccountResponseDTO);
             list.add(esActivityAccountResponseDTO);
         }
-        log.info("======================[ErpOperateController-queryActivityAccount]运营端 查询活动账户成功 ======================");
+        log.info("======================[ErpOperateController-queryActivityAccount]运营端 查询抽奖账户成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
     }
 
@@ -107,7 +107,7 @@ public class ErpOperateController implements ErpOperateService {
     @Override
     @GetMapping("/query_activity_record")
     public BaseResponse<List<EsActivityRecordResponseDTO>> queryActivityRecord() {
-        log.info("======================[ErpOperateController-queryActivityRecord]运营端 查询活动账户记录开始 ======================");
+        log.info("======================[ErpOperateController-queryActivityRecord]运营端 查询抽奖账户记录开始 ======================");
         List<EsActivityRecordVO> esActivityRecords = repository.queryEsActivityRecordVOList();
         ArrayList<EsActivityRecordResponseDTO> list = new ArrayList<>();
         for (EsActivityRecordVO esActivityRecord : esActivityRecords) {
@@ -115,7 +115,7 @@ public class ErpOperateController implements ErpOperateService {
             BeanUtils.copyProperties(esActivityRecord, esActivityRecordResponseDTO);
             list.add(esActivityRecordResponseDTO);
         }
-        log.info("======================[ErpOperateController-queryActivityRecord]运营端 查询活动账户记录成功 ======================");
+        log.info("======================[ErpOperateController-queryActivityRecord]运营端 查询抽奖账户记录成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
     }
 

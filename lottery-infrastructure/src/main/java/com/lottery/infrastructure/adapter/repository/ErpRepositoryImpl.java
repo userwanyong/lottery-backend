@@ -1,9 +1,12 @@
 package com.lottery.infrastructure.adapter.repository;
 
 
+import com.lottery.infrastructure.dao.ActivityCountMapper;
 import com.lottery.infrastructure.dao.ActivityMapper;
 import com.lottery.infrastructure.dao.po.Activity;
+import com.lottery.infrastructure.dao.po.ActivityCount;
 import com.lottery.querys.adapter.repository.ErpRepository;
+import com.lottery.querys.model.valobj.ActivityCountVO;
 import com.lottery.querys.model.valobj.ActivityVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
@@ -19,6 +22,8 @@ import java.util.List;
 public class ErpRepositoryImpl implements ErpRepository {
     @Resource
     private ActivityMapper activityMapper;
+    @Resource
+    private ActivityCountMapper activityCountMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -49,5 +54,36 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteActivityVO(Long activityId) {
         activityMapper.deleteById(activityId);
+    }
+
+    @Override
+    public List<ActivityCountVO> queryActivityCountVOList() {
+        List<ActivityCount> activityCounts = activityCountMapper.selectList(null);
+        ArrayList<ActivityCountVO> list = new ArrayList<>();
+        for (ActivityCount activityCount : activityCounts) {
+            ActivityCountVO activityCountVO = new ActivityCountVO();
+            BeanUtils.copyProperties(activityCount, activityCountVO);
+            list.add(activityCountVO);
+        }
+        return list;
+    }
+
+    @Override
+    public void addActivityCountVO(ActivityCountVO activityCountVO) {
+        ActivityCount activityCount = new ActivityCount();
+        BeanUtils.copyProperties(activityCountVO, activityCount);
+        activityCountMapper.insert(activityCount);
+    }
+
+    @Override
+    public void updateActivityCountVO(ActivityCountVO activityCountVO) {
+        ActivityCount activityCount = new ActivityCount();
+        BeanUtils.copyProperties(activityCountVO, activityCount);
+        activityCountMapper.updateById(activityCount);
+    }
+
+    @Override
+    public void deleteActivityCountVO(Long activityCountId) {
+        activityCountMapper.deleteById(activityCountId);
     }
 }

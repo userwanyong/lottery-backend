@@ -31,7 +31,7 @@ public class ActivityController implements ActivityService {
     @Override
     @GetMapping("/query_activity")
     public BaseResponse<List<ActivityResponseDTO>> queryActivity() {
-        log.info("======================[ErpOperateController-queryActivity]运营端 查询活动开始 ======================");
+        log.info("======================[ActivityController-queryActivity]运营端 查询活动开始 ======================");
         List<ActivityVO> activitys = repository.queryActivityVOList();
         ArrayList<ActivityResponseDTO> list = new ArrayList<>();
         for (ActivityVO activityVO : activitys) {
@@ -39,14 +39,14 @@ public class ActivityController implements ActivityService {
             BeanUtils.copyProperties(activityVO, activityResponseDTO);
             list.add(activityResponseDTO);
         }
-        log.info("======================[ErpOperateController-queryActivity]运营端 查询活动成功 ======================");
+        log.info("======================[ActivityController-queryActivity]运营端 查询活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
     }
 
     @Override
     @PostMapping("/add_activity")
     public BaseResponse<Boolean> addActivity(@RequestBody ActivityRequestDTO request) {
-        log.info("======================[ErpOperateController-add]运营端 添加活动开始 ======================");
+        log.info("======================[ActivityController-add]运营端 添加活动开始 ======================");
         // 1. 参数校验
         if (StringUtils.isBlank(request.getActivityName()) || StringUtils.isBlank(request.getActivityDesc()) ||
                 request.getStrategyId() == null || request.getBeginDateTime() == null ||
@@ -56,14 +56,14 @@ public class ActivityController implements ActivityService {
         ActivityVO activityVO = new ActivityVO();
         BeanUtils.copyProperties(request, activityVO);
         repository.addActivityVO(activityVO);
-        log.info("======================[ErpOperateController-add]运营端 添加活动成功 ======================");
+        log.info("======================[ActivityController-add]运营端 添加活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 
     @Override
     @PostMapping("/update_activity")
     public BaseResponse<Boolean> updateActivity(@RequestBody ActivityRequestDTO request) {
-        log.info("======================[ErpOperateController-update]运营端 修改活动开始 ======================");
+        log.info("======================[ActivityController-update]运营端 修改活动开始 ======================");
         // 1. 参数校验
         if (StringUtils.isBlank(request.getActivityName()) || StringUtils.isBlank(request.getActivityDesc()) ||
                 request.getStrategyId() == null || request.getBeginDateTime() == null ||
@@ -73,16 +73,16 @@ public class ActivityController implements ActivityService {
         ActivityVO activityVO = new ActivityVO();
         BeanUtils.copyProperties(request, activityVO);
         repository.updateActivityVO(activityVO);
-        log.info("======================[ErpOperateController-update]运营端 修改活动成功 ======================");
+        log.info("======================[ActivityController-update]运营端 修改活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 
     @Override
     @PostMapping("/delete_activity/{activityId}")
     public BaseResponse<Boolean> deleteActivity(@PathVariable("activityId") Long activityId) {
-        log.info("======================[ErpOperateController-delete]运营端 删除活动开始 ======================");
+        log.info("======================[ActivityController-delete]运营端 删除活动开始 ======================");
         repository.deleteActivityVO(activityId);
-        log.info("======================[ErpOperateController-delete]运营端 删除活动成功 ======================");
+        log.info("======================[ActivityController-delete]运营端 删除活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 }
