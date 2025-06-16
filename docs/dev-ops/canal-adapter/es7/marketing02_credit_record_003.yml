@@ -6,6 +6,7 @@ esMapping:
   _id: _id
   sql: "select  t.id AS _id,
                 t.user_id AS _user_id,
+                t.activity_id AS _activity_id,
                 t.order_id AS _order_id,
                 t.trade_name AS _trade_name,
                 t.trade_type AS _trade_type,

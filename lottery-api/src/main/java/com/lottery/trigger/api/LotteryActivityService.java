@@ -1,8 +1,6 @@
 package com.lottery.trigger.api;
 
-import com.lottery.trigger.api.dto.req.ActivityDrawRequestDTO;
-import com.lottery.trigger.api.dto.req.SkuProductShopCartRequestDTO;
-import com.lottery.trigger.api.dto.req.UserActivityAccountRequestDTO;
+import com.lottery.trigger.api.dto.req.*;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
 import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
@@ -35,10 +33,10 @@ public interface LotteryActivityService {
     /**
      * 日历签到返利接口
      *
-     * @param userId 用户ID
+     * @param calendarSignRebateRequestDTO 参数
      * @return 签到结果
      */
-    BaseResponse<Boolean> calendarSignRebate(String userId);
+    BaseResponse<Boolean> calendarSignRebate(CalendarSignRebateRequestDTO calendarSignRebateRequestDTO);
 
     /**
      * 查询账户额度接口
@@ -51,10 +49,10 @@ public interface LotteryActivityService {
     /**
      * 查询今日是否已签到
      *
-     * @param userId 用户id
+     * @param calendarSignRebateRequestDTO 入参
      * @return Boolean
      */
-    BaseResponse<Boolean> isCalendarSignRebate(String userId);
+    BaseResponse<Boolean> isCalendarSignRebate(CalendarSignRebateRequestDTO calendarSignRebateRequestDTO);
 
     /**
      * 查询sku商品集合
@@ -67,10 +65,10 @@ public interface LotteryActivityService {
     /**
      * 查询用户积分值
      *
-     * @param userId 用户ID
+     * @param requestDTO 入参
      * @return 可用积分
      */
-    BaseResponse<BigDecimal> queryUserCreditAccount(String userId);
+    BaseResponse<BigDecimal> queryUserCreditAccount(UserCreditAccountRequestDTO requestDTO);
 
     /**
      * 积分支付兑换商品

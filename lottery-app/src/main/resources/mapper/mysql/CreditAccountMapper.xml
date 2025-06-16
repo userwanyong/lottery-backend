@@ -7,6 +7,7 @@
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.CreditAccount">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="totalAmount" column="total_amount" jdbcType="DECIMAL"/>
             <result property="availableAmount" column="available_amount" jdbcType="DECIMAL"/>
             <result property="accountStatus" column="account_status" jdbcType="VARCHAR"/>
@@ -17,13 +18,13 @@
         update credit_account
         set total_amount     = total_amount + #{totalAmount},
             available_amount = available_amount + #{availableAmount}
-        where user_id = #{userId}
+        where user_id = #{userId} and activity_id = #{activityId}
     </update>
 
     <update id="reduce" parameterType="com.lottery.infrastructure.dao.po.CreditAccount">
         update credit_account
         set  available_amount = available_amount - #{availableAmount}
-        where user_id = #{userId}
+        where user_id = #{userId} and activity_id = #{activityId}
     </update>
 
 </mapper>

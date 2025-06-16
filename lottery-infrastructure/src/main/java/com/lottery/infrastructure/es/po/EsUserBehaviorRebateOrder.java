@@ -22,6 +22,11 @@ public class EsUserBehaviorRebateOrder {
      */
     private String userId;
 
+    /**
+     * 活动ID
+     */
+    private Long activityId;
+
 
     /**
      * 行为类型（sign 签到、openai_pay 支付）

@@ -46,6 +46,10 @@ public class SendRebateMessageEvent extends BaseEvent<SendRebateMessageEvent.Reb
          */
         private String userId;
         /**
+         * 活动ID
+         */
+        private Long activityId;
+        /**
          * 返利描述
          */
         private String rebateDesc;

@@ -9,7 +9,6 @@ esMapping:
                 t.sku as _sku,
                 t.activity_id as _activity_id,
                 t.activity_name as _activity_name,
-                t.strategy_id as _strategy_id,
                 t.total_count as _total_count,
                 t.day_count as _day_count,
                 t.month_count as _month_count,

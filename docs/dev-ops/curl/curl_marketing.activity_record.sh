@@ -7,7 +7,6 @@ curl -X PUT "http://127.0.0.1:9200/marketing.activity_record" -H 'Content-Type: 
         "_sku":{"type": "text"},
         "_activity_id":{"type": "text"},
         "_activity_name":{"type": "text"},
-        "_strategy_id":{"type": "text"},
         "_total_count":{"type": "text"},
         "_day_count":{"type": "text"},
         "_month_count":{"type": "text"},

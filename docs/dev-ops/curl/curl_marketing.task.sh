@@ -5,6 +5,7 @@ curl -X PUT "http://127.0.0.1:9200/marketing.task" -H 'Content-Type: application
     "properties": {
       "_topic": {"type": "keyword"},
       "_user_id": {"type": "keyword"},
+      "_activity_id": {"type": "keyword"},
       "_message_id": {"type": "keyword"},
       "_message": {"type": "text"},
       "_state": {"type": "keyword"},

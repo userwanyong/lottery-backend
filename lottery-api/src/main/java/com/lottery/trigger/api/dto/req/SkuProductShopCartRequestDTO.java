@@ -13,6 +13,10 @@ public class SkuProductShopCartRequestDTO {
      */
     private String userId;
     /**
+     * 活动ID
+     */
+    private Long activityId;
+    /**
      * sku 商品
      */
     private Long sku;

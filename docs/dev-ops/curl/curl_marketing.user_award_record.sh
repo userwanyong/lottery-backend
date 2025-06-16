@@ -6,7 +6,7 @@ curl -X PUT "http://127.0.0.1:9200/marketing.user_award_record" -H 'Content-Type
       "_user_id": {"type": "keyword"},
       "_activity_id": {"type": "long"},
       "_strategy_id": {"type": "long"},
-      "_order_id": {"type": "keyword"},
+      "_user_order_id": {"type": "keyword"},
       "_award_id": {"type": "long"},
       "_award_title": {"type": "text"},
       "_award_time": {"type": "date"},

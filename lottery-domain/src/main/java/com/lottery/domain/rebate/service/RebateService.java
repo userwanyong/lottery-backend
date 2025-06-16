@@ -14,5 +14,5 @@ public interface RebateService {
 
     List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
 
-    boolean queryIsHaveRebateOrder(String userId, String outBusinessNo);
+    boolean queryIsHaveRebateOrder(String userId, Long activityId,String outBusinessNo);
 }

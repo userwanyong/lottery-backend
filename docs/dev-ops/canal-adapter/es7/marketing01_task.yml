@@ -7,6 +7,7 @@ esMapping:
   sql: "select  t.id AS _id,
                 t.topic AS _topic,
                 t.user_id AS _user_id,
+                t.activity_id AS _activity_id,
                 t.message_id AS _message_id,
                 t.message AS _message,
                 t.state AS _state,

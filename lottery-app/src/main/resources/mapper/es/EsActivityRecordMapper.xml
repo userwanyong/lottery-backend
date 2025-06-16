@@ -10,7 +10,6 @@
         <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
         <result property="sku" column="_sku" jdbcType="BIGINT"/>
         <result property="activityName" column="_activity_name" jdbcType="VARCHAR"/>
-        <result property="strategyId" column="_strategy_id" jdbcType="BIGINT"/>
         <result property="totalCount" column="_total_count" jdbcType="INTEGER"/>
         <result property="dayCount" column="_day_count" jdbcType="INTEGER"/>
         <result property="monthCount" column="_month_count" jdbcType="INTEGER"/>
@@ -21,7 +20,7 @@
         <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
     <select id="queryActivityRecordVOListEs" resultMap="BaseResultMap">
-        select _user_id, _activity_id, _sku, _activity_name, _strategy_id, _total_count, _day_count, _month_count, _pay_amount, _state, _out_business_no, _create_time, _update_time
+        select _user_id, _activity_id, _sku, _activity_name, _total_count, _day_count, _month_count, _pay_amount, _state, _out_business_no, _create_time, _update_time
         from "marketing.activity_record"
         order by _update_time desc
     </select>

@@ -4,6 +4,7 @@ curl -X PUT "http://127.0.0.1:9200/marketing.credit_record" -H 'Content-Type: ap
   "mappings": {
     "properties": {
       "_user_id": {"type": "keyword"},
+      "_activity_id": {"type": "keyword"},
       "_trade_name": {"type": "text"},
       "_trade_type": {"type": "keyword"},
       "_trade_amount": {"type": "scaled_float", "scaling_factor": 100},

@@ -16,6 +16,10 @@ public class TaskEntity {
      */
     private String userId;
     /**
+     * 活动ID
+     */
+    private Long activityId;
+    /**
      * 消息主题
      */
     private String topic;

@@ -6,6 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.UserBehaviorRebateOrder">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="behaviorType" column="behavior_type" jdbcType="VARCHAR"/>
             <result property="rebateDesc" column="rebate_desc" jdbcType="VARCHAR"/>

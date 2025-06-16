@@ -50,6 +50,7 @@ public class RebateMessageCustomer {
                     QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
                     quotaOrderEntity.setSku(Long.valueOf(data.getRebateConfig()));
                     quotaOrderEntity.setUserId(data.getUserId());
+                    quotaOrderEntity.setActivityId(data.getActivityId());
                     quotaOrderEntity.setOutBusinessNo(data.getBizId());
                     quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.rebate_no_pay_trade);
                     activityQuotaService.createQuotaOrder(quotaOrderEntity);
@@ -58,6 +59,7 @@ public class RebateMessageCustomer {
                 case "integral":
                     TradeEntity tradeEntity = new TradeEntity();
                     tradeEntity.setUserId(data.getUserId());
+                    tradeEntity.setActivityId(data.getActivityId());
                     tradeEntity.setOutBusinessNo(data.getBizId());
                     tradeEntity.setTradeName(TradeNameVO.REBATE);
                     tradeEntity.setTradeType(TradeTypeVO.FORWARD);

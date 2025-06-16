@@ -22,6 +22,11 @@ public class EsCreditRecord {
     private String userId;
 
     /**
+     * 活动ID
+     */
+    private Long activityId;
+
+    /**
      * 交易名称
      */
     private String tradeName;

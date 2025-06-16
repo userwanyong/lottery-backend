@@ -8,6 +8,7 @@
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="topic" column="_topic" jdbcType="VARCHAR"/>
         <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
+        <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
         <result property="messageId" column="_message_id" jdbcType="VARCHAR"/>
         <result property="message" column="_message" jdbcType="VARCHAR"/>
         <result property="state" column="_state" jdbcType="VARCHAR"/>

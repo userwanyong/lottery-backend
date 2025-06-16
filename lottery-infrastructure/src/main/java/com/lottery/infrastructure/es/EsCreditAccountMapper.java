@@ -12,7 +12,7 @@ import java.util.List;
  * @description 针对表【credit_account(积分账户表)】的数据库操作Mapper
  */
 @Mapper
-public interface EsCreditAccountMapper extends BaseMapper<CreditAccount> {
+public interface EsCreditAccountMapper extends BaseMapper<EsCreditAccount> {
 
     List<EsCreditAccount> queryCreditAccount();
 }

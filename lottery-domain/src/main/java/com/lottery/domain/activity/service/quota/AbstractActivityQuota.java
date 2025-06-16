@@ -35,6 +35,7 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
     public UnpaidQuotaOrderEntity createQuotaOrder(QuotaOrderEntity quotaOrderEntity) {
         // 1. 参数校验
         String userId = quotaOrderEntity.getUserId();
+        Long activityId = quotaOrderEntity.getActivityId();
         Long sku = quotaOrderEntity.getSku();
         String outBusinessNo = quotaOrderEntity.getOutBusinessNo();
         if (sku == null || StringUtils.isBlank(userId) || StringUtils.isBlank(outBusinessNo)) {
@@ -57,7 +58,7 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
 
         // 4. 账户额度 【交易属性的兑换，需要校验额度账户】// todo 考虑责任链？
         if (OrderTradeTypeVO.credit_pay_trade.equals(quotaOrderEntity.getOrderTradeTypeVO())){
-            BigDecimal availableAmount = activityRepository.queryUserCreditAccountAmount(userId);
+            BigDecimal availableAmount = activityRepository.queryUserCreditAccountAmount(userId,activityId);
             if (availableAmount.compareTo(activitySkuEntity.getProductAmount()) < 0) {
                 throw new AppException(ResponseCode.USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT.getCode(), ResponseCode.USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT.getMessage());
             }
@@ -78,6 +79,7 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
         ActivityOrderEntity activityOrderEntity = createQuotaOrderAggregate.getActivityOrderEntity();
         return UnpaidQuotaOrderEntity.builder()
                 .userId(activityOrderEntity.getUserId())
+                .activityId(activityOrderEntity.getActivityId())
                 .orderId(activityOrderEntity.getOrderId())
                 .outBusinessNo(activityOrderEntity.getOutBusinessNo())
                 .payAmount(activityOrderEntity.getPayAmount())

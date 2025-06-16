@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.es.po.EsCreditRecord">
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="userId" column="_user_id" jdbcType="VARCHAR"/>
+        <result property="activityId" column="_activity_id" jdbcType="BIGINT"/>
         <result property="tradeName" column="_trade_name" jdbcType="VARCHAR"/>
         <result property="tradeType" column="_trade_type" jdbcType="VARCHAR"/>
         <result property="tradeAmount" column="_trade_amount" jdbcType="DECIMAL"/>
@@ -14,7 +15,7 @@
         <result property="updateTime" column="_update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
     <select id="queryCreditRecordVOListEs" resultMap="BaseResultMap">
-        select _user_id, _trade_name, _trade_type, _trade_amount, _out_business_no, _create_time, _update_time
+        select _user_id, _activity_id,_trade_name, _trade_type, _trade_amount, _out_business_no, _create_time, _update_time
         from "marketing.credit_record"
         order by _update_time desc
     </select>

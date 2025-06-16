@@ -20,5 +20,5 @@ public interface CreditService {
      * @param userId 用户id
      * @return CreditAccountEntity
      */
-    CreditAccountEntity queryUserCreditAccount(String userId);
+    CreditAccountEntity queryUserCreditAccount(String userId,Long activityId);
 }

@@ -35,6 +35,11 @@ public class Task implements Serializable {
     private String userId;
 
     /**
+     * 活动ID
+     */
+    private Long activityId;
+
+    /**
      * 消息ID
      */
     private String messageId;

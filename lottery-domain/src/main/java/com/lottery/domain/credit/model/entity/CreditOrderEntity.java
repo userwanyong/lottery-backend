@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 public class CreditOrderEntity {
     /** 用户ID */
     private String userId;
+    /** 活动ID */
+    private Long activityId;
     /** 订单ID */
     private String orderId;
     /** 交易名称 */

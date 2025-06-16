@@ -25,18 +25,19 @@ public class CreditServiceImpl implements CreditService{
     @Override
     public String createCreditOrder(TradeEntity tradeEntity) {
         // 构建积分账户实体
-        CreditAccountEntity creditAccountEntity = TradeAggregate.buildCreditAccountEntity(tradeEntity.getUserId(), tradeEntity.getAmount());
+        CreditAccountEntity creditAccountEntity = TradeAggregate.buildCreditAccountEntity(tradeEntity.getUserId(),tradeEntity.getActivityId(), tradeEntity.getAmount());
         // 构建积分订单实体
-        CreditOrderEntity creditOrderEntity = TradeAggregate.buildCreditOrderEntity(tradeEntity.getUserId(), tradeEntity.getTradeName(), tradeEntity.getTradeType(), tradeEntity.getAmount(), tradeEntity.getOutBusinessNo());
+        CreditOrderEntity creditOrderEntity = TradeAggregate.buildCreditOrderEntity(tradeEntity.getUserId(),tradeEntity.getActivityId(), tradeEntity.getTradeName(), tradeEntity.getTradeType(), tradeEntity.getAmount(), tradeEntity.getOutBusinessNo());
         // 构建消息对象
         CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage creditAdjustSuccessMessage = new CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage();
         creditAdjustSuccessMessage.setUserId(tradeEntity.getUserId());
+        creditAdjustSuccessMessage.setActivityId(tradeEntity.getActivityId());
         creditAdjustSuccessMessage.setOrderId(creditOrderEntity.getOrderId());
         creditAdjustSuccessMessage.setAmount(creditOrderEntity.getTradeAmount());
         creditAdjustSuccessMessage.setOutBusinessNo(creditOrderEntity.getOutBusinessNo());
         BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> creditAdjustSuccessMessageEventMessage = creditAdjustSuccessMessageEvent.buildEventMessage(creditAdjustSuccessMessage);
         // 构建任务对象
-        TaskEntity taskEntity = TradeAggregate.buildTaskEntity(tradeEntity.getUserId(), creditAdjustSuccessMessageEvent.topic(), creditAdjustSuccessMessageEventMessage.getId(), creditAdjustSuccessMessageEventMessage);
+        TaskEntity taskEntity = TradeAggregate.buildTaskEntity(tradeEntity.getUserId(),tradeEntity.getActivityId(), creditAdjustSuccessMessageEvent.topic(), creditAdjustSuccessMessageEventMessage.getId(), creditAdjustSuccessMessageEventMessage);
         // 构建聚合对象
         TradeAggregate tradeAggregate = new TradeAggregate();
         tradeAggregate.setUserId(tradeEntity.getUserId());
@@ -50,7 +51,7 @@ public class CreditServiceImpl implements CreditService{
     }
 
     @Override
-    public CreditAccountEntity queryUserCreditAccount(String userId) {
-        return repository.queryUserCreditAccount(userId);
+    public CreditAccountEntity queryUserCreditAccount(String userId,Long activityId) {
+        return repository.queryUserCreditAccount(userId,activityId);
     }
 }

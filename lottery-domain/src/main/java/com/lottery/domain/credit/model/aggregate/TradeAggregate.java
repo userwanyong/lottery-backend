@@ -28,13 +28,14 @@ public class TradeAggregate {
     // 任务实体
     private TaskEntity taskEntity;
 
-    public static CreditAccountEntity buildCreditAccountEntity(String userId, BigDecimal creditAmount) {
-        return CreditAccountEntity.builder().userId(userId).creditAmount(creditAmount).build();
+    public static CreditAccountEntity buildCreditAccountEntity(String userId, Long activityId,BigDecimal creditAmount) {
+        return CreditAccountEntity.builder().userId(userId).activityId(activityId).creditAmount(creditAmount).build();
     }
 
-    public static CreditOrderEntity buildCreditOrderEntity(String userId, TradeNameVO tradeName, TradeTypeVO tradeType, BigDecimal tradeAmount, String outBusinessNo) {
+    public static CreditOrderEntity buildCreditOrderEntity(String userId, Long activityId,TradeNameVO tradeName, TradeTypeVO tradeType, BigDecimal tradeAmount, String outBusinessNo) {
         return CreditOrderEntity.builder()
                 .userId(userId)
+                .activityId(activityId)
                 .orderId(RandomStringUtils.randomNumeric(12))
                 .tradeName(tradeName)
                 .tradeType(tradeType)
@@ -43,9 +44,10 @@ public class TradeAggregate {
                 .build();
     }
 
-    public static TaskEntity buildTaskEntity(String userId, String topic, String messageId, BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> message) {
+    public static TaskEntity buildTaskEntity(String userId,Long activityId, String topic, String messageId, BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> message) {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setUserId(userId);
+        taskEntity.setActivityId(activityId);
         taskEntity.setTopic(topic);
         taskEntity.setMessageId(messageId);
         taskEntity.setMessage(message);

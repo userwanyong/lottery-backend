@@ -12,7 +12,7 @@ import java.util.List;
  * @description 针对表【user_award_record(用户中奖记录表)】的数据库操作Mapper
  */
 @Mapper
-public interface EsUserAwardRecordMapper extends BaseMapper<UserAwardRecord> {
+public interface EsUserAwardRecordMapper extends BaseMapper<EsUserAwardRecord> {
 
     List<EsUserAwardRecord> queryUserAwardRecordVOListEs();
 }

@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 public class UnpaidQuotaOrderEntity {
     // 用户ID
     private String userId;
+    // 活动ID
+    private Long activityId;
     // 订单ID
     private String orderId;
     // 外部透传ID

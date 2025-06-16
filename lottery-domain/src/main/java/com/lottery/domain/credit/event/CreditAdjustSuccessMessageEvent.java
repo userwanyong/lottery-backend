@@ -46,6 +46,10 @@ public class CreditAdjustSuccessMessageEvent extends BaseEvent<CreditAdjustSucce
          */
         private String userId;
         /**
+         * 活动ID
+         */
+        private Long activityId;
+        /**
          * 订单ID
          */
         private String orderId;

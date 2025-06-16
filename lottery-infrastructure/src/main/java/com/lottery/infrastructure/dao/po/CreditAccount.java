@@ -31,6 +31,11 @@ public class CreditAccount implements Serializable {
     private String userId;
 
     /**
+     * 活动ID
+     */
+    private Long activityId;
+
+    /**
      * 总积分，显示总账户值，记得一个人获得的总积分
      */
     private BigDecimal totalAmount;

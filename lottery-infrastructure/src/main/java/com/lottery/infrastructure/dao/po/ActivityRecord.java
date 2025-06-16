@@ -45,11 +45,6 @@ public class ActivityRecord implements Serializable {
      */
     private String activityName;
 
-    /**
-     * 抽奖策略ID
-     */
-    private Long strategyId;
-
 
     /**
      * 总次数

@@ -131,7 +131,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityRecord.setSku(activityOrderEntity.getSku());
             activityRecord.setActivityId(activityOrderEntity.getActivityId());
             activityRecord.setActivityName(activityOrderEntity.getActivityName());
-            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
+//            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
             activityRecord.setTotalCount(activityOrderEntity.getTotalCount());
             activityRecord.setDayCount(activityOrderEntity.getDayCount());
             activityRecord.setMonthCount(activityOrderEntity.getMonthCount());
@@ -228,7 +228,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityRecord.setSku(activityOrderEntity.getSku());
             activityRecord.setActivityId(activityOrderEntity.getActivityId());
             activityRecord.setActivityName(activityOrderEntity.getActivityName());
-            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
+//            activityRecord.setStrategyId(activityOrderEntity.getStrategyId());
             activityRecord.setTotalCount(activityOrderEntity.getTotalCount());
             activityRecord.setDayCount(activityOrderEntity.getDayCount());
             activityRecord.setMonthCount(activityOrderEntity.getMonthCount());
@@ -608,7 +608,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             // 查询订单
             LambdaQueryWrapper<ActivityRecord> queryWrapper = new QueryWrapper<ActivityRecord>().lambda()
                     .eq(ActivityRecord::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
-                    .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId());
+                    .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId())
+                    .eq(ActivityRecord::getActivityId, deliveryOrderEntity.getActivityId());
             ActivityRecord activityRecord = activityRecordMapper.selectOne(queryWrapper);
             if (activityRecord == null) {
                 return;
@@ -641,6 +642,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                             .eq(ActivityRecord::getOutBusinessNo, deliveryOrderEntity.getOutBusinessNo())
                             .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId())
                             .eq(ActivityRecord::getState, OrderStateVO.wait_pay)
+                            .eq(ActivityRecord::getActivityId, activityRecord.getActivityId())
                             .set(ActivityRecord::getState, OrderStateVO.completed);
                     int updateCount = activityRecordMapper.update(null, updateWrapper);
                     if (1 != updateCount) {
@@ -721,6 +723,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         LambdaQueryWrapper<ActivityRecord> queryWrapper = new QueryWrapper<ActivityRecord>().lambda()
                 .eq(ActivityRecord::getUserId, quotaOrderEntity.getUserId())
                 .eq(ActivityRecord::getSku, quotaOrderEntity.getSku())
+                .eq(ActivityRecord::getActivityId, quotaOrderEntity.getActivityId())
                 .eq(ActivityRecord::getState, OrderStateVO.wait_pay);
         try {
             dbRouter.doRouter(quotaOrderEntity.getUserId());
@@ -730,6 +733,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             }
             return UnpaidQuotaOrderEntity.builder()
                     .userId(activityRecord.getUserId())
+                    .activityId(activityRecord.getActivityId())
                     .outBusinessNo(activityRecord.getOutBusinessNo())
                     .payAmount(activityRecord.getPayAmount())
                     .build();
@@ -739,10 +743,12 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public BigDecimal queryUserCreditAccountAmount(String userId) {
+    public BigDecimal queryUserCreditAccountAmount(String userId,Long activityId) {
         try {
             dbRouter.doRouter(userId);
-            LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>().eq(CreditAccount::getUserId, userId);
+            LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>()
+                    .eq(CreditAccount::getUserId, userId)
+                    .eq(CreditAccount::getActivityId, activityId);
             CreditAccount userCreditAccount = creditAccountMapper.selectOne(queryWrapper);
             if (userCreditAccount == null) {
                 return BigDecimal.ZERO;

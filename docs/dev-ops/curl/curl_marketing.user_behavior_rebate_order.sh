@@ -4,7 +4,7 @@ curl -X PUT "http://127.0.0.1:9200/marketing.user_behavior_rebate_order" -H 'Con
   "mappings": {
     "properties": {
       "_user_id": {"type": "keyword"},
-      "_activity_order_id": {"type": "keyword"},
+      "_activity_id": {"type": "keyword"},
       "_behavior_type": {"type": "keyword"},
       "_rebate_desc": {"type": "text"},
       "_rebate_type": {"type": "keyword"},

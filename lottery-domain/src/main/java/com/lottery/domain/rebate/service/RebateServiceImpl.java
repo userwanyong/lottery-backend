@@ -31,18 +31,19 @@ public class RebateServiceImpl implements RebateService {
 
     @Override
     public List<String> createRebateOrder(BehaviorEntity behaviorEntity) {
-        // 1.根据行为类型查询返利配置表
-        List<RebateVO> rebateVOList = rebateRepository.queryRebateConfig(behaviorEntity.getBehaviorTypeVO());
+        // 1.根据行为类型+activityId查询返利配置表
+        List<RebateVO> rebateVOList = rebateRepository.queryRebateConfig(behaviorEntity);
         // 2.构建聚合对象 一个行为可能对应多个返利配置
         List<String> rebateOrders = new ArrayList<>();
         List<RebateAggregate> aggregates = new ArrayList<>();
         for (RebateVO rebateVO : rebateVOList) {
-            // 业务id 用户ID_返利类型_config_外部透彻业务ID
-            String bizId = behaviorEntity.getUserId()+ Constants.UNDERLINE+ rebateVO.getRebateType()+ Constants.UNDERLINE+rebateVO.getRebateConfig() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
+            // 业务id 用户ID_活动ID_返利类型_返利配置_外部透彻业务ID
+            String bizId = behaviorEntity.getUserId()+Constants.UNDERLINE+behaviorEntity.getActivityId()+ Constants.UNDERLINE+ rebateVO.getRebateType()+ Constants.UNDERLINE+rebateVO.getRebateConfig() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
             // 构建返利单
             RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
             BeanUtils.copyProperties(rebateVO, rebateOrderEntity);
             rebateOrderEntity.setOutBusinessNo(behaviorEntity.getOutBusinessNo());
+            rebateOrderEntity.setActivityId(behaviorEntity.getActivityId());
             rebateOrderEntity.setBizId(bizId);
             rebateOrderEntity.setUserId(behaviorEntity.getUserId());
             rebateOrderEntity.setOrderId(RandomStringUtils.randomNumeric(12));
@@ -52,6 +53,7 @@ public class RebateServiceImpl implements RebateService {
             // 构建mq消息对象
             SendRebateMessageEvent.RebateMessage message = SendRebateMessageEvent.RebateMessage.builder()
                     .userId(behaviorEntity.getUserId())
+                    .activityId(behaviorEntity.getActivityId())
                     .rebateType(rebateVO.getRebateType())
                     .rebateConfig(rebateVO.getRebateConfig())
                     .rebateDesc(rebateVO.getRebateDesc())
@@ -61,6 +63,7 @@ public class RebateServiceImpl implements RebateService {
             // 构建任务对象
             TaskEntity taskEntity = new TaskEntity();
             taskEntity.setUserId(behaviorEntity.getUserId());
+            taskEntity.setActivityId(behaviorEntity.getActivityId());
             taskEntity.setTopic(sendRebateMessageEvent.topic());
             taskEntity.setMessageId(rebateMessageEventMessage.getId());
             taskEntity.setMessage(rebateMessageEventMessage);
@@ -69,6 +72,7 @@ public class RebateServiceImpl implements RebateService {
             // 构建聚合
             RebateAggregate rebateAggregate = new RebateAggregate();
             rebateAggregate.setUserId(behaviorEntity.getUserId());
+            rebateAggregate.setActivityId(behaviorEntity.getActivityId());
             rebateAggregate.setRebateOrderEntity(rebateOrderEntity);
             rebateAggregate.setTaskEntity(taskEntity);
             aggregates.add(rebateAggregate);
@@ -85,8 +89,8 @@ public class RebateServiceImpl implements RebateService {
     }
 
     @Override
-    public boolean queryIsHaveRebateOrder(String userId, String outBusinessNo) {
-        return rebateRepository.queryIsHaveRebateOrder(userId,outBusinessNo);
+    public boolean queryIsHaveRebateOrder(String userId, Long activityId,String outBusinessNo) {
+        return rebateRepository.queryIsHaveRebateOrder(userId,activityId,outBusinessNo);
     }
 
 }

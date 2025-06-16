@@ -12,7 +12,7 @@ import java.util.List;
  * @description es查询
  */
 @Mapper
-public interface EsCreditRecordMapper extends BaseMapper<CreditRecord> {
+public interface EsCreditRecordMapper extends BaseMapper<EsCreditRecord> {
 
     List<EsCreditRecord> queryCreditRecordVOListEs();
 }

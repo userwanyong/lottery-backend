@@ -28,6 +28,10 @@ public class UserBehaviorRebateOrder implements Serializable {
      * 用户ID
      */
     private String userId;
+    /**
+     * 活动ID
+     */
+    private Long activityId;
 
 
     /**

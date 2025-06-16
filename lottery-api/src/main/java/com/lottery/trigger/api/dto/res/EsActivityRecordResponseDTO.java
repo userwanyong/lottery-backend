@@ -33,10 +33,6 @@ public class EsActivityRecordResponseDTO {
      */
     private String activityName;
 
-    /**
-     * 抽奖策略ID
-     */
-    private Long strategyId;
 
 
     /**

@@ -2,6 +2,7 @@ package com.lottery.infrastructure.es;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lottery.infrastructure.dao.po.ActivityAccountDay;
+import com.lottery.infrastructure.es.po.EsActivityAccountDay;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @description 针对表【activity_account_day(抽奖活动账户表-日次数)】的数据库操作Mapper
  */
 @Mapper
-public interface EsActivityAccountDayMapper extends BaseMapper<ActivityAccountDay> {
+public interface EsActivityAccountDayMapper extends BaseMapper<EsActivityAccountDay> {
 
 }
 

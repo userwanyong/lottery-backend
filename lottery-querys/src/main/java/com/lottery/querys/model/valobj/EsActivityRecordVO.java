@@ -33,10 +33,6 @@ public class EsActivityRecordVO {
      */
     private String activityName;
 
-    /**
-     * 抽奖策略ID
-     */
-    private Long strategyId;
 
 
     /**

@@ -38,6 +38,7 @@ public class CreditAdjustSuccessCustomer {
             // 积分发货
             DeliveryOrderEntity deliveryOrderEntity = new DeliveryOrderEntity();
             deliveryOrderEntity.setUserId(creditAdjustSuccessMessage.getUserId());
+            deliveryOrderEntity.setActivityId(creditAdjustSuccessMessage.getActivityId());
             deliveryOrderEntity.setOutBusinessNo(creditAdjustSuccessMessage.getOutBusinessNo());
             activityQuotaService.updateQuotaOrder(deliveryOrderEntity);
             log.info("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货成功 topic: {} message: {}", topic, message);

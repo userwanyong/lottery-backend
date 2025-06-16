@@ -62,12 +62,14 @@ public class CreditRepositoryImpl implements CreditRepository {
         CreditAccount creditAccount = new CreditAccount();
         BigDecimal creditAmount = creditAccountEntity.getCreditAmount();
         creditAccount.setUserId(userId);
+        creditAccount.setActivityId(creditAccountEntity.getActivityId());
         creditAccount.setAccountStatus(CreditAccountStatusVO.OPEN.getCode());
         creditAccount.setTotalAmount(creditAmount);
         creditAccount.setAvailableAmount(creditAccountEntity.getCreditAmount());
 
         CreditRecord creditRecord = new CreditRecord();
         creditRecord.setUserId(userId);
+        creditRecord.setActivityId(creditOrderEntity.getActivityId());
         creditRecord.setTradeName(creditOrderEntity.getTradeName().getName());
         creditRecord.setTradeType(creditOrderEntity.getTradeType().getCode());
         creditRecord.setTradeAmount(creditOrderEntity.getTradeAmount());
@@ -75,6 +77,7 @@ public class CreditRepositoryImpl implements CreditRepository {
 
         Task task = new Task();
         task.setUserId(taskEntity.getUserId());
+        task.setActivityId(taskEntity.getActivityId());
         task.setTopic(taskEntity.getTopic());
         task.setMessageId(taskEntity.getMessageId());
         task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
@@ -89,7 +92,8 @@ public class CreditRepositoryImpl implements CreditRepository {
                 try {
                     // 保存账户
                     LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
-                            .eq(CreditAccount::getUserId, userId);
+                            .eq(CreditAccount::getUserId, userId)
+                            .eq(CreditAccount::getActivityId, creditOrderEntity.getActivityId());
                     CreditAccount account = creditAccountMapper.selectOne(queryWrapper);
                     if (account == null) {
                         // 新增
@@ -137,11 +141,12 @@ public class CreditRepositoryImpl implements CreditRepository {
     }
 
     @Override
-    public CreditAccountEntity queryUserCreditAccount(String userId) {
+    public CreditAccountEntity queryUserCreditAccount(String userId,Long activityId) {
         try {
             dbRouter.doRouter(userId);
             LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
-                    .eq(CreditAccount::getUserId, userId);
+                    .eq(CreditAccount::getUserId, userId)
+                    .eq(CreditAccount::getActivityId, activityId);
             CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
             if (creditAccount == null) {
                 return CreditAccountEntity.builder()

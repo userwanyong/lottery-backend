@@ -10,7 +10,6 @@
             <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
             <result property="sku" column="sku" jdbcType="BIGINT"/>
             <result property="activityName" column="activity_name" jdbcType="VARCHAR"/>
-            <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
             <result property="totalCount" column="total_count" jdbcType="INTEGER"/>
             <result property="dayCount" column="day_count" jdbcType="INTEGER"/>
             <result property="monthCount" column="month_count" jdbcType="INTEGER"/>

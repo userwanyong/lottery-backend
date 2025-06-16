@@ -40,8 +40,8 @@ public class UserCreditRandomAward implements DistributeAward {
         BigDecimal creditAmount = generateRandom(new BigDecimal(split[0]), new BigDecimal(split[1]));
         log.info("[UserCreditRandomAward]用户「{}」获得积分值「{}」", distributeAwardEntity.getUserId(), creditAmount);
         // 构建集合对象
-        UserAwardRecordEntity userAwardRecordEntity = GiveOutPrizesAggregate.buildUserAwardRecordEntity(distributeAwardEntity.getId(),distributeAwardEntity.getUserId(), distributeAwardEntity.getUserOrderId(), awardId, AwardStateVO.complete);
-        UserCreditAwardEntity userCreditAward = GiveOutPrizesAggregate.buildUserCreditAwardEntity(distributeAwardEntity.getUserId(), creditAmount);
+        UserAwardRecordEntity userAwardRecordEntity = GiveOutPrizesAggregate.buildUserAwardRecordEntity(distributeAwardEntity.getId(),distributeAwardEntity.getUserId(),distributeAwardEntity.getActivityId(), distributeAwardEntity.getUserOrderId(), awardId, AwardStateVO.complete);
+        UserCreditAwardEntity userCreditAward = GiveOutPrizesAggregate.buildUserCreditAwardEntity(distributeAwardEntity.getUserId(), distributeAwardEntity.getActivityId(),creditAmount);
         GiveOutPrizesAggregate giveOutPrizesAggregate = new GiveOutPrizesAggregate();
         giveOutPrizesAggregate.setUserAwardRecordEntity(userAwardRecordEntity);
         giveOutPrizesAggregate.setUserCreditAwardEntity(userCreditAward);

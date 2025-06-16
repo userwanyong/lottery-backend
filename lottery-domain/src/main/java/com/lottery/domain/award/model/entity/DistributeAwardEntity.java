@@ -14,6 +14,10 @@ public class DistributeAwardEntity {
      */
     private String userId;
     /**
+     * 活动ID
+     */
+    private Long activityId;
+    /**
      * 订单ID
      */
     private Long userOrderId;

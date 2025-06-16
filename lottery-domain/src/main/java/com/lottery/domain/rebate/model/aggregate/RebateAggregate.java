@@ -15,6 +15,10 @@ public class RebateAggregate {
      */
     private String userId;
     /**
+     * 活动ID
+     */
+    private Long activityId;
+    /**
      * 返利单实体对象
      */
     private RebateOrderEntity rebateOrderEntity;

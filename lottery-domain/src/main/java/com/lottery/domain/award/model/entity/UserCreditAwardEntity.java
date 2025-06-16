@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 public class UserCreditAwardEntity {
     /** 用户ID */
     private String userId;
+    /** 活动ID */
+    private Long activityId;
     /** 积分值 */
     private BigDecimal creditAmount;
 }

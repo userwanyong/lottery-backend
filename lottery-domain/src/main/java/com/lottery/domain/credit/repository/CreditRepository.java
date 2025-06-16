@@ -10,5 +10,5 @@ import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 public interface CreditRepository {
     void saveTradeAggregate(TradeAggregate tradeAggregate);
 
-    CreditAccountEntity queryUserCreditAccount(String userId);
+    CreditAccountEntity queryUserCreditAccount(String userId,Long activityId);
 }

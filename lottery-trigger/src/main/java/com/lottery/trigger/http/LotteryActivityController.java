@@ -22,9 +22,7 @@ import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.service.Lottery;
 import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.trigger.api.LotteryActivityService;
-import com.lottery.trigger.api.dto.req.ActivityDrawRequestDTO;
-import com.lottery.trigger.api.dto.req.SkuProductShopCartRequestDTO;
-import com.lottery.trigger.api.dto.req.UserActivityAccountRequestDTO;
+import com.lottery.trigger.api.dto.req.*;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
 import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
@@ -151,10 +149,13 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/calendar_sign_rebate")
-    public BaseResponse<Boolean> calendarSignRebate(@RequestParam String userId) {
-        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} ======================", userId);
+    public BaseResponse<Boolean> calendarSignRebate(@RequestBody CalendarSignRebateRequestDTO calendarSignRebateRequestDTO) {
+        String userId = calendarSignRebateRequestDTO.getUserId();
+        Long activityId = calendarSignRebateRequestDTO.getActivityId();
+        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} activityId:{} ======================", userId,activityId);
         BehaviorEntity behaviorEntity = new BehaviorEntity();
         behaviorEntity.setUserId(userId);
+        behaviorEntity.setActivityId(activityId);
         behaviorEntity.setBehaviorTypeVO(BehaviorTypeVO.SIGN);
         behaviorEntity.setOutBusinessNo(new SimpleDateFormat("yyyyMMdd").format(new Date()));
         List<String> orderIds = rebateService.createRebateOrder(behaviorEntity);
@@ -181,11 +182,13 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/is_calendar_sign_rebate")
-    public BaseResponse<Boolean> isCalendarSignRebate(@RequestParam String userId) {
-        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} ======================", userId);
+    public BaseResponse<Boolean> isCalendarSignRebate(@RequestBody CalendarSignRebateRequestDTO calendarSignRebateRequestDTO) {
+        String userId = calendarSignRebateRequestDTO.getUserId();
+        Long activityId = calendarSignRebateRequestDTO.getActivityId();
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} activityId:{}======================", userId,activityId);
         String outBusinessNo = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        boolean b = rebateService.queryIsHaveRebateOrder(userId, outBusinessNo);
-        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} 当日是否已签到:{} ======================", userId, b);
+        boolean b = rebateService.queryIsHaveRebateOrder(userId, activityId,outBusinessNo);
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} activityId{} 当日是否已签到:{} ======================", userId,activityId, b);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), b);
     }
 
@@ -213,9 +216,12 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @GetMapping("/query_user_credit_account")
-    public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestParam String userId) {
-        CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId);
-        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} ======================", userId);
+    public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestBody UserCreditAccountRequestDTO requestDTO) {
+        String userId = requestDTO.getUserId();
+        Long activityId = requestDTO.getActivityId();
+        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} activityId:{} ======================", userId,activityId);
+        CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId,activityId);
+        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分成功 userId:{} activityId:{} creditAmount:{} ======================", userId,activityId,creditAccountEntity.getCreditAmount());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
     }
 
@@ -226,6 +232,7 @@ public class LotteryActivityController implements LotteryActivityService {
         // 1.创建增加抽奖次数的额度订单
         QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
         quotaOrderEntity.setUserId(request.getUserId());
+        quotaOrderEntity.setActivityId(request.getActivityId());
         quotaOrderEntity.setSku(request.getSku());
         quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
         quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
@@ -234,6 +241,7 @@ public class LotteryActivityController implements LotteryActivityService {
         // 2.创建扣减积分的积分订单
         TradeEntity tradeEntity = new TradeEntity();
         tradeEntity.setUserId(request.getUserId());
+        tradeEntity.setActivityId(request.getActivityId());
         tradeEntity.setTradeName(TradeNameVO.CONVERT_SKU);
         tradeEntity.setTradeType(TradeTypeVO.REVERSE);
         tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());

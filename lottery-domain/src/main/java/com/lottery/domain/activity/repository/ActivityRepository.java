@@ -64,5 +64,5 @@ public interface ActivityRepository {
 
     UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 
-    BigDecimal queryUserCreditAccountAmount(String userId);
+    BigDecimal queryUserCreditAccountAmount(String userId,Long activityId);
 }

@@ -13,7 +13,7 @@ public class SkuProductResponseDTO {
     /**
      * 商品sku
      */
-    private Long sku;
+    private Long id;
     /**
      * 活动ID
      */

@@ -12,7 +12,7 @@ import java.util.List;
  * @description 针对表【activity_account(抽奖活动账户表)】的数据库操作Mapper
  */
 @Mapper
-public interface EsActivityAccountMapper extends BaseMapper<ActivityAccount> {
+public interface EsActivityAccountMapper extends BaseMapper<EsActivityAccount> {
 
     List<EsActivityAccount> queryActivityAccountListEs();
 }

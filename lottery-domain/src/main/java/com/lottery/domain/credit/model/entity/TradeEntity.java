@@ -14,6 +14,8 @@ import java.math.BigDecimal;
 public class TradeEntity {
     /** 用户ID */
     private String userId;
+    /** 活动ID */
+    private Long activityId;
     /** 交易名称 */
     private TradeNameVO tradeName;
     /** 交易类型；交易类型；forward-正向、reverse-逆向 */

@@ -38,12 +38,14 @@ public class UserAwardServiceImpl implements UserAwardService{
         message.setAwardId(userAwardRecordEntity.getAwardId());
         message.setAwardTitle(userAwardRecordEntity.getAwardTitle());
         message.setUserId(userAwardRecordEntity.getUserId());
+        message.setActivityId(userAwardRecordEntity.getActivityId());
         message.setUserOrderId(userAwardRecordEntity.getUserOrderId());
         message.setAwardConfig(userAwardRecordEntity.getAwardConfig());
         BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage> sendAwardMessageEventMessage = sendAwardMessageEvent.buildEventMessage(message);
         //构建任务对象
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setUserId(userAwardRecordEntity.getUserId());
+        taskEntity.setActivityId(userAwardRecordEntity.getActivityId());
         taskEntity.setTopic(sendAwardMessageEvent.topic());
         taskEntity.setMessageId(sendAwardMessageEventMessage.getId());
         taskEntity.setMessage(sendAwardMessageEventMessage);

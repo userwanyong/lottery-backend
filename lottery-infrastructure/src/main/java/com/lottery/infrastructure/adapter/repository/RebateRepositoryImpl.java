@@ -4,18 +4,19 @@ import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
+import com.lottery.domain.rebate.model.entity.BehaviorEntity;
 import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
 import com.lottery.domain.rebate.model.entity.TaskEntity;
 import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.rebate.model.valobj.RebateVO;
 import com.lottery.domain.rebate.repository.RebateRepository;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.dao.BehaviorRebateMapper;
 import com.lottery.infrastructure.dao.TaskMapper;
 import com.lottery.infrastructure.dao.UserBehaviorRebateOrderMapper;
 import com.lottery.infrastructure.dao.po.BehaviorRebate;
 import com.lottery.infrastructure.dao.po.Task;
 import com.lottery.infrastructure.dao.po.UserBehaviorRebateOrder;
+import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +50,12 @@ public class RebateRepositoryImpl implements RebateRepository {
     private EventPublisher eventPublisher;
 
     @Override
-    public List<RebateVO> queryRebateConfig(BehaviorTypeVO behaviorTypeVO) {
+    public List<RebateVO> queryRebateConfig(BehaviorEntity behaviorEntity) {
+        BehaviorTypeVO behaviorTypeVO = behaviorEntity.getBehaviorTypeVO();
+        Long activityId = behaviorEntity.getActivityId();
         LambdaQueryWrapper<BehaviorRebate> queryWrapper = new QueryWrapper<BehaviorRebate>().lambda()
-                .eq(BehaviorRebate::getBehaviorType, behaviorTypeVO.getCode());
+                .eq(BehaviorRebate::getBehaviorType, behaviorTypeVO.getCode())
+                .eq(BehaviorRebate::getActivityId, activityId);
         List<BehaviorRebate> behaviorRebates = behaviorRebateMapper.selectList(queryWrapper);
         //构建vo
         return behaviorRebates.stream().map(behaviorRebate -> RebateVO.builder()
@@ -136,9 +140,10 @@ public class RebateRepositoryImpl implements RebateRepository {
     }
 
     @Override
-    public boolean queryIsHaveRebateOrder(String userId, String outBusinessNo) {
+    public boolean queryIsHaveRebateOrder(String userId, Long activityId, String outBusinessNo) {
         LambdaQueryWrapper<UserBehaviorRebateOrder> queryWrapper = new QueryWrapper<UserBehaviorRebateOrder>().lambda()
                 .eq(UserBehaviorRebateOrder::getUserId, userId)
+                .eq(UserBehaviorRebateOrder::getActivityId, activityId)
                 .eq(UserBehaviorRebateOrder::getOutBusinessNo, outBusinessNo);
         List<UserBehaviorRebateOrder> userBehaviorRebateOrders;
         try {

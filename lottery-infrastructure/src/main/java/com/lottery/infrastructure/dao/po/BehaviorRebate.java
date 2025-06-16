@@ -23,6 +23,10 @@ public class BehaviorRebate implements Serializable {
      */
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
+    /**
+     * 活动ID
+     */
+    private Long activityId;
 
     /**
      * 行为类型（sign 签到、openai_pay 支付）

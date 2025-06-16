@@ -128,12 +128,14 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         // 更新用户积分
         CreditAccount creditAccount = new CreditAccount();
         creditAccount.setUserId(userId);
+        creditAccount.setActivityId(userAwardRecordEntity.getActivityId());
         creditAccount.setTotalAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAvailableAmount(userCreditAwardEntity.getCreditAmount());
         creditAccount.setAccountStatus(AccountStatusVO.open.getCode());
         // 写入积分记录
         CreditRecord creditRecord = new CreditRecord();
         creditRecord.setUserId(userId);
+        creditRecord.setActivityId(userAwardRecordEntity.getActivityId());
         creditRecord.setTradeName(TradeNameVO.LOTTERY_AWARD.getName());
         creditRecord.setTradeType(TradeTypeVO.FORWARD.getCode());
         creditRecord.setTradeAmount(userCreditAwardEntity.getCreditAmount());

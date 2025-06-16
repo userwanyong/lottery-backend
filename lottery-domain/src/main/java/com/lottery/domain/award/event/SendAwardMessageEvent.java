@@ -44,6 +44,10 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
          */
         private String userId;
         /**
+         * 活动ID
+         */
+        private Long activityId;
+        /**
          * 奖品ID
          */
         private Long awardId;
