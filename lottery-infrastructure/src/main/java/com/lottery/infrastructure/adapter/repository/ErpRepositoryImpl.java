@@ -4,13 +4,16 @@ package com.lottery.infrastructure.adapter.repository;
 import com.lottery.infrastructure.dao.ActivityCountMapper;
 import com.lottery.infrastructure.dao.ActivityMapper;
 import com.lottery.infrastructure.dao.ActivitySkuMapper;
+import com.lottery.infrastructure.dao.BehaviorRebateMapper;
 import com.lottery.infrastructure.dao.po.Activity;
 import com.lottery.infrastructure.dao.po.ActivityCount;
 import com.lottery.infrastructure.dao.po.ActivitySku;
+import com.lottery.infrastructure.dao.po.BehaviorRebate;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.ActivityCountVO;
 import com.lottery.querys.model.valobj.ActivitySkuVO;
 import com.lottery.querys.model.valobj.ActivityVO;
+import com.lottery.querys.model.valobj.BehaviorRebateVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +32,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private ActivityCountMapper activityCountMapper;
     @Resource
     private ActivitySkuMapper activitySkuMapper;
+    @Resource
+    private BehaviorRebateMapper behaviorRebateMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -121,5 +126,36 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteActivitySkuVO(Long activitySkuId) {
         activitySkuMapper.deleteById(activitySkuId);
+    }
+
+    @Override
+    public List<BehaviorRebateVO> queryBehaviorRebateVOList() {
+        List<BehaviorRebate> behaviorRebates = behaviorRebateMapper.selectList(null);
+        ArrayList<BehaviorRebateVO> list = new ArrayList<>();
+        for (BehaviorRebate behaviorRebate : behaviorRebates) {
+            BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
+            BeanUtils.copyProperties(behaviorRebate, behaviorRebateVO);
+            list.add(behaviorRebateVO);
+        }
+        return list;
+    }
+
+    @Override
+    public void addBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO) {
+        BehaviorRebate behaviorRebate = new BehaviorRebate();
+        BeanUtils.copyProperties(behaviorRebateVO, behaviorRebate);
+        behaviorRebateMapper.insert(behaviorRebate);
+    }
+
+    @Override
+    public void updateBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO) {
+        BehaviorRebate behaviorRebate = new BehaviorRebate();
+        BeanUtils.copyProperties(behaviorRebateVO, behaviorRebate);
+        behaviorRebateMapper.updateById(behaviorRebate);
+    }
+
+    @Override
+    public void deleteBehaviorRebateVO(Long behaviorRebateId) {
+        behaviorRebateMapper.deleteById(behaviorRebateId);
     }
 }
