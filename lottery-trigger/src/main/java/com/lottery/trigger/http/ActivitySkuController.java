@@ -1,0 +1,76 @@
+package com.lottery.trigger.http;
+
+
+import com.lottery.querys.adapter.repository.ErpRepository;
+import com.lottery.querys.model.valobj.ActivitySkuVO;
+import com.lottery.trigger.api.ActivitySkuService;
+import com.lottery.trigger.api.dto.req.ActivitySkuRequestDTO;
+import com.lottery.trigger.api.dto.res.ActivitySkuResponseDTO;
+import com.lottery.types.enums.ResponseCode;
+import com.lottery.types.model.BaseResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author 永
+ */
+@Slf4j
+@RestController
+@CrossOrigin
+@RequestMapping("/erp/activity_sku")
+public class ActivitySkuController implements ActivitySkuService {
+    @Resource
+    private ErpRepository repository;
+
+
+    @Override
+    @GetMapping("/query_activity_sku")
+    public BaseResponse<List<ActivitySkuResponseDTO>> queryActivitySku() {
+        log.info("======================[ActivitySkuController-queryActivitySku]运营端 查询活动sku配置开始 ======================");
+        List<ActivitySkuVO> activitySkus = repository.queryActivitySkuVOList();
+        ArrayList<ActivitySkuResponseDTO> list = new ArrayList<>();
+        for (ActivitySkuVO activitySkuVO : activitySkus) {
+            ActivitySkuResponseDTO activitySkuResponseDTO = new ActivitySkuResponseDTO();
+            BeanUtils.copyProperties(activitySkuVO, activitySkuResponseDTO);
+            list.add(activitySkuResponseDTO);
+        }
+        log.info("======================[ActivitySkuController-queryActivitySku]运营端 查询活动sku配置成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
+    }
+
+    @Override
+    @PostMapping("/add_activity_sku")
+    public BaseResponse<Boolean> addActivitySku(@RequestBody ActivitySkuRequestDTO request) {
+        log.info("======================[ActivitySkuController-addActivitySku]运营端 添加活动sku配置开始 ======================");
+        ActivitySkuVO activitySkuVO = new ActivitySkuVO();
+        BeanUtils.copyProperties(request, activitySkuVO);
+        repository.addActivitySkuVO(activitySkuVO);
+        log.info("======================[ActivitySkuController-addActivitySku]运营端 添加活动sku配置成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
+    }
+
+    @Override
+    @PostMapping("/update_activity_sku")
+    public BaseResponse<Boolean> updateActivitySku(@RequestBody ActivitySkuRequestDTO request) {
+        log.info("======================[ActivitySkuController-updateActivitySku]运营端 修改活动sku配置开始 ======================");
+        ActivitySkuVO activitySkuVO = new ActivitySkuVO();
+        BeanUtils.copyProperties(request, activitySkuVO);
+        repository.updateActivitySkuVO(activitySkuVO);
+        log.info("======================[ActivitySkuController-updateActivitySku]运营端 添加活动sku配置成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
+    }
+
+    @Override
+    @PostMapping("/delete_activity_sku/{activitySkuId}")
+    public BaseResponse<Boolean> deleteActivitySku(@PathVariable("activitySkuId") Long activitySkuId) {
+        log.info("======================[ActivitySkuController-deleteActivitySku]运营端 删除活动sku配置开始 ======================");
+        repository.deleteActivitySkuVO(activitySkuId);
+        log.info("======================[ActivitySkuController-deleteActivitySku]运营端 删除活动sku配置成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
+    }
+}

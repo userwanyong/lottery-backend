@@ -3,10 +3,13 @@ package com.lottery.infrastructure.adapter.repository;
 
 import com.lottery.infrastructure.dao.ActivityCountMapper;
 import com.lottery.infrastructure.dao.ActivityMapper;
+import com.lottery.infrastructure.dao.ActivitySkuMapper;
 import com.lottery.infrastructure.dao.po.Activity;
 import com.lottery.infrastructure.dao.po.ActivityCount;
+import com.lottery.infrastructure.dao.po.ActivitySku;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.ActivityCountVO;
+import com.lottery.querys.model.valobj.ActivitySkuVO;
 import com.lottery.querys.model.valobj.ActivityVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
@@ -24,6 +27,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private ActivityMapper activityMapper;
     @Resource
     private ActivityCountMapper activityCountMapper;
+    @Resource
+    private ActivitySkuMapper activitySkuMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -85,5 +90,36 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteActivityCountVO(Long activityCountId) {
         activityCountMapper.deleteById(activityCountId);
+    }
+
+    @Override
+    public List<ActivitySkuVO> queryActivitySkuVOList() {
+        List<ActivitySku> activitySkus = activitySkuMapper.selectList(null);
+        ArrayList<ActivitySkuVO> list = new ArrayList<>();
+        for (ActivitySku activitySku : activitySkus) {
+            ActivitySkuVO activitySkuVO = new ActivitySkuVO();
+            BeanUtils.copyProperties(activitySku, activitySkuVO);
+            list.add(activitySkuVO);
+        }
+        return list;
+    }
+
+    @Override
+    public void addActivitySkuVO(ActivitySkuVO activitySkuVO) {
+        ActivitySku activitySku = new ActivitySku();
+        BeanUtils.copyProperties(activitySkuVO, activitySku);
+        activitySkuMapper.insert(activitySku);
+    }
+
+    @Override
+    public void updateActivitySkuVO(ActivitySkuVO activitySkuVO) {
+        ActivitySku activitySku = new ActivitySku();
+        BeanUtils.copyProperties(activitySkuVO, activitySku);
+        activitySkuMapper.updateById(activitySku);
+    }
+
+    @Override
+    public void deleteActivitySkuVO(Long activitySkuId) {
+        activitySkuMapper.deleteById(activitySkuId);
     }
 }

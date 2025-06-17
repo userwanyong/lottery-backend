@@ -2,6 +2,7 @@ package com.lottery.querys.adapter.repository;
 
 
 import com.lottery.querys.model.valobj.ActivityCountVO;
+import com.lottery.querys.model.valobj.ActivitySkuVO;
 import com.lottery.querys.model.valobj.ActivityVO;
 
 import java.util.List;
@@ -25,4 +26,12 @@ public interface ErpRepository {
     void updateActivityCountVO(ActivityCountVO activityCountVO);
 
     void deleteActivityCountVO(Long activityCountId);
+
+    List<ActivitySkuVO> queryActivitySkuVOList();
+
+    void addActivitySkuVO(ActivitySkuVO activitySkuVO);
+
+    void updateActivitySkuVO(ActivitySkuVO activitySkuVO);
+
+    void deleteActivitySkuVO(Long activitySkuId);
 }

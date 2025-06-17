@@ -12,15 +12,8 @@ import java.util.Date;
  */
 @Data
 public class ActivityResponseDTO {
-    /**
-     * 自增ID
-     */
-    private Long id;
 
-    /**
-     * 活动ID
-     */
-    private Long activityId;
+    private Long id;
 
     /**
      * 活动名称
