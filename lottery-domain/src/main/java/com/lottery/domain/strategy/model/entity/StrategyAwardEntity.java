@@ -27,6 +27,10 @@ public class StrategyAwardEntity {
      */
     private String awardSubtitle;
     /**
+     * 奖品图片
+     */
+    private String image;
+    /**
      * 奖品库存总量
      */
     private Integer awardCount;

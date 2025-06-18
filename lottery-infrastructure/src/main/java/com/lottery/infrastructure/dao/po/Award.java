@@ -40,6 +40,10 @@ public class Award implements Serializable {
      */
     private String awardDesc;
     /**
+     * 奖品图片
+     */
+    private String image;
+    /**
      * 创建时间
      */
     private Date createTime;

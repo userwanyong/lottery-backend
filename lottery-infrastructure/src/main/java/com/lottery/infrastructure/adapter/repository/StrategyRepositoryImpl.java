@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StrategyRepositoryImpl implements StrategyRepository {
     @Resource
+    private AwardMapper awardMapper;
+    @Resource
     private StrategyAwardMapper strategyAwardMapper;
     @Resource
     private RedisService redisService;
@@ -73,12 +75,20 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .lambda()
                 .eq(StrategyAward::getStrategyId, strategyId);
         List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(queryWrapper);
+        // 提取出strategyAwards中所有的awardId
+        Set<Long> awardIds = strategyAwards.stream().map(StrategyAward::getAwardId).collect(Collectors.toSet());
+        // 批量查询数据库
+        List<Award> awards = awardMapper.selectBatchIds(awardIds);
+        // 放到map集合中 awardId为key image为value
+        Map<Long, String> awardMap = awards.stream().collect(Collectors.toMap(Award::getId, Award::getImage));
         strategyAwardEntities = new ArrayList<>(strategyAwards.size());
 
         //StrategyAward->StrategyAwardEntity
         for (StrategyAward strategyAward : strategyAwards) {
             StrategyAwardEntity strategyAwardEntity = new StrategyAwardEntity();
             BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
+            // image 从Map中取出
+            strategyAwardEntity.setImage(awardMap.get(strategyAward.getAwardId()));
             strategyAwardEntity.setRuleModel(strategyAward.getRuleModels());
             strategyAwardEntities.add(strategyAwardEntity);
         }

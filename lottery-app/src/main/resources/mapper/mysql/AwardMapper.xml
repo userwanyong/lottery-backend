@@ -8,15 +8,15 @@
         <id property="id" column="id" jdbcType="BIGINT"/>
         <result property="awardKey" column="award_key" jdbcType="VARCHAR"/>
         <result property="awardConfig" column="award_config" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
         <result property="awardDesc" column="award_desc" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <select id="queryAwardList" resultMap="BaseResultMap">
-        select award_id, award_key, award_config, award_desc
+        select  award_key, award_config,image, award_desc
         from award
-        limit 10
     </select>
 
 </mapper>

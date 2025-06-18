@@ -14,6 +14,8 @@ public class LotteryAwardListResponseDTO {
     private String awardTitle;
     // 奖品副标题【抽奖1次后解锁】
     private String awardSubtitle;
+    // 奖品图片
+    private String image;
     // 排序编号
     private Integer sort;
     // 奖品次数规则 - 抽奖N次后解锁，未配置则为空
