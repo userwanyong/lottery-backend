@@ -1,10 +1,7 @@
 package com.lottery.querys.adapter.repository;
 
 
-import com.lottery.querys.model.valobj.ActivityCountVO;
-import com.lottery.querys.model.valobj.ActivitySkuVO;
-import com.lottery.querys.model.valobj.ActivityVO;
-import com.lottery.querys.model.valobj.BehaviorRebateVO;
+import com.lottery.querys.model.valobj.*;
 
 import java.util.List;
 
@@ -43,4 +40,12 @@ public interface ErpRepository {
     void updateBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO);
 
     void deleteBehaviorRebateVO(Long behaviorRebateId);
+
+    List<AwardResponseVO> queryAwardVOList();
+
+    void addAwardVO(AwardResponseVO awardResponseVO);
+
+    void updateAwardVO(AwardResponseVO awardResponseVO);
+
+    void deleteAwardVO(Long awardId);
 }

@@ -15,8 +15,8 @@
     </resultMap>
 
     <select id="queryAwardList" resultMap="BaseResultMap">
-        select  award_key, award_config,image, award_desc
-        from award
+        select id, award_key, award_config, image, award_desc, create_time, update_time
+        from award order by update_time desc
     </select>
 
 </mapper>

@@ -1,25 +1,17 @@
 package com.lottery.infrastructure.adapter.repository;
 
 
-import com.lottery.infrastructure.dao.ActivityCountMapper;
-import com.lottery.infrastructure.dao.ActivityMapper;
-import com.lottery.infrastructure.dao.ActivitySkuMapper;
-import com.lottery.infrastructure.dao.BehaviorRebateMapper;
-import com.lottery.infrastructure.dao.po.Activity;
-import com.lottery.infrastructure.dao.po.ActivityCount;
-import com.lottery.infrastructure.dao.po.ActivitySku;
-import com.lottery.infrastructure.dao.po.BehaviorRebate;
+import com.lottery.infrastructure.dao.*;
+import com.lottery.infrastructure.dao.po.*;
 import com.lottery.querys.adapter.repository.ErpRepository;
-import com.lottery.querys.model.valobj.ActivityCountVO;
-import com.lottery.querys.model.valobj.ActivitySkuVO;
-import com.lottery.querys.model.valobj.ActivityVO;
-import com.lottery.querys.model.valobj.BehaviorRebateVO;
+import com.lottery.querys.model.valobj.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 永
@@ -34,6 +26,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private ActivitySkuMapper activitySkuMapper;
     @Resource
     private BehaviorRebateMapper behaviorRebateMapper;
+    @Resource
+    private AwardMapper awardMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -157,5 +151,34 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteBehaviorRebateVO(Long behaviorRebateId) {
         behaviorRebateMapper.deleteById(behaviorRebateId);
+    }
+
+    @Override
+    public List<AwardResponseVO> queryAwardVOList() {
+        List<Award> awards = awardMapper.queryAwardList();
+        return awards.stream().map(award -> {
+            AwardResponseVO awardResponseVO = new AwardResponseVO();
+            BeanUtils.copyProperties(award, awardResponseVO);
+            return awardResponseVO;
+        }).toList();
+    }
+
+    @Override
+    public void addAwardVO(AwardResponseVO awardResponseVO) {
+        Award award = new Award();
+        BeanUtils.copyProperties(awardResponseVO, award);
+        awardMapper.insert(award);
+    }
+
+    @Override
+    public void updateAwardVO(AwardResponseVO awardResponseVO) {
+        Award award = new Award();
+        BeanUtils.copyProperties(awardResponseVO, award);
+        awardMapper.updateById(award);
+    }
+
+    @Override
+    public void deleteAwardVO(Long awardId) {
+        awardMapper.deleteById(awardId);
     }
 }
