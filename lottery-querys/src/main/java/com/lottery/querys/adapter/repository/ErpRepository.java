@@ -48,4 +48,12 @@ public interface ErpRepository {
     void updateAwardVO(AwardResponseVO awardResponseVO);
 
     void deleteAwardVO(Long awardId);
+
+    List<StrategyVO> queryStrategyVOList();
+
+    void addStrategyVO(StrategyVO strategyVO);
+
+    void updateStrategyVO(StrategyVO strategyVO);
+
+    void deleteStrategyVO(Long strategyId);
 }

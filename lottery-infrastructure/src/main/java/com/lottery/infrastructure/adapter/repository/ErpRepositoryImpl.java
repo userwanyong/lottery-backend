@@ -28,6 +28,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private BehaviorRebateMapper behaviorRebateMapper;
     @Resource
     private AwardMapper awardMapper;
+    @Resource
+    private StrategyMapper strategyMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -180,5 +182,34 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteAwardVO(Long awardId) {
         awardMapper.deleteById(awardId);
+    }
+
+    @Override
+    public List<StrategyVO> queryStrategyVOList() {
+        List<Strategy> strategies = strategyMapper.selectList(null);
+        return strategies.stream().map(strategy -> {
+            StrategyVO strategyVO = new StrategyVO();
+            BeanUtils.copyProperties(strategy, strategyVO);
+            return strategyVO;
+        }).toList();
+    }
+
+    @Override
+    public void addStrategyVO(StrategyVO strategyVO) {
+        Strategy strategy = new Strategy();
+        BeanUtils.copyProperties(strategyVO, strategy);
+        strategyMapper.insert(strategy);
+    }
+
+    @Override
+    public void updateStrategyVO(StrategyVO strategyVO) {
+        Strategy strategy = new Strategy();
+        BeanUtils.copyProperties(strategyVO, strategy);
+        strategyMapper.updateById(strategy);
+    }
+
+    @Override
+    public void deleteStrategyVO(Long strategyId) {
+        strategyMapper.deleteById(strategyId);
     }
 }
