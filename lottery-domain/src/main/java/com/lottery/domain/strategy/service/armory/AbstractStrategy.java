@@ -45,14 +45,15 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
         }
         String ruleWeight = strategyEntity.getRuleWeight();
         if (ruleWeight == null) {
+            // 没有权重配置
             return true;
         }
-        // 4. 根据策略id和规则模型查询规则表，获得相应实体数据
-        RuleEntity ruleEntity = repository.queryStrategyRule(strategyId, ruleWeight);
+        // 4. 根据规则模型查询规则表，获得相应实体数据
+        RuleEntity ruleEntity = repository.queryStrategyRule(ruleWeight);
         if (ruleEntity == null) {
             throw new AppException(ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getCode(), ResponseCode.STRATEGY_RULE_WEIGHT_IS_NULL.getMessage());
         }
-        // 5. 通过实体数据的权重rule_weight 查询对应的值，封装为一个map集合
+        // 5. 通过实体数据的权重 rule_weight 查询对应的值，封装为一个map集合
         Map<String, List<Long>> ruleWeightValuesMap = ruleEntity.getRuleWeightValues();
         Set<String> keys = ruleWeightValuesMap.keySet();
         for (String key : keys) {

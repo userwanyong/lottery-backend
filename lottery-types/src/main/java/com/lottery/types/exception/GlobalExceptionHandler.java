@@ -6,6 +6,11 @@ import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.dao.DuplicateKeyException;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author 永
@@ -25,6 +30,25 @@ public class GlobalExceptionHandler {
     public BaseResponse<?> handleOtherException(Exception e) {
         log.error("系统异常：", e);
         return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public BaseResponse<?> handleSqlException(DuplicateKeyException e) {
+        // 使用正则表达式提取重复的字段值
+        String message = e.getMessage();
+        String duplicateValue = null;
+        Pattern pattern = Pattern.compile("Duplicate entry '(.*?)' for key");
+        Matcher matcher = null;
+        if (message != null) {
+            matcher = pattern.matcher(message);
+        }
+        if (matcher != null && matcher.find()) {
+            // 提取出重复的值
+            duplicateValue = matcher.group(1);
+        }
+        String errorMessage = String.format("数据 {%s} 已存在", duplicateValue);
+        log.error(errorMessage);
+        return new BaseResponse<>(ResponseCode.DATA_EXIST.getCode(), errorMessage);
     }
 }
 

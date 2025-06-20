@@ -6,9 +6,6 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.Rule">
         <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
-        <result property="awardId" column="award_id" jdbcType="BIGINT"/>
-        <result property="ruleType" column="rule_type" jdbcType="TINYINT"/>
         <result property="ruleModel" column="rule_model" jdbcType="VARCHAR"/>
         <result property="ruleValue" column="rule_value" jdbcType="VARCHAR"/>
         <result property="ruleDesc" column="rule_desc" jdbcType="VARCHAR"/>

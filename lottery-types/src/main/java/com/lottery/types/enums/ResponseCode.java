@@ -28,7 +28,8 @@ public enum ResponseCode {
     USER_CREDIT_ACCOUNT_NO_AVAILABLE_AMOUNT(1013, "积分不足"),
     DEGRADE_SWITCH(1014, "活动已降级"),
     RATE_LIMITER(1015, "活动已被限流"),
-    HYSTRIX(1016, "服务已被熔断")
+    HYSTRIX(1016, "服务已被熔断"),
+    DATA_EXIST(1008, "数据已存在")
 
     ;
 

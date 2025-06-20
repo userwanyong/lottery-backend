@@ -137,11 +137,9 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public RuleEntity queryStrategyRule(Long strategyId, String ruleModel) {
+    public RuleEntity queryStrategyRule(String ruleModel) {
         LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
-                .eq(Rule::getStrategyId, strategyId)
                 .eq(Rule::getRuleModel, ruleModel);
-
         Rule rule = ruleMapper.selectOne(queryWrapper);
         RuleEntity ruleEntity = new RuleEntity();
         BeanUtils.copyProperties(rule, ruleEntity);
@@ -151,10 +149,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public String queryStrategyRuleValue(Long strategyId, Long awardId, String ruleModel) {
         LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
-                .eq(Rule::getStrategyId, strategyId)
-                .eq(Rule::getRuleModel, ruleModel)
-                //如果awardId不为null，则加入查询条件
-                .eq(awardId != null, Rule::getAwardId, awardId);
+                .eq(Rule::getRuleModel, ruleModel);
         return ruleMapper.selectOne(queryWrapper).getRuleValue();
     }
 
@@ -416,7 +411,6 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         }
         // 1.查询权重规则配置
         LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
-                .eq(Rule::getStrategyId, strategyId)
                 .eq(Rule::getRuleModel, Constants.RuleModel.RULE_WIGHT);
         String ruleValue = ruleMapper.selectOne(queryWrapper).getRuleValue();
         // 2.处理规则的值

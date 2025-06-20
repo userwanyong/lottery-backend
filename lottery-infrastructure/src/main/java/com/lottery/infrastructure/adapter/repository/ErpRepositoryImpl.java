@@ -30,10 +30,13 @@ public class ErpRepositoryImpl implements ErpRepository {
     private AwardMapper awardMapper;
     @Resource
     private StrategyMapper strategyMapper;
+    @Resource
+    private RuleMapper ruleMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
         List<Activity> activities = activityMapper.selectList(null);
+        activities.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
         ArrayList<ActivityVO> list = new ArrayList<>();
         for (Activity activity : activities) {
             ActivityVO activityVO = new ActivityVO();
@@ -65,6 +68,7 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public List<ActivityCountVO> queryActivityCountVOList() {
         List<ActivityCount> activityCounts = activityCountMapper.selectList(null);
+        activityCounts.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
         ArrayList<ActivityCountVO> list = new ArrayList<>();
         for (ActivityCount activityCount : activityCounts) {
             ActivityCountVO activityCountVO = new ActivityCountVO();
@@ -96,6 +100,7 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public List<ActivitySkuVO> queryActivitySkuVOList() {
         List<ActivitySku> activitySkus = activitySkuMapper.selectList(null);
+        activitySkus.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
         ArrayList<ActivitySkuVO> list = new ArrayList<>();
         for (ActivitySku activitySku : activitySkus) {
             ActivitySkuVO activitySkuVO = new ActivitySkuVO();
@@ -127,6 +132,7 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public List<BehaviorRebateVO> queryBehaviorRebateVOList() {
         List<BehaviorRebate> behaviorRebates = behaviorRebateMapper.selectList(null);
+        behaviorRebates.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
         ArrayList<BehaviorRebateVO> list = new ArrayList<>();
         for (BehaviorRebate behaviorRebate : behaviorRebates) {
             BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
@@ -187,6 +193,7 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public List<StrategyVO> queryStrategyVOList() {
         List<Strategy> strategies = strategyMapper.selectList(null);
+        strategies.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
         return strategies.stream().map(strategy -> {
             StrategyVO strategyVO = new StrategyVO();
             BeanUtils.copyProperties(strategy, strategyVO);
@@ -211,5 +218,36 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteStrategyVO(Long strategyId) {
         strategyMapper.deleteById(strategyId);
+    }
+
+    @Override
+    public List<RuleVO> queryRuleVOList() {
+        List<Rule> rules = ruleMapper.selectList(null);
+        // 按更新时间倒序
+        rules.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        return rules.stream().map(rule -> {
+            RuleVO ruleVO = new RuleVO();
+            BeanUtils.copyProperties(rule, ruleVO);
+            return ruleVO;
+        }).toList();
+    }
+
+    @Override
+    public void addRuleVO(RuleVO ruleVO) {
+        Rule rule = new Rule();
+        BeanUtils.copyProperties(ruleVO, rule);
+        ruleMapper.insert(rule);
+    }
+
+    @Override
+    public void updateRuleVO(RuleVO ruleVO) {
+        Rule rule = new Rule();
+        BeanUtils.copyProperties(ruleVO, rule);
+        ruleMapper.updateById(rule);
+    }
+
+    @Override
+    public void deleteRuleVO(Long ruleId) {
+        ruleMapper.deleteById(ruleId);
     }
 }

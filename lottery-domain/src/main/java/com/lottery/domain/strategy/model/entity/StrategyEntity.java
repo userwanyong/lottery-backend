@@ -13,7 +13,7 @@ public class StrategyEntity {
     /**
      * 抽奖策略ID
      */
-    private Long strategyId;
+    private Long id;
 
     /**
      * 抽奖策略描述
@@ -45,7 +45,7 @@ public class StrategyEntity {
     public String getRuleWeight() {
         String[] ruleModels = this.ruleModels();
         for (String ruleModel : ruleModels) {
-            if ("rule_weight".equals(ruleModel)) {
+            if (Constants.RuleModel.RULE_WIGHT.equals(ruleModel)) {
                 return ruleModel;
             }
         }

@@ -23,22 +23,10 @@ public class Rule implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
-    /**
-     * 抽奖策略ID
-     */
-    private Long strategyId;
-    /**
-     * 抽奖奖品ID（规则类型为策略，则不需要奖品ID）
-     */
-    private Long awardId;
-    /**
-     * 规则类型（1-策略规则、2-奖品规则）
-     */
-    private Integer ruleType;
     /**
      * 规则模型（rule_random - 随机值计算、rule_lock - 抽奖几次后解锁、rule_luck_award - 幸运奖(兜底奖品)）
      */
