@@ -32,6 +32,10 @@ public class ErpRepositoryImpl implements ErpRepository {
     private StrategyMapper strategyMapper;
     @Resource
     private RuleMapper ruleMapper;
+    @Resource
+    private StrategyAwardMapper strategyAwardMapper;
+    @Resource
+    private RuleTreeMapper ruleTreeMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -249,5 +253,46 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteRuleVO(Long ruleId) {
         ruleMapper.deleteById(ruleId);
+    }
+
+    @Override
+    public List<StrategyAwardVO> queryStrategyAwardVOList() {
+        List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(null);
+        strategyAwards.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        return strategyAwards.stream().map(strategyAward -> {
+            StrategyAwardVO strategyAwardVO = new StrategyAwardVO();
+            BeanUtils.copyProperties(strategyAward, strategyAwardVO);
+            return strategyAwardVO;
+        }).toList();
+    }
+
+    @Override
+    public void addStrategyAwardVO(StrategyAwardVO strategyAwardVO) {
+        StrategyAward strategyAward = new StrategyAward();
+        BeanUtils.copyProperties(strategyAwardVO, strategyAward);
+        strategyAwardMapper.insert(strategyAward);
+    }
+
+    @Override
+    public void updateStrategyAwardVO(StrategyAwardVO strategyAwardVO) {
+        StrategyAward strategyAward = new StrategyAward();
+        BeanUtils.copyProperties(strategyAwardVO, strategyAward);
+        strategyAwardMapper.updateById(strategyAward);
+    }
+
+    @Override
+    public void deleteStrategyAwardVO(Long strategyAwardId) {
+        strategyAwardMapper.deleteById(strategyAwardId);
+    }
+
+    @Override
+    public List<RuleTreeVO> queryRuleTreeVOList() {
+        List<RuleTree> ruleTrees = ruleTreeMapper.selectList(null);
+        ruleTrees.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        return ruleTrees.stream().map(ruleTree -> {
+            RuleTreeVO ruleTreeVO = new RuleTreeVO();
+            BeanUtils.copyProperties(ruleTree, ruleTreeVO);
+            return ruleTreeVO;
+        }).toList();
     }
 }
