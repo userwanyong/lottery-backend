@@ -74,4 +74,10 @@ public interface ErpRepository {
     void deleteStrategyAwardVO(Long strategyAwardId);
 
     List<RuleTreeVO> queryRuleTreeVOList();
+
+    void addRuleTreeVO(RuleTreeVO ruleTreeVO);
+
+    void updateRuleTreeVO(RuleTreeVO ruleTreeVO);
+
+    void deleteRuleTreeVO(Long ruleTreeId);
 }

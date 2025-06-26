@@ -43,9 +43,9 @@ public class StrategyAwardEntity {
      */
     private BigDecimal awardRate;
     /**
-     * 规则模型
+     * 奖品规则ID
      */
-    private String ruleModel;
+    private Long ruleTreeId;
     /**
      * 排序
      */

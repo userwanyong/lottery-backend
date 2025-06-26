@@ -295,4 +295,23 @@ public class ErpRepositoryImpl implements ErpRepository {
             return ruleTreeVO;
         }).toList();
     }
+
+    @Override
+    public void addRuleTreeVO(RuleTreeVO ruleTreeVO) {
+        RuleTree ruleTree = new RuleTree();
+        BeanUtils.copyProperties(ruleTreeVO, ruleTree);
+        ruleTreeMapper.insert(ruleTree);
+    }
+
+    @Override
+    public void updateRuleTreeVO(RuleTreeVO ruleTreeVO) {
+        RuleTree ruleTree = new RuleTree();
+        BeanUtils.copyProperties(ruleTreeVO, ruleTree);
+        ruleTreeMapper.updateById(ruleTree);
+    }
+
+    @Override
+    public void deleteRuleTreeVO(Long ruleTreeId) {
+        ruleTreeMapper.deleteById(ruleTreeId);
+    }
 }

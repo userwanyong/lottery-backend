@@ -10,7 +10,7 @@ import java.util.Map;
  * 策略-抽奖领域-规则相关操作
  */
 public interface Rule {
-    Map<String, Integer> queryAwardRuleLockCount(String[] treeIds);
+    Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds);
 
     List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
 }

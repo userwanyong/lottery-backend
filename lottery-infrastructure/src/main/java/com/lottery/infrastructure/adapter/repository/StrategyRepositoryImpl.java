@@ -83,13 +83,14 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         Map<Long, String> awardMap = awards.stream().collect(Collectors.toMap(Award::getId, Award::getImage));
         strategyAwardEntities = new ArrayList<>(strategyAwards.size());
 
+
         //StrategyAward->StrategyAwardEntity
         for (StrategyAward strategyAward : strategyAwards) {
             StrategyAwardEntity strategyAwardEntity = new StrategyAwardEntity();
             BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
             // image 从Map中取出
             strategyAwardEntity.setImage(awardMap.get(strategyAward.getAwardId()));
-            strategyAwardEntity.setRuleModel(strategyAward.getRuleModels());
+            strategyAwardEntity.setRuleTreeId(strategyAward.getRuleTreeId());
             strategyAwardEntities.add(strategyAwardEntity);
         }
         //保存到redis中
@@ -164,11 +165,11 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .eq(StrategyAward::getStrategyId, strategyId)
                 .eq(StrategyAward::getAwardId, awardId);
         StrategyAward strategyAward = strategyAwardMapper.selectOne(queryWrapper);
-        return StrategyRuleModelVO.builder().ruleModels(strategyAward.getRuleModels()).build();
+        return StrategyRuleModelVO.builder().ruleTreeId(strategyAward.getRuleTreeId()).build();
     }
 
     @Override
-    public RuleTreeVO queryRuleTreeVO(String treeId) {
+    public RuleTreeVO queryRuleTreeVO(Long treeId) {
         // 优先从缓存获取
         String cacheKey = Constants.RedisKey.RULE_TREE_VO_KEY + treeId;
         RuleTreeVO ruleTreeVOCache = redisService.getValue(cacheKey);
@@ -177,22 +178,22 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         }
         // 否则从数据库获取
         LambdaQueryWrapper<RuleTree> ruleTreeQueryWrapper = new QueryWrapper<RuleTree>().lambda()
-                .eq(RuleTree::getTreeId, treeId);
+                .eq(RuleTree::getId, treeId);
         RuleTree ruleTree = ruleTreeMapper.selectOne(ruleTreeQueryWrapper);
 
         LambdaQueryWrapper<RuleTreeNode> ruleTreeNodeQueryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
-                .eq(RuleTreeNode::getTreeId, treeId);
+                .eq(RuleTreeNode::getId, treeId);
         List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(ruleTreeNodeQueryWrapper);
 
         LambdaQueryWrapper<RuleTreeNodeLine> ruleTreeNodeLineQueryWrapper = new QueryWrapper<RuleTreeNodeLine>().lambda()
-                .eq(RuleTreeNodeLine::getTreeId, treeId);
+                .eq(RuleTreeNodeLine::getId, treeId);
         List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(ruleTreeNodeLineQueryWrapper);
 
         //转VO
         HashMap<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
         for (RuleTreeNodeLine ruleTreeNodeLine : ruleTreeNodeLines) {
             RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
-                    .treeId(ruleTreeNodeLine.getTreeId())
+                    .ruleTreeId(ruleTreeNodeLine.getId())
                     .ruleNodeFrom(ruleTreeNodeLine.getRuleNodeFrom())
                     .ruleNodeTo(ruleTreeNodeLine.getRuleNodeTo())
                     .ruleLimitType(RuleLimitTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitType()))
@@ -204,7 +205,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         HashMap<String, RuleTreeNodeVO> ruleTreeNodeMap = new HashMap<>();
         for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
             RuleTreeNodeVO ruleTreeNodeVO = RuleTreeNodeVO.builder()
-                    .treeId(ruleTreeNode.getTreeId())
+                    .ruleTreeId(ruleTreeNode.getId())
                     .ruleName(ruleTreeNode.getRuleName())
                     .ruleDesc(ruleTreeNode.getRuleDesc())
                     .ruleValue(ruleTreeNode.getRuleValue())
@@ -213,7 +214,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
             ruleTreeNodeMap.put(ruleTreeNode.getRuleName(), ruleTreeNodeVO);
         }
         RuleTreeVO ruleTreeVO = RuleTreeVO.builder()
-                .treeId(ruleTree.getTreeId())
+                .id(ruleTree.getId())
                 .treeName(ruleTree.getTreeName())
                 .treeDesc(ruleTree.getTreeDesc())
                 .treeRootRuleNode(ruleTree.getTreeNodeRuleKey())
@@ -343,19 +344,19 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public Map<String, Integer> queryAwardRuleLockCount(String[] treeIds) {
+    public Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds) {
         if (treeIds == null || treeIds.length == 0) {
             return new HashMap<>();
         }
         LambdaQueryWrapper<RuleTreeNode> queryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
-                .eq(RuleTreeNode::getRuleName, "rule_lock")
-                .in(RuleTreeNode::getTreeId, Arrays.asList(treeIds));
+                .eq(RuleTreeNode::getRuleName, Constants.RuleModel.RULE_LOCK)
+                .in(RuleTreeNode::getRuleTreeId, Arrays.asList(treeIds));
         List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(queryWrapper);
-        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<Long, Integer> map = new HashMap<>();
         for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
-            String treeId = ruleTreeNode.getTreeId();
+            Long ruleTreeId = ruleTreeNode.getRuleTreeId();
             String ruleValue = ruleTreeNode.getRuleValue();
-            map.put(treeId, Integer.valueOf(ruleValue));
+            map.put(ruleTreeId, Integer.valueOf(ruleValue));
         }
         return map;
 

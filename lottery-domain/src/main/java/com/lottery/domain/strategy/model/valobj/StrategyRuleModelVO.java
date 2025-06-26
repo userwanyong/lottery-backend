@@ -11,6 +11,6 @@ import lombok.Getter;
 @Builder
 public class StrategyRuleModelVO {
 
-    private String ruleModels;
+    private Long ruleTreeId;
 
 }

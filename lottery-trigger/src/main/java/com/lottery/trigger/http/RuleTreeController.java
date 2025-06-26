@@ -7,7 +7,9 @@ import com.lottery.trigger.api.RuleTreeService;
 import com.lottery.trigger.api.dto.req.RuleTreeRequestDTO;
 import com.lottery.trigger.api.dto.res.RuleTreeResponseDTO;
 import com.lottery.types.enums.ResponseCode;
+import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -44,18 +46,37 @@ public class RuleTreeController implements RuleTreeService {
     @Override
     @PostMapping("/add_rule_tree")
     public BaseResponse<Boolean> addRuleTree(@RequestBody RuleTreeRequestDTO request) {
-        return null;
+        log.info("======================[ErpOperateController-add]运营端 添加奖品规则开始 ======================");
+        if (StringUtils.isBlank(request.getTreeName()) || StringUtils.isBlank(request.getTreeDesc()) || StringUtils.isBlank(request.getTreeNodeRuleKey())){
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+        }
+        RuleTreeVO ruleTreeVO = new RuleTreeVO();
+        BeanUtils.copyProperties(request, ruleTreeVO);
+        repository.addRuleTreeVO(ruleTreeVO);
+        log.info("======================[ErpOperateController-add]运营端 添加奖品规则成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
     @Override
     @PostMapping("/update_rule_tree")
     public BaseResponse<Boolean> updateRuleTree(@RequestBody RuleTreeRequestDTO request) {
-        return null;
+        log.info("======================[ErpOperateController-update]运营端 修改奖品规则开始 ======================");
+        if (StringUtils.isBlank(request.getTreeName()) || StringUtils.isBlank(request.getTreeDesc()) || StringUtils.isBlank(request.getTreeNodeRuleKey()) || request.getId()==null){
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+        }
+        RuleTreeVO ruleTreeVO = new RuleTreeVO();
+        BeanUtils.copyProperties(request, ruleTreeVO);
+        repository.updateRuleTreeVO(ruleTreeVO);
+        log.info("======================[ErpOperateController-update]运营端 添加奖品规则成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
     @Override
     @PostMapping("/delete_rule_tree/{ruleTreeId}")
     public BaseResponse<Boolean> deleteRuleTree(@PathVariable("ruleTreeId") Long ruleTreeId) {
-        return null;
+        log.info("======================[ErpOperateController-delete]运营端 删除奖品规则开始 ======================");
+        repository.deleteRuleTreeVO(ruleTreeId);
+        log.info("======================[ErpOperateController-delete]运营端 删除奖品规则成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 }

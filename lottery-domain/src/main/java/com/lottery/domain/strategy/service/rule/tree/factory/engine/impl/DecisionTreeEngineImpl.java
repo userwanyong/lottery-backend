@@ -41,8 +41,9 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
             // 3.2. 节点计算，判断走向
             DefaultLogicTreeFactory.TreeActionEntity logicEntity = logicTreeNode.logic(userId, strategyId,activityId, awardId,ruleTreeNode.getRuleValue());
             RuleLogicCheckTypeVO ruleLogicCheckTypeVO = logicEntity.getRuleLogicCheckType();
-            ruleEntity = logicEntity.getRuleEntity(); //当前：兜底奖励or通过-次数锁-库存-后的正常奖励
-            log.debug("[DecisionTreeEngineImpl]决策树引擎【{}】treeId:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getTreeId(), nextNode, ruleLogicCheckTypeVO.getCode());
+            //当前：兜底奖励or通过-次数锁-库存-后的正常奖励
+            ruleEntity = logicEntity.getRuleEntity();
+            log.debug("[DecisionTreeEngineImpl]决策树引擎【{}】id:{} node:{} code:{}", ruleTreeVO.getTreeName(), ruleTreeVO.getId(), nextNode, ruleLogicCheckTypeVO.getCode());
             // 3.3. 获取下个节点
             nextNode = getNextNode(ruleLogicCheckTypeVO.getCode(), ruleTreeNode.getTreeNodeLineVOList());
             ruleTreeNode = treeNodeMap.get(nextNode);
@@ -54,7 +55,8 @@ public class DecisionTreeEngineImpl implements DecisionTreeEngine {
         if (treeNodeLineVOList==null || treeNodeLineVOList.isEmpty()) {
             return null;
         }
-        for (RuleTreeNodeLineVO nodeLine : treeNodeLineVOList) { //当前：一个拦截TAKE_OVER，一个放行ALLOW
+        //当前：一个拦截TAKE_OVER，一个放行ALLOW
+        for (RuleTreeNodeLineVO nodeLine : treeNodeLineVOList) {
             if (decisionLogic(code, nodeLine)) {
                 return nodeLine.getRuleNodeTo();
             }

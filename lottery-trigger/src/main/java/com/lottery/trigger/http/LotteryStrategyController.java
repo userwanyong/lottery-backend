@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author 永
@@ -54,13 +55,13 @@ public class LotteryStrategyController implements LotteryStrategyService {
         List<StrategyAwardEntity> strategyAwardEntities = lottery.queryLotteryAwardListByActivityId(requestDTO.getActivityId());
         log.info("[LotteryStrategyController-queryLotteryAwardList]查询到奖品信息 activityId：{} strategyAwardEntities：{}", requestDTO.getActivityId(), strategyAwardEntities);
         // 3. 获取规则配置
-        String[] treeIds = strategyAwardEntities.stream()
-                .map(StrategyAwardEntity::getRuleModel)
-                .filter(ruleModel -> ruleModel != null && !ruleModel.isEmpty())
-                .toArray(String[]::new);
+        Long[] treeIds = strategyAwardEntities.stream()
+                .map(StrategyAwardEntity::getRuleTreeId)
+                .filter(Objects::nonNull)
+                .toArray(Long[]::new);
         log.info("[LotteryStrategyController-queryLotteryAwardList]对应的规则信息 ruleModel：{}", (Object) treeIds);
         // 4. 查询规则配置 - 获取奖品的解锁限制，抽奖N次后解锁
-        Map<String, Integer> ruleLockCountMap = rule.queryAwardRuleLockCount(treeIds);
+        Map<Long, Integer> ruleLockCountMap = rule.queryAwardRuleLockCount(treeIds);
         log.info("[LotteryStrategyController-queryLotteryAwardList]对应的规则信息 k-v 值 ruleLockCountMap：{}", ruleLockCountMap);
         // 5. 用户今天已经参与的抽奖次数
         Integer count = activityQuotaService.queryTodayUserLotteryCount(requestDTO.getUserId(), requestDTO.getActivityId());
@@ -69,7 +70,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
         // 6. 处理每个奖品的返回信息
         for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
             //规则的次数
-            Integer awardRuleLockCount = ruleLockCountMap.get(strategyAwardEntity.getRuleModel());
+            Integer awardRuleLockCount = ruleLockCountMap.get(strategyAwardEntity.getRuleTreeId());
             LotteryAwardListResponseDTO lotteryAwardListResponseDTO = new LotteryAwardListResponseDTO();
             BeanUtils.copyProperties(strategyAwardEntity, lotteryAwardListResponseDTO);
             lotteryAwardListResponseDTO.setAwardRuleLockCount(awardRuleLockCount == null ? 0 : awardRuleLockCount);

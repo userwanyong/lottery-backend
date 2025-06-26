@@ -19,15 +19,15 @@ import lombok.Data;
 @Data
 public class RuleTreeNode implements Serializable {
     /**
-     * 自增ID
+     * 雪花ID
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
      * 规则树ID
      */
-    private String treeId;
+    private Long ruleTreeId;
 
     /**
      * 规则名

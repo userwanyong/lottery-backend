@@ -7,11 +7,11 @@ import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.engine.DecisionTreeEngine;
-import com.lottery.domain.strategy.service.armory.StrategyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     }
 
     @Override
-    public RuleEntity lotteryLogicTree(String userId, Long strategyId,Long activityId, Long awardId) {
+    public RuleEntity lotteryLogicTree(String userId, Long strategyId, Long activityId, Long awardId) {
         // 1. 查规则模型，如果为空，说明未设置规则，直接返回抽到的奖品实体
         StrategyRuleModelVO strategyRuleModelVO = repository.queryRuleModelVO(strategyId, awardId);
         if (strategyRuleModelVO == null) {
@@ -48,15 +48,15 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
                     .build();
         }
         // 2. 根据规则模型查数据库表构建规则树树根
-        RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(strategyRuleModelVO.getRuleModels());
+        RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(strategyRuleModelVO.getRuleTreeId());
         if (ruleTreeVO == null) {
-            log.error("[DefaultLottery]存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
-            throw new RuntimeException("[DefaultLottery]存在抽奖策略配置的规则模型 Key，未在库表 rule_tree、rule_tree_node、rule_tree_line 配置对应的规则树信息 " + strategyRuleModelVO.getRuleModels());
+            log.error("[DefaultLottery.lotteryLogicTree]存在奖品规则模型 id:{},但未在库表配置对应的规则树信息", strategyRuleModelVO.getRuleTreeId());
+            throw new RuntimeException("[DefaultLottery.lotteryLogicTree]存在奖品规则模型 id: " + strategyRuleModelVO.getRuleTreeId() + ",但未在库表配置对应的规则树信息");
         }
         // 3. 获取规则树引擎
         DecisionTreeEngine decisionTreeEngine = defaultLogicTreeFactory.openLogicTree(ruleTreeVO);
         // 4. 执行规则树
-        return decisionTreeEngine.process(userId, strategyId, activityId,awardId);
+        return decisionTreeEngine.process(userId, strategyId, activityId, awardId);
     }
 
 
@@ -97,7 +97,7 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     }
 
     @Override
-    public Map<String, Integer> queryAwardRuleLockCount(String[] treeIds) {
+    public Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds) {
         return repository.queryAwardRuleLockCount(treeIds);
     }
 

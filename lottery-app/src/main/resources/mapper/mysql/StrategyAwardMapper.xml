@@ -13,7 +13,7 @@
         <result property="awardCount" column="award_count" jdbcType="INTEGER"/>
         <result property="awardCountSurplus" column="award_count_surplus" jdbcType="INTEGER"/>
         <result property="awardRate" column="award_rate" jdbcType="DECIMAL"/>
-        <result property="ruleModels" column="rule_models" jdbcType="VARCHAR"/>
+        <result property="ruleTreeId" column="rule_tree_id" jdbcType="VARCHAR"/>
         <result property="sort" column="sort" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>

@@ -16,11 +16,6 @@ public class RuleTreeResponseDTO {
     private Long id;
 
     /**
-     * 规则树ID
-     */
-    private String treeId;
-
-    /**
      * 规则树名称
      */
     private String treeName;

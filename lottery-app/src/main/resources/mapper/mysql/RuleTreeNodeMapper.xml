@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.RuleTreeNode">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="treeId" column="tree_id" jdbcType="VARCHAR"/>
+            <result property="ruleTreeId" column="rule_tree_id" jdbcType="BIGINT"/>
             <result property="ruleName" column="rule_name" jdbcType="VARCHAR"/>
             <result property="ruleDesc" column="rule_desc" jdbcType="VARCHAR"/>
             <result property="ruleValue" column="rule_value" jdbcType="VARCHAR"/>
