@@ -36,6 +36,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private StrategyAwardMapper strategyAwardMapper;
     @Resource
     private RuleTreeMapper ruleTreeMapper;
+    @Resource
+    private RuleTreeNodeMapper ruleTreeNodeMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -313,5 +315,35 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteRuleTreeVO(Long ruleTreeId) {
         ruleTreeMapper.deleteById(ruleTreeId);
+    }
+
+    @Override
+    public List<RuleTreeNodeVO> queryRuleTreeNodeVO() {
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(null);
+        ruleTreeNodes.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        return ruleTreeNodes.stream().map(ruleTreeNode -> {
+            RuleTreeNodeVO ruleTreeNodeVO = new RuleTreeNodeVO();
+            BeanUtils.copyProperties(ruleTreeNode, ruleTreeNodeVO);
+            return ruleTreeNodeVO;
+        }).toList();
+    }
+
+    @Override
+    public void addRuleTreeNodeVO(RuleTreeNodeVO ruleTreeNodeVO) {
+        RuleTreeNode ruleTreeNode = new RuleTreeNode();
+        BeanUtils.copyProperties(ruleTreeNodeVO, ruleTreeNode);
+        ruleTreeNodeMapper.insert(ruleTreeNode);
+    }
+
+    @Override
+    public void updateRuleTreeNodeVO(RuleTreeNodeVO ruleTreeNodeVO) {
+        RuleTreeNode ruleTreeNode = new RuleTreeNode();
+        BeanUtils.copyProperties(ruleTreeNodeVO, ruleTreeNode);
+        ruleTreeNodeMapper.updateById(ruleTreeNode);
+    }
+
+    @Override
+    public void deleteRuleTreeNodeVO(Long ruleTreeNodeId) {
+        ruleTreeNodeMapper.deleteById(ruleTreeNodeId);
     }
 }

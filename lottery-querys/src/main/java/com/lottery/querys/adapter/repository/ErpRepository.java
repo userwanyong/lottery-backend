@@ -80,4 +80,12 @@ public interface ErpRepository {
     void updateRuleTreeVO(RuleTreeVO ruleTreeVO);
 
     void deleteRuleTreeVO(Long ruleTreeId);
+
+    List<RuleTreeNodeVO> queryRuleTreeNodeVO();
+
+    void addRuleTreeNodeVO(RuleTreeNodeVO ruleTreeNodeVO);
+
+    void updateRuleTreeNodeVO(RuleTreeNodeVO ruleTreeNodeVO);
+
+    void deleteRuleTreeNodeVO(Long ruleTreeNodeId);
 }
