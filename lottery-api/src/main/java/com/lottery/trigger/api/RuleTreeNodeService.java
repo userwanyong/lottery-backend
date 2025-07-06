@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface RuleTreeNodeService {
     BaseResponse<List<RuleTreeNodeResponseDTO>> queryRuleTreeNode();
+    BaseResponse<List<RuleTreeNodeResponseDTO>> queryRuleTreeNodeByRuleTreeId(String ruleTreeId);
     BaseResponse<Boolean> addRuleTreeNode(RuleTreeNodeRequestDTO request);
     BaseResponse<Boolean> updateRuleTreeNode(RuleTreeNodeRequestDTO request);
     BaseResponse<Boolean> deleteRuleTreeNode(Long ruleTreeNodeId);

@@ -195,7 +195,6 @@ public class LotteryActivityController implements LotteryActivityService {
     @Override
     @GetMapping("/query_sku_product_list_by_activity_id")
     public BaseResponse<List<SkuProductResponseDTO>> querySkuProductListByActivityId(@RequestParam Long activityId) {
-
         log.info("======================[LotteryActivityController-querySkuProductListByActivityId]查询积分兑换商品sku列表开始 activityId:{} ======================", activityId);
         if (activityId == null) {
             return new BaseResponse<>(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());

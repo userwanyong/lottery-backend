@@ -1,6 +1,8 @@
 package com.lottery.infrastructure.adapter.repository;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
 import com.lottery.querys.adapter.repository.ErpRepository;
@@ -38,6 +40,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private RuleTreeMapper ruleTreeMapper;
     @Resource
     private RuleTreeNodeMapper ruleTreeNodeMapper;
+    @Resource
+    private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -345,5 +349,46 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteRuleTreeNodeVO(Long ruleTreeNodeId) {
         ruleTreeNodeMapper.deleteById(ruleTreeNodeId);
+    }
+
+    @Override
+    public List<RuleTreeNodeLineVO> queryRuleTreeNodeLineVO() {
+        List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(null);
+        ruleTreeNodeLines.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        return ruleTreeNodeLines.stream().map(ruleTreeNodeLine -> {
+            RuleTreeNodeLineVO ruleTreeNodeLineVO = new RuleTreeNodeLineVO();
+            BeanUtils.copyProperties(ruleTreeNodeLine, ruleTreeNodeLineVO);
+            return ruleTreeNodeLineVO;
+        }).toList();
+    }
+
+    @Override
+    public void addRuleTreeNodeLineVO(RuleTreeNodeLineVO ruleTreeNodeLineVO) {
+        RuleTreeNodeLine ruleTreeNodeLine = new RuleTreeNodeLine();
+        BeanUtils.copyProperties(ruleTreeNodeLineVO, ruleTreeNodeLine);
+        ruleTreeNodeLineMapper.insert(ruleTreeNodeLine);
+    }
+
+    @Override
+    public void updateRuleTreeNodeLineVO(RuleTreeNodeLineVO ruleTreeNodeLineVO) {
+        RuleTreeNodeLine ruleTreeNodeLine = new RuleTreeNodeLine();
+        BeanUtils.copyProperties(ruleTreeNodeLineVO, ruleTreeNodeLine);
+        ruleTreeNodeLineMapper.updateById(ruleTreeNodeLine);
+    }
+
+    @Override
+    public void deleteRuleTreeNodeLineVO(Long ruleTreeNodeLineId) {
+        ruleTreeNodeLineMapper.deleteById(ruleTreeNodeLineId);
+    }
+
+    @Override
+    public List<RuleTreeNodeVO> queryRuleTreeNodeVOByRuleTreeId(String ruleTreeId) {
+        LambdaQueryWrapper<RuleTreeNode> queryWrapper = new LambdaQueryWrapper<RuleTreeNode>().eq(RuleTreeNode::getRuleTreeId, ruleTreeId);
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(queryWrapper);
+        return ruleTreeNodes.stream().map(ruleTreeNodeLine -> {
+            RuleTreeNodeVO ruleTreeNodeVO = new RuleTreeNodeVO();
+            BeanUtils.copyProperties(ruleTreeNodeLine, ruleTreeNodeVO);
+            return ruleTreeNodeVO;
+        }).toList();
     }
 }

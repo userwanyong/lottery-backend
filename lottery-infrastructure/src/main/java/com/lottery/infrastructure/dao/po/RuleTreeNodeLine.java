@@ -9,8 +9,10 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 节点连线表
@@ -20,6 +22,8 @@ import lombok.Data;
 @TableName(value ="rule_tree_node_line")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RuleTreeNodeLine implements Serializable {
     /**
      * 雪花ID
