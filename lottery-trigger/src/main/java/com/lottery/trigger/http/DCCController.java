@@ -2,23 +2,25 @@ package com.lottery.trigger.http;
 
 
 import com.lottery.trigger.api.DCCService;
+import com.lottery.trigger.api.dto.req.DCCRequestDTO;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 
 /**
  * @author 永
+ * degradeSwitch:close 抽奖是否降级 默认关闭
+ * rateLimiterSwitch:open 抽奖是否进行限流 默认开启
  */
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/dcc")
 public class DCCController implements DCCService {
     @Resource
@@ -27,8 +29,10 @@ public class DCCController implements DCCService {
     private static final String BASE_CONFIG_PATH_CONFIG = BASE_CONFIG_PATH + "/config";
 
     @Override
-    @GetMapping("/update_config")
-    public BaseResponse<Boolean> updateConfig(String key, String value) {
+    @PostMapping("/update_config")
+    public BaseResponse<Boolean> updateConfig(@RequestBody DCCRequestDTO requestDTO) {
+        String key = requestDTO.getKey();
+        String value = requestDTO.getValue();
         try {
             log.info("DCC 动态配置值变更开始 key:{} value:{}", key, value);
             String keyPath = BASE_CONFIG_PATH_CONFIG.concat("/").concat(key);
@@ -41,6 +45,20 @@ public class DCCController implements DCCService {
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
         } catch (Exception e) {
             log.info("DCC 动态配置值变更失败 key:{} value:{}", key, value);
+            return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
+        }
+    }
+
+    @Override
+    @GetMapping("/query_config")
+    public BaseResponse<String> queryConfig(@RequestParam String key) {
+        try {
+            String keyPath = BASE_CONFIG_PATH_CONFIG.concat("/").concat(key);
+            byte[] bytes = client.getData().forPath(keyPath);
+            log.info("DCC 获取动态配置值成功 key:{} value:{}", key, new String(bytes, StandardCharsets.UTF_8));
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), new String(bytes, StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            log.info("DCC 获取动态配置值失败 key:{}", key);
             return new BaseResponse<>(ResponseCode.UN_ERROR.getCode(), ResponseCode.UN_ERROR.getMessage());
         }
     }
