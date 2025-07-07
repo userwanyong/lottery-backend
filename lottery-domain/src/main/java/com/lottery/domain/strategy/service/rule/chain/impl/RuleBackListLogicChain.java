@@ -20,7 +20,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
     private StrategyRepository repository;
 
     @Override
-    public RuleEntity logic(String userId, Long strategyId) {
+    public RuleEntity logic(String userId, Long strategyId,Long activityId) {
         log.debug("【抽奖责任链-RuleBackListLogicChain】-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
         // 1. 查询规则的值
         String ruleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_BLACKLIST);
@@ -43,6 +43,6 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
         }
         // 否则过滤其他责任链
         log.debug("【抽奖责任链-RuleBackListLogicChain】-黑名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
-        return next().logic(userId, strategyId);
+        return next().logic(userId, strategyId,activityId);
     }
 }

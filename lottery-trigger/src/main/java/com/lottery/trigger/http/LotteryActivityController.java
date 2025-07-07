@@ -31,6 +31,8 @@ import com.lottery.types.annotation.RateLimiterAccessInterceptor;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -91,11 +93,12 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/draw")
-    @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 2, blacklistCount = 3)
     //每秒超过2次，频次限制 累计这种情况3次，黑名单拦截 24小时后解封
-//    @HystrixCommand(commandProperties = {
-//            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "600")
-//    }, fallbackMethod = "drawHystrixError")
+    @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 2, blacklistCount = 3)
+    //超过1500ms无响应或出现异常，走drawHystrixError方法
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1500")
+    }, fallbackMethod = "drawHystrixError")
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
         if ("open".equals(degradeSwitch)) {
@@ -142,9 +145,13 @@ public class LotteryActivityController implements LotteryActivityService {
         return new BaseResponse<>(ResponseCode.RATE_LIMITER.getCode(), ResponseCode.RATE_LIMITER.getMessage());
     }
 
-    public BaseResponse<ActivityDrawResponseDTO> drawHystrixError(ActivityDrawRequestDTO request) {
-        log.error("!!!!!!!!!![LotteryActivityController-drawHystrixError]用户抽奖熔断 userId:{} activityId:{} !!!!!!!!!!", request.getUserId(), request.getActivityId());
-        return new BaseResponse<>(ResponseCode.HYSTRIX.getCode(), ResponseCode.HYSTRIX.getMessage());
+    public BaseResponse<ActivityDrawResponseDTO> drawHystrixError(ActivityDrawRequestDTO request,Throwable throwable) {
+        String message = throwable.getMessage();
+        if (message==null){
+            message="响应超时,请稍后再试";
+        }
+        log.error("!!!!!!!!!![LotteryActivityController-drawHystrixError]用户抽奖熔断: {} userId:{} activityId:{} !!!!!!!!!!", message,request.getUserId(), request.getActivityId());
+        return new BaseResponse<>(ResponseCode.HYSTRIX.getCode(), message);
     }
 
     @Override

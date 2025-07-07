@@ -87,7 +87,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
     public BaseResponse<List<StrategyRuleWeightResponseDTO>> queryStrategyRuleWeight(@RequestBody StrategyRuleWeightRequestDTO requestDTO) {
         log.info("======================[LotteryStrategyController-queryStrategyRuleWeight]查询用户抽奖权重开始 userId:{} ======================", requestDTO.getUserId());
         // 1.参数校验
-        if (requestDTO.getUserId() == null || "null".equals(requestDTO.getUserId())) {
+        if (requestDTO.getUserId() == null || requestDTO.getActivityId() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         // 2.用户已经参与的抽奖次数

@@ -7,7 +7,7 @@ import com.lottery.domain.strategy.model.entity.RuleEntity;
  * 抽奖规则责任链接口
  */
 public interface LogicChain {
-    RuleEntity logic(String userId, Long strategyId);
+    RuleEntity logic(String userId, Long strategyId,Long activityId);
 
     LogicChain appendNext(LogicChain nextChain);
 

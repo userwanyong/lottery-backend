@@ -43,7 +43,7 @@ public abstract class AbstractLottery implements Lottery {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         // 2. 责任链
-        RuleEntity chainAward = lotteryLogicChain(userId, strategyId);
+        RuleEntity chainAward = lotteryLogicChain(userId, strategyId, activityId);
         log.debug("[AbstractLottery]抽奖责任链通过 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, chainAward.getAwardId(), chainAward.getRuleModel());
         // 只有默认规则才走规则树
         if (!Constants.RuleModel.DEFAULT.equals(chainAward.getRuleModel())) {
@@ -67,7 +67,7 @@ public abstract class AbstractLottery implements Lottery {
                 .build();
     }
 
-    public abstract RuleEntity lotteryLogicChain(String userId, Long strategyId);
+    public abstract RuleEntity lotteryLogicChain(String userId, Long strategyId,Long activityId);
 
     public abstract RuleEntity lotteryLogicTree(String userId, Long strategyId,Long activityId, Long awardId);
 

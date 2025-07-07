@@ -31,11 +31,11 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     }
 
     @Override
-    public RuleEntity lotteryLogicChain(String userId, Long strategyId) {
+    public RuleEntity lotteryLogicChain(String userId, Long strategyId,Long activityId) {
         // 1. 获取责任链
         LogicChain logicChain = defaultLogicChainFactory.openLogicChain(strategyId);
         // 2. 依次执行责任链
-        return logicChain.logic(userId, strategyId);
+        return logicChain.logic(userId, strategyId,activityId);
     }
 
     @Override
