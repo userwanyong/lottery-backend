@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
+import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.*;
+import com.lottery.types.common.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
@@ -42,6 +44,8 @@ public class ErpRepositoryImpl implements ErpRepository {
     private RuleTreeNodeMapper ruleTreeNodeMapper;
     @Resource
     private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
+    @Resource
+    private RedisService redisService;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -193,6 +197,8 @@ public class ErpRepositoryImpl implements ErpRepository {
         Award award = new Award();
         BeanUtils.copyProperties(awardResponseVO, award);
         awardMapper.updateById(award);
+        // 删除所有以lottery_strategy_award_list_key_开头的redis key
+        redisService.deleteKeysWithPrefix(Constants.RedisKey.STRATEGY_AWARD_LIST_KEY);
     }
 
     @Override
@@ -284,6 +290,7 @@ public class ErpRepositoryImpl implements ErpRepository {
         StrategyAward strategyAward = new StrategyAward();
         BeanUtils.copyProperties(strategyAwardVO, strategyAward);
         strategyAwardMapper.updateById(strategyAward);
+        redisService.deleteKeysWithPrefix(Constants.RedisKey.STRATEGY_AWARD_LIST_KEY);
     }
 
     @Override

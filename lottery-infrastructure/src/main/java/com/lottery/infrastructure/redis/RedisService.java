@@ -270,5 +270,10 @@ public interface RedisService {
     RRateLimiter getRateLimiter(String key);
 
 
+    /**
+     * 删除所有以该前缀开头的key
+     * @param prefix 前缀
+     */
+    void deleteKeysWithPrefix(String prefix);
 }
 

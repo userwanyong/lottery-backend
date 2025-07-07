@@ -182,18 +182,18 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         RuleTree ruleTree = ruleTreeMapper.selectOne(ruleTreeQueryWrapper);
 
         LambdaQueryWrapper<RuleTreeNode> ruleTreeNodeQueryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
-                .eq(RuleTreeNode::getId, treeId);
+                .eq(RuleTreeNode::getRuleTreeId, treeId);
         List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(ruleTreeNodeQueryWrapper);
 
         LambdaQueryWrapper<RuleTreeNodeLine> ruleTreeNodeLineQueryWrapper = new QueryWrapper<RuleTreeNodeLine>().lambda()
-                .eq(RuleTreeNodeLine::getId, treeId);
+                .eq(RuleTreeNodeLine::getRuleTreeId, treeId);
         List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(ruleTreeNodeLineQueryWrapper);
 
         //转VO
         HashMap<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
         for (RuleTreeNodeLine ruleTreeNodeLine : ruleTreeNodeLines) {
             RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
-                    .ruleTreeId(ruleTreeNodeLine.getId())
+                    .ruleTreeId(ruleTreeNodeLine.getRuleTreeId())
                     .ruleNodeFrom(ruleTreeNodeLine.getRuleNodeFrom())
                     .ruleNodeTo(ruleTreeNodeLine.getRuleNodeTo())
                     .ruleLimitType(RuleLimitTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitType()))
@@ -205,7 +205,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         HashMap<String, RuleTreeNodeVO> ruleTreeNodeMap = new HashMap<>();
         for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
             RuleTreeNodeVO ruleTreeNodeVO = RuleTreeNodeVO.builder()
-                    .ruleTreeId(ruleTreeNode.getId())
+                    .ruleTreeId(ruleTreeNode.getRuleTreeId())
                     .ruleName(ruleTreeNode.getRuleName())
                     .ruleDesc(ruleTreeNode.getRuleDesc())
                     .ruleValue(ruleTreeNode.getRuleValue())

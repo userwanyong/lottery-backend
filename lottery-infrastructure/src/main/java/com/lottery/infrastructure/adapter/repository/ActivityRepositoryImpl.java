@@ -454,6 +454,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         //创建
                         ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
                         BeanUtils.copyProperties(activityAccountMonthEntity, activityAccountMonth);
+                        activityAccountMonth.setMonthCount(activityAccountMonthEntity.getMonthCountSurplus());
                         activityAccountMonth.setMonthCountSurplus(activityAccountMonthEntity.getMonthCountSurplus() - 1);
                         activityAccountMonthMapper.insert(activityAccountMonth);
                         log.debug("[ActivityRepositoryImpl]创建月账户成功 userId: {} activityId: {} month: {}", userId, activityId, activityAccountMonthEntity.getMonth());
@@ -490,6 +491,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                         //创建
                         ActivityAccountDay activityAccountDay = new ActivityAccountDay();
                         BeanUtils.copyProperties(activityAccountDayEntity, activityAccountDay);
+                        activityAccountDay.setDayCount(activityAccountDayEntity.getDayCountSurplus());
                         //日总额度为总账户的，但日剩余额度要-1，因为创建时你已经花了一次了
                         activityAccountDay.setDayCountSurplus(activityAccountDayEntity.getDayCountSurplus() - 1);
                         activityAccountDayMapper.insert(activityAccountDay);

@@ -1,5 +1,6 @@
 package com.lottery.infrastructure.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.*;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @author 永
  * Redis 服务实现 - Redisson
  */
+@Slf4j
 @Service("redissonService")
 public class RedisServiceImpl implements RedisService {
 
@@ -179,6 +181,18 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public RRateLimiter getRateLimiter(String key) {
         return redissonClient.getRateLimiter(key);
+    }
+
+    @Override
+    public void deleteKeysWithPrefix(String prefix) {
+        RKeys keys = redissonClient.getKeys();
+        // 使用 SCAN 命令分批次获取所有匹配的 key
+        Iterable<String> allKeys = keys.getKeysByPattern(prefix + "*");
+        // 删除所有匹配的 key
+        for (String key : allKeys) {
+            redissonClient.getBucket(key).delete();
+        }
+        log.info("[RedisServiceImpl-deleteKeysWithPrefix]删除所有以 key：{} 前缀开头的数据成功", prefix);
     }
 
 }
