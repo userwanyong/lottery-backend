@@ -28,6 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 永
@@ -92,8 +93,8 @@ public class RebateRepositoryImpl implements RebateRepository {
                     return 1;
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("[RebateRepositoryImpl]返利流水记录失败，唯一索引冲突 userId: {}", userId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
+                    log.warn("[RebateRepositoryImpl]返利流水记录失败，唯一索引冲突 userId: {}", userId);
+                    throw new DuplicateKeyException(Objects.requireNonNull(e.getMessage()));
                 }
             });
         } finally {

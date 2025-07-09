@@ -151,7 +151,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     creditRecordMapper.insert(creditRecord);
                     log.debug("[UserAwardRepositoryImpl]写入积分记录成功 userId:{}", userId);
                     // 更新/创建积分账户
-                    LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda().eq(CreditAccount::getUserId, userId);
+                    LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda().eq(CreditAccount::getUserId, userId).eq(CreditAccount::getActivityId, userAwardRecordEntity.getActivityId());
                     CreditAccount dbCreditAccount = creditAccountMapper.selectOne(queryWrapper);
                     if (dbCreditAccount == null) {
                         // 新增

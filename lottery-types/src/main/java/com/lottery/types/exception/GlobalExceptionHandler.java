@@ -46,9 +46,9 @@ public class GlobalExceptionHandler {
             // 提取出重复的值
             duplicateValue = matcher.group(1);
         }
-        String errorMessage = String.format("数据 {%s} 已存在", duplicateValue);
-        log.error(errorMessage);
-        return new BaseResponse<>(ResponseCode.DATA_EXIST.getCode(), errorMessage);
+        String errorMessage = String.format("索引 {%s} 已存在", duplicateValue);
+        log.warn(errorMessage);
+        return new BaseResponse<>(ResponseCode.INDEX_DUP.getCode(), errorMessage);
     }
 }
 

@@ -20,7 +20,7 @@ public enum ResponseCode {
     ACTIVITY_STATE_ERROR(1006, "活动未开启（非open状态）"),
     ACTIVITY_DATE_ERROR(1007, "非活动日期范围"),
     ACTIVITY_SKU_STOCK_ZERO(1008, "抽奖次数库存不足"),
-    ACTIVITY_SKU_STOCK_ERROR(1008, "抽奖次数库存异常"),
+    ACTIVITY_SKU_STOCK_ERROR(2008, "抽奖次数库存异常"),
     ACCOUNT_QUOTA_ERROR(1009,"账户总额度不足"),
     ACCOUNT_MONTH_QUOTA_ERROR(1010,"账户月额度不足"),
     ACCOUNT_DAY_QUOTA_ERROR(1011,"账户日额度不足"),
@@ -29,7 +29,7 @@ public enum ResponseCode {
     DEGRADE_SWITCH(1014, "活动已降级"),
     RATE_LIMITER(1015, "活动已被限流"),
     HYSTRIX(1016, "服务已被熔断"),
-    DATA_EXIST(1008, "数据已存在")
+    DATA_EXIST(2009, "数据已存在")
 
     ;
 

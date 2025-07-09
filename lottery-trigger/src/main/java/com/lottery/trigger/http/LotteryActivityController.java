@@ -221,7 +221,7 @@ public class LotteryActivityController implements LotteryActivityService {
     }
 
     @Override
-    @GetMapping("/query_user_credit_account")
+    @PostMapping("/query_user_credit_account")
     public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestBody UserCreditAccountRequestDTO requestDTO) {
         String userId = requestDTO.getUserId();
         Long activityId = requestDTO.getActivityId();
@@ -234,7 +234,7 @@ public class LotteryActivityController implements LotteryActivityService {
     @Override
     @PostMapping("/credit_pay_exchange_sku")
     public BaseResponse<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
-        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} ======================", request.getUserId());
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} activityId:{} skuId:{} ======================", request.getUserId(),request.getActivityId(),request.getSku());
         // 1.创建增加抽奖次数的额度订单
         QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
         quotaOrderEntity.setUserId(request.getUserId());
@@ -243,7 +243,7 @@ public class LotteryActivityController implements LotteryActivityService {
         quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
         quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
         UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-        log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} sku:{} orderId:{}", request.getUserId(), request.getSku(), quotaOrder.getOrderId());
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} activityId:{} skuId:{} orderId:{}", request.getUserId(),request.getActivityId(), request.getSku(), quotaOrder.getOrderId());
         // 2.创建扣减积分的积分订单
         TradeEntity tradeEntity = new TradeEntity();
         tradeEntity.setUserId(request.getUserId());
@@ -253,8 +253,8 @@ public class LotteryActivityController implements LotteryActivityService {
         tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
         tradeEntity.setAmount(quotaOrder.getPayAmount());
         String creditOrder = creditService.createCreditOrder(tradeEntity);
-        log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} sku:{} creditOrder:{}", request.getUserId(), request.getSku(), creditOrder);
-        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getSku(), creditOrder);
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} activityId:{} sku:{} creditOrder:{}", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} activityId:{} sku:{} orderId:{} ======================", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 

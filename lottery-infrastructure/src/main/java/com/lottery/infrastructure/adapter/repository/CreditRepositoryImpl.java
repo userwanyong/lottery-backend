@@ -116,7 +116,7 @@ public class CreditRepositoryImpl implements CreditRepository {
                     log.debug("[CreditRepositoryImpl]写入积分任务成功 userId:{}", userId);
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
-                    log.error("[CreditRepositoryImpl]调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
+                    log.warn("[CreditRepositoryImpl]调整账户积分额度异常，唯一索引冲突 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId());
                 } catch (Exception e) {
                     status.setRollbackOnly();
                     log.error("[CreditRepositoryImpl]调整账户积分额度失败 userId:{} orderId:{}", userId, creditOrderEntity.getOrderId(), e);
