@@ -21,9 +21,13 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.service.Lottery;
 import com.lottery.domain.strategy.service.armory.StrategyArmory;
+import com.lottery.querys.adapter.repository.ErpRepository;
+import com.lottery.querys.adapter.repository.EsErpRepository;
+import com.lottery.querys.model.valobj.EsUserAwardRecordVO;
 import com.lottery.trigger.api.LotteryActivityService;
 import com.lottery.trigger.api.dto.req.*;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
+import com.lottery.trigger.api.dto.res.EsUserAwardRecordResponseDTO;
 import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
 import com.lottery.types.annotation.DCCValue;
@@ -31,6 +35,7 @@ import com.lottery.types.annotation.RateLimiterAccessInterceptor;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
+import com.lottery.types.model.MyPage;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +81,10 @@ public class LotteryActivityController implements LotteryActivityService {
     private CreditService creditService;
     @DCCValue("degradeSwitch:close")
     private String degradeSwitch;
+    @Resource
+    private EsErpRepository esRepository;
+    @Resource
+    private ErpRepository repository;
 
     @Override
     @PostMapping("/armory")
@@ -226,6 +235,10 @@ public class LotteryActivityController implements LotteryActivityService {
         String userId = requestDTO.getUserId();
         Long activityId = requestDTO.getActivityId();
         log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} activityId:{} ======================", userId,activityId);
+        // 1.参数校验
+        if (StringUtils.isBlank(userId) || activityId == null) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+        }
         CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId,activityId);
         log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分成功 userId:{} activityId:{} creditAmount:{} ======================", userId,activityId,creditAccountEntity.getCreditAmount());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
@@ -256,6 +269,42 @@ public class LotteryActivityController implements LotteryActivityService {
         log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} activityId:{} sku:{} creditOrder:{}", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
         log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} activityId:{} sku:{} orderId:{} ======================", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
+    }
+
+    @Override
+    @GetMapping("/query_user_award_record_by_activity_id")
+    public BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(@RequestParam Long activityId) {
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================",activityId);
+        List<EsUserAwardRecordVO> esUserAwardRecords = esRepository.queryEsUserAwardRecordVOList(activityId);
+        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
+        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords) {
+            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
+            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
+            list.add(esUserAwardRecordResponseDTO);
+        }
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================",activityId);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
+    }
+
+    @GetMapping("/query_my_award_record")
+    @Override
+    public BaseResponse<MyPage<EsUserAwardRecordResponseDTO>> queryMyAwardRecordByPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                                                                       @RequestParam(defaultValue = "36") Integer pageSize,
+                                                                                       @RequestParam Long activityId,
+                                                                                       @RequestParam String userId) {
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录开始 activityId:{} userId:{}======================",activityId,userId);
+        MyPage<EsUserAwardRecordVO> esUserAwardRecords = repository.queryUserAwardRecordVOListByPage(pageNum,pageSize,activityId,userId);
+        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
+        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords.getItems()) {
+            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
+            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
+            list.add(esUserAwardRecordResponseDTO);
+        }
+        MyPage<EsUserAwardRecordResponseDTO> myPage = new MyPage<>();
+        myPage.setItems(list);
+        myPage.setTotal(esUserAwardRecords.getTotal());
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================",activityId,userId);
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), myPage);
     }
 
 }

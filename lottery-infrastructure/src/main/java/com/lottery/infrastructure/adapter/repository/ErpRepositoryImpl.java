@@ -1,20 +1,30 @@
 package com.lottery.infrastructure.adapter.repository;
 
 
+import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
+import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
+import com.lottery.domain.rebate.model.entity.TaskEntity;
+import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.*;
 import com.lottery.types.common.Constants;
+import com.lottery.types.model.MyPage;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +56,10 @@ public class ErpRepositoryImpl implements ErpRepository {
     private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
     @Resource
     private RedisService redisService;
+    @Resource
+    private UserAwardRecordMapper userAwardRecordMapper;
+    @Resource
+    private IDBRouterStrategy dbRouter;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -397,5 +411,35 @@ public class ErpRepositoryImpl implements ErpRepository {
             BeanUtils.copyProperties(ruleTreeNodeLine, ruleTreeNodeVO);
             return ruleTreeNodeVO;
         }).toList();
+    }
+
+    @Override
+    public MyPage<EsUserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId) {
+        // 根据中奖时间倒序排序
+        LambdaQueryWrapper<UserAwardRecord> queryWrapper = new LambdaQueryWrapper<UserAwardRecord>().orderByDesc(UserAwardRecord::getAwardTime);
+        queryWrapper.eq(UserAwardRecord::getUserId, userId);
+        queryWrapper.eq(UserAwardRecord::getActivityId, activityId);
+        Page<UserAwardRecord> page = new Page<>(pageNum, pageSize);
+        MyPage<EsUserAwardRecordVO> myPage = new MyPage<>();
+        try {
+            dbRouter.doRouter(userId);
+            Page<UserAwardRecord> userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
+            String key = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + userAwardRecordPage.getRecords().get(0).getStrategyId();
+            ArrayList<StrategyAwardEntity> arrayList = redisService.getValue(key);
+            // 将所有数据 awardId 作为键 image 作为值封装为一个map集合
+            Map<Long, String> awardMap = arrayList.stream().collect(Collectors.toMap(StrategyAwardEntity::getAwardId, StrategyAwardEntity::getImage));
+            List<EsUserAwardRecordVO> list = userAwardRecordPage.getRecords().stream().map(userAwardRecord -> {
+                EsUserAwardRecordVO esUserAwardRecordVO = new EsUserAwardRecordVO();
+                BeanUtils.copyProperties(userAwardRecord, esUserAwardRecordVO);
+                // 根据奖品 id 从 reids 中获取图片url
+                esUserAwardRecordVO.setImage(awardMap.get(userAwardRecord.getAwardId()));
+                return esUserAwardRecordVO;
+            }).toList();
+            myPage.setTotal(userAwardRecordPage.getTotal());
+            myPage.setItems(list);
+            return myPage;
+        } finally {
+            dbRouter.clear();
+        }
     }
 }

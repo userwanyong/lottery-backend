@@ -15,6 +15,8 @@ import java.util.List;
 public interface EsUserAwardRecordMapper extends BaseMapper<EsUserAwardRecord> {
 
     List<EsUserAwardRecord> queryUserAwardRecordVOListEs();
+
+    List<EsUserAwardRecord> queryUserAwardRecordVOListEsByActivityId();
 }
 
 

@@ -15,6 +15,8 @@ public interface EsErpRepository {
 
     List<EsUserAwardRecordVO> queryEsUserAwardRecordVOList();
 
+    List<EsUserAwardRecordVO> queryEsUserAwardRecordVOList(Long activityId);
+
     List<EsCreditAccountVO> queryCreditAccountVOList();
 
     List<EsCreditRecordVO> queryCreditRecordVOList();

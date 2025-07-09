@@ -37,6 +37,8 @@ public class EsUserAwardRecordResponseDTO {
      */
     private Long awardId;
 
+    private String image;
+
     /**
      * 奖品标题（名称）
      */

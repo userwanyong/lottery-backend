@@ -2,9 +2,11 @@ package com.lottery.trigger.api;
 
 import com.lottery.trigger.api.dto.req.*;
 import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
+import com.lottery.trigger.api.dto.res.EsUserAwardRecordResponseDTO;
 import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
 import com.lottery.types.model.BaseResponse;
+import com.lottery.types.model.MyPage;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -78,4 +80,23 @@ public interface LotteryActivityService {
      */
     BaseResponse<Boolean> creditPayExchangeSku(SkuProductShopCartRequestDTO request);
 
+    /**
+     * 查询用户抽奖播报
+     *
+     * @param activityId 活动ID
+     * @return 用户抽奖播报
+     */
+    BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(Long activityId);
+
+
+    /**
+     * 查询用户个人获奖记录
+     * 这里借用Es的响应类 EsUserAwardRecordResponseDTO
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @param activityId 活动ID
+     * @param userId 用户ID
+     * @return 用户个人获奖记录
+     */
+    BaseResponse<MyPage<EsUserAwardRecordResponseDTO>> queryMyAwardRecordByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
 }

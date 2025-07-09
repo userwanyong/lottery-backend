@@ -71,6 +71,18 @@ public class EsErpRepositoryImpl implements EsErpRepository {
     }
 
     @Override
+    public List<EsUserAwardRecordVO> queryEsUserAwardRecordVOList(Long activityId) {
+        List<EsUserAwardRecord> esUserAwardRecords = esUserAwardRecordMapper.queryUserAwardRecordVOListEsByActivityId();
+        ArrayList<EsUserAwardRecordVO> list = new ArrayList<>();
+        for (EsUserAwardRecord esUserAwardRecord : esUserAwardRecords) {
+            EsUserAwardRecordVO esUserAwardRecordVO = new EsUserAwardRecordVO();
+            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordVO);
+            list.add(esUserAwardRecordVO);
+        }
+        return list;
+    }
+
+    @Override
     public List<EsCreditAccountVO> queryCreditAccountVOList() {
         List<EsCreditAccount> esCreditAccounts = esCreditAccountMapper.queryCreditAccount();
         ArrayList<EsCreditAccountVO> list = new ArrayList<>();

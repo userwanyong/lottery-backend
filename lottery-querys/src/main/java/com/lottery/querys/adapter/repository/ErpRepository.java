@@ -2,6 +2,7 @@ package com.lottery.querys.adapter.repository;
 
 
 import com.lottery.querys.model.valobj.*;
+import com.lottery.types.model.MyPage;
 
 import java.util.List;
 
@@ -98,4 +99,6 @@ public interface ErpRepository {
     void deleteRuleTreeNodeLineVO(Long ruleTreeNodeLineId);
 
     List<RuleTreeNodeVO> queryRuleTreeNodeVOByRuleTreeId(String ruleTreeId);
+
+    MyPage<EsUserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
 }

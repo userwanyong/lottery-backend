@@ -1,8 +1,11 @@
 package com.lottery.config;
 
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -50,9 +53,13 @@ public class DataSourceConfig {
 
         @Bean("mysqlSqlSessionFactory")
         public SqlSessionFactory mysqlSqlSessionFactory(DataSource mysqlDataSource, Interceptor dbRouterDynamicMybatisPlugin) throws Exception {
+            // 开启 mybatis-plus 分页功能
+            MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+            mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL)); // MySQL 分页支持
+
             MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
             factoryBean.setDataSource(mysqlDataSource);
-            factoryBean.setPlugins(dbRouterDynamicMybatisPlugin);
+            factoryBean.setPlugins(dbRouterDynamicMybatisPlugin,mybatisPlusInterceptor);
             factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
                     .getResources("classpath:mapper/mysql/*.xml"));
 

@@ -23,4 +23,10 @@
         from "marketing.user_award_record"
         order by _update_time desc
     </select>
+    <select id="queryUserAwardRecordVOListEsByActivityId" resultMap="BaseResultMap">
+        select _user_id, _activity_id, _strategy_id, _user_order_id, _award_id, _award_title, _award_time, _award_state, _create_time, _update_time
+        from "marketing.user_award_record"
+        order by _award_time desc
+        limit 5
+    </select>
 </mapper>
