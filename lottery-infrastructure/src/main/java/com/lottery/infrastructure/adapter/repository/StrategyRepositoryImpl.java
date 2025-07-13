@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.lottery.domain.activity.event.AwardStockZeroMessageEvent;
-import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
-import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
-import com.lottery.domain.strategy.model.entity.StrategyEntity;
+import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
+import com.lottery.domain.strategy.model.entity.*;
 import com.lottery.domain.strategy.model.valobj.*;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.infrastructure.dao.*;
@@ -16,6 +14,7 @@ import com.lottery.infrastructure.dao.po.*;
 import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.types.common.Constants;
+import com.lottery.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingQueue;
 import org.redisson.api.RDelayedQueue;
@@ -464,5 +463,15 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public <K, V> Map<K, V> getMap(String key) {
         return redisService.getMap(Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + key);
+    }
+
+    @Override
+    public void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> message) {
+        try {
+            eventPublisher.publish(topic, message);
+            log.debug("[StrategyRepositoryImpl]发送中奖广播消息成功 userId: {} topic: {}", message.getData().getUserId(), topic);
+        } catch (Exception e) {
+            log.error("[StrategyRepositoryImpl]发送中奖广播消息失败 userId: {} topic: {}",  message.getData().getUserId(), topic);
+        }
     }
 }

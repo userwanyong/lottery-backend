@@ -1,5 +1,7 @@
 package com.lottery.domain.strategy.service;
 
+import com.lottery.domain.channel.service.ChannelService;
+import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
@@ -10,8 +12,12 @@ import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainF
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
+import com.lottery.types.event.BaseEvent;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author 永
@@ -22,12 +28,17 @@ public abstract class AbstractLottery implements Lottery {
 
     protected StrategyRepository repository;
     protected StrategyService strategyService;
+    protected ChannelService channelService;
     protected DefaultLogicChainFactory defaultLogicChainFactory;
     protected DefaultLogicTreeFactory defaultLogicTreeFactory;
 
-    public AbstractLottery(StrategyRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+    @Resource
+    private SendLotteryMessageEvent sendLotteryMessageEvent;
+
+    public AbstractLottery(StrategyRepository repository, StrategyService strategyService, ChannelService channelService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
         this.repository = repository;
         this.strategyService = strategyService;
+        this.channelService = channelService;
         this.defaultLogicChainFactory = defaultLogicChainFactory;
         this.defaultLogicTreeFactory = defaultLogicTreeFactory;
     }
@@ -50,11 +61,28 @@ public abstract class AbstractLottery implements Lottery {
             return buildLotteryAwardEntity(strategyId, chainAward.getAwardId(), chainAward.getRuleValue());
         }
         // 3. 规则树
-        RuleEntity treeAward = lotteryLogicTree(userId, strategyId,activityId, chainAward.getAwardId());
+        RuleEntity treeAward = lotteryLogicTree(userId, strategyId, activityId, chainAward.getAwardId());
         log.debug("[AbstractLottery]默认规则执行规则树 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
 
-        // 4. 返回结果
-        return buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
+        // 4. 构造返回结果
+        LotteryResEntity resEntity = buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
+
+        // 5. 加入mq
+        SendLotteryMessageEvent.LotteryMessage message = SendLotteryMessageEvent.LotteryMessage.builder()
+                .userId(userId)
+                .awardConfig(resEntity.getAwardConfig())
+                .awardTitle(resEntity.getAwardTitle())
+                .awardId(resEntity.getAwardId())
+                .activityId(String.valueOf(activityId))
+                .sort(resEntity.getSort())
+                .awardTime(resEntity.getAwardTime())
+                .build();
+        BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> lotteryMessageEventMessage = sendLotteryMessageEvent.buildEventMessage(message);
+        repository.sendLotteryMessageToMq(sendLotteryMessageEvent.topic(), lotteryMessageEventMessage);
+
+        //6. 返回
+        return resEntity;
+
     }
 
     private LotteryResEntity buildLotteryAwardEntity(Long strategyId, Long awardId, String awardConfig) {
@@ -64,12 +92,13 @@ public abstract class AbstractLottery implements Lottery {
                 .awardTitle(strategyAward.getAwardTitle())
                 .awardConfig(awardConfig)
                 .sort(strategyAward.getSort())
+                .awardTime(new Date())
                 .build();
     }
 
-    public abstract RuleEntity lotteryLogicChain(String userId, Long strategyId,Long activityId);
+    public abstract RuleEntity lotteryLogicChain(String userId, Long strategyId, Long activityId);
 
-    public abstract RuleEntity lotteryLogicTree(String userId, Long strategyId,Long activityId, Long awardId);
+    public abstract RuleEntity lotteryLogicTree(String userId, Long strategyId, Long activityId, Long awardId);
 
 
 }

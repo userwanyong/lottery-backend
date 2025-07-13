@@ -106,7 +106,7 @@ public class LotteryActivityController implements LotteryActivityService {
     @RateLimiterAccessInterceptor(key = "userId", fallbackMethod = "drawRateLimiterError", permitsPerSecond = 2, blacklistCount = 3)
     //超过1500ms无响应或出现异常，走drawHystrixError方法
     @HystrixCommand(commandProperties = {
-            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1500")
+            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "2000")
     }, fallbackMethod = "drawHystrixError")
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
@@ -134,7 +134,7 @@ public class LotteryActivityController implements LotteryActivityService {
                 .awardConfig(lotteryResEntity.getAwardConfig())
                 .awardId(lotteryResEntity.getAwardId())
                 .awardTitle(lotteryResEntity.getAwardTitle())
-                .awardTime(new Date())
+                .awardTime(lotteryResEntity.getAwardTime())
                 .awardState(AwardStateVO.create)
                 .build();
         userAwardService.saveUserAwardRecord(userAwardRecord);

@@ -1,5 +1,6 @@
 package com.lottery.domain.strategy.service;
 
+import com.lottery.domain.channel.service.ChannelService;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
@@ -26,8 +27,8 @@ import java.util.Map;
 @Service
 public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
-    public DefaultLottery(StrategyRepository repository, StrategyService strategyService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
-        super(repository, strategyService, defaultLogicChainFactory, defaultLogicTreeFactory);
+    public DefaultLottery(StrategyRepository repository, StrategyService strategyService, ChannelService channelService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+        super(repository, strategyService, channelService,defaultLogicChainFactory, defaultLogicTreeFactory);
     }
 
     @Override

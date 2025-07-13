@@ -1,12 +1,11 @@
 package com.lottery.domain.strategy.repository;
 
-import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
-import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
-import com.lottery.domain.strategy.model.entity.StrategyEntity;
+import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
+import com.lottery.domain.strategy.model.entity.*;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
+import com.lottery.types.event.BaseEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -74,4 +73,6 @@ public interface StrategyRepository {
     String queryStrategyArmoryAlgorithmFromCache(String key);
 
     <K, V> Map<K, V> getMap(String key);
+
+    void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> eventMessage);
 }
