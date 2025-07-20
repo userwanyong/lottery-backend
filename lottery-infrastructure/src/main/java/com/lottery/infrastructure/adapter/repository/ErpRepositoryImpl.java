@@ -424,6 +424,9 @@ public class ErpRepositoryImpl implements ErpRepository {
         try {
             dbRouter.doRouter(userId);
             Page<UserAwardRecord> userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
+            if (userAwardRecordPage.getRecords().isEmpty()){
+                return myPage;
+            }
             String key = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + userAwardRecordPage.getRecords().get(0).getStrategyId();
             ArrayList<StrategyAwardEntity> arrayList = redisService.getValue(key);
             // 将所有数据 awardId 作为键 image 作为值封装为一个map集合

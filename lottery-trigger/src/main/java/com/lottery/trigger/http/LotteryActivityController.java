@@ -154,12 +154,12 @@ public class LotteryActivityController implements LotteryActivityService {
         return new BaseResponse<>(ResponseCode.RATE_LIMITER.getCode(), ResponseCode.RATE_LIMITER.getMessage());
     }
 
-    public BaseResponse<ActivityDrawResponseDTO> drawHystrixError(ActivityDrawRequestDTO request,Throwable throwable) {
+    public BaseResponse<ActivityDrawResponseDTO> drawHystrixError(ActivityDrawRequestDTO request, Throwable throwable) {
         String message = throwable.getMessage();
-        if (message==null){
-            message="响应超时,请稍后再试";
+        if (message == null) {
+            message = "响应超时,请稍后再试";
         }
-        log.error("!!!!!!!!!![LotteryActivityController-drawHystrixError]用户抽奖熔断: {} userId:{} activityId:{} !!!!!!!!!!", message,request.getUserId(), request.getActivityId());
+        log.error("!!!!!!!!!![LotteryActivityController-drawHystrixError]用户抽奖熔断: {} userId:{} activityId:{} !!!!!!!!!!", message, request.getUserId(), request.getActivityId());
         return new BaseResponse<>(ResponseCode.HYSTRIX.getCode(), message);
     }
 
@@ -168,7 +168,7 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<Boolean> calendarSignRebate(@RequestBody CalendarSignRebateRequestDTO calendarSignRebateRequestDTO) {
         String userId = calendarSignRebateRequestDTO.getUserId();
         Long activityId = calendarSignRebateRequestDTO.getActivityId();
-        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} activityId:{} ======================", userId,activityId);
+        log.info("======================[LotteryActivityController-calendarSignRebate]用户签到返现开始 userId:{} activityId:{} ======================", userId, activityId);
         BehaviorEntity behaviorEntity = new BehaviorEntity();
         behaviorEntity.setUserId(userId);
         behaviorEntity.setActivityId(activityId);
@@ -201,10 +201,10 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<Boolean> isCalendarSignRebate(@RequestBody CalendarSignRebateRequestDTO calendarSignRebateRequestDTO) {
         String userId = calendarSignRebateRequestDTO.getUserId();
         Long activityId = calendarSignRebateRequestDTO.getActivityId();
-        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} activityId:{}======================", userId,activityId);
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到开始 userId:{} activityId:{}======================", userId, activityId);
         String outBusinessNo = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        boolean b = rebateService.queryIsHaveRebateOrder(userId, activityId,outBusinessNo);
-        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} activityId{} 当日是否已签到:{} ======================", userId,activityId, b);
+        boolean b = rebateService.queryIsHaveRebateOrder(userId, activityId, outBusinessNo);
+        log.info("======================[LotteryActivityController-isCalendarSignRebate]查询用户当日是否已签到成功 userId:{} activityId{} 当日是否已签到:{} ======================", userId, activityId, b);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), b);
     }
 
@@ -234,20 +234,20 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<BigDecimal> queryUserCreditAccount(@RequestBody UserCreditAccountRequestDTO requestDTO) {
         String userId = requestDTO.getUserId();
         Long activityId = requestDTO.getActivityId();
-        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} activityId:{} ======================", userId,activityId);
+        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分开始 userId:{} activityId:{} ======================", userId, activityId);
         // 1.参数校验
         if (StringUtils.isBlank(userId) || activityId == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
-        CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId,activityId);
-        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分成功 userId:{} activityId:{} creditAmount:{} ======================", userId,activityId,creditAccountEntity.getCreditAmount());
+        CreditAccountEntity creditAccountEntity = creditService.queryUserCreditAccount(userId, activityId);
+        log.info("======================[LotteryActivityController-queryUserCreditAccount]查询用户积分成功 userId:{} activityId:{} creditAmount:{} ======================", userId, activityId, creditAccountEntity.getCreditAmount());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), creditAccountEntity.getCreditAmount());
     }
 
     @Override
     @PostMapping("/credit_pay_exchange_sku")
     public BaseResponse<Boolean> creditPayExchangeSku(@RequestBody SkuProductShopCartRequestDTO request) {
-        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} activityId:{} skuId:{} ======================", request.getUserId(),request.getActivityId(),request.getSku());
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品开始 userId:{} activityId:{} skuId:{} ======================", request.getUserId(), request.getActivityId(), request.getSku());
         // 1.创建增加抽奖次数的额度订单
         QuotaOrderEntity quotaOrderEntity = new QuotaOrderEntity();
         quotaOrderEntity.setUserId(request.getUserId());
@@ -256,7 +256,7 @@ public class LotteryActivityController implements LotteryActivityService {
         quotaOrderEntity.setOutBusinessNo(RandomStringUtils.randomNumeric(12));
         quotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.credit_pay_trade);
         UnpaidQuotaOrderEntity quotaOrder = activityQuotaService.createQuotaOrder(quotaOrderEntity);
-        log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} activityId:{} skuId:{} orderId:{}", request.getUserId(),request.getActivityId(), request.getSku(), quotaOrder.getOrderId());
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建增加抽奖次数的额度订单成功 userId:{} activityId:{} skuId:{} orderId:{}", request.getUserId(), request.getActivityId(), request.getSku(), quotaOrder.getOrderId());
         // 2.创建扣减积分的积分订单
         TradeEntity tradeEntity = new TradeEntity();
         tradeEntity.setUserId(request.getUserId());
@@ -266,15 +266,15 @@ public class LotteryActivityController implements LotteryActivityService {
         tradeEntity.setOutBusinessNo(quotaOrder.getOutBusinessNo());
         tradeEntity.setAmount(quotaOrder.getPayAmount());
         String creditOrder = creditService.createCreditOrder(tradeEntity);
-        log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} activityId:{} sku:{} creditOrder:{}", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
-        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} activityId:{} sku:{} orderId:{} ======================", request.getUserId(),request.getActivityId(), request.getSku(), creditOrder);
+        log.info("[LotteryActivityController-creditPayExchangeSku]创建扣减积分的积分订单成功 userId:{} activityId:{} sku:{} creditOrder:{}", request.getUserId(), request.getActivityId(), request.getSku(), creditOrder);
+        log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} activityId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getActivityId(), request.getSku(), creditOrder);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
     @Override
     @GetMapping("/query_user_award_record_by_activity_id")
     public BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(@RequestParam Long activityId) {
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================",activityId);
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================", activityId);
         List<EsUserAwardRecordVO> esUserAwardRecords = esRepository.queryEsUserAwardRecordVOList(activityId);
         ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
         for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords) {
@@ -282,7 +282,7 @@ public class LotteryActivityController implements LotteryActivityService {
             BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
             list.add(esUserAwardRecordResponseDTO);
         }
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================",activityId);
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================", activityId);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
     }
 
@@ -292,9 +292,13 @@ public class LotteryActivityController implements LotteryActivityService {
                                                                                        @RequestParam(defaultValue = "36") Integer pageSize,
                                                                                        @RequestParam Long activityId,
                                                                                        @RequestParam String userId) {
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录开始 activityId:{} userId:{}======================",activityId,userId);
-        MyPage<EsUserAwardRecordVO> esUserAwardRecords = repository.queryUserAwardRecordVOListByPage(pageNum,pageSize,activityId,userId);
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录开始 activityId:{} userId:{}======================", activityId, userId);
+        MyPage<EsUserAwardRecordVO> esUserAwardRecords = repository.queryUserAwardRecordVOListByPage(pageNum, pageSize, activityId, userId);
         ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
+        if (esUserAwardRecords.getItems() == null) {
+            log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================", activityId, userId);
+            return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), new MyPage<>());
+        }
         for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords.getItems()) {
             EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
             BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
@@ -303,7 +307,7 @@ public class LotteryActivityController implements LotteryActivityService {
         MyPage<EsUserAwardRecordResponseDTO> myPage = new MyPage<>();
         myPage.setItems(list);
         myPage.setTotal(esUserAwardRecords.getTotal());
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================",activityId,userId);
+        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================", activityId, userId);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), myPage);
     }
 
