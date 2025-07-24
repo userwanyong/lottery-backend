@@ -29,10 +29,12 @@ public enum ResponseCode {
     DEGRADE_SWITCH(1014, "活动已降级"),
     RATE_LIMITER(1015, "活动已被限流"),
     HYSTRIX(1016, "服务已被熔断"),
-    DATA_EXIST(2009, "数据已存在")
+    DATA_EXIST(2009, "数据已存在"),
+    USER_ALREADY_RECEIVE_GIFT(2010, "用户已领取该抽奖额度，无需重复领取"),
+    FEATURE_IS_NOT_CONFIGURED(2011, "该功能暂未配置")
+
 
     ;
-
     private final int code;
 
     private final String message;

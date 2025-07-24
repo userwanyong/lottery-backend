@@ -93,7 +93,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
         // 2.用户已经参与的抽奖次数
         Integer count = activityQuotaService.queryTotalUserLotteryCount(requestDTO.getUserId(), requestDTO.getActivityId());
         // 3.查询配置
-        List<RuleWeightVO> ruleWeightVOList = rule.queryStrategyRuleWeight(requestDTO.getUserId(), requestDTO.getActivityId());
+        List<RuleWeightVO> ruleWeightVOList = rule.queryStrategyRuleWeight(requestDTO.getActivityId());
         // 4.封装
         List<StrategyRuleWeightResponseDTO> strategyRuleWeightResponseDTOList = new ArrayList<>(ruleWeightVOList.size());
         for (RuleWeightVO ruleWeightVO : ruleWeightVOList) {

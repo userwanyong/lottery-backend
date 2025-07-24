@@ -86,6 +86,26 @@ public abstract class AbstractActivityQuota extends ActivitySupportQuota impleme
                 .build();
     }
 
+    @Override
+    public void createGiftQuotaOrder(QuotaOrderEntity giftQuotaOrderEntity) {
+        // 1. 参数校验
+        String userId = giftQuotaOrderEntity.getUserId();
+        String outBusinessNo = giftQuotaOrderEntity.getOutBusinessNo();
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(outBusinessNo)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
+        }
+
+        // 2. 构建额度单聚合对象
+        CreateQuotaOrderAggregate createQuotaOrderAggregate = buildGiftOrderAggregate(giftQuotaOrderEntity);
+
+        // 3. 保存额度单
+        TradePolicy tradePolicy = tradePolicyGroup.get(giftQuotaOrderEntity.getOrderTradeTypeVO().getCode());
+        tradePolicy.trade(createQuotaOrderAggregate);
+
+    }
+
+    protected abstract CreateQuotaOrderAggregate buildGiftOrderAggregate(QuotaOrderEntity giftQuotaOrderEntity);
+
     protected abstract CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity);
 
 }

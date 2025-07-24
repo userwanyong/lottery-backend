@@ -86,6 +86,10 @@
             <groupId>com.lottery</groupId>
             <artifactId>lottery-querys</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.lottery</groupId>
+            <artifactId>lottery-infrastructure</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

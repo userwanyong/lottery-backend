@@ -24,7 +24,7 @@ public class AwardStockZeroCustomer {
     private String topic;
     @Resource
     private Stock stock;
-    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.award_stock_zero}"))//todo 可能有异常
+    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.award_stock_zero}"))
     public void listener(String message) {
         try {
             log.info("监听奖品库存消耗为0消息 topic: {} message: {}", topic, message);

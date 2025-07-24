@@ -25,13 +25,25 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
+        // 删除所有有关该策略的key
+        repository.deleteCacheKeyByStrategyId(strategyId);
         // 1. 查询策略配置（该策略对应的奖品）
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
+        // 将strategyAwardEntities中的ruleTreeId去重后加入集合
+        List<Long> treeIds = strategyAwardEntities.stream().map(StrategyAwardEntity::getRuleTreeId).distinct().toList();
+        // 缓存每颗规则树
+        for (Long treeId : treeIds) {
+            repository.deleteCacheKeyByTreeId(treeId);
+            repository.queryRuleTreeVO(treeId);
+        }
         // 缓存奖品库存
         for (StrategyAwardEntity strategyAwardEntity : strategyAwardEntities) {
             Long awardId = strategyAwardEntity.getAwardId();
             Integer awardCount = strategyAwardEntity.getAwardCountSurplus();
+            // 缓存奖品数量
             cacheStrategyAwardCount(strategyId, awardId, awardCount);
+            // 缓存奖品信息
+            repository.queryStrategyAwardEntity(strategyId, awardId);
         }
         // 2. 生成并保存概率查找表
         armoryAlgorithm(String.valueOf(strategyId), strategyAwardEntities);
@@ -63,7 +75,8 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
             ArrayList<StrategyAwardEntity> strategyAwardEntitiesClone = new ArrayList<>(strategyAwardEntities);
             strategyAwardEntitiesClone.removeIf(entity -> !ruleWeightValues.contains(entity.getAwardId()));
             // 5.3. 生成并保存概率查找表+权重的
-            armoryAlgorithm(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntitiesClone);
+            String newKey = key.split(Constants.COLON)[0];
+            armoryAlgorithm(String.valueOf(strategyId).concat("_").concat(newKey), strategyAwardEntitiesClone);
         }
         return true;
     }
@@ -85,7 +98,7 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
         return assembleLotteryStrategy(strategyId);
     }
 
-    private void cacheStrategyAwardCount(Long strategyId, Long awardId, Integer awardCount) {
+    protected void cacheStrategyAwardCount(Long strategyId, Long awardId, Integer awardCount) {
         String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
         repository.cacheStrategyAwardCount(key, awardCount);
     }
@@ -110,18 +123,19 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
 
     @Override
     public Long getRandomAwardId(Long strategyId, String ruleWeightValue) {
-        String key = String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(ruleWeightValue);
+        String newRuleWeightValue = ruleWeightValue.split(Constants.COLON)[0];
+        String key = String.valueOf(strategyId).concat(Constants.UNDERLINE).concat(newRuleWeightValue);
         return dispatchAlgorithm(key);
     }
 
-    @Override
-    public Long getRandomAwardId(String key) {
-        return dispatchAlgorithm(key);
-    }
+//    @Override
+//    public Long getRandomAwardId(String key) {
+//        return dispatchAlgorithm(key);
+//    }
 
     @Override
-    public Boolean reduceAwardStock(Long strategyId,Long activityId, Long awardId) {
+    public Boolean reduceAwardStock(Long strategyId, Long activityId, Long awardId) {
         String key = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
-        return repository.reduceAwardStock(key, strategyId,activityId);
+        return repository.reduceAwardStock(key, strategyId, activityId);
     }
 }

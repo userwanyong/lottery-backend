@@ -275,5 +275,12 @@ public interface RedisService {
      * @param prefix 前缀
      */
     void deleteKeysWithPrefix(String prefix);
+
+    /**
+     * 删除所有匹配该模式的key
+     * @param pattern
+     */
+    void deleteKeysWithPattern(String pattern);
+
 }
 

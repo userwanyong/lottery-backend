@@ -5,32 +5,33 @@ import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
-import com.lottery.domain.rebate.model.entity.RebateOrderEntity;
-import com.lottery.domain.rebate.model.entity.TaskEntity;
+import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
+import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.*;
 import com.lottery.types.common.Constants;
 import com.lottery.types.model.MyPage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author 永
  */
 @Repository
+@Slf4j
 public class ErpRepositoryImpl implements ErpRepository {
     @Resource
     private ActivityMapper activityMapper;
@@ -60,6 +61,10 @@ public class ErpRepositoryImpl implements ErpRepository {
     private UserAwardRecordMapper userAwardRecordMapper;
     @Resource
     private IDBRouterStrategy dbRouter;
+    @Resource
+    private EventPublisher eventPublisher;
+    @Value("${spring.rabbitmq.topic.delete_keys_with_prefix}")
+    private String topic;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -171,6 +176,20 @@ public class ErpRepositoryImpl implements ErpRepository {
     }
 
     @Override
+    public List<BehaviorRebateVO> queryBehaviorRebateVOListOfGift(Long activityId) {
+        LambdaQueryWrapper<BehaviorRebate> queryWrapper = new LambdaQueryWrapper<BehaviorRebate>().eq(BehaviorRebate::getActivityId, activityId).eq(BehaviorRebate::getBehaviorType, BehaviorTypeVO.ACTIVITY_GIFT.getCode());
+        List<BehaviorRebate> behaviorRebates = behaviorRebateMapper.selectList(queryWrapper);
+        behaviorRebates.sort((o1, o2) -> o2.getUpdateTime().compareTo(o1.getUpdateTime()));
+        ArrayList<BehaviorRebateVO> list = new ArrayList<>();
+        for (BehaviorRebate behaviorRebate : behaviorRebates) {
+            BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
+            BeanUtils.copyProperties(behaviorRebate, behaviorRebateVO);
+            list.add(behaviorRebateVO);
+        }
+        return list;
+    }
+
+    @Override
     public void addBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO) {
         BehaviorRebate behaviorRebate = new BehaviorRebate();
         BeanUtils.copyProperties(behaviorRebateVO, behaviorRebate);
@@ -211,8 +230,16 @@ public class ErpRepositoryImpl implements ErpRepository {
         Award award = new Award();
         BeanUtils.copyProperties(awardResponseVO, award);
         awardMapper.updateById(award);
-        // 删除所有以lottery_strategy_award_list_key_开头的redis key
-        redisService.deleteKeysWithPrefix(Constants.RedisKey.STRATEGY_AWARD_LIST_KEY);
+//        //发送mq消息,删除所有以lottery_strategy_award_list_key_和lottery_strategy_award_key_开头的redis key
+//        String strategyAwardListKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY;
+//        String strategyAwardKey = Constants.RedisKey.STRATEGY_AWARD_KEY;
+//        try {
+//            eventPublisher.publish(topic, strategyAwardListKey);
+//            eventPublisher.publish(topic, strategyAwardKey);
+//            log.debug("[ErpRepositoryImpl]删除缓存key，MQ消息发送成功 key_prefix: {} and {} topic: {}",strategyAwardListKey,strategyAwardKey, topic);
+//        } catch (Exception e) {
+//            log.error("[ErpRepositoryImpl]删除缓存key，MQ消息发送失败 key_prefix: {} and {} topic: {}",strategyAwardListKey,strategyAwardKey, topic);
+//        }
     }
 
     @Override
@@ -248,6 +275,9 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Override
     public void deleteStrategyVO(Long strategyId) {
         strategyMapper.deleteById(strategyId);
+        // 删除该策略算法的缓存,如 strategy_algorithm_1947130468034007042
+        String key = Constants.RedisKey.STRATEGY_ALGORITHM_KEY + strategyId;
+        redisService.remove(key);
     }
 
     @Override
@@ -274,6 +304,14 @@ public class ErpRepositoryImpl implements ErpRepository {
         Rule rule = new Rule();
         BeanUtils.copyProperties(ruleVO, rule);
         ruleMapper.updateById(rule);
+        //发送mq消息,删除所有以lottery_strategy_rule_weight_key_开头的redis key
+//        String strategyRuleWeightKey = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY;
+//        try {
+//            eventPublisher.publish(topic, strategyRuleWeightKey);
+//            log.debug("[ErpRepositoryImpl]删除缓存key，MQ消息发送成功 key_prefix: {} topic: {}", strategyRuleWeightKey, topic);
+//        } catch (Exception e) {
+//            log.error("[ErpRepositoryImpl]删除缓存key，MQ消息发送失败 key_prefix: {} topic: {}", strategyRuleWeightKey, topic);
+//        }
     }
 
     @Override
@@ -304,7 +342,14 @@ public class ErpRepositoryImpl implements ErpRepository {
         StrategyAward strategyAward = new StrategyAward();
         BeanUtils.copyProperties(strategyAwardVO, strategyAward);
         strategyAwardMapper.updateById(strategyAward);
-        redisService.deleteKeysWithPrefix(Constants.RedisKey.STRATEGY_AWARD_LIST_KEY);
+        //发送mq消息,删除所有以lottery_strategy_award_list_key_开头的redis key
+//        String strategyAwardListKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY;
+//        try {
+//            eventPublisher.publish(topic, strategyAwardListKey);
+//            log.debug("[ErpRepositoryImpl]删除缓存key，MQ消息发送成功 key_prefix: {} topic: {}", strategyAwardListKey, topic);
+//        } catch (Exception e) {
+//            log.error("[ErpRepositoryImpl]删除缓存key，MQ消息发送失败 key_prefix: {} topic: {}", strategyAwardListKey, topic);
+//        }
     }
 
     @Override
@@ -421,28 +466,57 @@ public class ErpRepositoryImpl implements ErpRepository {
         queryWrapper.eq(UserAwardRecord::getActivityId, activityId);
         Page<UserAwardRecord> page = new Page<>(pageNum, pageSize);
         MyPage<EsUserAwardRecordVO> myPage = new MyPage<>();
+        Page<UserAwardRecord> userAwardRecordPage=null;
         try {
             dbRouter.doRouter(userId);
-            Page<UserAwardRecord> userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
-            if (userAwardRecordPage.getRecords().isEmpty()){
-                return myPage;
-            }
-            String key = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + userAwardRecordPage.getRecords().get(0).getStrategyId();
-            ArrayList<StrategyAwardEntity> arrayList = redisService.getValue(key);
-            // 将所有数据 awardId 作为键 image 作为值封装为一个map集合
-            Map<Long, String> awardMap = arrayList.stream().collect(Collectors.toMap(StrategyAwardEntity::getAwardId, StrategyAwardEntity::getImage));
-            List<EsUserAwardRecordVO> list = userAwardRecordPage.getRecords().stream().map(userAwardRecord -> {
-                EsUserAwardRecordVO esUserAwardRecordVO = new EsUserAwardRecordVO();
-                BeanUtils.copyProperties(userAwardRecord, esUserAwardRecordVO);
-                // 根据奖品 id 从 reids 中获取图片url
-                esUserAwardRecordVO.setImage(awardMap.get(userAwardRecord.getAwardId()));
-                return esUserAwardRecordVO;
-            }).toList();
-            myPage.setTotal(userAwardRecordPage.getTotal());
-            myPage.setItems(list);
-            return myPage;
+            userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
         } finally {
             dbRouter.clear();
         }
+        if (userAwardRecordPage.getRecords().isEmpty()){
+            return myPage;
+        }
+        Long strategyId = userAwardRecordPage.getRecords().get(0).getStrategyId();
+        String key = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + strategyId;
+        if (!redisService.isExists(key)){
+            //如果key不存在，查数据库
+            LambdaQueryWrapper<StrategyAward> strategyAwardQueryWrapper = new QueryWrapper<StrategyAward>()
+                    .lambda()
+                    .eq(StrategyAward::getStrategyId, strategyId);
+            List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(strategyAwardQueryWrapper);
+            // 提取出strategyAwards中所有的awardId
+            Set<Long> awardIds = strategyAwards.stream().map(StrategyAward::getAwardId).collect(Collectors.toSet());
+            // 批量查询数据库
+            List<Award> awards = awardMapper.selectBatchIds(awardIds);
+            // 放到map集合中 awardId为key image为value
+            Map<Long, String> awardMap = awards.stream().collect(Collectors.toMap(Award::getId, Award::getImage));
+            ArrayList<StrategyAwardEntity> strategyAwardEntities = new ArrayList<>(strategyAwards.size());
+            //StrategyAward->StrategyAwardEntity
+            for (StrategyAward strategyAward : strategyAwards) {
+                StrategyAwardEntity strategyAwardEntity = new StrategyAwardEntity();
+                BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
+                // image 从Map中取出
+                strategyAwardEntity.setImage(awardMap.get(strategyAward.getAwardId()));
+                strategyAwardEntity.setRuleTreeId(strategyAward.getRuleTreeId());
+                strategyAwardEntities.add(strategyAwardEntity);
+            }
+            //保存到redis中
+            redisService.setValue(key, strategyAwardEntities);
+        }
+        ArrayList<StrategyAwardEntity> arrayList = redisService.getValue(key);
+        // 将所有数据 awardId 作为键 image 作为值封装为一个map集合
+        Map<Long, String> awardMap = arrayList.stream().collect(Collectors.toMap(StrategyAwardEntity::getAwardId, StrategyAwardEntity::getImage));
+        // 兜底奖默认图片
+        awardMap.put(0L, "https://markdown-my.oss-cn-beijing.aliyuncs.com/picture/%E8%B0%A2%E8%B0%A2%E5%8F%82%E4%B8%8E.png");
+        List<EsUserAwardRecordVO> list = userAwardRecordPage.getRecords().stream().map(userAwardRecord -> {
+            EsUserAwardRecordVO esUserAwardRecordVO = new EsUserAwardRecordVO();
+            BeanUtils.copyProperties(userAwardRecord, esUserAwardRecordVO);
+            // 根据奖品 id 从 reids 中获取图片url
+            esUserAwardRecordVO.setImage(awardMap.get(userAwardRecord.getAwardId()));
+            return esUserAwardRecordVO;
+        }).toList();
+        myPage.setTotal(userAwardRecordPage.getTotal());
+        myPage.setItems(list);
+        return myPage;
     }
 }

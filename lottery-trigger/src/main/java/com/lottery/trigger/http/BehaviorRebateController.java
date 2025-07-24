@@ -42,6 +42,21 @@ public class BehaviorRebateController implements BehaviorRebateService {
     }
 
     @Override
+    @GetMapping("/query_behavior_gift")
+    public BaseResponse<List<BehaviorRebateResponseDTO>> queryBehaviorRebateOfGift(@RequestParam Long activityId) {
+        log.info("======================[BehaviorRebateController-queryBehaviorRebate]运营端 查询赠送的返利配置开始 ======================");
+        List<BehaviorRebateVO> behaviorRebates = repository.queryBehaviorRebateVOListOfGift(activityId);
+        ArrayList<BehaviorRebateResponseDTO> list = new ArrayList<>();
+        for (BehaviorRebateVO behaviorRebateVO : behaviorRebates) {
+            BehaviorRebateResponseDTO behaviorRebateResponseDTO = new BehaviorRebateResponseDTO();
+            BeanUtils.copyProperties(behaviorRebateVO, behaviorRebateResponseDTO);
+            list.add(behaviorRebateResponseDTO);
+        }
+        log.info("======================[BehaviorRebateController-queryBehaviorRebate]运营端 查询赠送的返利配置成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
+    }
+
+    @Override
     @PostMapping("/add_behavior")
     public BaseResponse<Boolean> addBehaviorRebate(@RequestBody BehaviorRebateRequestDTO request) {
         log.info("======================[BehaviorRebateController-addBehaviorRebate]运营端 添加返利配置开始 ======================");

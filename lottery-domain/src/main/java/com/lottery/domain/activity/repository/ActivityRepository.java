@@ -18,7 +18,11 @@ public interface ActivityRepository {
 
     ActivityEntity queryActivityByActivityId(Long activityId);
 
+    void queryActivityByActivityIdAndRemoveOldKey(Long activityId);
+
     ActivityCountEntity queryActivityCountByActivityCountId(Long activityCountId);
+
+    void queryActivityCountByActivityCountIdAndRemoveOldKey(Long activityCountId);
 
     void doSaveNoPayOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
 
@@ -65,4 +69,8 @@ public interface ActivityRepository {
     UnpaidQuotaOrderEntity queryUnpaidQuotaOrder(QuotaOrderEntity quotaOrderEntity);
 
     BigDecimal queryUserCreditAccountAmount(String userId,Long activityId);
+
+    void doSaveNoPayGiftOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate);
+
+    void deleteCacheKeyByActivityId(Long activityId);
 }

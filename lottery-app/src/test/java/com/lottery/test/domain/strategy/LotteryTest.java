@@ -52,8 +52,8 @@ public class LotteryTest {
         // 因为实际操作是更新数据库时，更新redis。这里装配抽奖策略时有部分参数是从原先redis缓存中获取的，测试先手动清空redis便于调试
         String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + 200001;
         String cacheKey2 = Constants.RedisKey.STRATEGY_KEY + 200001;
-        String cacheKey3 = Constants.RedisKey.STRATEGY_RATE_RANGE_KEY + 200001;
-        String cacheKey4 = Constants.RedisKey.STRATEGY_RATE_TABLE_KEY + 200001;
+        String cacheKey3 = Constants.RedisKey.RATE_RANGE_KEY + 200001;
+        String cacheKey4 = Constants.RedisKey.RATE_TABLE_KEY + 200001;
         redisService.remove(cacheKey);
         redisService.remove(cacheKey2);
         redisService.remove(cacheKey3);

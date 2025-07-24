@@ -51,7 +51,7 @@ public class RuleEntity {
      * 数据案例；4000:102,103,104,105 5000:102,103,104,105,106,107
      */
     public Map<String, List<Long>> getRuleWeightValues() {
-        if (!"rule_weight".equals(ruleModel)) {
+        if (!ruleModel.contains("rule_weight")) {
             return null;
         }
         String[] ruleValueGroups = ruleValue.split(Constants.SPACE);

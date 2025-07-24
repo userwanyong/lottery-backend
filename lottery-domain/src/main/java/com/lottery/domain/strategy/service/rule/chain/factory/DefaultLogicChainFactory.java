@@ -32,11 +32,20 @@ public class DefaultLogicChainFactory {
         if (ruleModels == null || ruleModels.length == 0) {
             return logicChainGroup.get(Constants.RuleModel.DEFAULT);
         }
+        // 3.转化ruleModels为rule_blacklist、rule_weight特定的形式
+        String[] newRuleModels = new String[ruleModels.length];
+        for (int i = 0; i < ruleModels.length; i++) {
+            if (ruleModels[i].contains(Constants.RuleModel.RULE_BLACKLIST)){
+                newRuleModels[i]=Constants.RuleModel.RULE_BLACKLIST;
+            }else if (ruleModels[i].contains(Constants.RuleModel.RULE_WIGHT)){
+                newRuleModels[i]=Constants.RuleModel.RULE_WIGHT;
+            }
+        }
         // 3. 依次装填责任链；rule_blacklist、rule_weight
-        LogicChain logicChain = logicChainGroup.get(ruleModels[0]);
+        LogicChain logicChain = logicChainGroup.get(newRuleModels[0]);
         LogicChain current = logicChain;
-        for (int i = 1; i < ruleModels.length; i++) {
-            LogicChain nextChain = logicChainGroup.get(ruleModels[i]);
+        for (int i = 1; i < newRuleModels.length; i++) {
+            LogicChain nextChain = logicChainGroup.get(newRuleModels[i]);
             current = current.appendNext(nextChain);
         }
         // 4. 责任链的最后装填默认责任链

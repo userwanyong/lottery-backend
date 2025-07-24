@@ -12,5 +12,5 @@ import java.util.Map;
 public interface Rule {
     Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds);
 
-    List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
+    List<RuleWeightVO> queryStrategyRuleWeight(Long activityId);
 }

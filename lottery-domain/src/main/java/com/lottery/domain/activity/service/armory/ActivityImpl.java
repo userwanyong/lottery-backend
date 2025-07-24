@@ -20,31 +20,32 @@ public class ActivityImpl implements ActivityArmory,ActivityService{
 
     @Resource
     private ActivityRepository repository;
-    @Override
-    public boolean assembleActivitySku(Long sku) {
-        // 将库存数放入缓存
-        ActivitySkuEntity activitySkuEntity = repository.queryActivitySku(sku);
-        cacheActivitySkuStockCount(sku,activitySkuEntity.getStockCountSurplus());
-        // 预热次数，借用查询方法放入缓存
-        repository.queryActivityByActivityId(activitySkuEntity.getActivityId());
-        // 预热活动，借用查询方法放入缓存
-        repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
-        return true;
-    }
+//    @Override
+//    public boolean assembleActivitySku(Long sku) {
+//        // 将库存数放入缓存
+//        ActivitySkuEntity activitySkuEntity = repository.queryActivitySku(sku);
+//        cacheActivitySkuStockCount(sku,activitySkuEntity.getStockCountSurplus());
+//        // 预热次数，放入缓存
+//        repository.queryActivityByActivityIdAndRemoveOldKey(activitySkuEntity.getActivityId());
+//        // 预热活动，放入缓存
+//        repository.queryActivityCountByActivityCountIdAndRemoveOldKey(activitySkuEntity.getActivityCountId());
+//        return true;
+//    }
 
     @Override
-    public boolean assembleActivitySkuByActivityId(Long activityId) {
+    public void assembleActivitySkuByActivityId(Long activityId) {
+        // 删除所有有关活动的key
+        repository.deleteCacheKeyByActivityId(activityId);
         // 查询该活动下的sku列表
         List<ActivitySkuEntity> activitySkuEntityList = repository.queryActivitySkuListByActivityId(activityId);
         for (ActivitySkuEntity activitySkuEntity : activitySkuEntityList) {
             // 将库存数放入缓存
             cacheActivitySkuStockCount(activitySkuEntity.getId(),activitySkuEntity.getStockCountSurplus());
-            // 预热次数，借用查询方法放入缓存
-            repository.queryActivityCountByActivityCountId(activitySkuEntity.getActivityCountId());
+            // 预热次数，放入缓存
+            repository.queryActivityCountByActivityCountIdAndRemoveOldKey(activitySkuEntity.getActivityCountId());
         }
-        // 预热活动，借用查询方法放入缓存
-        repository.queryActivityByActivityId(activityId);
-        return true;
+        // 预热活动，放入缓存
+        repository.queryActivityByActivityIdAndRemoveOldKey(activityId);
     }
 
     private void cacheActivitySkuStockCount(Long sku, Integer stockCountSurplus) {

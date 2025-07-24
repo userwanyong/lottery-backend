@@ -1,14 +1,20 @@
 package com.lottery.domain.strategy.service.armory;
 
+import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
+import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.service.armory.algorithm.Algorithm;
 import com.lottery.types.common.Constants;
+import com.lottery.types.enums.ResponseCode;
+import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author 永
@@ -37,11 +43,15 @@ public class StrategyImpl extends AbstractStrategy {
      */
     @Override
     protected void armoryAlgorithm(String key, List<StrategyAwardEntity> strategyAwardEntities) {
-        // 1. 获取最小概率值
+        // 1. 获取最小概率值，如果最小概率为0，则排除继续查找下一个最小概率值
         BigDecimal minAwardRate = strategyAwardEntities.stream()
                 .map(StrategyAwardEntity::getAwardRate)
+                .filter(rate -> rate.compareTo(BigDecimal.ZERO) > 0)
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
+        if (minAwardRate.compareTo(BigDecimal.ZERO) <= 0){
+            return;
+        }
         // 2. 找概率范围值
         Integer rateRange = convert(minAwardRate.doubleValue());
 
@@ -62,9 +72,10 @@ public class StrategyImpl extends AbstractStrategy {
     protected Long dispatchAlgorithm(String key) {
         String name = repository.queryStrategyArmoryAlgorithmFromCache(key);
         if (name == null) {
-            throw new RuntimeException("key " + key + " name is null");
+            throw new RuntimeException("抽奖算法未配置");
         }
         Algorithm algorithm = algorithmMap.get(name);
         return algorithm.dispatchAlgorithm(key);
     }
+
 }

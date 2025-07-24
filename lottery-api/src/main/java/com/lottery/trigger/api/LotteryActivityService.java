@@ -99,4 +99,19 @@ public interface LotteryActivityService {
      * @return 用户个人获奖记录
      */
     BaseResponse<MyPage<EsUserAwardRecordResponseDTO>> queryMyAwardRecordByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
+
+    /**
+     * 添加抽奖额度
+     *
+     * @param requestDTO 添加抽奖额度入参
+     * @return 添加结果
+     */
+    BaseResponse<Boolean> addLotteryQuota(AddLotteryQuotaRequestDTO requestDTO);
+
+    /**
+     * 是否已领取抽奖额度
+     * @param requestDTO
+     * @return
+     */
+    BaseResponse<Boolean> isAddLotteryQuota(AddLotteryQuotaRequestDTO requestDTO);
 }

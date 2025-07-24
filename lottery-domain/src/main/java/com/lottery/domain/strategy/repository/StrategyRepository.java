@@ -66,7 +66,7 @@ public interface StrategyRepository {
 
     void clearQueueValue(String strategyAward);
 
-    List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId);
+    List<RuleWeightVO> queryStrategyRuleWeight(Long activityId);
 
     void cacheStrategyArmoryAlgorithm(String key, String name);
 
@@ -75,4 +75,10 @@ public interface StrategyRepository {
     <K, V> Map<K, V> getMap(String key);
 
     void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> eventMessage);
+
+    String queryRuleValue(Long awardId);
+
+    void deleteCacheKeyByStrategyId(Long strategyId);
+
+    void deleteCacheKeyByTreeId(Long treeId);
 }

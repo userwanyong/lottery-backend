@@ -8,7 +8,7 @@ import lombok.Data;
  * 创建额度单请求体
  */
 @Data
-public class QuotaOrderEntity {
+public class GiftQuotaOrderEntity {
     /** 用户ID */
     private String userId;
     /** 活动ID */
@@ -19,6 +19,4 @@ public class QuotaOrderEntity {
     private String outBusinessNo;
     /** 订单类型 */
     private OrderTradeTypeVO orderTradeTypeVO = OrderTradeTypeVO.rebate_no_pay_trade;
-    /** 返利配置 */
-    private String rebateConfig;
 }

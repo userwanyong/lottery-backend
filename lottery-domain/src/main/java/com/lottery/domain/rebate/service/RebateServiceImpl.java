@@ -9,7 +9,9 @@ import com.lottery.domain.rebate.model.valobj.RebateVO;
 import com.lottery.domain.rebate.model.valobj.TaskStateVO;
 import com.lottery.domain.rebate.repository.RebateRepository;
 import com.lottery.types.common.Constants;
+import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.event.BaseEvent;
+import com.lottery.types.exception.AppException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -37,13 +39,18 @@ public class RebateServiceImpl implements RebateService {
         List<String> rebateOrders = new ArrayList<>();
         List<RebateAggregate> aggregates = new ArrayList<>();
         for (RebateVO rebateVO : rebateVOList) {
-            // 业务id 用户ID_活动ID_返利类型_返利配置_外部透彻业务ID
-            String bizId = behaviorEntity.getUserId()+Constants.UNDERLINE+behaviorEntity.getActivityId()+ Constants.UNDERLINE+ rebateVO.getRebateType()+ Constants.UNDERLINE+rebateVO.getRebateConfig() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
+            // 对于活动赠送的抽奖次数，如果用户已经领取过，直接返回
+            if (rebateRepository.isReceiveGift(String.valueOf(behaviorEntity.getActivityId()), rebateVO.getBehaviorRebateId(), behaviorEntity.getUserId())) {
+                continue;
+            }
+            // 业务id 用户ID_活动ID_返利类型_返利配置ID_外部透彻业务ID
+            String bizId = behaviorEntity.getUserId() + Constants.UNDERLINE + behaviorEntity.getActivityId() + Constants.UNDERLINE + rebateVO.getRebateType() + Constants.UNDERLINE + rebateVO.getBehaviorRebateId() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
             // 构建返利单
             RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
             BeanUtils.copyProperties(rebateVO, rebateOrderEntity);
             rebateOrderEntity.setOutBusinessNo(behaviorEntity.getOutBusinessNo());
             rebateOrderEntity.setActivityId(behaviorEntity.getActivityId());
+            rebateOrderEntity.setBehaviorRebateId(rebateVO.getBehaviorRebateId());
             rebateOrderEntity.setBizId(bizId);
             rebateOrderEntity.setUserId(behaviorEntity.getUserId());
             rebateOrderEntity.setOrderId(RandomStringUtils.randomNumeric(12));
@@ -84,13 +91,68 @@ public class RebateServiceImpl implements RebateService {
     }
 
     @Override
-    public List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo) {
-        return rebateRepository.queryRebateOrder(userId,outBusinessNo);
+    public void createRebateOrderOfGift(BehaviorEntity behaviorEntity) {
+        // 1.根据行为类型+activityId查询返利配置表
+        RebateVO rebateVOList = rebateRepository.queryOneRebateConfig(behaviorEntity);
+        // 2.构建聚合对象
+        List<RebateAggregate> aggregates = new ArrayList<>();
+        // 对于活动赠送的抽奖次数，如果用户已经领取过，直接返回
+        if (rebateRepository.isReceiveGift(String.valueOf(behaviorEntity.getActivityId()), rebateVOList.getBehaviorRebateId(), behaviorEntity.getUserId())) {
+            throw new AppException(ResponseCode.USER_ALREADY_RECEIVE_GIFT.getCode(), ResponseCode.USER_ALREADY_RECEIVE_GIFT.getMessage());
+        }
+        // 业务id 用户ID_活动ID_返利类型_返利配置ID_外部透彻业务ID
+        String bizId = behaviorEntity.getUserId() + Constants.UNDERLINE + behaviorEntity.getActivityId() + Constants.UNDERLINE + rebateVOList.getRebateType() + Constants.UNDERLINE + rebateVOList.getBehaviorRebateId() + Constants.UNDERLINE + behaviorEntity.getOutBusinessNo();
+        // 构建返利单
+        RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
+        BeanUtils.copyProperties(rebateVOList, rebateOrderEntity);
+        rebateOrderEntity.setOutBusinessNo(behaviorEntity.getOutBusinessNo());
+        rebateOrderEntity.setActivityId(behaviorEntity.getActivityId());
+        rebateOrderEntity.setBehaviorRebateId(rebateVOList.getBehaviorRebateId());
+        rebateOrderEntity.setBizId(bizId);
+        rebateOrderEntity.setUserId(behaviorEntity.getUserId());
+        rebateOrderEntity.setOrderId(RandomStringUtils.randomNumeric(12));
+        // 构建mq消息对象
+        SendRebateMessageEvent.RebateMessage message = SendRebateMessageEvent.RebateMessage.builder()
+                .userId(behaviorEntity.getUserId())
+                .activityId(behaviorEntity.getActivityId())
+                .rebateType(rebateVOList.getRebateType())
+                .rebateConfig(rebateVOList.getRebateConfig())
+                .rebateDesc(rebateVOList.getRebateDesc())
+                .bizId(bizId)
+                .build();
+        BaseEvent.EventMessage<SendRebateMessageEvent.RebateMessage> rebateMessageEventMessage = sendRebateMessageEvent.buildEventMessage(message);
+        // 构建任务对象
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setUserId(behaviorEntity.getUserId());
+        taskEntity.setActivityId(behaviorEntity.getActivityId());
+        taskEntity.setTopic(sendRebateMessageEvent.topic());
+        taskEntity.setMessageId(rebateMessageEventMessage.getId());
+        taskEntity.setMessage(rebateMessageEventMessage);
+        taskEntity.setState(TaskStateVO.create);
+        // 构建聚合
+        RebateAggregate rebateAggregate = new RebateAggregate();
+        rebateAggregate.setUserId(behaviorEntity.getUserId());
+        rebateAggregate.setActivityId(behaviorEntity.getActivityId());
+        rebateAggregate.setRebateOrderEntity(rebateOrderEntity);
+        rebateAggregate.setTaskEntity(taskEntity);
+        aggregates.add(rebateAggregate);
+        // 3.保存聚合对象
+        rebateRepository.saveRebateAggregate(aggregates);
+    }
+
+//    @Override
+//    public List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo) {
+//        return rebateRepository.queryRebateOrder(userId,outBusinessNo);
+//    }
+
+    @Override
+    public boolean queryIsHaveRebateOrder(String userId, Long activityId, String outBusinessNo) {
+        return rebateRepository.queryIsHaveRebateOrder(userId, activityId, outBusinessNo);
     }
 
     @Override
-    public boolean queryIsHaveRebateOrder(String userId, Long activityId,String outBusinessNo) {
-        return rebateRepository.queryIsHaveRebateOrder(userId,activityId,outBusinessNo);
+    public boolean isAddLotteryQuota(String userId, Long activityId, Long behaviorRebateId) {
+        return rebateRepository.isReceiveGift(String.valueOf(activityId), behaviorRebateId, userId);
     }
 
 }

@@ -86,6 +86,16 @@ public abstract class AbstractLottery implements Lottery {
     }
 
     private LotteryResEntity buildLotteryAwardEntity(Long strategyId, Long awardId, String awardConfig) {
+        if (awardId==0){
+            //兜底奖直接返回
+            return LotteryResEntity.builder()
+                    .awardId(awardId)
+                    .awardTitle(awardConfig)
+                    .awardConfig(awardConfig)
+                    .sort(-1)
+                    .awardTime(new Date())
+                    .build();
+        }
         StrategyAwardEntity strategyAward = repository.queryStrategyAwardEntity(strategyId, awardId);
         return LotteryResEntity.builder()
                 .awardId(awardId)

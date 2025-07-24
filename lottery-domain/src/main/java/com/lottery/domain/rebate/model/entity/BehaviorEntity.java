@@ -14,11 +14,15 @@ public class BehaviorEntity {
      */
     private String userId;
     /**
+     * 返利ID
+     */
+    private Long behaviorRebateId;
+    /**
      * 活动ID
      */
     private Long activityId;
     /**
-     * 行为类型；sign 签到、openai_pay 支付
+     * 行为类型；sign 签到、openai_pay 支付、activity_gift 活动赠送
      */
     private BehaviorTypeVO behaviorTypeVO;
     /**

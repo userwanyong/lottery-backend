@@ -1,9 +1,6 @@
 package com.lottery.domain.activity.service;
 
-import com.lottery.domain.activity.model.entity.ActivityAccountEntity;
-import com.lottery.domain.activity.model.entity.DeliveryOrderEntity;
-import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
-import com.lottery.domain.activity.model.entity.UnpaidQuotaOrderEntity;
+import com.lottery.domain.activity.model.entity.*;
 
 /**
  * @author 永
@@ -25,4 +22,11 @@ public interface ActivityQuotaService {
     ActivityAccountEntity queryUserActivityAccount(String userId, Long activityId);
 
     Integer queryTotalUserLotteryCount(String userId, Long activityId);
+
+    /**
+     * 创建 抽奖额度 赠送订单
+     * @param giftQuotaOrderEntity
+     * @return
+     */
+    void createGiftQuotaOrder(QuotaOrderEntity giftQuotaOrderEntity);
 }

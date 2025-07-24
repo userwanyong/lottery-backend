@@ -17,22 +17,14 @@ import org.springframework.stereotype.Component;
 public class RuleLuckAwardTreeNode implements LogicTree {
     @Override
     public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId,Long activityId, Long awardId, String ruleValue) {
-        log.debug("【规则树 RuleLuckAwardTreeNode-兜底奖节点开始执行】");
-        String[] split = ruleValue.split(Constants.COLON);
-        if (split.length == 0) {
-            log.error("【规则树 RuleLuckAwardTreeNode】-兜底奖品，兜底奖品未配置 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
-            throw new RuntimeException("【规则树 RuleLuckAwardTreeNode】-兜底奖品，兜底奖品未配置 " + ruleValue);
-        }
-        // 获取兜底奖励
-        Long luckAwardId = Long.valueOf(split[0]);
-        String awardRuleValue = split.length > 1 ? split[1] : "";
+        log.info("【规则树 RuleLuckAwardTreeNode-兜底奖节点开始执行】");
         // 返回兜底奖品
-        log.debug("【规则树 RuleLuckAwardTreeNode】-兜底奖品 userId:{} strategyId:{} awardId:{} awardRuleValue:{}", userId, strategyId, luckAwardId, awardRuleValue);
+        log.info("【规则树 RuleLuckAwardTreeNode】-兜底奖品'谢谢参与' userId:{} strategyId:{}", userId, strategyId);
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .ruleEntity(RuleEntity.builder()
-                        .awardId(luckAwardId)
-                        .ruleValue(awardRuleValue)
+                        .awardId(0L)
+                        .ruleValue("谢谢参与")
                         .build())
                 .build();
     }

@@ -31,7 +31,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
     @Override
     public RuleEntity logic(String userId, Long strategyId,Long activityId) {
 
-        log.debug("【抽奖责任链-RuleWeightLogicChain】-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
+        log.info("【抽奖责任链-RuleWeightLogicChain】-权重开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
 
         String ruleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_WIGHT);
 
@@ -47,22 +47,24 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         List<Long> analyticalSortedKeys = new ArrayList<>(analyticalValueGroup.keySet());
         Collections.sort(analyticalSortedKeys);
 
-//        // 3. 找出最小符合的值，也就是【4500 积分，能找到 4000:102,103,104,105】、【5000 积分，能找到 5000:102,103,104,105,106,107】
-//        Long nextValue = analyticalSortedKeys.stream()
-//                .sorted(Comparator.reverseOrder())
-//                .filter(key -> key <= userScore)
-//                .findFirst()
-//                .orElse(null);
+        // 3. 是否对应的值 4000/5000/6000 范围值
+//        Long maxValue = analyticalSortedKeys.stream().max(Comparator.naturalOrder())
+//                .orElse(1L);
+//        Integer nextValue = analyticalSortedKeys.contains(Long.valueOf(userScore)% maxValue) ? userScore : null;
 
-        // 3. 是否对应的值 4000/5000/6000
-        Long maxValue = analyticalSortedKeys.stream().max(Comparator.naturalOrder())
-                .orElse(1L);
-        Integer nextValue = analyticalSortedKeys.contains(Long.valueOf(userScore)% maxValue) ? userScore : null;
+        // 3. 是否对应的值 4000/5000/6000 精确值
+        Long nextValue = null;
+        for (Long analyticalSortedKey : analyticalSortedKeys) {
+            if (Long.valueOf(userScore).equals(analyticalSortedKey)) {
+                nextValue = analyticalSortedKey;
+                break;
+            }
+        }
 
         // 如果找到，进行接管
         if (nextValue != null) {
-            Long awardId = strategyService.getRandomAwardId(strategyId, analyticalValueGroup.get(Long.valueOf(nextValue)));
-            log.debug("【抽奖责任链-RuleWeightLogicChain】-权重接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT, awardId);
+            Long awardId = strategyService.getRandomAwardId(strategyId, analyticalValueGroup.get(nextValue));
+            log.info("【抽奖责任链-RuleWeightLogicChain】-权重接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT, awardId);
             return RuleEntity.builder()
                     .awardId(awardId)
                     .ruleModel(Constants.RuleModel.RULE_WIGHT)
@@ -70,7 +72,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         }
 
         // 否则过滤其他责任链
-        log.debug("【抽奖责任链-RuleWeightLogicChain】-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
+        log.info("【抽奖责任链-RuleWeightLogicChain】-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
         return next().logic(userId, strategyId,activityId);
     }
 

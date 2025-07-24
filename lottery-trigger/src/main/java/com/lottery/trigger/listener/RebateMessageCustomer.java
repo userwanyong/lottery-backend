@@ -2,6 +2,7 @@ package com.lottery.trigger.listener;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.lottery.domain.activity.model.entity.GiftQuotaOrderEntity;
 import com.lottery.domain.activity.model.entity.QuotaOrderEntity;
 import com.lottery.domain.activity.model.valobj.OrderTradeTypeVO;
 import com.lottery.domain.activity.service.ActivityQuotaService;
@@ -66,6 +67,16 @@ public class RebateMessageCustomer {
                     tradeEntity.setAmount(new BigDecimal(data.getRebateConfig()));
                     String creditOrder = creditService.createCreditOrder(tradeEntity);
                     log.info("[RebateMessageCustomer]用户入账消息，积分入账成功 topic: {} message: {} creditOrder: {}", topic, message, creditOrder);
+                    break;
+                case "gift":
+                    QuotaOrderEntity giftQuotaOrderEntity = new QuotaOrderEntity();
+                    giftQuotaOrderEntity.setUserId(data.getUserId());
+                    giftQuotaOrderEntity.setActivityId(data.getActivityId());
+                    giftQuotaOrderEntity.setOutBusinessNo(data.getBizId());
+                    giftQuotaOrderEntity.setRebateConfig(data.getRebateConfig());
+                    giftQuotaOrderEntity.setOrderTradeTypeVO(OrderTradeTypeVO.gift_no_pay_trade);
+                    activityQuotaService.createGiftQuotaOrder(giftQuotaOrderEntity);
+                    log.info("[RebateMessageCustomer]用户入账消息，活动赠送抽奖额度入账成功 topic: {} message: {} ", topic, message);
                     break;
             }
         } catch (AppException ae) {

@@ -5,6 +5,8 @@ import com.lottery.querys.model.valobj.RuleTreeNodeVO;
 import com.lottery.trigger.api.RuleTreeNodeService;
 import com.lottery.trigger.api.dto.req.RuleTreeNodeRequestDTO;
 import com.lottery.trigger.api.dto.res.RuleTreeNodeResponseDTO;
+import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
@@ -60,6 +62,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/add_rule_tree_node")
+    @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> addRuleTreeNode(@RequestBody RuleTreeNodeRequestDTO request) {
         log.info("======================[ErpOperateController-add]运营端 添加奖品规则节点开始 ======================");
         if (request.getRuleTreeId() == null || StringUtils.isBlank(request.getRuleName()) || StringUtils.isBlank(request.getRuleDesc())) {
@@ -74,6 +77,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/update_rule_tree_node")
+    @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> updateRuleTreeNode(@RequestBody RuleTreeNodeRequestDTO request) {
         log.info("======================[ErpOperateController-update]运营端 修改奖品规则节点开始 ======================");
         if (request.getId() == null || StringUtils.isBlank(request.getRuleName()) || StringUtils.isBlank(request.getRuleDesc())) {
@@ -88,6 +92,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/delete_rule_tree_node/{ruleTreeNodeId}")
+    @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> deleteRuleTreeNode(@PathVariable("ruleTreeNodeId") Long ruleTreeNodeId) {
         log.info("======================[ErpOperateController-delete]运营端 删除奖品规则节点开始 ======================");
         repository.deleteRuleTreeNodeVO(ruleTreeNodeId);

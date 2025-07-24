@@ -27,6 +27,20 @@ public class DefaultActivityQuota extends AbstractActivityQuota implements Activ
     }
 
     @Override
+    protected CreateQuotaOrderAggregate buildGiftOrderAggregate(QuotaOrderEntity giftQuotaOrderEntity) {
+        ActivityOrderEntity activityOrderEntity = new ActivityOrderEntity();
+        activityOrderEntity.setOutBusinessNo(giftQuotaOrderEntity.getOutBusinessNo());
+        return CreateQuotaOrderAggregate.builder()
+                .userId(giftQuotaOrderEntity.getUserId())
+                .activityId(giftQuotaOrderEntity.getActivityId())
+                .totalCount(Integer.valueOf(giftQuotaOrderEntity.getRebateConfig()))
+                .monthCount(Integer.valueOf(giftQuotaOrderEntity.getRebateConfig()))
+                .dayCount(Integer.valueOf(giftQuotaOrderEntity.getRebateConfig()))
+                .activityOrderEntity(activityOrderEntity)
+                .build();
+    }
+
+    @Override
     protected CreateQuotaOrderAggregate buildOrderAggregate(QuotaOrderEntity quotaOrderEntity, ActivitySkuEntity activitySkuEntity, ActivityEntity activityEntity, ActivityCountEntity activityCountEntity) {
         ActivityOrderEntity activityOrderEntity = new ActivityOrderEntity();
         activityOrderEntity.setUserId(quotaOrderEntity.getUserId());

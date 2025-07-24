@@ -13,6 +13,8 @@ import java.util.List;
 public interface BehaviorRebateService {
     BaseResponse<List<BehaviorRebateResponseDTO>> queryBehaviorRebate();
 
+    BaseResponse<List<BehaviorRebateResponseDTO>> queryBehaviorRebateOfGift(Long activityId);
+
     BaseResponse<Boolean> addBehaviorRebate(BehaviorRebateRequestDTO request);
 
     BaseResponse<Boolean> updateBehaviorRebate(BehaviorRebateRequestDTO request);

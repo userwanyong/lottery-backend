@@ -103,8 +103,8 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
     }
 
     @Override
-    public List<RuleWeightVO> queryStrategyRuleWeight(String userId, Long activityId) {
-        return repository.queryStrategyRuleWeight(userId, activityId);
+    public List<RuleWeightVO> queryStrategyRuleWeight(Long activityId) {
+        return repository.queryStrategyRuleWeight(activityId);
     }
 }
 

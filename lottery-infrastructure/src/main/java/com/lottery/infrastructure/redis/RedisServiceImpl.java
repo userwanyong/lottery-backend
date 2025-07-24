@@ -186,13 +186,21 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void deleteKeysWithPrefix(String prefix) {
         RKeys keys = redissonClient.getKeys();
-        // 使用 SCAN 命令分批次获取所有匹配的 key
-        Iterable<String> allKeys = keys.getKeysByPattern(prefix + "*");
-        // 删除所有匹配的 key
-        for (String key : allKeys) {
-            redissonClient.getBucket(key).delete();
-        }
+//        // 使用 SCAN 命令分批次获取所有匹配的 key
+//        Iterable<String> allKeys = keys.getKeysByPattern(prefix + "*");
+//        // 删除所有匹配的 key
+//        for (String key : allKeys) {
+//            redissonClient.getBucket(key).delete();
+//        }
+        keys.deleteByPattern(prefix + "*");
         log.info("[RedisServiceImpl-deleteKeysWithPrefix]删除所有以 key：{} 前缀开头的数据成功", prefix);
+    }
+
+    @Override
+    public void deleteKeysWithPattern(String pattern){
+        RKeys keys = redissonClient.getKeys();
+        keys.deleteByPattern("*"+pattern+"*");
+        log.info("[RedisServiceImpl-deleteKeysWithPattern]删除所有包含 key：{} 的数据成功", pattern);
     }
 
 }

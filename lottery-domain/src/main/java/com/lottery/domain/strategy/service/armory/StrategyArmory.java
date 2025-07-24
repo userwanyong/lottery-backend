@@ -7,7 +7,7 @@ package com.lottery.domain.strategy.service.armory;
 public interface StrategyArmory {
 
     /**
-     * 装配抽奖策略「触发的时机可以为活动审核通过后进行调用」
+     * 装配抽奖策略「可在创建/变更策略时调用」
      *
      * @param strategyId 策略ID
      * @return t/f
@@ -16,10 +16,11 @@ public interface StrategyArmory {
 
 
     /**
-     * 装配抽奖策略「触发的时机可以为活动审核通过后进行调用」
+     * 装配抽奖策略「可在创建/变更策略时调用」
      *
      * @param activityId 活动ID
      * @return t/f
      */
     boolean assembleLotteryStrategyByActivityId(Long activityId);
+
 }

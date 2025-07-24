@@ -36,6 +36,8 @@ public interface ErpRepository {
 
     List<BehaviorRebateVO> queryBehaviorRebateVOList();
 
+    List<BehaviorRebateVO> queryBehaviorRebateVOListOfGift(Long activityId);
+
     void addBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO);
 
     void updateBehaviorRebateVO(BehaviorRebateVO behaviorRebateVO);

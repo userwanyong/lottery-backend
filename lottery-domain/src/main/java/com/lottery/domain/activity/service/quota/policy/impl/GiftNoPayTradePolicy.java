@@ -1,0 +1,27 @@
+package com.lottery.domain.activity.service.quota.policy.impl;
+
+import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
+import com.lottery.domain.activity.model.valobj.OrderStateVO;
+import com.lottery.domain.activity.repository.ActivityRepository;
+import com.lottery.domain.activity.service.quota.policy.TradePolicy;
+import com.lottery.types.common.Constants;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+
+/**
+ * @author 永
+ * 积分类型订单
+ */
+@Service(Constants.QuotaModel.GIFT_NO_PAY_TRADE)
+public class GiftNoPayTradePolicy implements TradePolicy {
+
+    @Resource
+    private ActivityRepository repository;
+
+    @Override
+    public void trade(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+        repository.doSaveNoPayGiftOrder(createQuotaOrderAggregate);
+    }
+}

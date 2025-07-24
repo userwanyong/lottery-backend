@@ -12,7 +12,11 @@ import java.util.List;
 public interface RebateService {
     List<String> createRebateOrder(BehaviorEntity behaviorEntity);
 
-    List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
+    void createRebateOrderOfGift(BehaviorEntity behaviorEntity);
+
+//    List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
 
     boolean queryIsHaveRebateOrder(String userId, Long activityId,String outBusinessNo);
+
+    boolean isAddLotteryQuota(String userId, Long activityId,Long behaviorRebateId);
 }

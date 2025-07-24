@@ -37,6 +37,10 @@ public class LotteryMessageCustomer {
             BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage>>() {
             }.getType());
             SendLotteryMessageEvent.LotteryMessage data = eventMessage.getData();
+            if (data.getAwardId()==0L){
+                //说明是兜底奖，不进行广播
+                return;
+            }
             String activityId = data.getActivityId();
             Date awardTime = data.getAwardTime();
             //格式化为yyyy/mm/dd的形式
@@ -44,7 +48,8 @@ public class LotteryMessageCustomer {
             // 用户脱敏 取用户id的前两位和后两位 因为用的是19位的雪花id，不需要考虑少于4位的情况
             String userId = data.getUserId().substring(0, 2) + "***" + data.getUserId().substring(data.getUserId().length() - 2);
             String title=data.getAwardTitle();
-            if (data.getAwardId()!=101){
+            if (!(data.getAwardId()==1947135858008137730L||data.getAwardId()==101)){
+                // 暂时通过id判断是否是随机积分
                 title="<div style=\"color: red;\">"+data.getAwardTitle()+"</div>";
             }
             String ms = "恭喜用户<div style=\"color: #1890ff;\">" + userId + "</div>抽中&nbsp;" +title +"&nbsp;<div style=\"font-size: 10px;\">" +formatTime+"</div>";

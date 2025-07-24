@@ -29,7 +29,7 @@ public class BehaviorRebate implements Serializable {
     private Long activityId;
 
     /**
-     * 行为类型（sign 签到、openai_pay 支付）
+     * 行为类型（sign 签到、openai_pay 支付、activity_gift 活动赠送）
      */
     private String behaviorType;
 
@@ -39,7 +39,7 @@ public class BehaviorRebate implements Serializable {
     private String rebateDesc;
 
     /**
-     * 返利类型（sku 活动库存充值商品、integral 用户活动积分）
+     * 返利类型（sku 充值抽奖次数、integral 用户活动积分 ,gift 活动赠送抽奖次数）
      */
     private String rebateType;
 

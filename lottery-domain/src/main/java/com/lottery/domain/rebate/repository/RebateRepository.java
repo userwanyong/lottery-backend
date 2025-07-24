@@ -21,4 +21,8 @@ public interface RebateRepository {
     List<RebateOrderEntity> queryRebateOrder(String userId, String outBusinessNo);
 
     boolean queryIsHaveRebateOrder(String userId,Long activityId, String outBusinessNo);
+
+    boolean isReceiveGift(String activityId,Long behaviorRebateId,String userId);
+
+    RebateVO queryOneRebateConfig(BehaviorEntity behaviorEntity);
 }

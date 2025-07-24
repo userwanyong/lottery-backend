@@ -6,17 +6,17 @@ package com.lottery.domain.activity.service.armory;
  */
 public interface ActivityArmory {
 
-    /**
-     * 活动sku装配
-     * @param sku sku
-     * @return t/f
-     */
-    boolean assembleActivitySku(Long sku);
+//    /**
+//     * 活动sku装配
+//     * @param sku sku
+//     * @return t/f
+//     */
+//    boolean assembleActivitySku(Long sku);
 
     /**
      * 活动sku装配
      * @param activityId 活动id
      * @return t/f
      */
-    boolean assembleActivitySkuByActivityId(Long activityId);
+    void assembleActivitySkuByActivityId(Long activityId);
 }

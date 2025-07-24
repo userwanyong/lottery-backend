@@ -38,14 +38,17 @@ public class StrategyEntity {
     }
 
     /**
-     * 获取权重模型
+     * 获取权重模型(带rule_weight的)
      *
      * @return String
      */
     public String getRuleWeight() {
         String[] ruleModels = this.ruleModels();
+        if (ruleModels == null){
+            return null;
+        }
         for (String ruleModel : ruleModels) {
-            if (Constants.RuleModel.RULE_WIGHT.equals(ruleModel)) {
+            if (ruleModel.contains(Constants.RuleModel.RULE_WIGHT)) {
                 return ruleModel;
             }
         }

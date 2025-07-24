@@ -103,6 +103,13 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
+    public void queryActivityByActivityIdAndRemoveOldKey(Long activityId) {
+        // 清除旧key
+//        redisService.remove(Constants.RedisKey.ACTIVITY_KEY + activityId);
+        queryActivityByActivityId(activityId);
+    }
+
+    @Override
     public ActivityCountEntity queryActivityCountByActivityCountId(Long activityCountId) {
         // 优先从缓存获取
         String cacheKey = Constants.RedisKey.ACTIVITY_COUNT_KEY + activityCountId;
@@ -117,6 +124,12 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         BeanUtils.copyProperties(activityCount, dbActivityCountEntity);
         redisService.setValue(cacheKey, dbActivityCountEntity);
         return dbActivityCountEntity;
+    }
+
+    @Override
+    public void queryActivityCountByActivityCountIdAndRemoveOldKey(Long activityCountId) {
+        redisService.remove(Constants.RedisKey.ACTIVITY_COUNT_KEY + activityCountId);
+        queryActivityCountByActivityCountId(activityCountId);
     }
 
     @Override
@@ -263,13 +276,20 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Override
     public void cacheActivitySkuStockCount(String key, Integer stockCountSurplus) {
         if (redisService.isExists(key)) {
-            return;
+//            return;
+            redisService.remove(key);
         }
         redisService.setAtomicLong(key, stockCountSurplus);
     }
 
     @Override
     public boolean reduceActivitySkuStock(Long sku, String key, Date endDateTime) {
+        //判断该key是否存在
+        if (!redisService.isExists(key)) {
+            LambdaQueryWrapper<ActivitySku> queryWrapper = new LambdaQueryWrapper<ActivitySku>().eq(ActivitySku::getId, sku);
+            ActivitySku activitySku = activitySkuMapper.selectOne(queryWrapper);
+            cacheActivitySkuStockCount(key, activitySku.getStockCountSurplus());
+        }
         long count = redisService.decr(key);
         if (count == 0) {
             // 库存消耗没了以后，发送MQ消息，更新数据库库存
@@ -279,7 +299,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             redisService.setAtomicLong(key, 0);
             throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
         }
-        String lockKey = key + Constants.UNDERLINE + count;
+        long newCount = count + 1;
+        String lockKey = key + Constants.UNDERLINE + newCount;
         //过期时间为活动结束后一天
         long expireMillis = endDateTime.getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
         Boolean lock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
@@ -512,7 +533,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     BeanUtils.copyProperties(partakeOrderResEntity, userOrder);
                     userOrder.setOrderState(partakeOrderResEntity.getOrderState().getCode());
                     userOrderMapper.insert(userOrder);
-                    userOrderId[0] =userOrder.getId();
+                    userOrderId[0] = userOrder.getId();
                     log.debug("[ActivityRepositoryImpl]创建抽奖单成功 userId: {} activityId: {}", userId, activityId);
                     return 1;
                 } catch (DuplicateKeyException e) {
@@ -557,7 +578,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public List<Long> querySkuList() {
-        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_COUNT_QUEUE_KEY;
+        String cacheKey = Constants.RedisKey.ACTIVITY_SKU_LIST_KEY;
         List<Long> resultValue = redisService.getValue(cacheKey);
         if (resultValue != null && !resultValue.isEmpty()) {
             return resultValue;
@@ -745,7 +766,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     }
 
     @Override
-    public BigDecimal queryUserCreditAccountAmount(String userId,Long activityId) {
+    public BigDecimal queryUserCreditAccountAmount(String userId, Long activityId) {
         try {
             dbRouter.doRouter(userId);
             LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>()
@@ -759,6 +780,105 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         } finally {
             dbRouter.clear();
         }
+    }
+
+    @Override
+    public void doSaveNoPayGiftOrder(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + createQuotaOrderAggregate.getUserId() + Constants.UNDERLINE + createQuotaOrderAggregate.getActivityId());
+        try {
+            lock.lock(3, TimeUnit.SECONDS);
+            // 额度单对象
+            ActivityRecord activityRecord = new ActivityRecord();
+            activityRecord.setUserId(createQuotaOrderAggregate.getUserId());
+            activityRecord.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityRecord.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityRecord.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityRecord.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityRecord.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityRecord.setPayAmount(BigDecimal.ZERO);
+            activityRecord.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityRecord.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityRecord.setState(OrderStateVO.completed.getCode());
+            activityRecord.setOutBusinessNo(createQuotaOrderAggregate.getActivityOrderEntity().getOutBusinessNo());
+
+            // 总账户对象
+            ActivityAccount activityAccount = new ActivityAccount();
+            activityAccount.setUserId(createQuotaOrderAggregate.getUserId());
+            activityAccount.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityAccount.setTotalCount(createQuotaOrderAggregate.getTotalCount());
+            activityAccount.setTotalCountSurplus(createQuotaOrderAggregate.getTotalCount());
+            activityAccount.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityAccount.setMonthCountSurplus(createQuotaOrderAggregate.getMonthCount());
+            activityAccount.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityAccount.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
+
+
+            // 月账户对象
+            ActivityAccountMonth activityAccountMonth = new ActivityAccountMonth();
+            activityAccountMonth.setUserId(createQuotaOrderAggregate.getUserId());
+            activityAccountMonth.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityAccountMonth.setMonth(new SimpleDateFormat("yyyy-MM").format(new Date()));
+            activityAccountMonth.setMonthCount(createQuotaOrderAggregate.getMonthCount());
+            activityAccountMonth.setMonthCountSurplus(createQuotaOrderAggregate.getMonthCount());
+
+            // 日账户对象
+            ActivityAccountDay activityAccountDay = new ActivityAccountDay();
+            activityAccountDay.setUserId(createQuotaOrderAggregate.getUserId());
+            activityAccountDay.setActivityId(createQuotaOrderAggregate.getActivityId());
+            activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+            activityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
+            activityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
+
+            // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
+            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
+            // 编程式事务
+            transactionTemplate.execute(status -> {
+                try {
+                    // 1. 保存抽奖额度单
+                    activityRecordMapper.insert(activityRecord);
+                    log.debug("[ActivityRepositoryImpl]创建抽奖额度单成功");
+                    // 2. 更新总账户
+                    LambdaQueryWrapper<ActivityAccount> queryWrapper = new QueryWrapper<ActivityAccount>().lambda()
+                            .eq(ActivityAccount::getUserId, createQuotaOrderAggregate.getUserId())
+                            .eq(ActivityAccount::getActivityId, createQuotaOrderAggregate.getActivityId());
+                    ActivityAccount dbActivityAccount = activityAccountMapper.selectOne(queryWrapper);
+                    if (dbActivityAccount == null) {
+                        // 创建
+                        activityAccountMapper.insert(activityAccount);
+                        log.debug("[ActivityRepositoryImpl]创建总账户成功");
+                    } else {
+                        // 更新
+                        activityAccount.setTotalCount(dbActivityAccount.getTotalCount() + createQuotaOrderAggregate.getTotalCount());
+                        activityAccount.setMonthCount(dbActivityAccount.getMonthCount() + createQuotaOrderAggregate.getMonthCount());
+                        activityAccount.setDayCount(dbActivityAccount.getDayCount() + createQuotaOrderAggregate.getDayCount());
+                        activityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + createQuotaOrderAggregate.getTotalCount());
+                        activityAccount.setMonthCountSurplus(dbActivityAccount.getMonthCountSurplus() + createQuotaOrderAggregate.getMonthCount());
+                        activityAccount.setDayCountSurplus(dbActivityAccount.getDayCountSurplus() + createQuotaOrderAggregate.getDayCount());
+                        activityAccountMapper.update(activityAccount, queryWrapper);
+                        log.debug("[ActivityRepositoryImpl]更新总账户成功");
+                    }
+                    // 更新月账户 如果月账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountMonthMapper.updateAccount(activityAccountMonth);
+                    log.debug("[ActivityRepositoryImpl]更新月账户成功");
+                    // 更新日账户 如果日账户不存在，则不用更新，在抽奖时会根据总账户创建
+                    activityAccountDayMapper.updateAccount(activityAccountDay);
+                    log.debug("[ActivityRepositoryImpl]更新日账户成功");
+                    return 1;
+                } catch (DuplicateKeyException e) {//发生唯一索引冲突异常时
+                    status.setRollbackOnly(); //标记当前事务为回滚状态
+                    log.error("[ActivityRepositoryImpl]创建抽奖额度单失败，唯一索引冲突 userId: {} activityId: {} ", createQuotaOrderAggregate.getUserId(), createQuotaOrderAggregate.getActivityId(), e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
+                }
+            });
+        } finally {
+            dbRouter.clear();
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void deleteCacheKeyByActivityId(Long activityId) {
+        redisService.deleteKeysWithPattern(activityId.toString());
     }
 
 }
