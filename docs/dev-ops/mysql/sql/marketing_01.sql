@@ -2,7 +2,7 @@ CREATE DATABASE /*!32312 IF NOT EXISTS */ `marketing_01` /*!40100 DEFAULT CHARAC
 USE `marketing_01`;
 -- MySQL dump 10.13  Distrib 8.0.35, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: marketing_02
+-- Host: 127.0.0.1    Database: marketing_01
 -- ------------------------------------------------------
 -- Server version	8.0.32
 
@@ -41,7 +41,7 @@ CREATE TABLE `activity_account`
     UNIQUE KEY `uq_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +76,7 @@ CREATE TABLE `activity_account_day`
     UNIQUE KEY `uq_user_id_activity_id_day` (`user_id`, `activity_id`, `day`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-日次数';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖账户表-日次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +111,7 @@ CREATE TABLE `activity_account_month`
     UNIQUE KEY `uq_user_id_activity_id_month` (`user_id`, `activity_id`, `month`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动账户表-月次数';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='抽奖账户表-月次数';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,15 +137,14 @@ CREATE TABLE `activity_record_000`
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
-    `sku`             bigint          NOT NULL COMMENT '商品sku',
-    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint          NOT NULL COMMENT '抽奖策略ID',
+    `sku`             bigint                   DEFAULT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)              DEFAULT NULL COMMENT '活动名称',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
     `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
     `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -179,15 +178,14 @@ CREATE TABLE `activity_record_001`
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
-    `sku`             bigint          NOT NULL COMMENT '商品sku',
-    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `sku`             bigint                   DEFAULT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)              DEFAULT NULL COMMENT '活动名称',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
     `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
     `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -221,15 +219,14 @@ CREATE TABLE `activity_record_002`
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
-    `sku`             bigint          NOT NULL COMMENT '商品sku',
-    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `sku`             bigint                   DEFAULT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)              DEFAULT NULL COMMENT '活动名称',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
     `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
     `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -263,15 +260,14 @@ CREATE TABLE `activity_record_003`
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `activity_id`     bigint          NOT NULL COMMENT '活动ID',
-    `sku`             bigint          NOT NULL COMMENT '商品sku',
-    `activity_name`   varchar(64)     NOT NULL COMMENT '活动名称',
-    `strategy_id`     bigint          NOT NULL COMMENT '额度单ID',
+    `sku`             bigint                   DEFAULT NULL COMMENT '商品sku',
+    `activity_name`   varchar(64)              DEFAULT NULL COMMENT '活动名称',
     `total_count`     int             NOT NULL COMMENT '总次数',
     `day_count`       int             NOT NULL COMMENT '日次数',
     `month_count`     int             NOT NULL COMMENT '月次数',
     `pay_amount`      decimal(10, 2)           DEFAULT NULL COMMENT '支付积分',
     `state`           varchar(10)     NOT NULL DEFAULT 'complete' COMMENT '订单状态（complete-完成 wait_pay-等待支付）',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '保证幂等，不会重复消费',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '保证幂等，不会重复消费',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -303,6 +299,7 @@ DROP TABLE IF EXISTS `credit_account`;
 CREATE TABLE `credit_account`
 (
     `id`               bigint unsigned NOT NULL COMMENT '雪花ID',
+    `activity_id`      bigint          NOT NULL COMMENT '活动ID',
     `user_id`          varchar(32)     NOT NULL COMMENT '用户ID',
     `total_amount`     decimal(10, 2)  NOT NULL COMMENT '总积分，显示总账户值，记得一个人获得的总积分',
     `available_amount` decimal(10, 2)  NOT NULL COMMENT '可用积分，每次扣减的值',
@@ -337,10 +334,11 @@ CREATE TABLE `credit_record_000`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
     `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
     `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -373,10 +371,11 @@ CREATE TABLE `credit_record_001`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
     `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
     `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -409,10 +408,11 @@ CREATE TABLE `credit_record_002`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
     `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
     `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -445,10 +445,11 @@ CREATE TABLE `credit_record_003`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `trade_name`      varchar(32)     NOT NULL COMMENT '交易名称',
     `trade_type`      varchar(8)      NOT NULL DEFAULT 'forward' COMMENT '交易类型；forward-正向、reverse-逆向',
     `trade_amount`    decimal(10, 2)  NOT NULL COMMENT '交易金额',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传。返利、行为等唯一标识',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
@@ -481,6 +482,7 @@ CREATE TABLE `task`
 (
     `id`          int unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
     `topic`       varchar(32)  NOT NULL COMMENT '消息主题',
+    `activity_id` bigint       NOT NULL COMMENT '活动ID',
     `user_id`     varchar(32)  NOT NULL COMMENT '用户ID',
     `message_id`  varchar(16)  NOT NULL COMMENT '消息编号',
     `message`     varchar(512) NOT NULL COMMENT '消息主体',
@@ -492,7 +494,7 @@ CREATE TABLE `task`
     KEY `idx_state` (`state`),
     KEY `idx_create_time` (`update_time`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 126
+  AUTO_INCREMENT = 197
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='任务表，发送MQ';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -682,12 +684,13 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_000`;
 CREATE TABLE `user_behavior_rebate_order_000`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
     `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
     `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
     `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
     `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -720,12 +723,13 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_001`;
 CREATE TABLE `user_behavior_rebate_order_001`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
     `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
     `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
     `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
     `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -758,12 +762,13 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_002`;
 CREATE TABLE `user_behavior_rebate_order_002`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
     `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
     `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
     `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
     `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -796,12 +801,13 @@ DROP TABLE IF EXISTS `user_behavior_rebate_order_003`;
 CREATE TABLE `user_behavior_rebate_order_003`
 (
     `id`              bigint unsigned NOT NULL COMMENT '雪花ID',
+    `activity_id`     bigint          NOT NULL COMMENT '活动ID',
     `user_id`         varchar(32)     NOT NULL COMMENT '用户ID',
     `behavior_type`   varchar(16)     NOT NULL COMMENT '行为类型（sign 签到、openai_pay 支付）',
     `rebate_desc`     varchar(128)    NOT NULL COMMENT '返利描述',
     `rebate_type`     varchar(16)     NOT NULL COMMENT '返利类型（sku 活动库存充值商品、integral 用户活动积分）',
     `rebate_config`   varchar(32)     NOT NULL COMMENT '返利配置【sku值，积分值】',
-    `out_business_no` varchar(64)     NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
+    `out_business_no` varchar(100)    NOT NULL COMMENT '业务仿重ID - 外部透传，方便查询使用',
     `biz_id`          varchar(64)     NOT NULL COMMENT '业务ID - 拼接的唯一值',
     `create_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`     datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -973,4 +979,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-13 19:35:49
+-- Dump completed on 2025-07-24 21:43:38
