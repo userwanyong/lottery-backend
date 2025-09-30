@@ -31,7 +31,7 @@ import java.util.Objects;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/lottery")
-@DubboService(version = "1.0")
+//@DubboService(version = "1.0")
 public class LotteryStrategyController implements LotteryStrategyService {
 
     @Resource

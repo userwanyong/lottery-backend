@@ -62,7 +62,7 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/activity")
-@DubboService(version = "1.0")
+//@DubboService(version = "1.0")
 public class LotteryActivityController implements LotteryActivityService {
     @Resource
     private StrategyArmory strategyArmory;

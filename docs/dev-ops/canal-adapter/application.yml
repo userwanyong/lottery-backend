@@ -3,7 +3,7 @@ server:
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
+    time-zone: Asia/Shanghai
     default-property-inclusion: non_null
 
 canal.conf:
@@ -16,7 +16,7 @@ canal.conf:
   accessKey:
   secretKey:
   consumerProperties:
-    canal.tcp.server.host: canal-server:11111
+    canal.tcp.server.host: 115.190.172.66:11111
     canal.tcp.zookeeper.hosts:
     canal.tcp.batch.size: 500
     canal.tcp.username:
@@ -25,11 +25,11 @@ canal.conf:
   # 需要同步的数据库配置
   srcDataSources:
     marketing_01:
-      url: jdbc:mysql://mysql:3306/marketing_01?useUnicode=true
+      url: jdbc:mysql://115.190.172.66:3306/marketing_01?useUnicode=true&serverTimezone=Asia/Shanghai
       username: canal
       password: canal
     marketing_02:
-      url: jdbc:mysql://mysql:3306/marketing_02?useUnicode=true
+      url: jdbc:mysql://115.190.172.66:3306/marketing_02?useUnicode=true&serverTimezone=Asia/Shanghai
       username: canal
       password: canal
   canalAdapters:
@@ -39,7 +39,7 @@ canal.conf:
           outerAdapters:
             - name: logger
             - name: es7
-              hosts: elasticsearch:9200 # 127.0.0.1:9200 for rest mode
+              hosts: http://203.195.157.117:9200 # 127.0.0.1:9200 for rest mode
               properties:
                 mode: rest # transport or rest
-                cluster.name: docker-cluster
+                cluster.name: elasticsearch

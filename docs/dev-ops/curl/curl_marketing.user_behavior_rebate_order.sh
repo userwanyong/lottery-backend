@@ -1,5 +1,5 @@
 # bash curl_marketing.user_behavior_rebate_order.sh
-curl -X PUT "http://127.0.0.1:9200/marketing.user_behavior_rebate_order" -H 'Content-Type: application/json' -d'
+curl -X PUT "http://203.195.157.117:9200/marketing.user_behavior_rebate_order" -H 'Content-Type: application/json' -d'
 {
   "mappings": {
     "properties": {

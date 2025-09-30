@@ -158,22 +158,37 @@ services:
       - mysql
     networks:
       - my-network
+    # 严格限制内存，防止宿主机 OOM
+    mem_limit: 1g
+    mem_reservation: 300m
+    # 关键：提升文件描述符限制
+    ulimits:
+      nofile:
+        soft: 32768
+        hard: 32768
+    # 极致压缩 JVM 内存 + 移除 PermSize 警告
+    environment:
+      - LANG=C.UTF-8
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-server -Xms256m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.awt.headless=true -Dfile.encoding=UTF-8
 
   # canal-adapter 负责数据分发
   canal-adapter:
-    image: coopersoft/canal-adapter:v1.1.6
+    image: dyrnq/canal-adapter:1.1.7
     container_name: canal-adapter
     restart: unless-stopped
     ports:
       - "8082:8081"
     volumes:
-      - ./canal-adapter/application.yml:/opt/canal-adapter/conf/application.yml
-      - ./canal-adapter/bootstrap.yml:/opt/canal-adapter/conf/bootstrap.yml
-      - ./canal-adapter/es7:/opt/canal-adapter/conf/es7
+      - ./canal-adapter/application.yml:/home/admin/canal-adapter/conf/application.yml
+      - ./canal-adapter/bootstrap.yml:/home/admin/canal-adapter/conf/bootstrap.yml
+      - ./canal-adapter/es7:/home/admin/canal-adapter/conf/es7
     depends_on:
       - canal-server
     networks:
       - my-network
+    mem_limit: 1g
+    mem_reservation: 300m
 
   elasticsearch:
     image: elasticsearch:7.17.14
@@ -185,7 +200,6 @@ services:
     environment:
       - 'cluster.name=elasticsearch' # 设置集群名称为elasticsearch
       - 'discovery.type=single-node' # 以单一节点模式启动
-      - "cluster.name=docker-cluster" # 设置名称
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m' # 设置使用jvm内存大小
     networks:
       - my-network
@@ -250,6 +264,12 @@ services:
       - prometheus
     volumes:
       - ./grafana:/etc/grafana
+#    environment: # 是否配置自己的数据库
+#      - GF_DATABASE_TYPE=mysql
+#      - GF_DATABASE_HOST=host.docker.internal:13306
+#      - GF_DATABASE_NAME=grafana
+#      - GF_DATABASE_USER=root
+#      - GF_DATABASE_PASSWORD=123456
     networks:
       - my-network
 
