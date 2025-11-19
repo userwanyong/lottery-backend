@@ -1,3 +1,4 @@
+#全量导入数据： curl.exe -X POST http://115.190.238.109:8082/etl/es7/marketing01_activity_account.yml
 dataSourceKey: marketing_01
 destination: example
 groupId: g1

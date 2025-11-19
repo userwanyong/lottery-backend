@@ -132,7 +132,7 @@ public class LotteryActivityController implements LotteryActivityService {
         log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
         // 3. 执行抽奖
         log.info("[LotteryActivityController-draw]执行抽奖");
-        LotteryResEntity lotteryResEntity = lottery.performLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).activityId(partakeOrder.getActivityId()).build());
+        LotteryResEntity lotteryResEntity = lottery.doLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).activityId(partakeOrder.getActivityId()).build());
         log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
         // 4. 写入中奖记录
         UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()

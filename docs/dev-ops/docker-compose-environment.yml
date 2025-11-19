@@ -180,6 +180,7 @@ services:
     ports:
       - "8082:8081"
     volumes:
+      - ./canal-adapter/logback.xml:/home/admin/canal-adapter/conf/logback.xml
       - ./canal-adapter/application.yml:/home/admin/canal-adapter/conf/application.yml
       - ./canal-adapter/bootstrap.yml:/home/admin/canal-adapter/conf/bootstrap.yml
       - ./canal-adapter/es7:/home/admin/canal-adapter/conf/es7
@@ -197,6 +198,9 @@ services:
       - '9300:9300'
     container_name: elasticsearch
     restart: always
+    volumes:
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
     environment:
       - 'cluster.name=elasticsearch' # 设置集群名称为elasticsearch
       - 'discovery.type=single-node' # 以单一节点模式启动
@@ -213,8 +217,6 @@ services:
       - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     ports:
       - '5601:5601'
-    links:
-      - elasticsearch:es #可以用es这个域名访问elasticsearch服务
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch:9200 #设置访问elasticsearch的地址
       - I18N_LOCALE=zh-CN
@@ -227,17 +229,17 @@ services:
   xxl-job-admin:
     image: xuxueli/xxl-job-admin:2.4.1 #M1 Mac 更换镜像 kuschzzp/xxl-job-aarch64:2.4.0
     container_name: xxl-job-admin
-    restart: always
-    depends_on:
-      - mysql
+#    restart: always
+#    depends_on:
+#      - mysql
     ports:
       - "9090:9090"
-    links:
-      - mysql
+#    links:
+#      - mysql
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/xxl_job?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
+      - SPRING_DATASOURCE_URL=jdbc:mysql://115.190.172.66:3306/xxl_job?serverTimezone=UTC&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Shanghai
       - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_PASSWORD=12123
       - SERVER_PORT=9090
     networks:
       - my-network
@@ -272,6 +274,28 @@ services:
 #      - GF_DATABASE_PASSWORD=123456
     networks:
       - my-network
+
+  logstash:
+    image: logstash:7.17.14
+    container_name: logstash
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+    ports:
+      - '4560:4560'
+      - '50000:50000/tcp'
+      - '50000:50000/udp'
+      - '9600:9600'
+    environment:
+      LS_JAVA_OPTS: -Xms1024m -Xmx1024m
+      TZ: Asia/Shanghai
+      MONITORING_ENABLED: false
+    networks:
+      - my-network
+    depends_on:
+      - elasticsearch # 依赖elasticsearch启动后在启动logstash
 
 
 networks:

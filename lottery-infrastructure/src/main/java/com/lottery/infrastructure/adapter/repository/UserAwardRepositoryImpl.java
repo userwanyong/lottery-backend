@@ -72,7 +72,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         TaskEntity taskEntity = userAwardRecordAggregate.getTaskEntity();
         Task task = new Task();
         BeanUtils.copyProperties(taskEntity, task);
-        task.setMessage(String.valueOf(taskEntity.getMessage()));
+        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
         task.setState(taskEntity.getState().getCode());
 
         UserOrder userOrder = new UserOrder();

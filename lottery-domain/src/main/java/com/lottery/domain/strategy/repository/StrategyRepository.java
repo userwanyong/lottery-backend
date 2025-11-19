@@ -1,10 +1,12 @@
 package com.lottery.domain.strategy.repository;
 
 import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
-import com.lottery.domain.strategy.model.entity.*;
+import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
+import com.lottery.domain.strategy.model.entity.RuleEntity;
+import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
+import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
-import com.lottery.domain.strategy.model.valobj.StrategyRuleModelVO;
 import com.lottery.types.event.BaseEvent;
 
 import java.util.List;
@@ -32,7 +34,7 @@ public interface StrategyRepository {
 
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
-    StrategyRuleModelVO queryRuleModelVO(Long strategyId, Long awardId);
+    Long queryRuleModelVO(Long strategyId, Long awardId);
 
     /**
      * 构建规则树树根
@@ -42,7 +44,7 @@ public interface StrategyRepository {
      */
     RuleTreeVO queryRuleTreeVO(Long treeId);
 
-    Boolean reduceAwardStock(String key,Long strategyId,Long activityId);
+    Boolean reduceAwardStock(String key, Long strategyId, Long activityId);
 
     void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity);
 
@@ -56,7 +58,7 @@ public interface StrategyRepository {
 
     Long queryStrategyIdByActivityId(Long activityId);
 
-    Integer queryTodayUserLotteryCount(String userId, Long strategyId,Long activityId);
+    Integer queryTodayUserLotteryCount(String userId, Long strategyId, Long activityId);
 
     Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds);
 

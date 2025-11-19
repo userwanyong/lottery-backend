@@ -31,6 +31,6 @@ public interface Lottery {
      * @param lotteryFactorEntity 抽奖请求实体
      * @return 抽到的奖品实体
      */
-    LotteryResEntity performLottery(LotteryReqEntity lotteryFactorEntity);
+    LotteryResEntity doLottery(LotteryReqEntity lotteryFactorEntity);
 
 }

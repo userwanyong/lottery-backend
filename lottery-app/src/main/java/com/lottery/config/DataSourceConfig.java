@@ -2,7 +2,6 @@ package com.lottery.config;
 
 
 import com.baomidou.mybatisplus.annotation.DbType;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusProperties;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
@@ -20,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * @author 永
@@ -35,7 +35,13 @@ public class DataSourceConfig {
         @Bean("elasticsearchDataSource")
         @ConfigurationProperties(prefix = "spring.elasticsearch.datasource")
         public DataSource igniteDataSource(Environment environment) {
-            return new EsDataSource();
+            EsDataSource esDataSource = new EsDataSource();
+            esDataSource.setUrl(environment.getProperty("spring.elasticsearch.datasource.url"));
+            Properties props = new Properties();
+            props.setProperty("user", environment.getProperty("spring.elasticsearch.datasource.username"));
+            props.setProperty("password", environment.getProperty("spring.elasticsearch.datasource.password"));
+            esDataSource.setProperties(props);
+            return esDataSource;
         }
 
         @Bean("elasticsearchSqlSessionFactory")
@@ -59,7 +65,7 @@ public class DataSourceConfig {
 
             MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
             factoryBean.setDataSource(mysqlDataSource);
-            factoryBean.setPlugins(dbRouterDynamicMybatisPlugin,mybatisPlusInterceptor);
+            factoryBean.setPlugins(dbRouterDynamicMybatisPlugin, mybatisPlusInterceptor);
             factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver()
                     .getResources("classpath:mapper/mysql/*.xml"));
 

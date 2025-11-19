@@ -86,19 +86,21 @@ public class ActivityRepositoryImpl implements ActivityRepository {
 
     @Override
     public ActivityEntity queryActivityByActivityId(Long activityId) {
-        // 优先从缓存获取
-        String cacheKey = Constants.RedisKey.ACTIVITY_KEY + activityId;
-        ActivityEntity activityEntity = redisService.getValue(cacheKey);
-        if (activityEntity != null) {
-            return activityEntity;
-        }
+        //todo 缓存-关
+//        // 优先从缓存获取
+//        String cacheKey = Constants.RedisKey.ACTIVITY_KEY + activityId;
+//        ActivityEntity activityEntity = redisService.getValue(cacheKey);
+//        if (activityEntity != null) {
+//            return activityEntity;
+//        }
         // 从库中获取数据
         LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda().eq(Activity::getId, activityId);
         Activity activity = activityMapper.selectOne(queryWrapper);
         ActivityEntity dbActivityEntity = new ActivityEntity();
         BeanUtils.copyProperties(activity, dbActivityEntity);
         dbActivityEntity.setState(ActivityStateVO.valueOf(activity.getState()));
-        redisService.setValue(cacheKey, dbActivityEntity);
+        //todo 缓存-关
+//        redisService.setValue(cacheKey, dbActivityEntity);
         return dbActivityEntity;
     }
 

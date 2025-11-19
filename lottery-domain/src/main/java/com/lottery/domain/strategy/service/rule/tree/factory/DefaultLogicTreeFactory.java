@@ -23,7 +23,7 @@ public class DefaultLogicTreeFactory {
     public DefaultLogicTreeFactory(Map<String, LogicTree> logicTreeNodeGroup) {
         this.logicTreeNodeGroup = logicTreeNodeGroup;
     }
-    public DecisionTreeEngine openLogicTree(RuleTreeVO ruleTreeVO) {
+    public DecisionTreeEngine getLogicTree(RuleTreeVO ruleTreeVO) {
         return new DecisionTreeEngineImpl(logicTreeNodeGroup, ruleTreeVO);
     }
 

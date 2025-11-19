@@ -53,6 +53,7 @@ public class Constants {
     public static class AwardModel {
         public static final String USER_CREDIT_RANDOM = "user_credit_random";
         public static final String RULE_BLACKLIST = "user_blacklist";
+        public static final String THANKS = "user_thanks";
     }
 
     public static class QuotaModel {

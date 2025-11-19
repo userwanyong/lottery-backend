@@ -89,8 +89,8 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/delete_strategy/{strategyId}")
-    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
-    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
+//    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
+//    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> deleteStrategy(@PathVariable("strategyId") Long strategyId) {
         log.info("======================[StrategyController-deleteStrategy]运营端 删除策略开始 ======================");
         repository.deleteStrategyVO(strategyId);

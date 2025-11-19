@@ -32,7 +32,7 @@ public class UserBlackListAward implements DistributeAward {
             awardConfig = repository.queryAwardConfig(awardId);
         }
         BigDecimal creditAmount = new BigDecimal(awardConfig);
-        log.info("[UserCreditRandomAward]黑名单用户「{}」获得积分值「{}」", distributeAwardEntity.getUserId(), creditAmount);
+        log.info("[UserBlackListAward]黑名单用户「{}」获得积分值「{}」", distributeAwardEntity.getUserId(), creditAmount);
         // 构建集合对象
         UserAwardRecordEntity userAwardRecordEntity = GiveOutPrizesAggregate.buildUserAwardRecordEntity(distributeAwardEntity.getId(), distributeAwardEntity.getUserId(), distributeAwardEntity.getActivityId(), distributeAwardEntity.getUserOrderId(), awardId, AwardStateVO.complete);
         UserCreditAwardEntity userCreditAward = GiveOutPrizesAggregate.buildUserCreditAwardEntity(distributeAwardEntity.getUserId(), distributeAwardEntity.getActivityId(), creditAmount);

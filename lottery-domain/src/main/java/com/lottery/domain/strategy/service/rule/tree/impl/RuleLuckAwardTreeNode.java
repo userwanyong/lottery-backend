@@ -23,7 +23,7 @@ public class RuleLuckAwardTreeNode implements LogicTree {
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .ruleEntity(RuleEntity.builder()
-                        .awardId(0L)
+                        .awardId(1989337068971188225L)
                         .ruleValue("谢谢参与")
                         .build())
                 .build();

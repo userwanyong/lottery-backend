@@ -1,20 +1,14 @@
 package com.lottery.domain.strategy.service.armory;
 
-import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
-import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.service.armory.algorithm.Algorithm;
 import com.lottery.types.common.Constants;
-import com.lottery.types.enums.ResponseCode;
-import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author 永
@@ -49,7 +43,7 @@ public class StrategyImpl extends AbstractStrategy {
                 .filter(rate -> rate.compareTo(BigDecimal.ZERO) > 0)
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
-        if (minAwardRate.compareTo(BigDecimal.ZERO) <= 0){
+        if (minAwardRate.compareTo(BigDecimal.ZERO) <= 0) {
             return;
         }
         // 2. 找概率范围值

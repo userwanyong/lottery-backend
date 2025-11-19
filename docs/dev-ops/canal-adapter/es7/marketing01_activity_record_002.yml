@@ -17,6 +17,6 @@ esMapping:
                   t.out_business_no as _out_business_no,
                   t.create_time as _create_time,
                   t.update_time as _update_time
-          from activity_record_000 t"
+          from activity_record_002 t"
   etlCondition: "where t.update_time>={}"
   commitBatch: 3000

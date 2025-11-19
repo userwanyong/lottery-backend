@@ -72,7 +72,7 @@ public class LotteryTest {
                     .userId("user010")
                     .strategyId(200001L)
                     .build();
-            LotteryResEntity lotteryResEntity = lottery.performLottery(lotteryReqEntity);
+            LotteryResEntity lotteryResEntity = lottery.doLottery(lotteryReqEntity);
             log.info("请求参数：{}", JSON.toJSONString(lotteryReqEntity));
             log.info("测试结果：{}", JSON.toJSONString(lotteryResEntity));
         }

@@ -52,7 +52,7 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
         }
         //构建抽奖单
         PartakeOrderResEntity userOrderRes = this.buildUserPartakeOrder(userId, activityId, currentTime);
-        //构建参与领域聚合对象
+        //构建聚合对象
         CreatePartakeOrderAggregate createPartakeOrderAggregate = this.doFilterAccount(userId, activityId, currentTime);
         createPartakeOrderAggregate.setPartakeOrderResEntity(userOrderRes);
         //保存聚合对象

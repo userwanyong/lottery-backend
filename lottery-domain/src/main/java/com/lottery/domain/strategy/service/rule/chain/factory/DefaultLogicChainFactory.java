@@ -24,11 +24,11 @@ public class DefaultLogicChainFactory {
     /**
      * 构建责任链
      */
-    public LogicChain openLogicChain(Long strategyId) {
+    public LogicChain getLogicChain(Long strategyId) {
         // 1. 查询策略
         StrategyEntity strategy = repository.queryStrategyEntityByStrategyId(strategyId);
         String[] ruleModels = strategy.ruleModels();
-        // 2. 如果未配置策略规则，则装填默认责任链
+        // 2. 如果未配置策略规则，只装填默认责任链节点
         if (ruleModels == null || ruleModels.length == 0) {
             return logicChainGroup.get(Constants.RuleModel.DEFAULT);
         }
@@ -41,15 +41,15 @@ public class DefaultLogicChainFactory {
                 newRuleModels[i]=Constants.RuleModel.RULE_WIGHT;
             }
         }
-        // 3. 依次装填责任链；rule_blacklist、rule_weight
+        // 3. 依次装填责任链节点；rule_blacklist、rule_weight
         LogicChain logicChain = logicChainGroup.get(newRuleModels[0]);
-        LogicChain current = logicChain;
+//        LogicChain current = logicChain;
         for (int i = 1; i < newRuleModels.length; i++) {
             LogicChain nextChain = logicChainGroup.get(newRuleModels[i]);
-            current = current.appendNext(nextChain);
+            logicChain = logicChain.appendNext(nextChain);
         }
-        // 4. 责任链的最后装填默认责任链
-        current.appendNext(logicChainGroup.get(Constants.RuleModel.DEFAULT));
+        // 4. 责任链的最后装填默认责任链节点
+        logicChain.appendNext(logicChainGroup.get(Constants.RuleModel.DEFAULT));
         // 5. 返回责任链
         return logicChain;
     }

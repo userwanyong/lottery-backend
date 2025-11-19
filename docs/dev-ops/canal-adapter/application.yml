@@ -43,3 +43,4 @@ canal.conf:
               properties:
                 mode: rest # transport or rest
                 cluster.name: elasticsearch
+                security.auth: elastic:xxxxxxxx

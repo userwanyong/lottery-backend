@@ -1,6 +1,7 @@
 package com.lottery.infrastructure.adapter.repository;
 
 import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.lottery.domain.rebate.model.aggregate.RebateAggregate;
@@ -99,7 +100,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                         TaskEntity taskEntity = aggregate.getTaskEntity();
                         Task task = new Task();
                         BeanUtils.copyProperties(taskEntity, task);
-                        task.setMessage(String.valueOf(taskEntity.getMessage()));
+                        task.setMessage(JSON.toJSONString(taskEntity.getMessage()));
                         task.setState(taskEntity.getState().getCode());
                         taskMapper.insert(task);
                         log.debug("[RebateRepositoryImpl]返利任务记录成功 userId: {}", userId);
