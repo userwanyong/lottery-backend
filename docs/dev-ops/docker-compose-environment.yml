@@ -2,33 +2,33 @@
 version: '3.9'
 services:
   # nacos
-  nacos:
-    image: nacos/nacos-server
-    container_name: nacos
-    restart: always
-    ports:
-      - "8080:8080"
-      - "8848:8848"
-      - "9848:9848"
-      - "9849:9849"
-    environment:
-      - PREFER_HOST_MODE=hostname
-      - MODE=standalone
-      - SPRING_DATASOURCE_PLATFORM=mysql
-      - MYSQL_SERVICE_HOST=mysql
-      - MYSQL_SERVICE_DB_NAME=nacos
-      - MYSQL_SERVICE_PORT=3306
-      - MYSQL_SERVICE_USER=root
-      - MYSQL_SERVICE_PASSWORD=123456
-      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
-      - NACOS_AUTH_IDENTITY_KEY=2222
-      - NACOS_AUTH_IDENTITY_VALUE=2xxx
-      - NACOS_AUTH_TOKEN=SecretKey012345678901234567890123456789012345678901234567890123456789
-    networks:
-      - my-network
-    depends_on:
-      mysql:
-        condition: service_healthy
+#  nacos:
+#    image: nacos/nacos-server
+#    container_name: nacos
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#      - "8848:8848"
+#      - "9848:9848"
+#      - "9849:9849"
+#    environment:
+#      - PREFER_HOST_MODE=hostname
+#      - MODE=standalone
+#      - SPRING_DATASOURCE_PLATFORM=mysql
+#      - MYSQL_SERVICE_HOST=mysql
+#      - MYSQL_SERVICE_DB_NAME=nacos
+#      - MYSQL_SERVICE_PORT=3306
+#      - MYSQL_SERVICE_USER=root
+#      - MYSQL_SERVICE_PASSWORD=123456
+#      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+#      - NACOS_AUTH_IDENTITY_KEY=2222
+#      - NACOS_AUTH_IDENTITY_VALUE=2xxx
+#      - NACOS_AUTH_TOKEN=SecretKey012345678901234567890123456789012345678901234567890123456789
+#    networks:
+#      - my-network
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
 
 
   mysql:
@@ -158,19 +158,19 @@ services:
       - mysql
     networks:
       - my-network
-    # 严格限制内存，防止宿主机 OOM
-    mem_limit: 1g
-    mem_reservation: 300m
-    # 关键：提升文件描述符限制
-    ulimits:
-      nofile:
-        soft: 32768
-        hard: 32768
-    # 极致压缩 JVM 内存 + 移除 PermSize 警告
-    environment:
-      - LANG=C.UTF-8
-      - TZ=Asia/Shanghai
-      - JAVA_OPTS=-server -Xms256m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.awt.headless=true -Dfile.encoding=UTF-8
+#    # 严格限制内存，防止宿主机 OOM
+#    mem_limit: 1g
+#    mem_reservation: 300m
+#    # 关键：提升文件描述符限制
+#    ulimits:
+#      nofile:
+#        soft: 32768
+#        hard: 32768
+#    # 极致压缩 JVM 内存 + 移除 PermSize 警告
+#    environment:
+#      - LANG=C.UTF-8
+#      - TZ=Asia/Shanghai
+#      - JAVA_OPTS=-server -Xms256m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:+UseStringDeduplication -Djava.awt.headless=true -Dfile.encoding=UTF-8
 
   # canal-adapter 负责数据分发
   canal-adapter:
@@ -188,8 +188,8 @@ services:
       - canal-server
     networks:
       - my-network
-    mem_limit: 1g
-    mem_reservation: 300m
+#    mem_limit: 1g
+#    mem_reservation: 300m
 
   elasticsearch:
     image: elasticsearch:7.17.14
@@ -244,58 +244,58 @@ services:
     networks:
       - my-network
 
-  # 数据采集
-  prometheus:
-    image: bitnami/prometheus:2.47.2
-    container_name: prometheus
-    restart: always
-    ports:
-      - "9099:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - my-network
-  # 监控界面 账号密码 admin admin
-  grafana:
-    image: grafana/grafana:10.2.0
-    container_name: grafana
-    restart: always
-    ports:
-      - "4000:4000"
-    depends_on:
-      - prometheus
-    volumes:
-      - ./grafana:/etc/grafana
-#    environment: # 是否配置自己的数据库
-#      - GF_DATABASE_TYPE=mysql
-#      - GF_DATABASE_HOST=host.docker.internal:13306
-#      - GF_DATABASE_NAME=grafana
-#      - GF_DATABASE_USER=root
-#      - GF_DATABASE_PASSWORD=123456
-    networks:
-      - my-network
-
-  logstash:
-    image: logstash:7.17.14
-    container_name: logstash
-    restart: always
-    volumes:
-      - /etc/localtime:/etc/localtime
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-    ports:
-      - '4560:4560'
-      - '50000:50000/tcp'
-      - '50000:50000/udp'
-      - '9600:9600'
-    environment:
-      LS_JAVA_OPTS: -Xms1024m -Xmx1024m
-      TZ: Asia/Shanghai
-      MONITORING_ENABLED: false
-    networks:
-      - my-network
-    depends_on:
-      - elasticsearch # 依赖elasticsearch启动后在启动logstash
+#  # 数据采集
+#  prometheus:
+#    image: bitnami/prometheus:2.47.2
+#    container_name: prometheus
+#    restart: always
+#    ports:
+#      - "9099:9090"
+#    volumes:
+#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#    networks:
+#      - my-network
+#  # 监控界面 账号密码 admin admin
+#  grafana:
+#    image: grafana/grafana:10.2.0
+#    container_name: grafana
+#    restart: always
+#    ports:
+#      - "4000:4000"
+#    depends_on:
+#      - prometheus
+#    volumes:
+#      - ./grafana:/etc/grafana
+##    environment: # 是否配置自己的数据库
+##      - GF_DATABASE_TYPE=mysql
+##      - GF_DATABASE_HOST=host.docker.internal:13306
+##      - GF_DATABASE_NAME=grafana
+##      - GF_DATABASE_USER=root
+##      - GF_DATABASE_PASSWORD=123456
+#    networks:
+#      - my-network
+#
+#  logstash:
+#    image: logstash:7.17.14
+#    container_name: logstash
+#    restart: always
+#    volumes:
+#      - /etc/localtime:/etc/localtime
+#      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+#      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+#    ports:
+#      - '4560:4560'
+#      - '50000:50000/tcp'
+#      - '50000:50000/udp'
+#      - '9600:9600'
+#    environment:
+#      LS_JAVA_OPTS: -Xms1024m -Xmx1024m
+#      TZ: Asia/Shanghai
+#      MONITORING_ENABLED: false
+#    networks:
+#      - my-network
+#    depends_on:
+#      - elasticsearch # 依赖elasticsearch启动后在启动logstash
 
 
 networks:

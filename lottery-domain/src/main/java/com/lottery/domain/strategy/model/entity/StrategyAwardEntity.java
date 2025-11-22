@@ -47,6 +47,10 @@ public class StrategyAwardEntity {
      */
     private Long ruleTreeId;
     /**
+     * 奖品配置
+     */
+    private String awardConfig;
+    /**
      * 排序
      */
     private Integer sort;

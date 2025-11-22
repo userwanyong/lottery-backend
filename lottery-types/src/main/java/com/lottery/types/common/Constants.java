@@ -13,6 +13,7 @@ public class Constants {
 
     public static class RedisKey {
         public static final String ACTIVITY_KEY = "activity_of_";//缓存活动信息,需要在activity变更数据时删除
+        public static final String AWARD_KEY = "award_of_";//缓存奖品信息,需要在award变更数据时删除
         public static final String ACTIVITY_SKU_COUNT_QUEUE_KEY = "activity_sku_count_queue_";//sku延迟队列
         public static final String STRATEGY_AWARD_COUNT_QUEUE_KEY = "strategy_award_count_queue_";//strategy_award延迟队列
         public static final String ACTIVITY_SKU_LIST_KEY = "activity_sku_list_";//缓存sku列表,需在变更sku数据时删除
@@ -54,6 +55,7 @@ public class Constants {
         public static final String USER_CREDIT_RANDOM = "user_credit_random";
         public static final String RULE_BLACKLIST = "user_blacklist";
         public static final String THANKS = "user_thanks";
+        public static final String USER_CJ = "user_cj";
     }
 
     public static class QuotaModel {

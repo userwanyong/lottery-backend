@@ -1,5 +1,6 @@
 package com.lottery.domain.award.repository;
 
+import com.lottery.domain.award.model.aggregate.CountPrizesAggregate;
 import com.lottery.domain.award.model.aggregate.GiveOutPrizesAggregate;
 import com.lottery.domain.award.model.aggregate.UserAwardRecordAggregate;
 
@@ -15,4 +16,6 @@ public interface UserAwardRepository {
     String queryAwardKey(Long awardId);
 
     String queryAwardConfig(Long awardId);
+
+    void saveCountPrizes(CountPrizesAggregate countPrizesAggregate);
 }

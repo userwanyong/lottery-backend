@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.lottery.domain.award.model.aggregate.CountPrizesAggregate;
 import com.lottery.domain.award.model.aggregate.GiveOutPrizesAggregate;
 import com.lottery.domain.award.model.aggregate.UserAwardRecordAggregate;
 import com.lottery.domain.award.model.entity.TaskEntity;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
+import com.lottery.domain.award.model.entity.UserCountAwardEntity;
 import com.lottery.domain.award.model.entity.UserCreditAwardEntity;
 import com.lottery.domain.award.model.valobj.AccountStatusVO;
 import com.lottery.domain.award.repository.UserAwardRepository;
@@ -25,11 +27,13 @@ import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -61,6 +65,17 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     private RedisService redisService;
     @Resource
     private CreditRecordMapper creditRecordMapper;
+    @Autowired
+    private ActivityAccountDayMapper activityAccountDayMapper;
+    @Resource
+    private ActivityAccountMonthMapper activityAccountMonthMapper;
+    @Resource
+    private ActivityAccountMapper activityAccountMapper;
+    @Resource
+    private ActivityRecordMapper activityRecordMapper;
+
+    private final SimpleDateFormat dateFormatMonth = new SimpleDateFormat("yyyy-MM");
+    private final SimpleDateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public void saveUserAwardRecord(UserAwardRecordAggregate userAwardRecordAggregate) {
@@ -197,5 +212,87 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                 .eq(Award::getId, awardId);
         Award award = awardMapper.selectOne(queryWrapper);
         return award.getAwardConfig();
+    }
+
+    @Override
+    public void saveCountPrizes(CountPrizesAggregate countPrizesAggregate) {
+        String userId = countPrizesAggregate.getUserId();
+        UserAwardRecordEntity userAwardRecordEntity = countPrizesAggregate.getUserAwardRecordEntity();
+        UserCountAwardEntity userCountAwardEntity = countPrizesAggregate.getUserCountAwardEntity();
+
+        UserAwardRecord userAwardRecord = new UserAwardRecord();
+        userAwardRecord.setAwardState(userAwardRecordEntity.getAwardState().getCode());
+
+        // 添加抽奖次数流水
+        ActivityRecord activityRecord = new ActivityRecord();
+        activityRecord.setUserId(userId);
+        activityRecord.setActivityId(userCountAwardEntity.getActivityId());
+        activityRecord.setTotalCount(userCountAwardEntity.getCount());
+        activityRecord.setDayCount(userCountAwardEntity.getCount());
+        activityRecord.setMonthCount(userCountAwardEntity.getCount());
+        activityRecord.setPayAmount(BigDecimal.ZERO);
+        activityRecord.setState(userAwardRecordEntity.getAwardState().getCode());
+        activityRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.COUNT.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+
+        RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
+        try {
+            lock.lock(3, TimeUnit.SECONDS);
+            dbRouter.doRouter(userId);
+            transactionTemplate.execute(status -> {
+                try {
+                    // 既然能抽奖肯定已经有抽奖账户了，直接更新三个抽奖账户即可
+                    LambdaQueryWrapper<ActivityAccountDay> activityAccountDayLambdaQueryWrapper = new LambdaQueryWrapper<ActivityAccountDay>()
+                            .eq(ActivityAccountDay::getUserId, userId)
+                            .eq(ActivityAccountDay::getActivityId, userCountAwardEntity.getActivityId())
+                            .eq(ActivityAccountDay::getDay,dateFormatDay.format(new Date()));
+                    ActivityAccountDay activityAccountDay = activityAccountDayMapper.selectOne(activityAccountDayLambdaQueryWrapper);
+                    activityAccountDay.setDayCountSurplus(activityAccountDay.getDayCountSurplus() + userCountAwardEntity.getCount());
+                    activityAccountDay.setDayCount(activityAccountDay.getDayCount() + userCountAwardEntity.getCount());
+                    activityAccountDayMapper.updateById(activityAccountDay);
+                    log.debug("[UserAwardRepositoryImpl]更新日账户成功 userId:{}", userId);
+                    LambdaQueryWrapper<ActivityAccountMonth> activityAccountMonthLambdaQueryWrapper = new LambdaQueryWrapper<ActivityAccountMonth>()
+                            .eq(ActivityAccountMonth::getUserId, userId)
+                            .eq(ActivityAccountMonth::getActivityId, userCountAwardEntity.getActivityId())
+                            .eq(ActivityAccountMonth::getMonth, dateFormatMonth.format(new Date()));
+                    ActivityAccountMonth activityAccountMonth = activityAccountMonthMapper.selectOne(activityAccountMonthLambdaQueryWrapper);
+                    activityAccountMonth.setMonthCountSurplus(activityAccountMonth.getMonthCountSurplus() + userCountAwardEntity.getCount());
+                    activityAccountMonth.setMonthCount(activityAccountMonth.getMonthCount() + userCountAwardEntity.getCount());
+                    activityAccountMonthMapper.updateById(activityAccountMonth);
+                    log.debug("[UserAwardRepositoryImpl]更新月账户成功 userId:{}", userId);
+                    LambdaQueryWrapper<ActivityAccount> activityAccountLambdaQueryWrapper = new LambdaQueryWrapper<ActivityAccount>()
+                            .eq(ActivityAccount::getUserId, userId)
+                            .eq(ActivityAccount::getActivityId, userCountAwardEntity.getActivityId());
+                    ActivityAccount activityAccount = activityAccountMapper.selectOne(activityAccountLambdaQueryWrapper);
+                    activityAccount.setTotalCountSurplus(activityAccount.getTotalCountSurplus() + userCountAwardEntity.getCount());
+                    activityAccount.setTotalCount(activityAccount.getTotalCount() + userCountAwardEntity.getCount());
+                    activityAccount.setDayCount(activityAccount.getDayCount() + userCountAwardEntity.getCount());
+                    activityAccount.setMonthCount(activityAccount.getMonthCount() + userCountAwardEntity.getCount());
+                    activityAccount.setDayCountSurplus(activityAccount.getDayCountSurplus() + userCountAwardEntity.getCount());
+                    activityAccount.setMonthCountSurplus(activityAccount.getMonthCountSurplus() + userCountAwardEntity.getCount());
+                    activityAccountMapper.updateById(activityAccount);
+                    log.debug("[UserAwardRepositoryImpl]更新总账户成功 userId:{}", userId);
+
+                    // 记录抽奖次数流水
+                    activityRecordMapper.insert(activityRecord);
+
+                    // 更新中奖记录状态为completed 发奖完成
+                    int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserOrderId, userAwardRecordEntity.getUserOrderId()));
+                    log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{}", userId);
+                    if (count == 0) {
+                        log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{}", userId);
+                        status.setRollbackOnly();
+                    }
+                    return 1;
+                } catch (DuplicateKeyException e) {
+                    status.setRollbackOnly();
+                    log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                }
+            });
+        } finally {
+            dbRouter.clear();
+            lock.unlock();
+        }
+
     }
 }
