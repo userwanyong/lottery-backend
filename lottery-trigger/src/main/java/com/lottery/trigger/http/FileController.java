@@ -1,5 +1,6 @@
 package com.lottery.trigger.http;
 
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import com.lottery.types.util.AliOSSUtils;
@@ -22,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
  */
 @RestController
 @RequestMapping("/file")
-@CrossOrigin
+@CrossOrigin("*")
 @Slf4j
 public class FileController {
 
@@ -38,6 +39,7 @@ public class FileController {
      * @throws IOException io
      */
     @PostMapping("/upload")
+    @PermissionCheck(roles = {0})
     public BaseResponse<String> upload(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         log.info("文件上传，文件名:{}",file.getOriginalFilename());
         //调用阿里云OSS工具类进行上传

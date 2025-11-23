@@ -6,6 +6,7 @@ import com.lottery.trigger.api.AwardService;
 import com.lottery.trigger.api.dto.req.AwardRequestDTO;
 import com.lottery.trigger.api.dto.res.AwardResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/award")
 public class AwardController implements AwardService {
     @Resource
@@ -44,6 +45,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/add_award")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> addAward(@RequestBody AwardRequestDTO request) {
         log.info("======================[AwardController-addAward]运营端 添加奖品开始 ======================");
@@ -56,6 +58,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/update_award")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> updateAward(@RequestBody AwardRequestDTO request) {
         log.info("======================[AwardController-updateAward]运营端 修改奖品开始 ======================");
@@ -68,6 +71,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/delete_award/{awardId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> deleteAward(@PathVariable("awardId") Long awardId) {
         log.info("======================[AwardController-deleteAward]运营端 删除奖品开始 ======================");

@@ -7,6 +7,7 @@ import com.lottery.trigger.api.ActivitySkuService;
 import com.lottery.trigger.api.dto.req.ActivitySkuRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivitySkuResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/activity_sku")
 public class ActivitySkuController implements ActivitySkuService {
     @Resource
@@ -47,6 +48,7 @@ public class ActivitySkuController implements ActivitySkuService {
 
     @Override
     @PostMapping("/add_activity_sku")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY})
     public BaseResponse<Boolean> addActivitySku(@RequestBody ActivitySkuRequestDTO request) {
         log.info("======================[ActivitySkuController-addActivitySku]运营端 添加活动sku配置开始 ======================");
@@ -59,6 +61,7 @@ public class ActivitySkuController implements ActivitySkuService {
 
     @Override
     @PostMapping("/update_activity_sku")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY})
     public BaseResponse<Boolean> updateActivitySku(@RequestBody ActivitySkuRequestDTO request) {
         log.info("======================[ActivitySkuController-updateActivitySku]运营端 修改活动sku配置开始 ======================");
@@ -71,6 +74,7 @@ public class ActivitySkuController implements ActivitySkuService {
 
     @Override
     @PostMapping("/delete_activity_sku/{activitySkuId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.ACTIVITY_SKU_STOCK_COUNT_KEY})
     public BaseResponse<Boolean> deleteActivitySku(@PathVariable("activitySkuId") Long activitySkuId) {
         log.info("======================[ActivitySkuController-deleteActivitySku]运营端 删除活动sku配置开始 ======================");

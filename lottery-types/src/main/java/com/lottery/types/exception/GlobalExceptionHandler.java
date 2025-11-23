@@ -20,6 +20,12 @@ import java.util.regex.Pattern;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler
+    public BaseResponse<Void> handleException(PermissionException e) {
+        log.warn("用户权限不足");
+        return new BaseResponse<>(ResponseCode.PERMISSION_DENIED.getCode(), ResponseCode.PERMISSION_DENIED.getMessage(), null);
+    }
+
     @ExceptionHandler(AppException.class)
     public BaseResponse<?> handleAppException(AppException e) {
         log.error("业务异常：code:{}, message:{}",e.getCode() , e.getMessage());

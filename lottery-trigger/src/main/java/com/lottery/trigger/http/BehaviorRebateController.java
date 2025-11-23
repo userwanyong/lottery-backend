@@ -6,6 +6,7 @@ import com.lottery.querys.model.valobj.BehaviorRebateVO;
 import com.lottery.trigger.api.BehaviorRebateService;
 import com.lottery.trigger.api.dto.req.BehaviorRebateRequestDTO;
 import com.lottery.trigger.api.dto.res.BehaviorRebateResponseDTO;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/behavior")
 public class BehaviorRebateController implements BehaviorRebateService {
     @Resource
@@ -58,6 +59,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/add_behavior")
+    @PermissionCheck(roles = {0})
     public BaseResponse<Boolean> addBehaviorRebate(@RequestBody BehaviorRebateRequestDTO request) {
         log.info("======================[BehaviorRebateController-addBehaviorRebate]运营端 添加返利配置开始 ======================");
         BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
@@ -69,6 +71,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/update_behavior")
+    @PermissionCheck(roles = {0})
     public BaseResponse<Boolean> updateBehaviorRebate(@RequestBody BehaviorRebateRequestDTO request) {
         log.info("======================[BehaviorRebateController-updateBehaviorRebate]运营端 修改返利配置开始 ======================");
         BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
@@ -80,6 +83,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/delete_behavior/{behaviorRebateId}")
+    @PermissionCheck(roles = {0})
     public BaseResponse<Boolean> deleteBehaviorRebate(@PathVariable("behaviorRebateId") Long behaviorRebateId) {
         log.info("======================[BehaviorRebateController-deleteBehaviorRebate]运营端 删除返利配置开始 ======================");
         repository.deleteBehaviorRebateVO(behaviorRebateId);

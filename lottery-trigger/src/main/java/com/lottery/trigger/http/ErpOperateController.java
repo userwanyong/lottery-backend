@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp")
 public class ErpOperateController implements ErpOperateService {
     @Resource

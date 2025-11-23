@@ -7,6 +7,7 @@ import com.lottery.trigger.api.ActivityCountService;
 import com.lottery.trigger.api.dto.req.ActivityCountRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivityCountResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/activity_count")
 public class ActivityCountController implements ActivityCountService {
     @Resource
@@ -47,6 +48,7 @@ public class ActivityCountController implements ActivityCountService {
 
     @Override
     @PostMapping("/add_activity_count")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> addActivityCount(@RequestBody ActivityCountRequestDTO request) {
         // 1. 参数校验
@@ -62,6 +64,7 @@ public class ActivityCountController implements ActivityCountService {
     }
 
     @Override
+    @PermissionCheck(roles = {0})
     @PostMapping("/update_activity_count")
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> updateActivityCount(@RequestBody ActivityCountRequestDTO request) {
@@ -78,6 +81,7 @@ public class ActivityCountController implements ActivityCountService {
     }
 
     @Override
+    @PermissionCheck(roles = {0})
     @PostMapping("/delete_activity_count/{activityCountId}")
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> deleteActivityCount(@PathVariable("activityCountId") Long activityCountId) {

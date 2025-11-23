@@ -295,4 +295,32 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         }
 
     }
+
+    @Override
+    public void saveThanksPrizes(UserAwardRecordEntity userAwardRecordEntity) {
+        String userId = userAwardRecordEntity.getUserId();
+        UserAwardRecord userAwardRecord = new UserAwardRecord();
+        userAwardRecord.setAwardState(userAwardRecordEntity.getAwardState().getCode());
+        try {
+            dbRouter.doRouter(userId);
+            transactionTemplate.execute(status -> {
+                try {
+                    // 更新中奖记录状态为completed 发奖完成
+                    int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserOrderId, userAwardRecordEntity.getUserOrderId()));
+                    log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{}", userId);
+                    if (count == 0) {
+                        log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{}", userId);
+                        status.setRollbackOnly();
+                    }
+                    return 1;
+                } catch (DuplicateKeyException e) {
+                    status.setRollbackOnly();
+                    log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
+                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+                }
+            });
+        } finally {
+            dbRouter.clear();
+        }
+    }
 }

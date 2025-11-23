@@ -47,6 +47,26 @@ public class MinIOUtils {
         boolean found = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
         if (!found) {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            // 设置桶策略：允许所有人读取对象（公开读）
+            String policy = """
+                {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": "*",
+                      "Action": ["s3:GetObject"],
+                      "Resource": ["arn:aws:s3:::%s/*"]
+                    }
+                  ]
+                }
+                """.formatted(bucketName);
+
+            minioClient.setBucketPolicy(
+                    SetBucketPolicyArgs.builder()
+                            .bucket(bucketName)
+                            .config(policy)
+                            .build());
         }
     }
 
@@ -66,11 +86,13 @@ public class MinIOUtils {
                         .stream(inputStream, inputStream.available(), -1)
                         .contentType(file.getContentType())
                         .build());
-        GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
-                .method(Method.GET)
-                .bucket(bucketName).object(fileName).build();
-
-        return minioClient.getPresignedObjectUrl(args);
+//        GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
+//                .method(Method.GET)
+//                .bucket(bucketName).object(fileName).build();
+//
+//        return minioClient.getPresignedObjectUrl(args);
+        //返回格式：http://115.190.198.152:9001/xybjz/c63eaf86-0f40-4f2d-bc75-c8116ee3a6bc.png
+        return "http://" + endpoint + "/" + bucketName + "/" + fileName;
     }
 
     /**

@@ -31,7 +31,9 @@ public enum ResponseCode {
     HYSTRIX(1016, "服务已被熔断"),
     DATA_EXIST(2009, "数据已存在"),
     USER_ALREADY_RECEIVE_GIFT(2010, "用户已领取该抽奖额度，无需重复领取"),
-    FEATURE_IS_NOT_CONFIGURED(2011, "该功能暂未配置")
+    FEATURE_IS_NOT_CONFIGURED(2011, "该功能暂未配置"),
+    LOGIN_INFO_EMPTY(2012, "用户名或密码不能为空"),
+    PERMISSION_DENIED(2013, "权限不足"),
 
 
     ;

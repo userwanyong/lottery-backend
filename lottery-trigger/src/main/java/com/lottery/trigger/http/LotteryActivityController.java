@@ -33,6 +33,7 @@ import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
 import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
 import com.lottery.types.annotation.DCCValue;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixSync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.annotation.RateLimiterAccessInterceptor;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
@@ -93,6 +94,7 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/armory")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_LIST_KEY})
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
         log.info("======================[LotteryActivityController-armory]预热开始 activityId:{} ======================", activityId);

@@ -7,6 +7,7 @@ import com.lottery.trigger.api.RuleTreeService;
 import com.lottery.trigger.api.dto.req.RuleTreeRequestDTO;
 import com.lottery.trigger.api.dto.res.RuleTreeResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/rule/tree")
 public class RuleTreeController implements RuleTreeService {
     @Resource
@@ -47,6 +48,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/add_rule_tree")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> addRuleTree(@RequestBody RuleTreeRequestDTO request) {
         log.info("======================[ErpOperateController-add]运营端 添加奖品规则开始 ======================");
@@ -62,6 +64,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/update_rule_tree")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> updateRuleTree(@RequestBody RuleTreeRequestDTO request) {
         log.info("======================[ErpOperateController-update]运营端 修改奖品规则开始 ======================");
@@ -77,6 +80,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/delete_rule_tree/{ruleTreeId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> deleteRuleTree(@PathVariable("ruleTreeId") Long ruleTreeId) {
         log.info("======================[ErpOperateController-delete]运营端 删除奖品规则开始 ======================");

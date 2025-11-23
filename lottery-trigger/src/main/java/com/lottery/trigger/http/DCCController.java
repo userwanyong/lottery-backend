@@ -3,6 +3,7 @@ package com.lottery.trigger.http;
 
 import com.lottery.trigger.api.DCCService;
 import com.lottery.trigger.api.dto.req.DCCRequestDTO;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.nio.charset.StandardCharsets;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/dcc")
 public class DCCController implements DCCService {
     @Resource
@@ -30,6 +31,7 @@ public class DCCController implements DCCService {
 
     @Override
     @PostMapping("/update_config")
+    @PermissionCheck(roles = {0})
     public BaseResponse<Boolean> updateConfig(@RequestBody DCCRequestDTO requestDTO) {
         String key = requestDTO.getKey();
         String value = requestDTO.getValue();

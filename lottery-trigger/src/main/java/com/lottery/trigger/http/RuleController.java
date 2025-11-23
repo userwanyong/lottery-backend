@@ -7,6 +7,7 @@ import com.lottery.trigger.api.RuleService;
 import com.lottery.trigger.api.dto.req.RuleRequestDTO;
 import com.lottery.trigger.api.dto.res.RuleResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/rule")
 public class RuleController implements RuleService {
     @Resource
@@ -48,6 +49,7 @@ public class RuleController implements RuleService {
 
     @Override
     @PostMapping("/add_rule")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY)
     public BaseResponse<Boolean> addRule(@RequestBody RuleRequestDTO request) {
         log.info("======================[ErpOperateController-addRule]运营端 添加策略规则开始 ======================");
@@ -63,6 +65,7 @@ public class RuleController implements RuleService {
 
     @Override
     @PostMapping("/update_rule")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY)
     public BaseResponse<Boolean> updateRule(@RequestBody RuleRequestDTO request) {
         log.info("======================[ErpOperateController-updateRule]运营端 修改策略规则开始 ======================");
@@ -78,6 +81,7 @@ public class RuleController implements RuleService {
 
     @Override
     @PostMapping("/delete_rule/{ruleId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY)
     public BaseResponse<Boolean> deleteRule(@PathVariable("ruleId") Long ruleId) {
         log.info("======================[ErpOperateController-deleteRule]运营端 删除策略规则开始 ======================");

@@ -7,6 +7,7 @@ import com.lottery.trigger.api.ActivityService;
 import com.lottery.trigger.api.dto.req.ActivityRequestDTO;
 import com.lottery.trigger.api.dto.res.ActivityResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/activity")
 public class ActivityController implements ActivityService {
     @Resource
@@ -50,6 +51,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/add_activity")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> addActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-add]运营端 添加活动开始 ======================");
@@ -71,6 +73,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/update_activity")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> updateActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-update]运营端 修改活动开始 ======================");
@@ -89,6 +92,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/delete_activity/{activityId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> deleteActivity(@PathVariable("activityId") Long activityId) {
         log.info("======================[ActivityController-delete]运营端 删除活动开始 ======================");

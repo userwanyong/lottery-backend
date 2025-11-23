@@ -6,6 +6,7 @@ import com.lottery.trigger.api.RuleTreeNodeService;
 import com.lottery.trigger.api.dto.req.RuleTreeNodeRequestDTO;
 import com.lottery.trigger.api.dto.res.RuleTreeNodeResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/rule/tree/node")
 public class RuleTreeNodeController implements RuleTreeNodeService {
     @Resource
@@ -62,6 +63,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/add_rule_tree_node")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> addRuleTreeNode(@RequestBody RuleTreeNodeRequestDTO request) {
         log.info("======================[ErpOperateController-add]运营端 添加奖品规则节点开始 ======================");
@@ -77,6 +79,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/update_rule_tree_node")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> updateRuleTreeNode(@RequestBody RuleTreeNodeRequestDTO request) {
         log.info("======================[ErpOperateController-update]运营端 修改奖品规则节点开始 ======================");
@@ -92,6 +95,7 @@ public class RuleTreeNodeController implements RuleTreeNodeService {
 
     @Override
     @PostMapping("/delete_rule_tree_node/{ruleTreeNodeId}")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> deleteRuleTreeNode(@PathVariable("ruleTreeNodeId") Long ruleTreeNodeId) {
         log.info("======================[ErpOperateController-delete]运营端 删除奖品规则节点开始 ======================");

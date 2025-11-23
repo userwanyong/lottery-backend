@@ -9,6 +9,7 @@ import com.lottery.trigger.api.dto.req.StrategyRequestDTO;
 import com.lottery.trigger.api.dto.res.StrategyResponseDTO;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixAsync;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixSync;
+import com.lottery.types.annotation.PermissionCheck;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping("/erp/strategy")
 public class StrategyController implements StrategyService {
     @Resource
@@ -52,6 +53,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/add_strategy")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
     @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> addStrategy(@RequestBody StrategyRequestDTO request) {
@@ -69,6 +71,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/update_strategy")
+    @PermissionCheck(roles = {0})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
     @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> updateStrategy(@RequestBody StrategyRequestDTO request) {
@@ -89,6 +92,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/delete_strategy/{strategyId}")
+    @PermissionCheck(roles = {0})
 //    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
 //    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> deleteStrategy(@PathVariable("strategyId") Long strategyId) {

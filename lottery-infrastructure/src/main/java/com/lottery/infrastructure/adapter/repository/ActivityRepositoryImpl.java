@@ -573,6 +573,19 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         if (db == null) {
             return 0;
         }
+        //查询是否有抽奖单但未被消费,有的话剩余抽奖次数+1
+        PartakeOrderReqEntity partakeOrderReqEntity = new PartakeOrderReqEntity();
+        partakeOrderReqEntity.setUserId(userId);
+        partakeOrderReqEntity.setActivityId(activityId);
+        PartakeOrderResEntity partakeOrderResEntity = queryNoUsedPartakeOrder(partakeOrderReqEntity);
+        if (partakeOrderResEntity != null) {
+            //判断未使用的抽奖单是否是今天的 yyyy-MM-dd
+            String orderDay = new SimpleDateFormat("yyyy-MM-dd").format(partakeOrderResEntity.getCreateTime());
+            String currentDay = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            if (orderDay.equals(currentDay)){
+                db.setDayCountSurplus(db.getDayCountSurplus() + 1);
+            }
+        }
         return db.getDayCount() - db.getDayCountSurplus();
     }
 
@@ -610,6 +623,16 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         }
         ActivityAccountEntity activityAccountEntity = new ActivityAccountEntity();
         BeanUtils.copyProperties(dbActivityAccount, activityAccountEntity);
+        //查询是否有抽奖单但未被消费,有的话剩余抽奖次数+1
+        PartakeOrderReqEntity partakeOrderReqEntity = new PartakeOrderReqEntity();
+        partakeOrderReqEntity.setUserId(userId);
+        partakeOrderReqEntity.setActivityId(activityId);
+        PartakeOrderResEntity partakeOrderResEntity = queryNoUsedPartakeOrder(partakeOrderReqEntity);
+        if (partakeOrderResEntity != null) {
+            activityAccountEntity.setTotalCountSurplus(activityAccountEntity.getTotalCountSurplus() + 1);
+            activityAccountEntity.setDayCountSurplus(activityAccountEntity.getDayCountSurplus() + 1);
+            activityAccountEntity.setMonthCountSurplus(activityAccountEntity.getMonthCountSurplus() + 1);
+        }
         return activityAccountEntity;
     }
 
@@ -619,6 +642,14 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         activityAccount.setUserId(userId);
         activityAccount.setActivityId(activityId);
         ActivityAccount dbActivityAccount = activityAccountMapper.queryActivityAccountByUserId(activityAccount);
+        //查询是否有抽奖单但未被消费,有的话剩余抽奖次数+1
+        PartakeOrderReqEntity partakeOrderReqEntity = new PartakeOrderReqEntity();
+        partakeOrderReqEntity.setUserId(userId);
+        partakeOrderReqEntity.setActivityId(activityId);
+        PartakeOrderResEntity partakeOrderResEntity = queryNoUsedPartakeOrder(partakeOrderReqEntity);
+        if (partakeOrderResEntity != null) {
+            dbActivityAccount.setTotalCountSurplus(dbActivityAccount.getTotalCountSurplus() + 1);
+        }
         return dbActivityAccount == null ? 0 : dbActivityAccount.getTotalCount() - dbActivityAccount.getTotalCountSurplus();
     }
 
