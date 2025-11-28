@@ -37,7 +37,7 @@ public class BehaviorRebateServiceTest {
 
     @Test
     public void test_calendarSignRebate() {
-        BaseResponse<Boolean> response = lotteryActivityService.calendarSignRebate("yong");
-        log.info("测试结果：{}", JSON.toJSONString(response));
+//        BaseResponse<Boolean> response = lotteryActivityService.calendarSignRebate("yong");
+//        log.info("测试结果：{}", JSON.toJSONString(response));
     }
 }

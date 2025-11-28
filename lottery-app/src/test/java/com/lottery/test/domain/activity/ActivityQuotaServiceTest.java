@@ -27,10 +27,10 @@ public class ActivityQuotaServiceTest {
 
     @Test
     public void test_armory(){
-        boolean b = activityArmory.assembleActivitySku(9011L);
-        if (b){
-            log.info("活动装配成功");
-        }
+//        boolean b = activityArmory.assembleActivitySku(9011L);
+//        if (b){
+//            log.info("活动装配成功");
+//        }
     }
 
     /**

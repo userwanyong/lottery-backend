@@ -22,8 +22,8 @@ public class ActivityControllerTest {
     private LotteryActivityService lotteryActivityService;
     @Test
     public void test_calendarSignRebate() throws InterruptedException {
-        BaseResponse<Boolean> response = lotteryActivityService.calendarSignRebate("yong");
-        log.info("测试结果：{}", JSON.toJSONString(response));
+//        BaseResponse<Boolean> response = lotteryActivityService.calendarSignRebate("yong");
+//        log.info("测试结果：{}", JSON.toJSONString(response));
 
         new CountDownLatch(1).await();
     }

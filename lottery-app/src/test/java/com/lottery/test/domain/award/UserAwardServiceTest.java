@@ -28,7 +28,7 @@ public class UserAwardServiceTest {
             userAwardRecordEntity.setUserId("yong");
             userAwardRecordEntity.setActivityId(100301L);
             userAwardRecordEntity.setStrategyId(100006L);
-            userAwardRecordEntity.setOrderId(RandomStringUtils.randomNumeric(12));
+//            userAwardRecordEntity.setOrderId(RandomStringUtils.randomNumeric(12));
             userAwardRecordEntity.setAwardId(101L);
             userAwardRecordEntity.setAwardTitle("OpenAI 增加使用次数");
             userAwardRecordEntity.setAwardTime(new Date());

@@ -42,3 +42,4 @@ build/
 /data/
 /lottery-app/data/
 /docs/dev-ops/log/
+/lottery-app/.local-config

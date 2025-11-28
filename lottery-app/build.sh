@@ -1,2 +1,2 @@
-# 普通镜像构建，随系统版本构建 amd/arm
-docker build -t yong/lottery-app:1.0 -f ./Dockerfile .
+# bash build.sh
+docker build -t wanyj/xybjz-app:1.0 -f ./Dockerfile .

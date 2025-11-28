@@ -12,6 +12,6 @@ ENV TZ=PRC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 添加应用
-ADD target/lottery-app.jar /lottery-app.jar
+ADD target/xybjz-app.jar /xybjz-app.jar
 
-ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /lottery-app.jar $PARAMS"]
+ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /xybjz-app.jar $PARAMS"]

@@ -53,7 +53,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
         }
         // 2. 查询奖品配置
         List<StrategyAwardEntity> strategyAwardEntities = lottery.queryLotteryAwardListByActivityId(requestDTO.getActivityId());
-        log.info("[LotteryStrategyController-queryLotteryAwardList]查询到奖品信息 activityId：{} strategyAwardEntities：{}", requestDTO.getActivityId(), strategyAwardEntities);
+        log.info("[LotteryStrategyController-queryLotteryAwardList]查询到奖品信息 activityId：{} ", requestDTO.getActivityId());
         // 3. 获取规则配置
         Long[] treeIds = strategyAwardEntities.stream()
                 .map(StrategyAwardEntity::getRuleTreeId)
@@ -62,7 +62,7 @@ public class LotteryStrategyController implements LotteryStrategyService {
         log.info("[LotteryStrategyController-queryLotteryAwardList]对应的规则信息 ruleModel：{}", (Object) treeIds);
         // 4. 查询规则配置 - 获取奖品的解锁限制，抽奖N次后解锁
         Map<Long, Integer> ruleLockCountMap = rule.queryAwardRuleLockCount(treeIds);
-        log.info("[LotteryStrategyController-queryLotteryAwardList]对应的规则信息 k-v 值 ruleLockCountMap：{}", ruleLockCountMap);
+        log.info("[LotteryStrategyController-queryLotteryAwardList]对应的规则信息 k-v 值");
         // 5. 用户今天已经参与的抽奖次数
         Integer count = activityQuotaService.queryTodayUserLotteryCount(requestDTO.getUserId(), requestDTO.getActivityId());
         log.info("[LotteryStrategyController-queryLotteryAwardList]用户 userId：{}今天已经参与的抽奖次数 count：{}", requestDTO.getUserId(), count);
