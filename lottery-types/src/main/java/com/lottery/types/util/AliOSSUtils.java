@@ -38,7 +38,7 @@ public class AliOSSUtils {
         //上传文件到OSS
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         ossClient.putObject(bucketName, fileName, inputStream);
-        //文件访问路径
+        //文件访问路径 https://wanyj-xybjz.oss-cn-beijing.aliyuncs.com/09242948-cecc-4526-b045-4330d780e5f9.png
         String url = endpoint.split("//")[0] + "//" + bucketName + "." + endpoint.split("//")[1] + "/" + fileName;
         //关闭OSSClient
         ossClient.shutdown();
