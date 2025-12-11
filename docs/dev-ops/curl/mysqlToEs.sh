@@ -1,4 +1,4 @@
-# bash run_all.sh ！！！不要一块导入es目录！！！
+# bash mysqlToEs.sh
 #!/bin/bash
 
 # 目标服务器地址
