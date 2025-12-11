@@ -132,11 +132,11 @@
                 <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
                 <version>3.1.4</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>com.netflix.hystrix</groupId>-->
-<!--                <artifactId>hystrix-javanica</artifactId>-->
-<!--                <version>1.5.18</version>-->
-<!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.netflix.hystrix</groupId>-->
+            <!--                <artifactId>hystrix-javanica</artifactId>-->
+            <!--                <version>1.5.18</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
@@ -248,5 +248,15 @@
             </plugin>
         </plugins>
     </build>
+
+<!--    <profiles>-->
+<!--        <profile>-->
+<!--            <id>prod</id>-->
+<!--            <properties>-->
+<!--                <profileActive>prod</profileActive>-->
+<!--                <java_jvm>-Xms2G -Xmx2G -XX:+UseG1GC -Xss256k -Dspring.profiles.active=${profileActive} -Xlog:gc*:file=./log/xybjz/gc.log:time,tid,tags,level:filecount=5,filesize=100M -XX:+DisableExplicitGC -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./log/xybjz/heapdump.hprof</java_jvm>-->
+<!--            </properties>-->
+<!--        </profile>-->
+<!--    </profiles>-->
 
 </project>
