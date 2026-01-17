@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
  * @author 永
  */
 @Repository
+@Deprecated
 public class ChannelRepositoryImpl implements ChannelRepository {
 }

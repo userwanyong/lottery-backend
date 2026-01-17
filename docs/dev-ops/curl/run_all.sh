@@ -1,4 +1,4 @@
-# bash mysqlToEs.sh
+# bash run_all.sh
 bash curl_marketing.activity_account.sh
 bash curl_marketing.activity_account_day.sh
 bash curl_marketing.activity_account_month.sh
