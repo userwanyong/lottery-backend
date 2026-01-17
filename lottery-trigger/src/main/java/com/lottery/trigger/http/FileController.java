@@ -43,7 +43,7 @@ public class FileController {
     public BaseResponse<String> upload(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         log.info("文件上传，文件名:{}",file.getOriginalFilename());
         //调用阿里云OSS工具类进行上传
-        String url = minIOUtils.upload(file);
+        String url = aliOSSUtils.upload(file);
         log.info("文件上传成功，文件访问地址为：{}",url);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), url);
     }

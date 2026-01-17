@@ -86,7 +86,7 @@ public interface LotteryActivityService {
      * @param activityId 活动ID
      * @return 用户抽奖播报
      */
-    BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(Long activityId);
+//    BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(Long activityId);
 
 
     /**

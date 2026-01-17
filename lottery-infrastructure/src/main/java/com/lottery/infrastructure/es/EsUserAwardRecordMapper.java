@@ -3,6 +3,7 @@ package com.lottery.infrastructure.es;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lottery.infrastructure.dao.po.UserAwardRecord;
 import com.lottery.infrastructure.es.po.EsUserAwardRecord;
+import com.lottery.infrastructure.es.po.EsUserAwardRecordSimple;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -17,8 +18,6 @@ public interface EsUserAwardRecordMapper extends BaseMapper<EsUserAwardRecord> {
     List<EsUserAwardRecord> queryUserAwardRecordVOListEs();
 
     List<EsUserAwardRecord> queryUserAwardRecordVOListEsByActivityId();
+
+    List<EsUserAwardRecordSimple> queryUserAwardRecordSimpleEsByActivityId(Long activityId);
 }
-
-
-
-

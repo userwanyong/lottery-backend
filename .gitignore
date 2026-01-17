@@ -39,7 +39,9 @@ build/
 /.idea/
 /lottery-app/src/main/resources/application-dev.yml
 /lottery-app/src/main/resources/application-local.yml
+/lottery-app/src/main/resources/application-prod.yml
 /data/
 /lottery-app/data/
 /docs/dev-ops/log/
 /lottery-app/.local-config
+

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @ServerEndpoint("/ws/{sid}")
+@Deprecated
 public class ChannelServiceImpl implements ChannelService {
 
     //根据条件区分所属组
@@ -56,6 +58,26 @@ public class ChannelServiceImpl implements ChannelService {
             log.info("客户端：{}断开连接 所属组：{} 当前组内会话数量：{}", sid, group, sessionSet.size());
             if (sessionSet.isEmpty()) {
                 groupMap.remove(group);
+            }
+        }
+    }
+
+    /**
+     * 发生错误时调用的方法
+     */
+    @OnError
+    public void onError(Session session, Throwable error, @PathParam("sid") String sid) {
+        String group = sid.split("-")[1];
+        log.error("客户端：{}发生错误 所属组：{} 错误信息：{}", sid, group, error.getMessage(), error);
+
+        // 清理出错的会话
+        Set<Session> sessionSet = groupMap.get(group);
+        if (sessionSet != null) {
+            sessionSet.remove(session);
+            log.info("已移除出错会话：{} 所属组：{} 当前组内会话数量：{}", sid, group, sessionSet.size());
+            if (sessionSet.isEmpty()) {
+                groupMap.remove(group);
+                log.info("组：{}已无会话，已移除该组", group);
             }
         }
     }

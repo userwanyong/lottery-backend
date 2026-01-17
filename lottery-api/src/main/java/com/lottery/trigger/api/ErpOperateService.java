@@ -14,6 +14,7 @@ public interface ErpOperateService {
     BaseResponse<List<EsUserOrderResponseDTO>> queryUserOrder();
     BaseResponse<List<EsActivityAccountResponseDTO>> queryActivityAccount();
     BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecord();
+    BaseResponse<List<EsUserAwardRecordSimpleResponseDTO>> queryUserAwardRecordByActivityId(Long activityId);
     BaseResponse<List<EsCreditAccountResponseDTO>> queryCreditAccount();
     BaseResponse<List<EsCreditRecordResponseDTO>> queryCreditRecord();
     BaseResponse<List<EsActivityRecordResponseDTO>> queryActivityRecord();

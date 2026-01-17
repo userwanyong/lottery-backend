@@ -697,7 +697,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                             .eq(ActivityRecord::getUserId, deliveryOrderEntity.getUserId())
                             .eq(ActivityRecord::getState, OrderStateVO.wait_pay)
                             .eq(ActivityRecord::getActivityId, activityRecord.getActivityId())
-                            .set(ActivityRecord::getState, OrderStateVO.completed);
+                            .set(ActivityRecord::getState, OrderStateVO.complete);
                     int updateCount = activityRecordMapper.update(null, updateWrapper);
                     if (1 != updateCount) {
                         status.setRollbackOnly();
@@ -829,7 +829,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityRecord.setPayAmount(BigDecimal.ZERO);
             activityRecord.setDayCount(createQuotaOrderAggregate.getDayCount());
             activityRecord.setMonthCount(createQuotaOrderAggregate.getMonthCount());
-            activityRecord.setState(OrderStateVO.completed.getCode());
+            activityRecord.setState(OrderStateVO.complete.getCode());
             activityRecord.setOutBusinessNo(createQuotaOrderAggregate.getActivityOrderEntity().getOutBusinessNo());
 
             // 总账户对象

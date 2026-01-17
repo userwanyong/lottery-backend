@@ -282,20 +282,20 @@ public class LotteryActivityController implements LotteryActivityService {
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
 
-    @Override
-    @GetMapping("/query_user_award_record_by_activity_id")
-    public BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(@RequestParam Long activityId) {
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================", activityId);
-        List<EsUserAwardRecordVO> esUserAwardRecords = esRepository.queryEsUserAwardRecordVOList(activityId);
-        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
-        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords) {
-            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
-            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
-            list.add(esUserAwardRecordResponseDTO);
-        }
-        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================", activityId);
-        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
-    }
+//    @Override
+//    @GetMapping("/query_user_award_record_by_activity_id")
+//    public BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(@RequestParam Long activityId) {
+//        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================", activityId);
+//        List<EsUserAwardRecordVO> esUserAwardRecords = esRepository.queryEsUserAwardRecordVOList(activityId);
+//        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
+//        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords) {
+//            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
+//            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
+//            list.add(esUserAwardRecordResponseDTO);
+//        }
+//        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================", activityId);
+//        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
+//    }
 
     @GetMapping("/query_my_award_record")
     @Override

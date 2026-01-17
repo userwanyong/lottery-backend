@@ -58,12 +58,14 @@ public class EsActivityAccountResponseDTO implements Serializable {
      * 创建时间
      */
     @JSONField
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createTime;
 
     /**
      * 更新时间
      */
     @JSONField
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date updateTime;
 
 }

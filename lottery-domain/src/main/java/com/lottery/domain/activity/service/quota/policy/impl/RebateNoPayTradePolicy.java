@@ -21,7 +21,7 @@ public class RebateNoPayTradePolicy implements TradePolicy {
     private ActivityRepository repository;
     @Override
     public void trade(CreateQuotaOrderAggregate createQuotaOrderAggregate) {
-        createQuotaOrderAggregate.getActivityOrderEntity().setState(OrderStateVO.completed);
+        createQuotaOrderAggregate.getActivityOrderEntity().setState(OrderStateVO.complete);
         createQuotaOrderAggregate.getActivityOrderEntity().setPayAmount(BigDecimal.ZERO);
         repository.doSaveNoPayOrder(createQuotaOrderAggregate);
     }

@@ -75,6 +75,21 @@ public class ErpOperateController implements ErpOperateService {
     }
 
     @Override
+    @GetMapping("/query_user_award_record_by_activity_id")
+    public BaseResponse<List<EsUserAwardRecordSimpleResponseDTO>> queryUserAwardRecordByActivityId(Long activityId) {
+        log.info("======================[ErpOperateController-queryUserAwardRecordByActivityId]运营端 根据活动ID查询中奖记录开始 ======================");
+        List<EsUserAwardRecordSimpleVO> esUserAwardRecordSimples = repository.queryUserAwardRecordSimpleEsByActivityId(activityId);
+        ArrayList<EsUserAwardRecordSimpleResponseDTO> list = new ArrayList<>();
+        for (EsUserAwardRecordSimpleVO esUserAwardRecordSimple : esUserAwardRecordSimples) {
+            EsUserAwardRecordSimpleResponseDTO esUserAwardRecordSimpleResponseDTO = new EsUserAwardRecordSimpleResponseDTO();
+            BeanUtils.copyProperties(esUserAwardRecordSimple, esUserAwardRecordSimpleResponseDTO);
+            list.add(esUserAwardRecordSimpleResponseDTO);
+        }
+        log.info("======================[ErpOperateController-queryUserAwardRecordByActivityId]运营端 根据活动ID查询中奖记录成功 ======================");
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
+    }
+
+    @Override
     @GetMapping("/query_credit_account")
     public BaseResponse<List<EsCreditAccountResponseDTO>> queryCreditAccount() {
         log.info("======================[ErpOperateController-queryCreditAccount]运营端 查询积分账户开始 ======================");
