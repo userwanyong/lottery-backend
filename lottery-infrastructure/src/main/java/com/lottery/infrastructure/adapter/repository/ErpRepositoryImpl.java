@@ -459,13 +459,13 @@ public class ErpRepositoryImpl implements ErpRepository {
     }
 
     @Override
-    public MyPage<EsUserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId) {
+    public MyPage<UserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId) {
         // 根据中奖时间倒序排序
         LambdaQueryWrapper<UserAwardRecord> queryWrapper = new LambdaQueryWrapper<UserAwardRecord>().orderByDesc(UserAwardRecord::getAwardTime);
         queryWrapper.eq(UserAwardRecord::getUserId, userId);
         queryWrapper.eq(UserAwardRecord::getActivityId, activityId);
         Page<UserAwardRecord> page = new Page<>(pageNum, pageSize);
-        MyPage<EsUserAwardRecordVO> myPage = new MyPage<>();
+        MyPage<UserAwardRecordVO> myPage = new MyPage<>();
         Page<UserAwardRecord> userAwardRecordPage=null;
         try {
             dbRouter.doRouter(userId);
@@ -508,12 +508,12 @@ public class ErpRepositoryImpl implements ErpRepository {
         Map<Long, String> awardMap = arrayList.stream().collect(Collectors.toMap(StrategyAwardEntity::getAwardId, StrategyAwardEntity::getImage));
         // 兜底奖默认图片
         awardMap.put(0L, "https://markdown-my.oss-cn-beijing.aliyuncs.com/picture/%E8%B0%A2%E8%B0%A2%E5%8F%82%E4%B8%8E.png");
-        List<EsUserAwardRecordVO> list = userAwardRecordPage.getRecords().stream().map(userAwardRecord -> {
-            EsUserAwardRecordVO esUserAwardRecordVO = new EsUserAwardRecordVO();
-            BeanUtils.copyProperties(userAwardRecord, esUserAwardRecordVO);
+        List<UserAwardRecordVO> list = userAwardRecordPage.getRecords().stream().map(userAwardRecord -> {
+            UserAwardRecordVO userAwardRecordVO = new UserAwardRecordVO();
+            BeanUtils.copyProperties(userAwardRecord, userAwardRecordVO);
             // 根据奖品 id 从 reids 中获取图片url
-            esUserAwardRecordVO.setImage(awardMap.get(userAwardRecord.getAwardId()));
-            return esUserAwardRecordVO;
+            userAwardRecordVO.setImage(awardMap.get(userAwardRecord.getAwardId()));
+            return userAwardRecordVO;
         }).toList();
         myPage.setTotal(userAwardRecordPage.getTotal());
         myPage.setItems(list);
