@@ -102,5 +102,5 @@ public interface ErpRepository {
 
     List<RuleTreeNodeVO> queryRuleTreeNodeVOByRuleTreeId(String ruleTreeId);
 
-    MyPage<EsUserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
+    MyPage<UserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
 }

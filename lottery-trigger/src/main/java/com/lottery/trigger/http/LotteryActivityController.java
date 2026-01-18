@@ -25,12 +25,10 @@ import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.adapter.repository.EsErpRepository;
 import com.lottery.querys.model.valobj.EsUserAwardRecordVO;
+import com.lottery.querys.model.valobj.UserAwardRecordVO;
 import com.lottery.trigger.api.LotteryActivityService;
 import com.lottery.trigger.api.dto.req.*;
-import com.lottery.trigger.api.dto.res.ActivityDrawResponseDTO;
-import com.lottery.trigger.api.dto.res.EsUserAwardRecordResponseDTO;
-import com.lottery.trigger.api.dto.res.SkuProductResponseDTO;
-import com.lottery.trigger.api.dto.res.UserActivityAccountResponseDTO;
+import com.lottery.trigger.api.dto.res.*;
 import com.lottery.types.annotation.DCCValue;
 import com.lottery.types.annotation.DeleteOldCacheWithPrefixSync;
 import com.lottery.types.annotation.PermissionCheck;
@@ -299,25 +297,25 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @GetMapping("/query_my_award_record")
     @Override
-    public BaseResponse<MyPage<EsUserAwardRecordResponseDTO>> queryMyAwardRecordByPage(@RequestParam(defaultValue = "1") Integer pageNum,
-                                                                                       @RequestParam(defaultValue = "36") Integer pageSize,
-                                                                                       @RequestParam Long activityId,
-                                                                                       @RequestParam String userId) {
+    public BaseResponse<MyPage<UserAwardRecordResponseDTO>> queryMyAwardRecordByPage(@RequestParam(defaultValue = "1") Integer pageNum,
+                                                                                     @RequestParam(defaultValue = "36") Integer pageSize,
+                                                                                     @RequestParam Long activityId,
+                                                                                     @RequestParam String userId) {
         log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录开始 activityId:{} userId:{}======================", activityId, userId);
-        MyPage<EsUserAwardRecordVO> esUserAwardRecords = repository.queryUserAwardRecordVOListByPage(pageNum, pageSize, activityId, userId);
-        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
-        if (esUserAwardRecords.getItems() == null) {
+        MyPage<UserAwardRecordVO> userAwardRecords = repository.queryUserAwardRecordVOListByPage(pageNum, pageSize, activityId, userId);
+        ArrayList<UserAwardRecordResponseDTO> list = new ArrayList<>();
+        if (userAwardRecords.getItems() == null) {
             log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================", activityId, userId);
             return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), new MyPage<>());
         }
-        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords.getItems()) {
-            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
-            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
-            list.add(esUserAwardRecordResponseDTO);
+        for (UserAwardRecordVO userAwardRecord : userAwardRecords.getItems()) {
+            UserAwardRecordResponseDTO userAwardRecordResponseDTO = new UserAwardRecordResponseDTO();
+            BeanUtils.copyProperties(userAwardRecord, userAwardRecordResponseDTO);
+            list.add(userAwardRecordResponseDTO);
         }
-        MyPage<EsUserAwardRecordResponseDTO> myPage = new MyPage<>();
+        MyPage<UserAwardRecordResponseDTO> myPage = new MyPage<>();
         myPage.setItems(list);
-        myPage.setTotal(esUserAwardRecords.getTotal());
+        myPage.setTotal(userAwardRecords.getTotal());
         log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询个人中奖记录成功 activityId:{} userId:{}======================", activityId, userId);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), myPage);
     }
