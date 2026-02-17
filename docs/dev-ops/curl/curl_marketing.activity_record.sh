@@ -1,5 +1,5 @@
 # bash curl_marketing.activity_record.sh
-curl -X PUT "http://elastic:EpAQ8B1oTiN1fXp8SuWl@127.0.0.1:9200/marketing.activity_record" -H 'Content-Type: application/json' -d'
+curl -X PUT "http://elastic:ki5ViGVkKgmvBeEJt48L@127.0.0.1:9200/marketing.activity_record" -H 'Content-Type: application/json' -d'
 {
     "mappings": {
       "properties": {

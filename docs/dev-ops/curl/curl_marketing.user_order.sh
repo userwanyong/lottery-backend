@@ -1,5 +1,5 @@
 # bash curl_marketing.user_order.sh
-curl -X PUT "http://elastic:EpAQ8B1oTiN1fXp8SuWl@127.0.0.1:9200/marketing.user_order" -H 'Content-Type: application/json' -d'
+curl -X PUT "http://elastic:ki5ViGVkKgmvBeEJt48L@127.0.0.1:9200/marketing.user_order" -H 'Content-Type: application/json' -d'
 {
     "mappings": {
       "properties": {
