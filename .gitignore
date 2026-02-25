@@ -45,3 +45,4 @@ build/
 /docs/dev-ops/log/
 /lottery-app/.local-config
 
+/.claude/

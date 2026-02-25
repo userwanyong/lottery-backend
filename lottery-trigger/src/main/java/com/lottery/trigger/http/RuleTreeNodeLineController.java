@@ -49,7 +49,7 @@ public class RuleTreeNodeLineController implements RuleTreeNodeLineService {
 
     @Override
     @PostMapping("/add_rule_tree_node_line")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> addRuleTreeNodeLine(@RequestBody RuleTreeNodeLineRequestDTO request) {
         log.info("======================[ErpOperateController-add]运营端 添加规则树节点连线开始 ======================");
@@ -66,7 +66,7 @@ public class RuleTreeNodeLineController implements RuleTreeNodeLineService {
 
     @Override
     @PostMapping("/update_rule_tree_node_line")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> updateRuleTreeNodeLine(@RequestBody RuleTreeNodeLineRequestDTO request) {
         log.info("======================[ErpOperateController-update]运营端 修改规则树节点连线开始 ======================");
@@ -83,7 +83,7 @@ public class RuleTreeNodeLineController implements RuleTreeNodeLineService {
 
     @Override
     @PostMapping("/delete_rule_tree_node_line/{ruleTreeNodeLineId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> deleteRuleTreeNodeLine(@PathVariable("ruleTreeNodeLineId") Long ruleTreeNodeLineId) {
         log.info("======================[ErpOperateController-delete]运营端 删除规则树节点连线开始 ======================");

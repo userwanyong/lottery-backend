@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author 永
@@ -24,26 +23,19 @@ public class UserLoginResponseDTO implements Serializable {
     private String username;
 
     /**
-     * 状态 0-正常 1-禁用
+     * accessToken
      */
-    private Integer status;
+    private String accessToken;
 
     /**
-     * 角色 0-管理员 1-用户
+     * refreshToken
      */
-    private Integer role;
+    private String refreshToken;
 
     /**
-     * 创建时间
+     * 过期时间（秒）
      */
-    private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
-
-    private String token;
+    private Long expiresIn;
 
 
 }

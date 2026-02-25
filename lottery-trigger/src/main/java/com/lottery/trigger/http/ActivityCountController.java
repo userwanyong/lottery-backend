@@ -48,7 +48,7 @@ public class ActivityCountController implements ActivityCountService {
 
     @Override
     @PostMapping("/add_activity_count")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> addActivityCount(@RequestBody ActivityCountRequestDTO request) {
         // 1. 参数校验
@@ -64,7 +64,7 @@ public class ActivityCountController implements ActivityCountService {
     }
 
     @Override
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @PostMapping("/update_activity_count")
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> updateActivityCount(@RequestBody ActivityCountRequestDTO request) {
@@ -81,7 +81,7 @@ public class ActivityCountController implements ActivityCountService {
     }
 
     @Override
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @PostMapping("/delete_activity_count/{activityCountId}")
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_COUNT_KEY)
     public BaseResponse<Boolean> deleteActivityCount(@PathVariable("activityCountId") Long activityCountId) {

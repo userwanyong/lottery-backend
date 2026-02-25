@@ -51,7 +51,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/add_activity")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> addActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-add]运营端 添加活动开始 ======================");
@@ -73,7 +73,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/update_activity")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> updateActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-update]运营端 修改活动开始 ======================");
@@ -92,7 +92,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/delete_activity/{activityId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> deleteActivity(@PathVariable("activityId") Long activityId) {
         log.info("======================[ActivityController-delete]运营端 删除活动开始 ======================");

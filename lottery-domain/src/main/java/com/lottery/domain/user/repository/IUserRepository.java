@@ -9,4 +9,8 @@ import com.lottery.domain.user.model.vo.UserVO;
  */
 public interface IUserRepository {
     UserVO login(UserDTO userDTO);
+
+    UserVO refreshToken(String refreshToken);
+
+    void logout(Long userId);
 }

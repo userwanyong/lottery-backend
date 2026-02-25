@@ -49,7 +49,7 @@ public class StrategyAwardController implements StrategyAwardService {
 
     @Override
     @PostMapping("/add_strategy_award")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
     public BaseResponse<Boolean> addStrategyAward(@RequestBody StrategyAwardRequestDTO request) {
         log.info("======================[ErpOperateController-addStrategyAward]运营端 添加策略奖品开始 ======================");
@@ -68,7 +68,7 @@ public class StrategyAwardController implements StrategyAwardService {
 
     @Override
     @PostMapping("/update_strategy_award")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
     public BaseResponse<Boolean> updateStrategyAward(@RequestBody StrategyAwardRequestDTO request) {
         log.info("======================[ErpOperateController-updateStrategyAward]运营端 修改策略奖品开始 ======================");
@@ -87,7 +87,7 @@ public class StrategyAwardController implements StrategyAwardService {
 
     @Override
     @PostMapping("/delete_strategy_award/{strategyAwardId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
     public BaseResponse<Boolean> deleteStrategyAward(@PathVariable("strategyAwardId") Long strategyAwardId) {
         log.info("======================[ErpOperateController-deleteStrategyAward]运营端 删除策略奖品开始 ======================");

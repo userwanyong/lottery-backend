@@ -53,7 +53,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/add_strategy")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
     @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> addStrategy(@RequestBody StrategyRequestDTO request) {
@@ -71,7 +71,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/update_strategy")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
     @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> updateStrategy(@RequestBody StrategyRequestDTO request) {
@@ -92,7 +92,7 @@ public class StrategyController implements StrategyService {
 
     @Override
     @PostMapping("/delete_strategy/{strategyId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
 //    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_KEY})
 //    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.RATE_RANGE_KEY,Constants.RedisKey.RATE_TABLE_KEY},keyParam = "#request.id")
     public BaseResponse<Boolean> deleteStrategy(@PathVariable("strategyId") Long strategyId) {

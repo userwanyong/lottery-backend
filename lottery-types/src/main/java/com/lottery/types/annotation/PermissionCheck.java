@@ -10,5 +10,5 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Documented
 public @interface PermissionCheck {
-    int[] roles();
+    String[] roles();
 }

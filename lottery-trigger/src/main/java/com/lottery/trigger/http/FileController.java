@@ -39,7 +39,7 @@ public class FileController {
      * @throws IOException io
      */
     @PostMapping("/upload")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     public BaseResponse<String> upload(MultipartFile file) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         log.info("文件上传，文件名:{}",file.getOriginalFilename());
         //调用阿里云OSS工具类进行上传

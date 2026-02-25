@@ -45,7 +45,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/add_award")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> addAward(@RequestBody AwardRequestDTO request) {
         log.info("======================[AwardController-addAward]运营端 添加奖品开始 ======================");
@@ -58,7 +58,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/update_award")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> updateAward(@RequestBody AwardRequestDTO request) {
         log.info("======================[AwardController-updateAward]运营端 修改奖品开始 ======================");
@@ -71,7 +71,7 @@ public class AwardController implements AwardService {
 
     @Override
     @PostMapping("/delete_award/{awardId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.AWARD_KEY})
     public BaseResponse<Boolean> deleteAward(@PathVariable("awardId") Long awardId) {
         log.info("======================[AwardController-deleteAward]运营端 删除奖品开始 ======================");
