@@ -12,13 +12,15 @@ import com.lottery.types.util.ThreadUtils;
 import com.lottery.types.util.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
-/**
- * @author 永
- */
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
@@ -29,43 +31,52 @@ public class UserController {
     private IUserService userService;
 
     @PostMapping("/login")
-    public BaseResponse<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO request) {
-        log.info("[UserController-login]请求参数：{}", request);
+    public BaseResponse<UserLoginResponseDTO> login(@Valid @RequestBody UserLoginRequestDTO request) {
+        log.info("[UserController-login] login request received, username={}", request.getUsername());
+
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(request, userDTO);
         UserVO userVO = userService.login(userDTO);
+
         UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
         responseDTO.setId(userVO.getId());
         responseDTO.setUsername(userVO.getUsername());
         responseDTO.setAccessToken(userVO.getToken());
         responseDTO.setRefreshToken(userVO.getRefreshToken());
         responseDTO.setExpiresIn(userVO.getExpiresIn());
-        log.info("[UserController-login]登录成功：{}", responseDTO);
+
+        log.info("[UserController-login] login succeeded, userId={}", responseDTO.getId());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
     }
 
     @PostMapping("/refresh")
-    public BaseResponse<UserLoginResponseDTO> refresh(@RequestBody RefreshTokenRequestDTO request) {
-        log.info("[UserController-refresh]刷新token请求");
+    public BaseResponse<UserLoginResponseDTO> refresh(@Valid @RequestBody RefreshTokenRequestDTO request) {
+        log.info("[UserController-refresh] refresh token request received");
+
         UserVO userVO = userService.refreshToken(request.getRefreshToken());
+
         UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
         responseDTO.setId(userVO.getId());
         responseDTO.setUsername(userVO.getUsername());
         responseDTO.setAccessToken(userVO.getToken());
         responseDTO.setRefreshToken(userVO.getRefreshToken());
         responseDTO.setExpiresIn(userVO.getExpiresIn());
-        log.info("[UserController-refresh]token刷新成功");
+
+        log.info("[UserController-refresh] refresh token succeeded, userId={}", responseDTO.getId());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
     }
 
     @PostMapping("/logout")
     public BaseResponse<Void> logout() {
-        log.info("[UserController-logout]退出登录请求");
         UserUtils userUtils = ThreadUtils.getUser();
-        if (userUtils != null && userUtils.getId() != null) {
-            userService.logout(userUtils.getId());
+        Long userId = userUtils == null ? null : userUtils.getId();
+
+        log.info("[UserController-logout] logout request received, userId={}", userId);
+        if (userId != null) {
+            userService.logout(userId);
         }
-        log.info("[UserController-logout]退出登录成功");
+        log.info("[UserController-logout] logout succeeded, userId={}", userId);
+
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 }

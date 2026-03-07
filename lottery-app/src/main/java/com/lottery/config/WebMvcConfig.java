@@ -24,7 +24,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/user/refresh")
-                .excludePathPatterns("/user/logout")
                 .excludePathPatterns("/health/check");
     }
 }
