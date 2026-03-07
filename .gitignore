@@ -37,12 +37,11 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/lottery-app/src/main/resources/application-dev.yml
-/lottery-app/src/main/resources/application-local.yml
-/lottery-app/src/main/resources/application-prod.yml
+/.env
+/lottery-app/.env
 /data/
 /lottery-app/data/
 /docs/dev-ops/log/
-/lottery-app/.local-config
 
 /.claude/
+/lottery-app/.local-config
