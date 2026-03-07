@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * @author 永
  */
-@Component
+//@Component
 public class MinIOUtils {
 
     @Value("${minio.endpoint}")

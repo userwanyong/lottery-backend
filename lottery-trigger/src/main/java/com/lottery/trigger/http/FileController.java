@@ -29,8 +29,8 @@ public class FileController {
 
     @Autowired
     private AliOSSUtils aliOSSUtils;
-    @Autowired
-    private MinIOUtils minIOUtils;
+//    @Autowired
+//    private MinIOUtils minIOUtils;
 
     /**
      * 文件上传
