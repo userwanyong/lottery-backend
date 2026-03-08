@@ -20,7 +20,6 @@ import cn.wanyj.auth.api.protobuf.TokenRpcServiceProtobuf;
 import cn.wanyj.auth.api.protobuf.TokenValidationResult;
 import cn.wanyj.auth.api.protobuf.UserByUsernameRequest;
 import cn.wanyj.auth.api.protobuf.UserRpcResponse;
-import com.lottery.domain.user.model.dto.UserDTO;
 import com.lottery.domain.user.model.vo.UserVO;
 import com.lottery.domain.user.repository.IUserRepository;
 import com.lottery.infrastructure.redis.RedisService;
@@ -67,38 +66,6 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Value("${authing.app-host}")
     private String authingAppHost;
-
-    @Override
-    public UserVO login(UserDTO userDTO) {
-        try {
-            LoginRpcRequest loginRequest = LoginRpcRequest.newBuilder()
-                    .setUsername(userDTO.getUsername())
-                    .setPassword(userDTO.getPassword())
-                    .setTenantId(tenantId)
-                    .build();
-
-            AuthResult authResult = authRpcService.authenticate(loginRequest);
-            if (!authResult.getSuccess()) {
-                throw new AppException(ResponseCode.LOGIN_FAILED.getCode(), ResponseCode.LOGIN_FAILED.getMessage());
-            }
-
-            TokenRpcResponse tokenResponse = generateToken(authResult.getUserId(), tenantId);
-            storeRefreshToken(tenantId, authResult.getUserId(), tokenResponse.getRefreshToken());
-
-            UserVO userVO = new UserVO();
-            userVO.setId(authResult.getUserId());
-            userVO.setUsername(authResult.getUsername());
-            userVO.setToken(tokenResponse.getAccessToken());
-            userVO.setRefreshToken(tokenResponse.getRefreshToken());
-            userVO.setExpiresIn(tokenResponse.getExpiresIn());
-            return userVO;
-        } catch (AppException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error("login rpc invocation failed, username={}", userDTO.getUsername(), e);
-            throw new AppException(ResponseCode.AUTH_SERVICE_ERROR.getCode(), ResponseCode.AUTH_SERVICE_ERROR.getMessage(), e);
-        }
-    }
 
     @Override
     public void sendEmailRegisterCode(String email) {
@@ -177,10 +144,34 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public UserVO loginByEmailPassword(String email, String password) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(email);
-        userDTO.setPassword(password);
-        return login(userDTO);
+        try {
+            LoginRpcRequest loginRequest = LoginRpcRequest.newBuilder()
+                    .setUsername(email)
+                    .setPassword(password)
+                    .setTenantId(tenantId)
+                    .build();
+
+            AuthResult authResult = authRpcService.authenticate(loginRequest);
+            if (!authResult.getSuccess()) {
+                throw new AppException(ResponseCode.EMAIL_PASSWORD_INVALID.getCode(), ResponseCode.EMAIL_PASSWORD_INVALID.getMessage());
+            }
+
+            TokenRpcResponse tokenResponse = generateToken(authResult.getUserId(), tenantId);
+            storeRefreshToken(tenantId, authResult.getUserId(), tokenResponse.getRefreshToken());
+
+            UserVO userVO = new UserVO();
+            userVO.setId(authResult.getUserId());
+            userVO.setUsername(authResult.getUsername());
+            userVO.setToken(tokenResponse.getAccessToken());
+            userVO.setRefreshToken(tokenResponse.getRefreshToken());
+            userVO.setExpiresIn(tokenResponse.getExpiresIn());
+            return userVO;
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("email login rpc invocation failed, email={}", email, e);
+            throw new AppException(ResponseCode.AUTH_SERVICE_ERROR.getCode(), ResponseCode.AUTH_SERVICE_ERROR.getMessage(), e);
+        }
     }
 
     @Override

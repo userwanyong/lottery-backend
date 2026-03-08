@@ -541,44 +541,6 @@ VALUES (1989343319025213441, 1989339401985679361, 1989336435136356353, 'AI调用
     ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user`
-(
-    `id`          bigint                                                        NOT NULL COMMENT '雪花id',
-    `username`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '用户名',
-    `password`    varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
-    `status`      tinyint                                                       NOT NULL DEFAULT '0' COMMENT '状态 0-正常 1-禁用',
-    `role`        tinyint                                                       NOT NULL DEFAULT '1' COMMENT '角色 0-管理员 1-用户 2-展示账号',
-    `create_time` datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci
-  ROW_FORMAT = DYNAMIC COMMENT ='用户表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user`
-    DISABLE KEYS */;
-INSERT INTO `user`
-VALUES (1010101010, '1684346230', '$2a$10$iNf7JRKo51wH2ZyzQPlH7uBupTdZIGAH0TCdlYxEiXKQDS72VVNhq', 0, 0,
-        '2025-10-13 13:06:23', '2025-11-22 16:00:47'),
-       (1972867537402150914, 'wanyj', '$2a$10$iNf7JRKo51wH2ZyzQPlH7uBupTdZIGAH0TCdlYxEiXKQDS72VVNhq', 0, 2,
-        '2025-11-11 14:24:46', '2025-11-22 16:00:42');
-/*!40000 ALTER TABLE `user`
-    ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;

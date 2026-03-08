@@ -22,7 +22,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login")
                 .excludePathPatterns("/user/email/send-code")
                 .excludePathPatterns("/user/email/register")
                 .excludePathPatterns("/user/email/login")
