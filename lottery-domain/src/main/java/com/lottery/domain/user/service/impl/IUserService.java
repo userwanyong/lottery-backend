@@ -10,6 +10,12 @@ import com.lottery.domain.user.model.vo.UserVO;
 public interface IUserService {
     UserVO login(UserDTO userDTO);
 
+    void sendEmailRegisterCode(String email);
+
+    UserVO registerByEmail(String email, String passCode, String password);
+
+    UserVO loginByEmailPassword(String email, String password);
+
     UserVO refreshToken(String refreshToken);
 
     void logout(Long userId);

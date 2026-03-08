@@ -3,7 +3,10 @@ package com.lottery.trigger.http;
 import com.lottery.domain.user.model.dto.UserDTO;
 import com.lottery.domain.user.model.vo.UserVO;
 import com.lottery.domain.user.service.impl.IUserService;
+import com.lottery.trigger.api.dto.req.EmailPasswordLoginRequestDTO;
+import com.lottery.trigger.api.dto.req.EmailRegisterRequestDTO;
 import com.lottery.trigger.api.dto.req.RefreshTokenRequestDTO;
+import com.lottery.trigger.api.dto.req.SendEmailRegisterCodeRequestDTO;
 import com.lottery.trigger.api.dto.req.UserLoginRequestDTO;
 import com.lottery.trigger.api.dto.res.UserLoginResponseDTO;
 import com.lottery.types.enums.ResponseCode;
@@ -63,6 +66,45 @@ public class UserController {
         responseDTO.setExpiresIn(userVO.getExpiresIn());
 
         log.info("[UserController-refresh] refresh token succeeded, userId={}", responseDTO.getId());
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
+    }
+
+    @PostMapping("/email/send-code")
+    public BaseResponse<Void> sendEmailRegisterCode(@Valid @RequestBody SendEmailRegisterCodeRequestDTO request) {
+        log.info("[UserController-sendEmailRegisterCode] request received, email={}", request.getEmail());
+        userService.sendEmailRegisterCode(request.getEmail());
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
+    }
+
+    @PostMapping("/email/register")
+    public BaseResponse<UserLoginResponseDTO> registerByEmail(@Valid @RequestBody EmailRegisterRequestDTO request) {
+        log.info("[UserController-registerByEmail] request received, email={}", request.getEmail());
+
+        UserVO userVO = userService.registerByEmail(request.getEmail(), request.getPassCode(), request.getPassword());
+        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
+        responseDTO.setId(userVO.getId());
+        responseDTO.setUsername(userVO.getUsername());
+        responseDTO.setAccessToken(userVO.getToken());
+        responseDTO.setRefreshToken(userVO.getRefreshToken());
+        responseDTO.setExpiresIn(userVO.getExpiresIn());
+
+        log.info("[UserController-registerByEmail] register succeeded, userId={}", responseDTO.getId());
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
+    }
+
+    @PostMapping("/email/login")
+    public BaseResponse<UserLoginResponseDTO> loginByEmailPassword(@Valid @RequestBody EmailPasswordLoginRequestDTO request) {
+        log.info("[UserController-loginByEmailPassword] request received, email={}", request.getEmail());
+
+        UserVO userVO = userService.loginByEmailPassword(request.getEmail(), request.getPassword());
+        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
+        responseDTO.setId(userVO.getId());
+        responseDTO.setUsername(userVO.getUsername());
+        responseDTO.setAccessToken(userVO.getToken());
+        responseDTO.setRefreshToken(userVO.getRefreshToken());
+        responseDTO.setExpiresIn(userVO.getExpiresIn());
+
+        log.info("[UserController-loginByEmailPassword] login succeeded, userId={}", responseDTO.getId());
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
     }
 

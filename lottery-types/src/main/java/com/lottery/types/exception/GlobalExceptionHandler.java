@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         if (matcher != null && matcher.find()) {
             duplicateValue = matcher.group(1);
         }
-        String errorMessage = String.format("索引 {%s} 已存在", duplicateValue);
+        String errorMessage = String.format("duplicate index {%s} already exists", duplicateValue);
         log.warn(errorMessage);
         return new BaseResponse<>(ResponseCode.INDEX_DUP.getCode(), errorMessage);
     }

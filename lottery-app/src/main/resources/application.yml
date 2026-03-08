@@ -161,6 +161,11 @@ auth:
   refresh-token-prefix: "lottery:refresh_token:"
   refresh-token-ttl-days: 7
 
+authing:
+  app-id: ${app.authing.app-id}
+  app-secret: ${app.authing.app-secret}
+  app-host: ${app.authing.app-host}
+
 zookeeper:
   sdk:
     config:

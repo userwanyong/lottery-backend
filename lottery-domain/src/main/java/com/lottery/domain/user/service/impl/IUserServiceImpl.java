@@ -25,6 +25,39 @@ public class IUserServiceImpl implements IUserService {
     }
 
     @Override
+    public void sendEmailRegisterCode(String email) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
+        }
+        repository.sendEmailRegisterCode(email.trim().toLowerCase());
+    }
+
+    @Override
+    public UserVO registerByEmail(String email, String passCode, String password) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(passCode)) {
+            throw new AppException(ResponseCode.EMAIL_PASSCODE_EMPTY.getCode(), ResponseCode.EMAIL_PASSCODE_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new AppException(ResponseCode.EMAIL_PASSWORD_EMPTY.getCode(), ResponseCode.EMAIL_PASSWORD_EMPTY.getMessage());
+        }
+        return repository.registerByEmail(email.trim().toLowerCase(), passCode.trim(), password);
+    }
+
+    @Override
+    public UserVO loginByEmailPassword(String email, String password) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new AppException(ResponseCode.EMAIL_PASSWORD_EMPTY.getCode(), ResponseCode.EMAIL_PASSWORD_EMPTY.getMessage());
+        }
+        return repository.loginByEmailPassword(email.trim().toLowerCase(), password);
+    }
+
+    @Override
     public UserVO refreshToken(String refreshToken) {
         if (StringUtils.isBlank(refreshToken)) {
             throw new AppException(ResponseCode.REFRESH_TOKEN_INVALID.getCode(), ResponseCode.REFRESH_TOKEN_INVALID.getMessage());
