@@ -1,6 +1,7 @@
 package com.lottery.domain.user.service.impl;
 
 import com.lottery.domain.user.model.vo.UserVO;
+import com.lottery.domain.user.model.vo.WechatMiniProgramQrCodeVO;
 import com.lottery.domain.user.repository.IUserRepository;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -54,6 +55,27 @@ public class IUserServiceImpl implements IUserService {
             throw new AppException(ResponseCode.REFRESH_TOKEN_INVALID.getCode(), ResponseCode.REFRESH_TOKEN_INVALID.getMessage());
         }
         return repository.refreshToken(refreshToken);
+    }
+
+    @Override
+    public WechatMiniProgramQrCodeVO generateWechatMiniProgramLoginQrCode() {
+        return repository.generateWechatMiniProgramLoginQrCode();
+    }
+
+    @Override
+    public WechatMiniProgramQrCodeVO queryWechatMiniProgramLoginQrCodeStatus(String qrcodeId) {
+        if (StringUtils.isBlank(qrcodeId)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "qrcodeId cannot be blank");
+        }
+        return repository.queryWechatMiniProgramLoginQrCodeStatus(qrcodeId.trim());
+    }
+
+    @Override
+    public UserVO loginByWechatMiniProgramQrCode(String ticket) {
+        if (StringUtils.isBlank(ticket)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "ticket cannot be blank");
+        }
+        return repository.loginByWechatMiniProgramQrCode(ticket.trim());
     }
 
     @Override

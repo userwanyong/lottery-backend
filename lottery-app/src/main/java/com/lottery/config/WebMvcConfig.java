@@ -26,6 +26,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/user/email/register")
                 .excludePathPatterns("/user/email/login")
                 .excludePathPatterns("/user/refresh")
+                .excludePathPatterns("/user/wechat-mini-program/qrcode/generate")
+                .excludePathPatterns("/user/wechat-mini-program/qrcode/status")
+                .excludePathPatterns("/user/wechat-mini-program/qrcode/login")
                 .excludePathPatterns("/health/check");
     }
 }

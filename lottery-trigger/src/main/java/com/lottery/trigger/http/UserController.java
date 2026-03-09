@@ -1,12 +1,16 @@
 package com.lottery.trigger.http;
 
 import com.lottery.domain.user.model.vo.UserVO;
+import com.lottery.domain.user.model.vo.WechatMiniProgramQrCodeVO;
 import com.lottery.domain.user.service.impl.IUserService;
 import com.lottery.trigger.api.dto.req.EmailPasswordLoginRequestDTO;
 import com.lottery.trigger.api.dto.req.EmailRegisterRequestDTO;
 import com.lottery.trigger.api.dto.req.RefreshTokenRequestDTO;
 import com.lottery.trigger.api.dto.req.SendEmailRegisterCodeRequestDTO;
+import com.lottery.trigger.api.dto.req.WechatMiniProgramQrCodeLoginRequestDTO;
+import com.lottery.trigger.api.dto.req.WechatMiniProgramQrCodeStatusRequestDTO;
 import com.lottery.trigger.api.dto.res.UserLoginResponseDTO;
+import com.lottery.trigger.api.dto.res.WechatMiniProgramQrCodeResponseDTO;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import com.lottery.types.util.ThreadUtils;
@@ -86,6 +90,44 @@ public class UserController {
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
     }
 
+    @PostMapping("/wechat-mini-program/qrcode/generate")
+    public BaseResponse<WechatMiniProgramQrCodeResponseDTO> generateWechatMiniProgramLoginQrCode() {
+        log.info("[UserController-generateWechatMiniProgramLoginQrCode] request received");
+
+        WechatMiniProgramQrCodeVO qrCodeVO = userService.generateWechatMiniProgramLoginQrCode();
+        WechatMiniProgramQrCodeResponseDTO responseDTO = buildWechatMiniProgramQrCodeResponse(qrCodeVO);
+
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
+    }
+
+    @PostMapping("/wechat-mini-program/qrcode/status")
+    public BaseResponse<WechatMiniProgramQrCodeResponseDTO> queryWechatMiniProgramLoginQrCodeStatus(
+            @Valid @RequestBody WechatMiniProgramQrCodeStatusRequestDTO request) {
+        log.info("[UserController-queryWechatMiniProgramLoginQrCodeStatus] request received, qrcodeId={}", request.getQrcodeId());
+
+        WechatMiniProgramQrCodeVO qrCodeVO = userService.queryWechatMiniProgramLoginQrCodeStatus(request.getQrcodeId());
+        WechatMiniProgramQrCodeResponseDTO responseDTO = buildWechatMiniProgramQrCodeResponse(qrCodeVO);
+
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
+    }
+
+    @PostMapping("/wechat-mini-program/qrcode/login")
+    public BaseResponse<UserLoginResponseDTO> loginByWechatMiniProgramQrCode(
+            @Valid @RequestBody WechatMiniProgramQrCodeLoginRequestDTO request) {
+        log.info("[UserController-loginByWechatMiniProgramQrCode] request received");
+
+        UserVO userVO = userService.loginByWechatMiniProgramQrCode(request.getTicket());
+        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO();
+        responseDTO.setId(userVO.getId());
+        responseDTO.setUsername(userVO.getUsername());
+        responseDTO.setAccessToken(userVO.getToken());
+        responseDTO.setRefreshToken(userVO.getRefreshToken());
+        responseDTO.setExpiresIn(userVO.getExpiresIn());
+
+        log.info("[UserController-loginByWechatMiniProgramQrCode] login succeeded, userId={}", responseDTO.getId());
+        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), responseDTO);
+    }
+
     @PostMapping("/logout")
     public BaseResponse<Void> logout() {
         UserUtils userUtils = ThreadUtils.getUser();
@@ -98,5 +140,17 @@ public class UserController {
         log.info("[UserController-logout] logout succeeded, userId={}", userId);
 
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
+    }
+
+    private WechatMiniProgramQrCodeResponseDTO buildWechatMiniProgramQrCodeResponse(WechatMiniProgramQrCodeVO qrCodeVO) {
+        WechatMiniProgramQrCodeResponseDTO responseDTO = new WechatMiniProgramQrCodeResponseDTO();
+        responseDTO.setQrcodeId(qrCodeVO.getQrcodeId());
+        responseDTO.setQrCodeUrl(qrCodeVO.getQrCodeUrl());
+        responseDTO.setCustomLogoUrl(qrCodeVO.getCustomLogoUrl());
+        responseDTO.setStatus(qrCodeVO.getStatus());
+        responseDTO.setTicket(qrCodeVO.getTicket());
+        responseDTO.setDisplayName(qrCodeVO.getDisplayName());
+        responseDTO.setPhoto(qrCodeVO.getPhoto());
+        return responseDTO;
     }
 }

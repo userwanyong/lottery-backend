@@ -1,6 +1,7 @@
 package com.lottery.domain.user.service.impl;
 
 import com.lottery.domain.user.model.vo.UserVO;
+import com.lottery.domain.user.model.vo.WechatMiniProgramQrCodeVO;
 
 /**
  * @author 永
@@ -13,6 +14,12 @@ public interface IUserService {
     UserVO loginByEmailPassword(String email, String password);
 
     UserVO refreshToken(String refreshToken);
+
+    WechatMiniProgramQrCodeVO generateWechatMiniProgramLoginQrCode();
+
+    WechatMiniProgramQrCodeVO queryWechatMiniProgramLoginQrCodeStatus(String qrcodeId);
+
+    UserVO loginByWechatMiniProgramQrCode(String ticket);
 
     void logout(Long userId);
 }
