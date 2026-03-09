@@ -1,5 +1,7 @@
 package com.lottery.trigger.api.dto.req;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.lottery.trigger.api.deserialize.MultiFormatDateDeserializer;
 import lombok.Data;
 
 import java.util.Date;
@@ -27,11 +29,13 @@ public class ActivityRequestDTO {
     /**
      * 开始时间
      */
+    @JsonDeserialize(using = MultiFormatDateDeserializer.class)
     private Date beginDateTime;
 
     /**
      * 结束时间
      */
+    @JsonDeserialize(using = MultiFormatDateDeserializer.class)
     private Date endDateTime;
 
     /**

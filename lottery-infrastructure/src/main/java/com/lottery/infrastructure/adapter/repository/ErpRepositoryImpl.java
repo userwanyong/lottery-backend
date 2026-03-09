@@ -484,8 +484,16 @@ public class ErpRepositoryImpl implements ErpRepository {
                     .lambda()
                     .eq(StrategyAward::getStrategyId, strategyId);
             List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(strategyAwardQueryWrapper);
+            if (strategyAwards == null || strategyAwards.isEmpty()) {
+                redisService.setValue(key, new ArrayList<StrategyAwardEntity>());
+                return myPage;
+            }
             // 提取出strategyAwards中所有的awardId
             Set<Long> awardIds = strategyAwards.stream().map(StrategyAward::getAwardId).collect(Collectors.toSet());
+            if (awardIds.isEmpty()) {
+                redisService.setValue(key, new ArrayList<StrategyAwardEntity>());
+                return myPage;
+            }
             // 批量查询数据库
             List<Award> awards = awardMapper.selectBatchIds(awardIds);
             // 放到map集合中 awardId为key image为value

@@ -29,6 +29,9 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
         repository.deleteCacheKeyByStrategyId(strategyId);
         // 1. 查询策略配置（该策略对应的奖品）
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
+        if (strategyAwardEntities == null || strategyAwardEntities.isEmpty()) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "strategy award is not configured");
+        }
         // 将strategyAwardEntities中的ruleTreeId去重后加入集合
         List<Long> treeIds = strategyAwardEntities.stream().map(StrategyAwardEntity::getRuleTreeId).distinct().toList();
         // 缓存每颗规则树

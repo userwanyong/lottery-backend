@@ -78,8 +78,14 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .lambda()
                 .eq(StrategyAward::getStrategyId, strategyId);
         List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(queryWrapper);
+        if (strategyAwards == null || strategyAwards.isEmpty()) {
+            return new ArrayList<>();
+        }
         // 提取出strategyAwards中所有的awardId
         Set<Long> awardIds = strategyAwards.stream().map(StrategyAward::getAwardId).collect(Collectors.toSet());
+        if (awardIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         // 批量查询数据库
         List<Award> awards = awardMapper.selectBatchIds(awardIds);
         for (Award award : awards) {

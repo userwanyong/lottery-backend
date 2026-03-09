@@ -226,7 +226,8 @@ CREATE TABLE `behavior_rebate`
     `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    KEY `idx_behavior_type` (`behavior_type`)
+    KEY `idx_behavior_type` (`behavior_type`),
+    KEY `idx_activity_id_behavior_type` (`activity_id`, `behavior_type`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利活动配置表';
@@ -349,7 +350,8 @@ CREATE TABLE `rule_tree_node`
     `rule_value`   varchar(128)             DEFAULT NULL COMMENT '规则的值',
     `create_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `idx_rule_tree_id` (`rule_tree_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点表';
@@ -410,7 +412,8 @@ CREATE TABLE `rule_tree_node_line`
     `rule_limit_value` varchar(32)     NOT NULL COMMENT '限定值（到下个节点）',
     `create_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `idx_rule_tree_id` (`rule_tree_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点走向表';
