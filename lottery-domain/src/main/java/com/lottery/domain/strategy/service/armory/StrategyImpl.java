@@ -54,22 +54,21 @@ public class StrategyImpl extends AbstractStrategy {
             Algorithm o1Algorithm = algorithmMap.get(Constants.Algorithm.O1);
             o1Algorithm.armoryAlgorithm(key, strategyAwardEntities, new BigDecimal(rateRange));
             repository.cacheStrategyArmoryAlgorithm(key, Constants.Algorithm.O1);
-        } else {
-            Algorithm oLogNAlgorithm = algorithmMap.get(Constants.Algorithm.OLogN);
-            oLogNAlgorithm.armoryAlgorithm(key, strategyAwardEntities, new BigDecimal(rateRange));
-            repository.cacheStrategyArmoryAlgorithm(key, Constants.Algorithm.OLogN);
+            return;
         }
 
+        Algorithm oLogNAlgorithm = algorithmMap.get(Constants.Algorithm.OLogN);
+        oLogNAlgorithm.armoryAlgorithm(key, strategyAwardEntities, new BigDecimal(rateRange));
+        repository.cacheStrategyArmoryAlgorithm(key, Constants.Algorithm.OLogN);
     }
 
     @Override
     protected Long dispatchAlgorithm(String key) {
         String name = repository.queryStrategyArmoryAlgorithmFromCache(key);
         if (name == null) {
-            throw new RuntimeException("抽奖算法未配置");
+            throw new RuntimeException("lottery algorithm is not configured");
         }
         Algorithm algorithm = algorithmMap.get(name);
         return algorithm.dispatchAlgorithm(key);
     }
-
 }

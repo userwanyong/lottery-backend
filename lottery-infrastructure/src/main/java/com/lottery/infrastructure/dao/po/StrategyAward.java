@@ -15,9 +15,9 @@ import java.util.Date;
  * 策略_奖品详情表
  *
  * @author 永
- * @TableName strategy_award
+ * @TableName activity_award
  */
-@TableName(value = "strategy_award")
+@TableName(value = "activity_award")
 @Data
 public class StrategyAward implements Serializable {
     @Serial
@@ -31,7 +31,7 @@ public class StrategyAward implements Serializable {
     /**
      * 抽奖策略ID
      */
-    private Long strategyId;
+    private Long activityId;
     /**
      * 抽奖奖品ID
      */

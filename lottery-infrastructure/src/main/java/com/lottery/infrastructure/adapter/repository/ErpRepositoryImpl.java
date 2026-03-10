@@ -84,6 +84,7 @@ public class ErpRepositoryImpl implements ErpRepository {
         Activity activity = new Activity();
         BeanUtils.copyProperties(activityVO, activity);
         activityMapper.insert(activity);
+        activityVO.setId(activity.getId());
     }
 
     @Override
@@ -476,13 +477,12 @@ public class ErpRepositoryImpl implements ErpRepository {
         if (userAwardRecordPage.getRecords().isEmpty()){
             return myPage;
         }
-        Long strategyId = userAwardRecordPage.getRecords().get(0).getStrategyId();
-        String key = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + strategyId;
+        String key = Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY + activityId;
         if (!redisService.isExists(key)){
             //如果key不存在，查数据库
             LambdaQueryWrapper<StrategyAward> strategyAwardQueryWrapper = new QueryWrapper<StrategyAward>()
                     .lambda()
-                    .eq(StrategyAward::getStrategyId, strategyId);
+                    .eq(StrategyAward::getActivityId, activityId);
             List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(strategyAwardQueryWrapper);
             if (strategyAwards == null || strategyAwards.isEmpty()) {
                 redisService.setValue(key, new ArrayList<StrategyAwardEntity>());
@@ -505,7 +505,6 @@ public class ErpRepositoryImpl implements ErpRepository {
                 BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
                 // image 从Map中取出
                 strategyAwardEntity.setImage(awardMap.get(strategyAward.getAwardId()));
-                strategyAwardEntity.setRuleTreeId(strategyAward.getRuleTreeId());
                 strategyAwardEntities.add(strategyAwardEntity);
             }
             //保存到redis中

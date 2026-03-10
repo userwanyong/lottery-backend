@@ -1,6 +1,5 @@
 package com.lottery.trigger.http;
 
-import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.ActivityVO;
 import com.lottery.trigger.api.ActivityService;
@@ -31,9 +30,6 @@ import java.util.List;
 public class ActivityController implements ActivityService {
     @Resource
     private ErpRepository repository;
-    @Resource
-    private StrategyArmory strategyArmory;
-
     @Override
     @GetMapping("/query_activity")
     public BaseResponse<List<ActivityResponseDTO>> queryActivity() {
@@ -64,9 +60,6 @@ public class ActivityController implements ActivityService {
         ActivityVO activityVO = new ActivityVO();
         BeanUtils.copyProperties(request, activityVO);
         repository.addActivityVO(activityVO);
-        // 2. 装配抽奖算法
-        strategyArmory.assembleLotteryStrategy(request.getStrategyId());
-        log.info("[ActivityController-add]装配抽奖算法成功");
         log.info("======================[ActivityController-add]运营端 添加活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }

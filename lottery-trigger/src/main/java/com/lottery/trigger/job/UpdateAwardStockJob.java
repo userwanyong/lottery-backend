@@ -21,16 +21,18 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class UpdateAwardStockJob {
+
     @Resource
     private Stock stock;
+
     @Resource
     private ThreadPoolExecutor executor;
+
     @Resource
     private RedissonClient redissonClient;
 
-
     @XxlJob("updateAwardStockJob")
-    @Timed(value = "updateAwardStockJob",description = "更新奖品库存任务")
+    @Timed(value = "updateAwardStockJob", description = "更新奖品库存任务")
     public void exec() {
         // 为什么加锁？分布式应用N台机器部署互备，任务调度会有N个同时执行，那么这里需要增加抢占机制，谁抢占到谁就执行。完毕后，下一轮继续抢占。
         RLock lock = redissonClient.getLock("lottery-updateAwardStockJob");
@@ -42,22 +44,22 @@ public class UpdateAwardStockJob {
                 return;
             }
 
-            List<String> awardList = stock.getStrategyAwardList();
-            for (String strategyAward : awardList) {
+            List<String> awardList = stock.getActivityAwardList();
+            for (String activityAward : awardList) {
                 executor.execute(() -> {
-                    LotteryReqEntity lotteryReqEntity = null;
+                    LotteryReqEntity lotteryReqEntity;
                     try {
-                        lotteryReqEntity = stock.takeQueueValue(strategyAward);
+                        lotteryReqEntity = stock.takeQueueValue(activityAward);
                     } catch (Exception e) {
-                        log.error("【定时任务】-更新数据库奖品库存-失败", e);
+                        log.error("update award stock job failed while polling queue", e);
+                        return;
                     }
 
                     if (lotteryReqEntity == null) {
-//                        log.info("【定时任务】-暂无更新数据库奖品库存任务");
                         return;
                     }
-                    stock.updateStrategyAwardStock(lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
-                    log.info("【定时任务】-更新数据库奖品库存-成功 strategyId:{} awardId:{}", lotteryReqEntity.getStrategyId(), lotteryReqEntity.getAwardId());
+                    stock.updateActivityAwardStock(lotteryReqEntity.getActivityId(), lotteryReqEntity.getAwardId());
+                    log.info("【定时任务】-更新数据库奖品库存-成功 strategyId:{} awardId:{}", lotteryReqEntity.getActivityId(), lotteryReqEntity.getAwardId());
                 });
             }
         } catch (Exception e) {

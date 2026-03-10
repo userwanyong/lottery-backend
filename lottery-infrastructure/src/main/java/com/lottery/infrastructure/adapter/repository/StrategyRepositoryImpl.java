@@ -11,7 +11,12 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
-import com.lottery.domain.strategy.model.valobj.*;
+import com.lottery.domain.strategy.model.valobj.RuleLimitTypeVO;
+import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
+import com.lottery.domain.strategy.model.valobj.RuleTreeNodeLineVO;
+import com.lottery.domain.strategy.model.valobj.RuleTreeNodeVO;
+import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
+import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
@@ -38,90 +43,82 @@ import java.util.stream.Collectors;
 @Repository
 @Slf4j
 public class StrategyRepositoryImpl implements StrategyRepository {
+
     @Resource
     private AwardMapper awardMapper;
+
     @Resource
     private StrategyAwardMapper strategyAwardMapper;
+
     @Resource
     private RedisService redisService;
+
     @Resource
     private StrategyMapper strategyMapper;
+
     @Resource
     private ActivityAccountDayMapper activityAccountDayMapper;
+
     @Resource
     private ActivityMapper activityMapper;
+
     @Resource
     private RuleMapper ruleMapper;
+
     @Resource
     private RuleTreeMapper ruleTreeMapper;
+
     @Resource
     private RuleTreeNodeMapper ruleTreeNodeMapper;
+
     @Resource
     private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
+
     @Resource
     private EventPublisher eventPublisher;
+
     @Resource
     private AwardStockZeroMessageEvent awardStockZeroMessageEvent;
 
     @Override
-    public List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId) {
-        List<StrategyAwardEntity> strategyAwardEntities;
-
-        // 优先从redis缓存中获取
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY + strategyId;
-        strategyAwardEntities = redisService.getValue(cacheKey);
+    public List<StrategyAwardEntity> queryActivityAwardList(Long activityId) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY + activityId;
+        List<StrategyAwardEntity> strategyAwardEntities = redisService.getValue(cacheKey);
         if (strategyAwardEntities != null && !strategyAwardEntities.isEmpty()) {
             return strategyAwardEntities;
         }
-        // 否则查询数据库
+
         LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>()
                 .lambda()
-                .eq(StrategyAward::getStrategyId, strategyId);
+                .eq(StrategyAward::getActivityId, activityId);
         List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(queryWrapper);
         if (strategyAwards == null || strategyAwards.isEmpty()) {
             return new ArrayList<>();
         }
-        // 提取出strategyAwards中所有的awardId
+
         Set<Long> awardIds = strategyAwards.stream().map(StrategyAward::getAwardId).collect(Collectors.toSet());
-        if (awardIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-        // 批量查询数据库
-        List<Award> awards = awardMapper.selectBatchIds(awardIds);
+        List<Award> awards = awardIds.isEmpty() ? new ArrayList<>() : awardMapper.selectBatchIds(awardIds);
         for (Award award : awards) {
             redisService.setValue(Constants.RedisKey.AWARD_KEY + award.getId(), award);
         }
-        // 放到map集合中 awardId为key image为value，并且存储每个奖品的配置信息
         Map<Long, String> awardMap = awards.stream().collect(Collectors.toMap(Award::getId, Award::getImage));
+
         strategyAwardEntities = new ArrayList<>(strategyAwards.size());
-
-
-        //StrategyAward->StrategyAwardEntity
         for (StrategyAward strategyAward : strategyAwards) {
             StrategyAwardEntity strategyAwardEntity = new StrategyAwardEntity();
             BeanUtils.copyProperties(strategyAward, strategyAwardEntity);
-            // image 从Map中取出
             strategyAwardEntity.setImage(awardMap.get(strategyAward.getAwardId()));
-            strategyAwardEntity.setRuleTreeId(strategyAward.getRuleTreeId());
             strategyAwardEntities.add(strategyAwardEntity);
         }
-        //保存到redis中
         redisService.setValue(cacheKey, strategyAwardEntities);
         return strategyAwardEntities;
     }
 
     @Override
     public <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable) {
-        // 1. 存储 抽奖策略范围值，如1000，用于生成1000以内的随机数
-        String rateRangeKey = Constants.RedisKey.RATE_RANGE_KEY + key;
-        redisService.setValue(rateRangeKey, rateRange);
-        log.debug("[StrategyRepositoryImpl]存储策略抽奖概率范围值：{}", rateRange);
-        // 2. 存储 概率查找表
-        String rateTableKey = Constants.RedisKey.RATE_TABLE_KEY + key;
-        Map<K, V> cacheRateTable = redisService.getMap(rateTableKey);
+        redisService.setValue(Constants.RedisKey.RATE_RANGE_KEY + key, rateRange);
+        Map<K, V> cacheRateTable = redisService.getMap(Constants.RedisKey.RATE_TABLE_KEY + key);
         cacheRateTable.putAll(strategyAwardSearchRateTable);
-        log.debug("[StrategyRepositoryImpl]存储策略抽奖概率查找表：{}", cacheRateTable);
-
     }
 
     @Override
@@ -131,20 +128,21 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public int getRateRange(String strategyId) {
-        return redisService.getValue(Constants.RedisKey.RATE_RANGE_KEY + strategyId);
+        Integer rateRange = redisService.getValue(Constants.RedisKey.RATE_RANGE_KEY + strategyId);
+        return rateRange == null ? 0 : rateRange;
     }
 
     @Override
     public StrategyEntity queryStrategyEntityByStrategyId(Long strategyId) {
-        // 优先从redis缓存中获取
         String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
         StrategyEntity strategyEntity = redisService.getValue(cacheKey);
         if (strategyEntity != null) {
             return strategyEntity;
         }
-        LambdaQueryWrapper<Strategy> queryWrapper = new QueryWrapper<Strategy>().lambda()
-                .eq(Strategy::getId, strategyId);
-        Strategy strategy = strategyMapper.selectOne(queryWrapper);
+        Strategy strategy = strategyMapper.selectOne(new QueryWrapper<Strategy>().lambda().eq(Strategy::getId, strategyId));
+        if (strategy == null) {
+            return null;
+        }
         StrategyEntity newStrategyEntity = new StrategyEntity();
         BeanUtils.copyProperties(strategy, newStrategyEntity);
         redisService.setValue(cacheKey, newStrategyEntity);
@@ -153,9 +151,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public RuleEntity queryStrategyRule(String ruleModel) {
-        LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
-                .eq(Rule::getRuleModel, ruleModel);
-        Rule rule = ruleMapper.selectOne(queryWrapper);
+        Rule rule = ruleMapper.selectOne(new QueryWrapper<Rule>().lambda().eq(Rule::getRuleModel, ruleModel));
+        if (rule == null) {
+            return null;
+        }
         RuleEntity ruleEntity = new RuleEntity();
         BeanUtils.copyProperties(rule, ruleEntity);
         return ruleEntity;
@@ -164,29 +163,30 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public String queryStrategyRuleValue(Long strategyId, Long awardId, String ruleModel) {
         Strategy strategy = new Strategy();
-        // 优先从redis缓存中获取
         String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
         StrategyEntity strategyEntity = redisService.getValue(cacheKey);
         if (strategyEntity != null) {
             BeanUtils.copyProperties(strategyEntity, strategy);
         } else {
-            LambdaQueryWrapper<Strategy> wrapper = new LambdaQueryWrapper<Strategy>().eq(Strategy::getId, strategyId);
-            strategy = strategyMapper.selectOne(wrapper);
-            if (strategy == null) {
+            strategy = strategyMapper.selectOne(new LambdaQueryWrapper<Strategy>().eq(Strategy::getId, strategyId));
+            if (strategy == null || strategy.getRuleModels() == null) {
                 return null;
             }
         }
-        String ruleModels = strategy.getRuleModels();
-        String[] split = ruleModels.split(",");
+
+        String[] split = strategy.getRuleModels().split(",");
         LambdaQueryWrapper<Rule> queryWrapper = null;
         for (String model : split) {
             if (model.contains(ruleModel)) {
-                queryWrapper = new QueryWrapper<Rule>().lambda()
-                        .eq(Rule::getRuleModel, model);
+                queryWrapper = new QueryWrapper<Rule>().lambda().eq(Rule::getRuleModel, model);
+                break;
             }
         }
-
-        return ruleMapper.selectOne(queryWrapper).getRuleValue();
+        if (queryWrapper == null) {
+            return null;
+        }
+        Rule rule = ruleMapper.selectOne(queryWrapper);
+        return rule == null ? null : rule.getRuleValue();
     }
 
     @Override
@@ -195,37 +195,35 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public Long queryRuleModelVO(Long strategyId, Long awardId) {
-        LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>().lambda()
-                .eq(StrategyAward::getStrategyId, strategyId)
-                .eq(StrategyAward::getAwardId, awardId);
-        StrategyAward strategyAward = strategyAwardMapper.selectOne(queryWrapper);
-        return strategyAward.getRuleTreeId() == null ? 0L : strategyAward.getRuleTreeId();
+    public Long queryRuleModelVO(Long activityId, Long awardId) {
+        StrategyAward strategyAward = strategyAwardMapper.selectOne(new QueryWrapper<StrategyAward>().lambda()
+                .eq(StrategyAward::getActivityId, activityId)
+                .eq(StrategyAward::getAwardId, awardId));
+        if (strategyAward == null || strategyAward.getRuleTreeId() == null) {
+            return 0L;
+        }
+        return strategyAward.getRuleTreeId();
     }
 
     @Override
     public RuleTreeVO queryRuleTreeVO(Long treeId) {
-        // 优先从缓存获取
         String cacheKey = Constants.RedisKey.RULE_TREE_KEY + treeId;
         RuleTreeVO ruleTreeVOCache = redisService.getValue(cacheKey);
         if (ruleTreeVOCache != null) {
             return ruleTreeVOCache;
         }
-        // 否则从数据库获取
-        LambdaQueryWrapper<RuleTree> ruleTreeQueryWrapper = new QueryWrapper<RuleTree>().lambda()
-                .eq(RuleTree::getId, treeId);
-        RuleTree ruleTree = ruleTreeMapper.selectOne(ruleTreeQueryWrapper);
 
-        LambdaQueryWrapper<RuleTreeNode> ruleTreeNodeQueryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
-                .eq(RuleTreeNode::getRuleTreeId, treeId);
-        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(ruleTreeNodeQueryWrapper);
+        RuleTree ruleTree = ruleTreeMapper.selectOne(new QueryWrapper<RuleTree>().lambda().eq(RuleTree::getId, treeId));
+        if (ruleTree == null) {
+            return null;
+        }
 
-        LambdaQueryWrapper<RuleTreeNodeLine> ruleTreeNodeLineQueryWrapper = new QueryWrapper<RuleTreeNodeLine>().lambda()
-                .eq(RuleTreeNodeLine::getRuleTreeId, treeId);
-        List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(ruleTreeNodeLineQueryWrapper);
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(new QueryWrapper<RuleTreeNode>().lambda()
+                .eq(RuleTreeNode::getRuleTreeId, treeId));
+        List<RuleTreeNodeLine> ruleTreeNodeLines = ruleTreeNodeLineMapper.selectList(new QueryWrapper<RuleTreeNodeLine>().lambda()
+                .eq(RuleTreeNodeLine::getRuleTreeId, treeId));
 
-        //转VO
-        HashMap<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
+        Map<String, List<RuleTreeNodeLineVO>> ruleTreeNodeLineMap = new HashMap<>();
         for (RuleTreeNodeLine ruleTreeNodeLine : ruleTreeNodeLines) {
             RuleTreeNodeLineVO ruleTreeNodeLineVO = RuleTreeNodeLineVO.builder()
                     .ruleTreeId(ruleTreeNodeLine.getRuleTreeId())
@@ -234,10 +232,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                     .ruleLimitType(RuleLimitTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitType()))
                     .ruleLimitValue(RuleLogicCheckTypeVO.valueOf(ruleTreeNodeLine.getRuleLimitValue()))
                     .build();
-            List<RuleTreeNodeLineVO> ruleTreeNodeLineVOList = ruleTreeNodeLineMap.computeIfAbsent(ruleTreeNodeLine.getRuleNodeFrom(), k -> new ArrayList<>());
-            ruleTreeNodeLineVOList.add(ruleTreeNodeLineVO);
+            ruleTreeNodeLineMap.computeIfAbsent(ruleTreeNodeLine.getRuleNodeFrom(), k -> new ArrayList<>()).add(ruleTreeNodeLineVO);
         }
-        HashMap<String, RuleTreeNodeVO> ruleTreeNodeMap = new HashMap<>();
+
+        Map<String, RuleTreeNodeVO> ruleTreeNodeMap = new HashMap<>();
         for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
             RuleTreeNodeVO ruleTreeNodeVO = RuleTreeNodeVO.builder()
                     .ruleTreeId(ruleTreeNode.getRuleTreeId())
@@ -248,6 +246,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                     .build();
             ruleTreeNodeMap.put(ruleTreeNode.getRuleName(), ruleTreeNodeVO);
         }
+
         RuleTreeVO ruleTreeVO = RuleTreeVO.builder()
                 .id(ruleTree.getId())
                 .treeName(ruleTree.getTreeName())
@@ -255,84 +254,73 @@ public class StrategyRepositoryImpl implements StrategyRepository {
                 .treeRootRuleNode(ruleTree.getTreeNodeRuleKey())
                 .treeNodeMap(ruleTreeNodeMap)
                 .build();
-
-        // 保存到redis
         redisService.setValue(cacheKey, ruleTreeVO);
         return ruleTreeVO;
     }
 
     @Override
-    public Boolean reduceAwardStock(String key, Long strategyId, Long activityId) {
+    public Boolean reduceAwardStock(String key, Long activityId) {
         long count = redisService.decr(key);
         if (count == 0) {
-            //lottery_strategy_award_count_key_200001_123 以_分割，提取200001_123
             String[] split = key.split(Constants.UNDERLINE);
-            String strategyAward = split[split.length - 2] + "_" + split[split.length - 1];
-            log.debug("[ActivityRepositoryImpl]已无库存，发送MQ消息清空数据库库存 strategyAward: {}", strategyAward);
-            eventPublisher.publish(awardStockZeroMessageEvent.topic(), awardStockZeroMessageEvent.buildEventMessage(strategyAward));
+            String activityAward = split[split.length - 2] + Constants.UNDERLINE + split[split.length - 1];
+            eventPublisher.publish(
+                    awardStockZeroMessageEvent.topic(),
+                    awardStockZeroMessageEvent.buildEventMessage(activityAward)
+            );
         } else if (count < 0) {
             redisService.setAtomicLong(key, 0);
             return false;
         }
+
         Activity activity = new Activity();
-        // 优先从缓存获取
         String cacheKey = Constants.RedisKey.ACTIVITY_KEY + activityId;
         ActivityEntity activityEntity = redisService.getValue(cacheKey);
         if (activityEntity != null) {
             BeanUtils.copyProperties(activityEntity, activity);
         } else {
-            LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
-                    .eq(Activity::getStrategyId, strategyId)
-                    .eq(Activity::getId, activityId);
-            activity = activityMapper.selectOne(queryWrapper);
+            activity = activityMapper.selectOne(new QueryWrapper<Activity>().lambda().eq(Activity::getId, activityId));
         }
-        // 1. 按照cacheKey decr 后的值，如 99、98、97 和 key 组成为库存锁的key进行使用
-        // 2. 加锁为了兜底，如果后续有恢复库存，手动处理等，也不会超卖。因为所有的可用库存key，都被加锁了
+
         long newCount = count + 1;
         String lockKey = key + Constants.UNDERLINE + newCount;
         long expireMillis = activity.getEndDateTime().getTime() - System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1);
         Boolean lock = redisService.setNx(lockKey, expireMillis, TimeUnit.MILLISECONDS);
-        log.debug("[ActivityRepositoryImpl]策略奖品库存加锁成功 {}", lockKey);
         if (!lock) {
-            log.warn("[ActivityRepositoryImpl]策略奖品库存加锁失败 {}", lockKey);
+            log.warn("activity award stock lock failed {}", lockKey);
         }
         return lock;
     }
 
     @Override
     public void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY + lotteryReqEntity.getStrategyId() + Constants.UNDERLINE + lotteryReqEntity.getAwardId();
-        // 获取Redis中的阻塞队列
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_COUNT_QUEUE_KEY
+                + lotteryReqEntity.getActivityId()
+                + Constants.UNDERLINE
+                + lotteryReqEntity.getAwardId();
         RBlockingQueue<LotteryReqEntity> blockingQueue = redisService.getBlockingQueue(cacheKey);
-        // 基于阻塞队列创建一个延迟队列
         RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
-        // 将 lotteryReqEntity 添加到延迟队列，并设置延迟时间为3秒
         delayedQueue.offer(lotteryReqEntity, 3, TimeUnit.SECONDS);
-        log.debug("[ActivityRepositoryImpl]延迟队列创建成功 awardId: {}", lotteryReqEntity.getAwardId());
     }
 
     @Override
-    public LotteryReqEntity takeQueueValue(String strategyAward) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY + strategyAward;
-        // 获取指定键的阻塞队列
+    public LotteryReqEntity takeQueueValue(String activityAward) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_COUNT_QUEUE_KEY + activityAward;
         RBlockingQueue<LotteryReqEntity> destinationQueue = redisService.getBlockingQueue(cacheKey);
-        // 从队列中取出并返回一个元素
-        log.debug("[ActivityRepositoryImpl]从阻塞队列中取出值 strategyAward: {}", strategyAward);
         return destinationQueue.poll();
     }
 
     @Override
-    public void updateStrategyAwardStock(Long strategyId, Long awardId) {
+    public void updateActivityAwardStock(Long activityId, Long awardId) {
         StrategyAward strategyAward = new StrategyAward();
-        strategyAward.setStrategyId(strategyId);
+        strategyAward.setActivityId(activityId);
         strategyAward.setAwardId(awardId);
         LambdaUpdateWrapper<StrategyAward> queryWrapper = new UpdateWrapper<StrategyAward>().lambda()
                 .setSql("award_count_surplus = award_count_surplus - 1")
-                .eq(StrategyAward::getStrategyId, strategyId)
+                .eq(StrategyAward::getActivityId, activityId)
                 .eq(StrategyAward::getAwardId, awardId)
                 .gt(StrategyAward::getAwardCountSurplus, 0);
         strategyAwardMapper.update(strategyAward, queryWrapper);
-        log.debug("[ActivityRepositoryImpl]更新策略奖品库存成功 strategyId: {}, awardId: {}", strategyId, awardId);
     }
 
     @Override
@@ -344,42 +332,39 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     }
 
     @Override
-    public StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Long awardId) {
-        // 优先从缓存获取
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_KEY + strategyId + Constants.UNDERLINE + awardId;
-        String awardCacheKey = Constants.RedisKey.AWARD_KEY + awardId;
+    public StrategyAwardEntity queryActivityAwardEntity(Long activityId, Long awardId) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_KEY + activityId + Constants.UNDERLINE + awardId;
         StrategyAwardEntity strategyAwardEntity = redisService.getValue(cacheKey);
-        if (strategyAwardEntity != null) {
-            Award award = redisService.getValue(awardCacheKey);
-            strategyAwardEntity.setAwardConfig(award.getAwardConfig());
-            return strategyAwardEntity;
+        if (strategyAwardEntity == null) {
+            StrategyAward strategyAwardRes = strategyAwardMapper.selectOne(new QueryWrapper<StrategyAward>().lambda()
+                    .eq(StrategyAward::getActivityId, activityId)
+                    .eq(StrategyAward::getAwardId, awardId));
+            if (strategyAwardRes == null) {
+                return null;
+            }
+            strategyAwardEntity = new StrategyAwardEntity();
+            BeanUtils.copyProperties(strategyAwardRes, strategyAwardEntity);
+            redisService.setValue(cacheKey, strategyAwardEntity);
         }
-        // 查询数据
-        LambdaQueryWrapper<StrategyAward> queryWrapper = new QueryWrapper<StrategyAward>().lambda()
-                .eq(StrategyAward::getStrategyId, strategyId)
-                .eq(StrategyAward::getAwardId, awardId);
 
-        StrategyAward strategyAwardRes = strategyAwardMapper.selectOne(queryWrapper);
-        // 转换数据
-        StrategyAwardEntity strategyAwardEntity1 = new StrategyAwardEntity();
-        BeanUtils.copyProperties(strategyAwardRes, strategyAwardEntity1);
-        // 缓存结果
-        redisService.setValue(cacheKey, strategyAwardEntity1);
+        String awardCacheKey = Constants.RedisKey.AWARD_KEY + awardId;
         Award award = redisService.getValue(awardCacheKey);
-        strategyAwardEntity1.setAwardConfig(award.getAwardConfig());
-        // 返回数据
-        return strategyAwardEntity1;
+        if (award == null) {
+            award = awardMapper.selectById(awardId);
+            if (award != null) {
+                redisService.setValue(awardCacheKey, award);
+            }
+        }
+        if (award != null) {
+            strategyAwardEntity.setAwardConfig(award.getAwardConfig());
+        }
+        return strategyAwardEntity;
     }
 
     @Override
     public Long queryStrategyIdByActivityId(Long activityId) {
-        LambdaQueryWrapper<Activity> queryWrapper = new QueryWrapper<Activity>().lambda()
-                .eq(Activity::getId, activityId);
-        Activity activity = activityMapper.selectOne(queryWrapper);
-        if (activity == null) {
-            return null;
-        }
-        return activity.getStrategyId();
+        Activity activity = activityMapper.selectOne(new QueryWrapper<Activity>().lambda().eq(Activity::getId, activityId));
+        return activity == null ? null : activity.getStrategyId();
     }
 
     @Override
@@ -389,6 +374,9 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         activityAccountDay.setActivityId(activityId);
         activityAccountDay.setDay(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         ActivityAccountDay activityAccountDayRes = activityAccountDayMapper.queryActivityAccountDayByUserId(activityAccountDay);
+        if (activityAccountDayRes == null) {
+            return 0;
+        }
         return activityAccountDayRes.getDayCount() - activityAccountDayRes.getDayCountSurplus();
     }
 
@@ -397,117 +385,106 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         if (treeIds == null || treeIds.length == 0) {
             return new HashMap<>();
         }
-        LambdaQueryWrapper<RuleTreeNode> queryWrapper = new QueryWrapper<RuleTreeNode>().lambda()
+        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(new QueryWrapper<RuleTreeNode>().lambda()
                 .eq(RuleTreeNode::getRuleName, Constants.RuleModel.RULE_LOCK)
-                .in(RuleTreeNode::getRuleTreeId, Arrays.asList(treeIds));
-        List<RuleTreeNode> ruleTreeNodes = ruleTreeNodeMapper.selectList(queryWrapper);
-        HashMap<Long, Integer> map = new HashMap<>();
+                .in(RuleTreeNode::getRuleTreeId, Arrays.asList(treeIds)));
+        Map<Long, Integer> map = new HashMap<>();
         for (RuleTreeNode ruleTreeNode : ruleTreeNodes) {
-            Long ruleTreeId = ruleTreeNode.getRuleTreeId();
-            String ruleValue = ruleTreeNode.getRuleValue();
-            map.put(ruleTreeId, Integer.valueOf(ruleValue));
+            map.put(ruleTreeNode.getRuleTreeId(), Integer.valueOf(ruleTreeNode.getRuleValue()));
         }
         return map;
-
     }
 
     @Override
-    public List<String> getStrategyAwardList() {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_LIST_KEY;
+    public List<String> getActivityAwardList() {
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY + "all";
         List<String> resultValue = redisService.getValue(cacheKey);
         if (resultValue != null && !resultValue.isEmpty()) {
             return resultValue;
         }
         List<StrategyAward> strategyAwards = strategyAwardMapper.selectList(null);
         resultValue = strategyAwards.stream()
-                .map(strategyAward -> strategyAward.getStrategyId() + "_" + strategyAward.getAwardId())
+                .map(strategyAward -> strategyAward.getActivityId() + Constants.UNDERLINE + strategyAward.getAwardId())
                 .collect(Collectors.toList());
         redisService.setValue(cacheKey, resultValue);
         return resultValue;
     }
 
     @Override
-    public void clearAwardStock(String strategyAward) {
-        //使用_拆分
-        String[] split = strategyAward.split("_");
+    public void clearAwardStock(String activityAward) {
+        String[] split = activityAward.split(Constants.UNDERLINE);
         LambdaUpdateWrapper<StrategyAward> updateWrapper = new LambdaUpdateWrapper<StrategyAward>()
                 .set(StrategyAward::getAwardCountSurplus, 0)
                 .set(StrategyAward::getUpdateTime, new Date())
-                .eq(StrategyAward::getStrategyId, split[0])
-                .eq(StrategyAward::getAwardId, split[1]);
+                .eq(StrategyAward::getActivityId, Long.parseLong(split[0]))
+                .eq(StrategyAward::getAwardId, Long.parseLong(split[1]));
         strategyAwardMapper.update(null, updateWrapper);
-        log.debug("[ActivityRepositoryImpl]清空奖品库存成功 strategyId: {}, awardId: {}", split[0], split[1]);
-
     }
 
     @Override
-    public void clearQueueValue(String strategyAward) {
-        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_QUEUE_KEY + strategyAward;
+    public void clearQueueValue(String activityAward) {
+        String cacheKey = Constants.RedisKey.ACTIVITY_AWARD_COUNT_QUEUE_KEY + activityAward;
         RBlockingQueue<LotteryReqEntity> blockingQueue = redisService.getBlockingQueue(cacheKey);
         blockingQueue.clear();
         RDelayedQueue<LotteryReqEntity> delayedQueue = redisService.getDelayedQueue(blockingQueue);
         delayedQueue.clear();
-        log.debug("[ActivityRepositoryImpl]清空strategyAward库存为0的阻塞队列与延时队列成功 strategyAward: {}", strategyAward);
     }
 
     @Override
     public List<RuleWeightVO> queryStrategyRuleWeight(Long activityId) {
-        // 优先从缓存获取
-        Long strategyId = queryStrategyIdByActivityId(activityId);
-        String cacheKey = Constants.RedisKey.STRATEGY_RULE_WEIGHT_KEY + strategyId;
+        String cacheKey = Constants.RedisKey.ACTIVITY_RULE_WEIGHT_KEY + activityId;
         List<RuleWeightVO> ruleWeightVOList = redisService.getValue(cacheKey);
         if (ruleWeightVOList != null) {
             return ruleWeightVOList;
         }
 
-        // 根据策略ID查策略表，得到包含rule_weight的规则模型
+        Long strategyId = queryStrategyIdByActivityId(activityId);
         StrategyEntity strategyEntity = queryStrategyEntityByStrategyId(strategyId);
-        String ruleModel = strategyEntity.getRuleWeight();
-
-        // 1.查询权重规则配置
-        LambdaQueryWrapper<Rule> queryWrapper = new QueryWrapper<Rule>().lambda()
-                .eq(Rule::getRuleModel, ruleModel);
-        Rule rule = ruleMapper.selectOne(queryWrapper);
-        if (rule == null) {
-            // 未配置权重
+        if (strategyEntity == null || strategyEntity.getRuleWeight() == null) {
             return new ArrayList<>();
         }
-        String ruleValue = rule.getRuleValue();
-        // 2.处理规则的值
+
+        Rule rule = ruleMapper.selectOne(new QueryWrapper<Rule>().lambda().eq(Rule::getRuleModel, strategyEntity.getRuleWeight()));
+        if (rule == null) {
+            return new ArrayList<>();
+        }
+
         RuleEntity ruleEntity = new RuleEntity();
-        ruleEntity.setRuleModel(ruleModel);
-        ruleEntity.setRuleValue(ruleValue);
+        ruleEntity.setRuleModel(strategyEntity.getRuleWeight());
+        ruleEntity.setRuleValue(rule.getRuleValue());
         Map<String, List<Long>> ruleWeightValues = ruleEntity.getRuleWeightValues();
-        // 3.组装权重奖品
+
         List<RuleWeightVO> newRuleWeightVOList = new ArrayList<>();
-        ruleWeightValues.keySet().forEach(ruleWeightKey -> {
+        for (String ruleWeightKey : ruleWeightValues.keySet()) {
             List<Long> awardIds = ruleWeightValues.get(ruleWeightKey);
             List<RuleWeightVO.Award> awardList = new ArrayList<>();
-            awardIds.forEach(awardId -> {
-                LambdaQueryWrapper<StrategyAward> wrapper = new QueryWrapper<StrategyAward>().lambda()
-                        .eq(StrategyAward::getStrategyId, strategyId)
-                        .eq(StrategyAward::getAwardId, awardId);
-                StrategyAward strategyAward = strategyAwardMapper.selectOne(wrapper);
+            for (Long awardId : awardIds) {
+                StrategyAward strategyAward = strategyAwardMapper.selectOne(new QueryWrapper<StrategyAward>().lambda()
+                        .eq(StrategyAward::getActivityId, activityId)
+                        .eq(StrategyAward::getAwardId, awardId));
+                if (strategyAward == null) {
+                    continue;
+                }
                 awardList.add(RuleWeightVO.Award.builder()
                         .awardId(awardId)
                         .awardTitle(strategyAward.getAwardTitle())
                         .build());
-            });
+            }
             newRuleWeightVOList.add(RuleWeightVO.builder()
-                    .ruleValue(ruleValue)
+                    .ruleValue(rule.getRuleValue())
                     .awardIds(awardIds)
                     .awardList(awardList)
                     .weight(Integer.valueOf(ruleWeightKey.split(Constants.COLON)[0]))
                     .build());
-        });
-        // 放入缓存
+        }
+
         redisService.setValue(cacheKey, newRuleWeightVOList);
         return newRuleWeightVOList;
     }
 
     @Override
     public void cacheStrategyArmoryAlgorithm(String key, String name) {
-        String cacheKey = Constants.RedisKey.STRATEGY_ALGORITHM_KEY + key;
+        String cacheKey = Constants.RedisKey.ACTIVITY_ALGORITHM_KEY + key;
         if (redisService.isExists(cacheKey)) {
             redisService.remove(cacheKey);
         }
@@ -516,7 +493,7 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public String queryStrategyArmoryAlgorithmFromCache(String key) {
-        String cacheKey = Constants.RedisKey.STRATEGY_ALGORITHM_KEY + key;
+        String cacheKey = Constants.RedisKey.ACTIVITY_ALGORITHM_KEY + key;
         if (!redisService.isExists(cacheKey)) {
             return null;
         }
@@ -532,21 +509,26 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     public void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> message) {
         try {
             eventPublisher.publish(topic, message);
-            log.debug("[StrategyRepositoryImpl]发送中奖广播消息成功 userId: {} topic: {}", message.getData().getUserId(), topic);
         } catch (Exception e) {
-            log.error("[StrategyRepositoryImpl]发送中奖广播消息失败 userId: {} topic: {}", message.getData().getUserId(), topic);
+            log.error("send lottery message failed userId:{} topic:{}", message.getData().getUserId(), topic, e);
         }
     }
 
     @Override
     public String queryRuleValue(Long awardId) {
-        LambdaQueryWrapper<Award> queryWrapper = new LambdaQueryWrapper<Award>().eq(Award::getId, awardId);
-        return awardMapper.selectOne(queryWrapper).getAwardConfig();
+        Award award = awardMapper.selectOne(new LambdaQueryWrapper<Award>().eq(Award::getId, awardId));
+        return award == null ? null : award.getAwardConfig();
     }
 
     @Override
     public void deleteCacheKeyByStrategyId(Long strategyId) {
-        redisService.deleteKeysWithPattern(strategyId.toString());
+        redisService.deleteKeysWithPattern(Constants.RedisKey.STRATEGY_KEY + strategyId);
+    }
+
+    @Override
+    public void deleteCacheKeyByActivityId(Long activityId) {
+        redisService.deleteKeysWithPattern(activityId.toString());
+        redisService.remove(Constants.RedisKey.ACTIVITY_RULE_WEIGHT_KEY + activityId);
     }
 
     @Override
@@ -554,4 +536,10 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         redisService.remove(Constants.RedisKey.RULE_TREE_KEY + treeId);
     }
 
+    @Override
+    public List<Long> queryActivityIdsByStrategyId(Long strategyId) {
+        List<Activity> activities = activityMapper.selectList(new QueryWrapper<Activity>().lambda()
+                .eq(Activity::getStrategyId, strategyId));
+        return activities.stream().map(Activity::getId).toList();
+    }
 }

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * 策略_奖品详情表
  *
  * @author 永
- * @TableName strategy_award
+ * @TableName activity_award
  */
 @Data
 public class StrategyAwardRequestDTO {
@@ -19,7 +19,7 @@ public class StrategyAwardRequestDTO {
     /**
      * 抽奖策略ID
      */
-    private Long strategyId;
+    private Long activityId;
     /**
      * 抽奖奖品ID
      */
