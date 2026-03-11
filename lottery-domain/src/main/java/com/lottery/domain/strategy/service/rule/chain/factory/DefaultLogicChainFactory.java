@@ -43,13 +43,13 @@ public class DefaultLogicChainFactory {
         }
         // 3. 依次装填责任链节点；rule_blacklist、rule_weight
         LogicChain logicChain = logicChainGroup.get(newRuleModels[0]);
-//        LogicChain current = logicChain;
+        LogicChain current = logicChain;
         for (int i = 1; i < newRuleModels.length; i++) {
             LogicChain nextChain = logicChainGroup.get(newRuleModels[i]);
-            logicChain = logicChain.appendNext(nextChain);
+            current = current.appendNext(nextChain);
         }
         // 4. 责任链的最后装填默认责任链节点
-        logicChain.appendNext(logicChainGroup.get(Constants.RuleModel.DEFAULT));
+        current.appendNext(logicChainGroup.get(Constants.RuleModel.DEFAULT));
         // 5. 返回责任链
         return logicChain;
     }
