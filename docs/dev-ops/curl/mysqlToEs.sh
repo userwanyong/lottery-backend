@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # 目标服务器地址
-BASE_URL="http://127.0.0.1:8081/etl/es7"
+BASE_URL="http://127.0.0.1:8082/etl/es7"
 
 # 所有需要上传的 YAML 文件列表
 FILES=(
