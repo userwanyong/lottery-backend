@@ -4,9 +4,9 @@ import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.valobj.RuleLogicCheckTypeVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.domain.strategy.service.rule.tree.LogicTree;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
-import com.lottery.domain.strategy.service.armory.StrategyService;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,16 +27,17 @@ public class RuleStockTreeNode implements LogicTree {
     private StrategyRepository repository;
 
     @Override
-    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId,Long activityId, Long awardId, String ruleValue) {
+    public DefaultLogicTreeFactory.TreeActionEntity logic(String userId, Long strategyId, Long activityId, Long awardId, String ruleValue) {
         log.info("【规则树 RuleStockTreeNode-库存扣减节点开始执行】");
         // 扣减库存
-        Boolean result = strategyService.reduceAwardStock(strategyId, activityId,awardId);
+        Boolean result = strategyService.reduceAwardStock(activityId, awardId);
         // 扣减成功，放行
         if (result) {
             log.info("【规则树 RuleStockTreeNode】-库存扣减-成功-放行 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
             // 写入延迟队列，延迟消费 更新数据库记录
             repository.awardStockConsumeSendQueue(LotteryReqEntity.builder()
                     .strategyId(strategyId)
+                    .activityId(activityId)
                     .awardId(awardId)
                     .build());
             return DefaultLogicTreeFactory.TreeActionEntity.builder()
@@ -48,7 +49,7 @@ public class RuleStockTreeNode implements LogicTree {
                     .build();
         }
         // 否则拦截
-        log.info("【规则树 RuleStockTreeNode】-库存扣减-失败-拦截 userId:{} strategyId:{} awardId:{}", userId, strategyId, awardId);
+        log.info("【规则树 RuleStockTreeNode】-库存扣减-失败-拦截 userId:{} strategyId:{} activityId:{} awardId:{}", userId, strategyId, activityId, awardId);
         return DefaultLogicTreeFactory.TreeActionEntity.builder()
                 .ruleLogicCheckType(RuleLogicCheckTypeVO.TAKE_OVER)
                 .build();

@@ -10,6 +10,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author 永
  */
@@ -29,9 +31,12 @@ public class PermissionCheckAOP {
             log.warn("用户未登录");
             throw new PermissionException("用户未登录");
         }
-        Integer currentRole = userUtils.getRole();
-        for (int role : permissionCheck.roles()) {
-            if (role == currentRole) {
+        List<String> userRoles = userUtils.getRoles();
+        if (userRoles == null || userRoles.isEmpty()) {
+            throw new PermissionException("用户权限不足");
+        }
+        for (String requiredRole : permissionCheck.roles()) {
+            if (userRoles.contains(requiredRole)) {
                 log.info("用户权限验证通过");
                 return;
             }

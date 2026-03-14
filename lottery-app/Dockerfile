@@ -1,5 +1,5 @@
-# 基础镜像
-FROM openjdk:17-jdk-slim
+# 基础镜像 (Eclipse Temurin 是 OpenJDK 的官方替代品)
+FROM eclipse-temurin:17-jdk-jammy
 
 # 作者
 LABEL maintainer="yong"

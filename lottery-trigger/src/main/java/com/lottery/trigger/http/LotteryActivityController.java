@@ -92,8 +92,8 @@ public class LotteryActivityController implements LotteryActivityService {
 
     @Override
     @PostMapping("/armory")
-    @PermissionCheck(roles = {0})
-    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_LIST_KEY})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
+    @DeleteOldCacheWithPrefixSync(key = {Constants.RedisKey.ACTIVITY_SKU_LIST_KEY,Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY})
     public BaseResponse<Boolean> armory(@RequestParam Long activityId) {
         log.info("======================[LotteryActivityController-armory]预热开始 activityId:{} ======================", activityId);
         // 1. 活动装配 suk库存、对应次数列表、该活动信息

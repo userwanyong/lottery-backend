@@ -26,7 +26,13 @@ import java.util.Map;
 @Service
 public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
-    public DefaultLottery(StrategyRepository repository, StrategyService strategyService, ChannelService channelService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+    public DefaultLottery(
+            StrategyRepository repository,
+            StrategyService strategyService,
+            ChannelService channelService,
+            DefaultLogicChainFactory defaultLogicChainFactory,
+            DefaultLogicTreeFactory defaultLogicTreeFactory
+    ) {
         super(repository, strategyService, channelService, defaultLogicChainFactory, defaultLogicTreeFactory);
     }
 
@@ -40,60 +46,46 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
     @Override
     public RuleEntity logicTree(String userId, Long strategyId, Long activityId, Long awardId) {
-        // 1. 查规则模型，如果为空，说明未设置规则，直接返回抽到的奖品实体
-        Long ruleTreeId = repository.queryRuleModelVO(strategyId, awardId);
+        Long ruleTreeId = repository.queryRuleModelVO(activityId, awardId);
         if (ruleTreeId == 0L) {
-            return RuleEntity.builder()
-                    .awardId(awardId)
-                    .build();
+            return RuleEntity.builder().awardId(awardId).build();
         }
-        // 2. 根据规则模型查数据库表构建规则树树根
         RuleTreeVO ruleTreeVO = repository.queryRuleTreeVO(ruleTreeId);
         if (ruleTreeVO == null) {
-            log.error("[DefaultLottery.lotteryLogicTree]存在奖品规则模型 id:{},但未在库表配置对应的规则树信息", ruleTreeId);
-            throw new RuntimeException("[DefaultLottery.lotteryLogicTree]存在奖品规则模型 id: " + ruleTreeId + ",但未在库表配置对应的规则树信息");
+            throw new RuntimeException("rule tree is not configured, treeId=" + ruleTreeId);
         }
-        // 3. 获取规则树引擎
         DecisionTreeEngine decisionTreeEngine = defaultLogicTreeFactory.getLogicTree(ruleTreeVO);
-        // 4. 执行规则树
         return decisionTreeEngine.process(userId, strategyId, activityId, awardId);
     }
 
-
     @Override
-    public LotteryReqEntity takeQueueValue(String strategyAward) {
-        return repository.takeQueueValue(strategyAward);
+    public LotteryReqEntity takeQueueValue(String activityAward) {
+        return repository.takeQueueValue(activityAward);
     }
 
     @Override
-    public void updateStrategyAwardStock(Long strategyId, Long awardId) {
-        repository.updateStrategyAwardStock(strategyId, awardId);
+    public void updateActivityAwardStock(Long activityId, Long awardId) {
+        repository.updateActivityAwardStock(activityId, awardId);
     }
 
     @Override
-    public List<String> getStrategyAwardList() {
-        return repository.getStrategyAwardList();
+    public List<String> getActivityAwardList() {
+        return repository.getActivityAwardList();
     }
 
     @Override
-    public void clearAwardStock(String strategyAward) {
-        repository.clearAwardStock(strategyAward);
+    public void clearAwardStock(String activityAward) {
+        repository.clearAwardStock(activityAward);
     }
 
     @Override
-    public void clearQueueValue(String strategyAward) {
-        repository.clearQueueValue(strategyAward);
-    }
-
-    @Override
-    public List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId) {
-        return repository.queryStrategyAwardList(strategyId);
+    public void clearQueueValue(String activityAward) {
+        repository.clearQueueValue(activityAward);
     }
 
     @Override
     public List<StrategyAwardEntity> queryLotteryAwardListByActivityId(Long activityId) {
-        Long strategyId = repository.queryStrategyIdByActivityId(activityId);
-        return queryLotteryAwardList(strategyId);
+        return repository.queryActivityAwardList(activityId);
     }
 
     @Override

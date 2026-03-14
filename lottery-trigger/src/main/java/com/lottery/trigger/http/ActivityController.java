@@ -1,6 +1,5 @@
 package com.lottery.trigger.http;
 
-import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.ActivityVO;
 import com.lottery.trigger.api.ActivityService;
@@ -31,9 +30,6 @@ import java.util.List;
 public class ActivityController implements ActivityService {
     @Resource
     private ErpRepository repository;
-    @Resource
-    private StrategyArmory strategyArmory;
-
     @Override
     @GetMapping("/query_activity")
     public BaseResponse<List<ActivityResponseDTO>> queryActivity() {
@@ -51,7 +47,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/add_activity")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> addActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-add]运营端 添加活动开始 ======================");
@@ -64,16 +60,13 @@ public class ActivityController implements ActivityService {
         ActivityVO activityVO = new ActivityVO();
         BeanUtils.copyProperties(request, activityVO);
         repository.addActivityVO(activityVO);
-        // 2. 装配抽奖算法
-        strategyArmory.assembleLotteryStrategy(request.getStrategyId());
-        log.info("[ActivityController-add]装配抽奖算法成功");
         log.info("======================[ActivityController-add]运营端 添加活动成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 
     @Override
     @PostMapping("/update_activity")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> updateActivity(@RequestBody ActivityRequestDTO request) {
         log.info("======================[ActivityController-update]运营端 修改活动开始 ======================");
@@ -92,7 +85,7 @@ public class ActivityController implements ActivityService {
 
     @Override
     @PostMapping("/delete_activity/{activityId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.ACTIVITY_KEY)
     public BaseResponse<Boolean> deleteActivity(@PathVariable("activityId") Long activityId) {
         log.info("======================[ActivityController-delete]运营端 删除活动开始 ======================");

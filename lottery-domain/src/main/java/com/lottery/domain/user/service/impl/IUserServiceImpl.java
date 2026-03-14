@@ -1,32 +1,85 @@
 package com.lottery.domain.user.service.impl;
 
-
-import cn.hutool.crypto.digest.BCrypt;
-import com.lottery.domain.user.model.dto.UserDTO;
 import com.lottery.domain.user.model.vo.UserVO;
+import com.lottery.domain.user.model.vo.WechatMiniProgramQrCodeVO;
 import com.lottery.domain.user.repository.IUserRepository;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-/**
- * @author 永
- */
 @Service
-public class IUserServiceImpl implements IUserService{
+public class IUserServiceImpl implements IUserService {
+
     @Resource
     private IUserRepository repository;
+
     @Override
-    public UserVO login(UserDTO userDTO) {
-        // 校验
-        String password = userDTO.getPassword();
-        if (userDTO.getUsername() == null || password == null) {
-            throw new AppException(ResponseCode.LOGIN_INFO_EMPTY.getCode(), ResponseCode.LOGIN_INFO_EMPTY.getMessage());
+    public void sendEmailRegisterCode(String email) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
         }
-        // 加密
-//        userDTO.setPassword(BCrypt.hashpw(password));
-        return repository.login(userDTO);
+        repository.sendEmailRegisterCode(email.trim().toLowerCase());
+    }
+
+    @Override
+    public UserVO registerByEmail(String email, String passCode, String password) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(passCode)) {
+            throw new AppException(ResponseCode.EMAIL_PASSCODE_EMPTY.getCode(), ResponseCode.EMAIL_PASSCODE_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new AppException(ResponseCode.EMAIL_PASSWORD_EMPTY.getCode(), ResponseCode.EMAIL_PASSWORD_EMPTY.getMessage());
+        }
+        return repository.registerByEmail(email.trim().toLowerCase(), passCode.trim(), password);
+    }
+
+    @Override
+    public UserVO loginByEmailPassword(String email, String password) {
+        if (StringUtils.isBlank(email)) {
+            throw new AppException(ResponseCode.EMAIL_EMPTY.getCode(), ResponseCode.EMAIL_EMPTY.getMessage());
+        }
+        if (StringUtils.isBlank(password)) {
+            throw new AppException(ResponseCode.EMAIL_PASSWORD_EMPTY.getCode(), ResponseCode.EMAIL_PASSWORD_EMPTY.getMessage());
+        }
+        return repository.loginByEmailPassword(email.trim().toLowerCase(), password);
+    }
+
+    @Override
+    public UserVO refreshToken(String refreshToken) {
+        if (StringUtils.isBlank(refreshToken)) {
+            throw new AppException(ResponseCode.REFRESH_TOKEN_INVALID.getCode(), ResponseCode.REFRESH_TOKEN_INVALID.getMessage());
+        }
+        return repository.refreshToken(refreshToken);
+    }
+
+    @Override
+    public WechatMiniProgramQrCodeVO generateWechatMiniProgramLoginQrCode() {
+        return repository.generateWechatMiniProgramLoginQrCode();
+    }
+
+    @Override
+    public WechatMiniProgramQrCodeVO queryWechatMiniProgramLoginQrCodeStatus(String qrcodeId) {
+        if (StringUtils.isBlank(qrcodeId)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "qrcodeId cannot be blank");
+        }
+        return repository.queryWechatMiniProgramLoginQrCodeStatus(qrcodeId.trim());
+    }
+
+    @Override
+    public UserVO loginByWechatMiniProgramQrCode(String ticket) {
+        if (StringUtils.isBlank(ticket)) {
+            throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "ticket cannot be blank");
+        }
+        return repository.loginByWechatMiniProgramQrCode(ticket.trim());
+    }
+
+    @Override
+    public void logout(Long userId) {
+        repository.logout(userId);
     }
 }

@@ -9,7 +9,7 @@ import java.util.Date;
  * 策略_奖品详情表
  *
  * @author 永
- * @TableName strategy_award
+ * @TableName activity_award
  */
 @Data
 public class StrategyAwardResponseDTO {
@@ -21,7 +21,7 @@ public class StrategyAwardResponseDTO {
     /**
      * 抽奖策略ID
      */
-    private Long strategyId;
+    private Long activityId;
     /**
      * 抽奖奖品ID
      */

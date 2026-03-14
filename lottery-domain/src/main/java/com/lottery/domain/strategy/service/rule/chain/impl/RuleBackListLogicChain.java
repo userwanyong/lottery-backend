@@ -22,7 +22,7 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
     @Override
     public RuleEntity logic(String userId, Long strategyId,Long activityId) {
         log.info("【抽奖责任链-RuleBackListLogicChain】-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
-        // 1. 查询规则的值
+        // 1. 查询配置的值
         String strategyRuleValue = repository.queryStrategyRuleValue(strategyId, Constants.RuleModel.RULE_BLACKLIST);
         String[] splitRuleValue = strategyRuleValue.split(Constants.COLON);
         Long awardId = Long.valueOf(splitRuleValue[0]);

@@ -48,7 +48,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/add_rule_tree")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> addRuleTree(@RequestBody RuleTreeRequestDTO request) {
         log.info("======================[ErpOperateController-add]运营端 添加奖品规则开始 ======================");
@@ -64,7 +64,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/update_rule_tree")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> updateRuleTree(@RequestBody RuleTreeRequestDTO request) {
         log.info("======================[ErpOperateController-update]运营端 修改奖品规则开始 ======================");
@@ -80,7 +80,7 @@ public class RuleTreeController implements RuleTreeService {
 
     @Override
     @PostMapping("/delete_rule_tree/{ruleTreeId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     @DeleteOldCacheWithPrefixAsync(key = Constants.RedisKey.RULE_TREE_KEY)
     public BaseResponse<Boolean> deleteRuleTree(@PathVariable("ruleTreeId") Long ruleTreeId) {
         log.info("======================[ErpOperateController-delete]运营端 删除奖品规则开始 ======================");

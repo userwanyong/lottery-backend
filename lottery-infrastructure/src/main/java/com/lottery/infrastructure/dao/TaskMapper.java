@@ -17,7 +17,10 @@ import java.util.List;
 public interface TaskMapper extends BaseMapper<Task> {
 
     //因为前面已经进行过分库操作了，所以这里不需要 @DBRouter
-    @Select("select * from task where state = 'fail' and now()- update_time<=600 or (state = 'create' and now() - update_time >= 60)  limit 10")
+    @Select("select * from task " +
+            "where (state = 'fail' and update_time >= date_sub(now(), interval 600 second)) " +
+            "or (state = 'create' and update_time <= date_sub(now(), interval 60 second)) " +
+            "limit 10")
     List<Task> queryNoSendMessageTaskList();
 
     @DBRouter

@@ -24,11 +24,6 @@ public class UserVO {
     private Integer status;
 
     /**
-     * 角色 0-管理员 1-用户 2-展示账号
-     */
-    private Integer role;
-
-    /**
      * 创建时间
      */
     private Date createTime;
@@ -39,5 +34,9 @@ public class UserVO {
     private Date updateTime;
 
     private String token;
+
+    private String refreshToken;
+
+    private Long expiresIn;
 
 }

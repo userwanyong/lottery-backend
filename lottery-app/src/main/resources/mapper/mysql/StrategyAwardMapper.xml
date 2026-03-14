@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.lottery.infrastructure.dao.po.StrategyAward">
         <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="strategyId" column="strategy_id" jdbcType="BIGINT"/>
+        <result property="activityId" column="activity_id" jdbcType="BIGINT"/>
         <result property="awardId" column="award_id" jdbcType="BIGINT"/>
         <result property="awardTitle" column="award_title" jdbcType="VARCHAR"/>
         <result property="awardSubtitle" column="award_subtitle" jdbcType="VARCHAR"/>

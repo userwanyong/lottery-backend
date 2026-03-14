@@ -59,7 +59,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/add_behavior")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     public BaseResponse<Boolean> addBehaviorRebate(@RequestBody BehaviorRebateRequestDTO request) {
         log.info("======================[BehaviorRebateController-addBehaviorRebate]运营端 添加返利配置开始 ======================");
         BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
@@ -71,7 +71,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/update_behavior")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     public BaseResponse<Boolean> updateBehaviorRebate(@RequestBody BehaviorRebateRequestDTO request) {
         log.info("======================[BehaviorRebateController-updateBehaviorRebate]运营端 修改返利配置开始 ======================");
         BehaviorRebateVO behaviorRebateVO = new BehaviorRebateVO();
@@ -83,7 +83,7 @@ public class BehaviorRebateController implements BehaviorRebateService {
 
     @Override
     @PostMapping("/delete_behavior/{behaviorRebateId}")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     public BaseResponse<Boolean> deleteBehaviorRebate(@PathVariable("behaviorRebateId") Long behaviorRebateId) {
         log.info("======================[BehaviorRebateController-deleteBehaviorRebate]运营端 删除返利配置开始 ======================");
         repository.deleteBehaviorRebateVO(behaviorRebateId);

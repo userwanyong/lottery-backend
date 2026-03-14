@@ -1,8 +1,8 @@
 package com.lottery.domain.strategy.service.rule.chain.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
-import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
 import com.lottery.domain.strategy.service.armory.StrategyService;
+import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,9 @@ public class DefaultLogicChain extends AbstractLogicChain {
     private StrategyService strategyService;
 
     @Override
-    public RuleEntity logic(String userId, Long strategyId,Long activityId) {
-        Long awardId = strategyService.getRandomAwardId(strategyId);
-        log.info("【抽奖责任链-DefaultLogicChain】-默认处理 userId: {} strategyId: {} awardId: {} ruleModel: {}", userId, strategyId, awardId, Constants.RuleModel.DEFAULT);
+    public RuleEntity logic(String userId, Long strategyId, Long activityId) {
+        Long awardId = strategyService.getRandomAwardId(activityId);
+        log.info("【抽奖责任链-DefaultLogicChain】-默认处理 userId:{} strategyId:{} activityId:{} awardId:{}", userId, strategyId, activityId, awardId);
         return RuleEntity.builder()
                 .awardId(awardId)
                 .ruleModel(Constants.RuleModel.DEFAULT)

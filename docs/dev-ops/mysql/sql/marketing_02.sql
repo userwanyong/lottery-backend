@@ -157,7 +157,8 @@ CREATE TABLE `activity_record_000`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`),
+    KEY `idx_user_id_activity_id_sku_state` (`user_id`, `activity_id`, `sku`, `state`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
@@ -198,7 +199,8 @@ CREATE TABLE `activity_record_001`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`),
+    KEY `idx_user_id_activity_id_sku_state` (`user_id`, `activity_id`, `sku`, `state`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
@@ -239,7 +241,8 @@ CREATE TABLE `activity_record_002`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`),
+    KEY `idx_user_id_activity_id_sku_state` (`user_id`, `activity_id`, `sku`, `state`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
@@ -280,7 +283,8 @@ CREATE TABLE `activity_record_003`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_out_business_no` (`out_business_no`),
-    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`)
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`, `state`),
+    KEY `idx_user_id_activity_id_sku_state` (`user_id`, `activity_id`, `sku`, `state`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户抽奖额度记录表';
@@ -314,7 +318,8 @@ CREATE TABLE `credit_account`
     `account_status`   varchar(8)      NOT NULL COMMENT '账户状态【open - 可用，close - 冻结】',
     `create_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id_activity_id` (`user_id`, `activity_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='积分账户表';
@@ -500,7 +505,8 @@ CREATE TABLE `task`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_message_id` (`message_id`),
     KEY `idx_state` (`state`),
-    KEY `idx_create_time` (`update_time`)
+    KEY `idx_create_time` (`update_time`),
+    KEY `idx_state_update_time` (`state`, `update_time`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 556
   DEFAULT CHARSET = utf8mb4
@@ -542,7 +548,8 @@ CREATE TABLE `user_award_record_000`
     UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
-    KEY `idx_award_id` (`strategy_id`)
+    KEY `idx_award_id` (`strategy_id`),
+    KEY `idx_user_id_activity_id_award_time` (`user_id`, `activity_id`, `award_time`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖流水表';
@@ -583,7 +590,8 @@ CREATE TABLE `user_award_record_001`
     UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
-    KEY `idx_award_id` (`strategy_id`)
+    KEY `idx_award_id` (`strategy_id`),
+    KEY `idx_user_id_activity_id_award_time` (`user_id`, `activity_id`, `award_time`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
@@ -624,7 +632,8 @@ CREATE TABLE `user_award_record_002`
     UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
-    KEY `idx_award_id` (`strategy_id`)
+    KEY `idx_award_id` (`strategy_id`),
+    KEY `idx_user_id_activity_id_award_time` (`user_id`, `activity_id`, `award_time`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
@@ -665,7 +674,8 @@ CREATE TABLE `user_award_record_003`
     UNIQUE KEY `uq_order_id` (`user_order_id`),
     KEY `idx_user_id` (`user_id`),
     KEY `idx_activity_id` (`activity_id`),
-    KEY `idx_award_id` (`strategy_id`)
+    KEY `idx_award_id` (`strategy_id`),
+    KEY `idx_user_id_activity_id_award_time` (`user_id`, `activity_id`, `award_time`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='用户中奖记录表';
@@ -704,7 +714,9 @@ CREATE TABLE `user_behavior_rebate_order_000`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
-    KEY `idx_user_id` (`user_id`)
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_user_id_out_business_no` (`user_id`, `out_business_no`),
+    KEY `idx_user_id_activity_id_out_business_no` (`user_id`, `activity_id`, `out_business_no`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
@@ -743,7 +755,9 @@ CREATE TABLE `user_behavior_rebate_order_001`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
-    KEY `idx_user_id` (`user_id`)
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_user_id_out_business_no` (`user_id`, `out_business_no`),
+    KEY `idx_user_id_activity_id_out_business_no` (`user_id`, `activity_id`, `out_business_no`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
@@ -782,7 +796,9 @@ CREATE TABLE `user_behavior_rebate_order_002`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
-    KEY `idx_user_id` (`user_id`)
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_user_id_out_business_no` (`user_id`, `out_business_no`),
+    KEY `idx_user_id_activity_id_out_business_no` (`user_id`, `activity_id`, `out_business_no`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';
@@ -821,7 +837,9 @@ CREATE TABLE `user_behavior_rebate_order_003`
     `update_time`     datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uq_biz_id` (`biz_id`),
-    KEY `idx_user_id` (`user_id`)
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_user_id_out_business_no` (`user_id`, `out_business_no`),
+    KEY `idx_user_id_activity_id_out_business_no` (`user_id`, `activity_id`, `out_business_no`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利订单表';

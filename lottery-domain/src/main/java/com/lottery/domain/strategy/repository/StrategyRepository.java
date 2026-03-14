@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public interface StrategyRepository {
 
-    List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
+    List<StrategyAwardEntity> queryActivityAwardList(Long activityId);
 
     <K, V> void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<K, V> strategyAwardSearchRateTable);
 
@@ -34,27 +34,21 @@ public interface StrategyRepository {
 
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
-    Long queryRuleModelVO(Long strategyId, Long awardId);
+    Long queryRuleModelVO(Long activityId, Long awardId);
 
-    /**
-     * 构建规则树树根
-     *
-     * @param treeId 规则树ID
-     * @return 规则树树根VO
-     */
     RuleTreeVO queryRuleTreeVO(Long treeId);
 
-    Boolean reduceAwardStock(String key, Long strategyId, Long activityId);
+    Boolean reduceAwardStock(String key, Long activityId);
 
     void awardStockConsumeSendQueue(LotteryReqEntity lotteryReqEntity);
 
-    LotteryReqEntity takeQueueValue(String strategyAward);
+    LotteryReqEntity takeQueueValue(String activityAward);
 
-    void updateStrategyAwardStock(Long strategyId, Long awardId);
+    void updateActivityAwardStock(Long activityId, Long awardId);
 
     void cacheStrategyAwardCount(String key, Integer awardCount);
 
-    StrategyAwardEntity queryStrategyAwardEntity(Long strategyId, Long awardId);
+    StrategyAwardEntity queryActivityAwardEntity(Long activityId, Long awardId);
 
     Long queryStrategyIdByActivityId(Long activityId);
 
@@ -62,11 +56,11 @@ public interface StrategyRepository {
 
     Map<Long, Integer> queryAwardRuleLockCount(Long[] treeIds);
 
-    List<String> getStrategyAwardList();
+    List<String> getActivityAwardList();
 
-    void clearAwardStock(String strategyAward);
+    void clearAwardStock(String activityAward);
 
-    void clearQueueValue(String strategyAward);
+    void clearQueueValue(String activityAward);
 
     List<RuleWeightVO> queryStrategyRuleWeight(Long activityId);
 
@@ -82,5 +76,9 @@ public interface StrategyRepository {
 
     void deleteCacheKeyByStrategyId(Long strategyId);
 
+    void deleteCacheKeyByActivityId(Long activityId);
+
     void deleteCacheKeyByTreeId(Long treeId);
+
+    List<Long> queryActivityIdsByStrategyId(Long strategyId);
 }

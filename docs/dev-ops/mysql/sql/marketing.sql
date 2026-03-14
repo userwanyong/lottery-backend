@@ -226,7 +226,8 @@ CREATE TABLE `behavior_rebate`
     `create_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`   datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    KEY `idx_behavior_type` (`behavior_type`)
+    KEY `idx_behavior_type` (`behavior_type`),
+    KEY `idx_activity_id_behavior_type` (`activity_id`, `behavior_type`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='返利活动配置表';
@@ -349,7 +350,8 @@ CREATE TABLE `rule_tree_node`
     `rule_value`   varchar(128)             DEFAULT NULL COMMENT '规则的值',
     `create_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`  datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `idx_rule_tree_id` (`rule_tree_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点表';
@@ -410,7 +412,8 @@ CREATE TABLE `rule_tree_node_line`
     `rule_limit_value` varchar(32)     NOT NULL COMMENT '限定值（到下个节点）',
     `create_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time`      datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY `idx_rule_tree_id` (`rule_tree_id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='规则节点走向表';
@@ -486,99 +489,63 @@ VALUES (1947996138992865281, '默认策略', '', '2025-07-23 20:24:05', '2025-07
 UNLOCK TABLES;
 
 --
--- Table structure for table `strategy_award`
+-- Table structure for table `activity_award`
 --
 
-DROP TABLE IF EXISTS `strategy_award`;
+DROP TABLE IF EXISTS `activity_award`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `strategy_award`
+CREATE TABLE `activity_award`
 (
     `id`                  bigint unsigned NOT NULL COMMENT '雪花ID',
-    `strategy_id`         bigint          NOT NULL COMMENT '抽奖策略ID',
-    `award_id`            bigint          NOT NULL COMMENT '抽奖奖品ID',
-    `award_title`         varchar(128)    NOT NULL COMMENT '抽奖奖品标题',
-    `award_subtitle`      varchar(128)             DEFAULT NULL COMMENT '抽奖奖品副标题',
+    `activity_id`         bigint          NOT NULL COMMENT '活动ID',
+    `award_id`            bigint          NOT NULL COMMENT '奖品ID',
+    `award_title`         varchar(128)    NOT NULL COMMENT '奖品标题',
+    `award_subtitle`      varchar(128)             DEFAULT NULL COMMENT '奖品副标题',
     `award_count`         int             NOT NULL DEFAULT '0' COMMENT '奖品库存总量',
     `award_count_surplus` int             NOT NULL DEFAULT '0' COMMENT '奖品库存剩余',
     `award_rate`          decimal(6, 4)   NOT NULL COMMENT '奖品中奖概率',
-    `rule_tree_id`        bigint          NOT NULL COMMENT '奖品规则ID',
+    `rule_tree_id`        bigint          NOT NULL COMMENT '奖品规则树ID',
     `sort`                int             NOT NULL DEFAULT '0' COMMENT '排序',
     `create_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+    `update_time`         datetime        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    KEY `idx_strategy_id_award_id` (`strategy_id`, `award_id`)
+    KEY `idx_activity_id_award_id` (`activity_id`, `award_id`),
+    KEY `idx_activity_id_sort` (`activity_id`, `sort`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='策略奖品表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='活动奖品表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `strategy_award`
+-- Dumping data for table `activity_award`
+-- 从 `strategy_award` 初始化数据迁移，目标活动ID: 1989345533881966594
 --
 
-LOCK TABLES `strategy_award` WRITE;
-/*!40000 ALTER TABLE `strategy_award`
+LOCK TABLES `activity_award` WRITE;
+/*!40000 ALTER TABLE `activity_award`
     DISABLE KEYS */;
-INSERT INTO `strategy_award`
-VALUES (1989343319025213441, 1989339401985679361, 1989336435136356353, 'AI调用次数+1', '', 1000000, 999281, 0.2000,
+INSERT INTO `activity_award`
+VALUES (1989343319025213441, 1989345533881966594, 1989336435136356353, 'AI调用次数+1', '', 1000000, 999281, 0.2000,
         1989339772170756097, 2, '2025-11-14 22:43:01', '2025-11-23 18:34:19'),
-       (1989343506909061121, 1989339401985679361, 1989337068971188225, '谢谢参与', NULL, 1000000, 998932, 0.3000,
+       (1989343506909061121, 1989345533881966594, 1989337068971188225, '谢谢参与', NULL, 1000000, 998932, 0.3000,
         1989339772170756097, 1, '2025-11-14 22:43:46', '2025-11-23 18:34:24'),
-       (1989343674081435649, 1989339401985679361, 1989336928877240321, '抽奖次数+1', '', 1000000, 999500, 0.1500,
+       (1989343674081435649, 1989345533881966594, 1989336928877240321, '抽奖次数+1', '', 1000000, 999500, 0.1500,
         1989339772170756097, 3, '2025-11-14 22:44:26', '2025-11-21 23:33:21'),
-       (1989343816616468481, 1989339401985679361, 1989336702498070529, '随机积分', '', 1000000, 999676, 0.1000,
+       (1989343816616468481, 1989345533881966594, 1989336702498070529, '随机积分', '', 1000000, 999676, 0.1000,
         1989339772170756097, 4, '2025-11-14 22:45:00', '2025-11-22 15:14:40'),
-       (1989344008988221441, 1989339401985679361, 1989336991691137026, '抽奖次数+5', NULL, 1000000, 999626, 0.1000,
+       (1989344008988221441, 1989345533881966594, 1989336991691137026, '抽奖次数+5', NULL, 1000000, 999626, 0.1000,
         1989339772170756097, 5, '2025-11-14 22:45:46', '2025-11-21 23:33:07'),
-       (1989344181713854466, 1989339401985679361, 1989336788581965826, 'AI调用次数+5', ' ', 100000, 99583, 0.1200,
+       (1989344181713854466, 1989345533881966594, 1989336788581965826, 'AI调用次数+5', ' ', 100000, 99583, 0.1200,
         1989339871722561537, 6, '2025-11-14 22:46:27', '2025-11-21 23:32:16'),
-       (1989344419094683650, 1989339401985679361, 1989337375050522625, 'VIP周卡', '抽奖3次后解锁', 100000, 99919,
+       (1989344419094683650, 1989345533881966594, 1989337375050522625, 'VIP周卡', '抽奖 3 次后解锁', 100000, 99919,
         0.0200, 1989339936365174786, 7, '2025-11-14 22:47:24', '2025-11-21 21:28:42'),
-       (1989344519481155586, 1989339401985679361, 1989337465119006721, 'VIP月卡', '抽奖5次后解锁', 100000, 99965,
+       (1989344519481155586, 1989345533881966594, 1989337465119006721, 'VIP月卡', '抽奖 5 次后解锁', 100000, 99965,
         0.0100, 1989339970464866305, 8, '2025-11-14 22:47:48', '2025-11-21 19:07:52');
-/*!40000 ALTER TABLE `strategy_award`
+/*!40000 ALTER TABLE `activity_award`
     ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user`
-(
-    `id`          bigint                                                        NOT NULL COMMENT '雪花id',
-    `username`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '用户名',
-    `password`    varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
-    `status`      tinyint                                                       NOT NULL DEFAULT '0' COMMENT '状态 0-正常 1-禁用',
-    `role`        tinyint                                                       NOT NULL DEFAULT '1' COMMENT '角色 0-管理员 1-用户 2-展示账号',
-    `create_time` datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` datetime                                                      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci
-  ROW_FORMAT = DYNAMIC COMMENT ='用户表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user`
-    DISABLE KEYS */;
-INSERT INTO `user`
-VALUES (1010101010, '1684346230', '$2a$10$iNf7JRKo51wH2ZyzQPlH7uBupTdZIGAH0TCdlYxEiXKQDS72VVNhq', 0, 0,
-        '2025-10-13 13:06:23', '2025-11-22 16:00:47'),
-       (1972867537402150914, 'wanyj', '$2a$10$iNf7JRKo51wH2ZyzQPlH7uBupTdZIGAH0TCdlYxEiXKQDS72VVNhq', 0, 2,
-        '2025-11-11 14:24:46', '2025-11-22 16:00:42');
-/*!40000 ALTER TABLE `user`
-    ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE = @OLD_SQL_MODE */;

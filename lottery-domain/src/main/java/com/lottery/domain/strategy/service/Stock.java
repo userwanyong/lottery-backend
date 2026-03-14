@@ -10,24 +10,13 @@ import java.util.List;
  */
 public interface Stock {
 
-    /**
-     * 获取奖品库存消耗队列
-     *
-     * @return 奖品库存Key信息
-     */
-    LotteryReqEntity takeQueueValue(String strategyAward);
+    LotteryReqEntity takeQueueValue(String activityAward);
 
-    /**
-     * 更新奖品库存消耗记录
-     *
-     * @param strategyId 策略ID
-     * @param awardId    奖品ID
-     */
-    void updateStrategyAwardStock(Long strategyId, Long awardId);
+    void updateActivityAwardStock(Long activityId, Long awardId);
 
-    List<String> getStrategyAwardList();
+    List<String> getActivityAwardList();
 
-    void clearAwardStock(String strategyAward);
+    void clearAwardStock(String activityAward);
 
-    void clearQueueValue(String strategyAward);
+    void clearQueueValue(String activityAward);
 }

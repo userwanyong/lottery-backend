@@ -12,25 +12,7 @@ import java.util.List;
  */
 public interface Lottery {
 
-    /**
-     * 根据策略ID查询抽奖奖品列表配置
-     *
-     * @param strategyId 策略ID
-     * @return 奖品列表
-     */
-    List<StrategyAwardEntity> queryLotteryAwardList(Long strategyId);
-    /**
-     * 根据策略ID查询抽奖奖品列表配置
-     *
-     * @param activityId 活动ID
-     * @return 奖品列表
-     */
     List<StrategyAwardEntity> queryLotteryAwardListByActivityId(Long activityId);
 
-    /**
-     * @param lotteryFactorEntity 抽奖请求实体
-     * @return 抽到的奖品实体
-     */
     LotteryResEntity doLottery(LotteryReqEntity lotteryFactorEntity);
-
 }

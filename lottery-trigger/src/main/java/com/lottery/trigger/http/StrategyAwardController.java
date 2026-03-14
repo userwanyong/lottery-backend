@@ -1,6 +1,7 @@
 package com.lottery.trigger.http;
 
 
+import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.StrategyAwardVO;
 import com.lottery.trigger.api.StrategyAwardService;
@@ -31,6 +32,8 @@ import java.util.List;
 public class StrategyAwardController implements StrategyAwardService {
     @Resource
     private ErpRepository repository;
+    @Resource
+    private StrategyArmory strategyArmory;
 
     @Override
     @GetMapping("/query_strategy_award")
@@ -49,46 +52,48 @@ public class StrategyAwardController implements StrategyAwardService {
 
     @Override
     @PostMapping("/add_strategy_award")
-    @PermissionCheck(roles = {0})
-    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
+    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY,Constants.RedisKey.ACTIVITY_AWARD_COUNT_KEY,Constants.RedisKey.ACTIVITY_AWARD_KEY})
     public BaseResponse<Boolean> addStrategyAward(@RequestBody StrategyAwardRequestDTO request) {
         log.info("======================[ErpOperateController-addStrategyAward]运营端 添加策略奖品开始 ======================");
         if (StringUtils.isBlank(request.getAwardTitle()) || request.getAwardCount() == null ||
                 request.getAwardCountSurplus() == null || request.getAwardRate() == null ||
-                request.getStrategyId() == null || request.getAwardId() == null ||
+                request.getActivityId() == null || request.getAwardId() == null ||
                 request.getSort() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         StrategyAwardVO strategyAwardVO = new StrategyAwardVO();
         BeanUtils.copyProperties(request, strategyAwardVO);
         repository.addStrategyAwardVO(strategyAwardVO);
+        strategyArmory.assembleLotteryStrategyByActivityId(request.getActivityId());
         log.info("======================[ErpOperateController-addStrategyAward]运营端 添加策略奖品成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 
     @Override
     @PostMapping("/update_strategy_award")
-    @PermissionCheck(roles = {0})
-    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
+    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY,Constants.RedisKey.ACTIVITY_AWARD_COUNT_KEY,Constants.RedisKey.ACTIVITY_AWARD_KEY})
     public BaseResponse<Boolean> updateStrategyAward(@RequestBody StrategyAwardRequestDTO request) {
         log.info("======================[ErpOperateController-updateStrategyAward]运营端 修改策略奖品开始 ======================");
         if (StringUtils.isBlank(request.getAwardTitle()) || request.getAwardCount() == null ||
                 request.getAwardCountSurplus() == null || request.getAwardRate() == null ||
-                request.getStrategyId() == null || request.getAwardId() == null ||
+                request.getActivityId() == null || request.getAwardId() == null ||
                 request.getSort() == null || request.getId() == null) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         StrategyAwardVO strategyAwardVO = new StrategyAwardVO();
         BeanUtils.copyProperties(request, strategyAwardVO);
         repository.updateStrategyAwardVO(strategyAwardVO);
+        strategyArmory.assembleLotteryStrategyByActivityId(request.getActivityId());
         log.info("======================[ErpOperateController-updateStrategyAward]运营端 修改策略奖品成功 ======================");
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage());
     }
 
     @Override
     @PostMapping("/delete_strategy_award/{strategyAwardId}")
-    @PermissionCheck(roles = {0})
-    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.STRATEGY_AWARD_LIST_KEY,Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY,Constants.RedisKey.STRATEGY_AWARD_KEY})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
+    @DeleteOldCacheWithPrefixAsync(key = {Constants.RedisKey.ACTIVITY_AWARD_LIST_KEY,Constants.RedisKey.ACTIVITY_AWARD_COUNT_KEY,Constants.RedisKey.ACTIVITY_AWARD_KEY})
     public BaseResponse<Boolean> deleteStrategyAward(@PathVariable("strategyAwardId") Long strategyAwardId) {
         log.info("======================[ErpOperateController-deleteStrategyAward]运营端 删除策略奖品开始 ======================");
         repository.deleteStrategyAwardVO(strategyAwardId);

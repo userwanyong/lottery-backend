@@ -31,7 +31,7 @@ public class DCCController implements DCCService {
 
     @Override
     @PostMapping("/update_config")
-    @PermissionCheck(roles = {0})
+    @PermissionCheck(roles = {"ROLE_ADMIN"})
     public BaseResponse<Boolean> updateConfig(@RequestBody DCCRequestDTO requestDTO) {
         String key = requestDTO.getKey();
         String value = requestDTO.getValue();

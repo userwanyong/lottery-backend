@@ -1,19 +1,20 @@
 package com.lottery.trigger.api.dto.req;
 
-
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author 永
  */
 @Data
-public class UserLoginRequestDTO implements Serializable {
+public class RefreshTokenRequestDTO implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String username;
-    private String password;
+    @NotBlank(message = "refreshToken不能为空")
+    private String refreshToken;
 }

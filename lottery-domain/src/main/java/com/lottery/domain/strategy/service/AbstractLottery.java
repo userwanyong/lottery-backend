@@ -35,7 +35,13 @@ public abstract class AbstractLottery implements Lottery {
     @Resource
     private SendLotteryMessageEvent sendLotteryMessageEvent;
 
-    public AbstractLottery(StrategyRepository repository, StrategyService strategyService, ChannelService channelService, DefaultLogicChainFactory defaultLogicChainFactory, DefaultLogicTreeFactory defaultLogicTreeFactory) {
+    public AbstractLottery(
+            StrategyRepository repository,
+            StrategyService strategyService,
+            ChannelService channelService,
+            DefaultLogicChainFactory defaultLogicChainFactory,
+            DefaultLogicTreeFactory defaultLogicTreeFactory
+    ) {
         this.repository = repository;
         this.strategyService = strategyService;
         this.channelService = channelService;
@@ -49,25 +55,21 @@ public abstract class AbstractLottery implements Lottery {
         String userId = lotteryReqEntity.getUserId();
         Long strategyId = lotteryReqEntity.getStrategyId();
         Long activityId = lotteryReqEntity.getActivityId();
-        if (strategyId == null) {
-            log.error("[AbstractLottery]抽奖失败,strategyId为 null 用户ID：{}", userId);
+        if (strategyId == null || activityId == null) {
+            log.error("[AbstractLottery]抽奖失败,strategyId/activityId为 null 用户ID：{}", userId);
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), ResponseCode.ILLEGAL_PARAMETER.getMessage());
         }
         // 2. 责任链
         RuleEntity chainAward = logicChain(userId, strategyId, activityId);
         log.debug("[AbstractLottery]抽奖责任链通过 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, chainAward.getAwardId(), chainAward.getRuleModel());
-        // 只有走到责任链的最后一个节点的时候，才会走到这里
         if (!Constants.RuleModel.DEFAULT.equals(chainAward.getRuleModel())) {
-            return buildLotteryAwardEntity(strategyId, chainAward.getAwardId(), chainAward.getRuleValue());
+            return buildLotteryAwardEntity(activityId, chainAward.getAwardId());
         }
         // 3. 规则树
         RuleEntity treeAward = logicTree(userId, strategyId, activityId, chainAward.getAwardId());
         log.debug("[AbstractLottery]默认规则执行规则树 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
+        LotteryResEntity resEntity = buildLotteryAwardEntity(activityId, treeAward.getAwardId());
 
-        // 4. 构造返回结果
-        LotteryResEntity resEntity = buildLotteryAwardEntity(strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
-
-        // 5. 加入mq
         SendLotteryMessageEvent.LotteryMessage message = SendLotteryMessageEvent.LotteryMessage.builder()
                 .userId(userId)
                 .awardConfig(resEntity.getAwardConfig())
@@ -77,7 +79,8 @@ public abstract class AbstractLottery implements Lottery {
                 .sort(resEntity.getSort())
                 .awardTime(resEntity.getAwardTime())
                 .build();
-        BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> lotteryMessageEventMessage = sendLotteryMessageEvent.buildEventMessage(message);
+        BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> lotteryMessageEventMessage =
+                sendLotteryMessageEvent.buildEventMessage(message);
         repository.sendLotteryMessageToMq(sendLotteryMessageEvent.topic(), lotteryMessageEventMessage);
 
         //6. 返回
@@ -85,8 +88,8 @@ public abstract class AbstractLottery implements Lottery {
 
     }
 
-    private LotteryResEntity buildLotteryAwardEntity(Long strategyId, Long awardId, String awardConfig) {
-        StrategyAwardEntity strategyAward = repository.queryStrategyAwardEntity(strategyId, awardId);
+    private LotteryResEntity buildLotteryAwardEntity(Long activityId, Long awardId) {
+        StrategyAwardEntity strategyAward = repository.queryActivityAwardEntity(activityId, awardId);
         return LotteryResEntity.builder()
                 .awardId(awardId)
                 .awardTitle(strategyAward.getAwardTitle())
