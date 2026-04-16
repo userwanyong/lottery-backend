@@ -70,18 +70,18 @@ public abstract class AbstractLottery implements Lottery {
         log.debug("[AbstractLottery]默认规则执行规则树 用户ID：{}, 策略ID：{}, 奖品ID：{}, 奖品规则模型：{}", userId, strategyId, treeAward.getAwardId(), treeAward.getRuleValue());
         LotteryResEntity resEntity = buildLotteryAwardEntity(activityId, treeAward.getAwardId());
 
-        SendLotteryMessageEvent.LotteryMessage message = SendLotteryMessageEvent.LotteryMessage.builder()
-                .userId(userId)
-                .awardConfig(resEntity.getAwardConfig())
-                .awardTitle(resEntity.getAwardTitle())
-                .awardId(resEntity.getAwardId())
-                .activityId(String.valueOf(activityId))
-                .sort(resEntity.getSort())
-                .awardTime(resEntity.getAwardTime())
-                .build();
-        BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> lotteryMessageEventMessage =
-                sendLotteryMessageEvent.buildEventMessage(message);
-        repository.sendLotteryMessageToMq(sendLotteryMessageEvent.topic(), lotteryMessageEventMessage);
+//        SendLotteryMessageEvent.LotteryMessage message = SendLotteryMessageEvent.LotteryMessage.builder()
+//                .userId(userId)
+//                .awardConfig(resEntity.getAwardConfig())
+//                .awardTitle(resEntity.getAwardTitle())
+//                .awardId(resEntity.getAwardId())
+//                .activityId(String.valueOf(activityId))
+//                .sort(resEntity.getSort())
+//                .awardTime(resEntity.getAwardTime())
+//                .build();
+//        BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> lotteryMessageEventMessage =
+//                sendLotteryMessageEvent.buildEventMessage(message);
+//        repository.sendLotteryMessageToMq(sendLotteryMessageEvent.topic(), lotteryMessageEventMessage);
 
         //6. 返回
         return resEntity;

@@ -110,9 +110,8 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     }
                     return 1;
                 } catch (DuplicateKeyException e) {
-                    status.setRollbackOnly();
-                    log.error("[UserAwardRepositoryImpl]写入中奖记录失败，唯一索引冲突 userId: {} activityId: {} awardId: {}", userAwardRecordEntity.getUserId(), userAwardRecordEntity.getActivityId(), userAwardRecordEntity.getAwardId(), e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
+                    log.warn("[UserAwardRepositoryImpl]写入中奖记录，唯一索引冲突，记录已存在视为幂等处理 userId: {} activityId: {} awardId: {}", userAwardRecordEntity.getUserId(), userAwardRecordEntity.getActivityId(), userAwardRecordEntity.getAwardId());
+                    return 1;
                 }
             });
         } finally {
@@ -154,8 +153,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         creditRecord.setTradeName(TradeNameVO.LOTTERY_AWARD.getName());
         creditRecord.setTradeType(TradeTypeVO.FORWARD.getCode());
         creditRecord.setTradeAmount(userCreditAwardEntity.getCreditAmount());
-        // 可重复抽取到积分，所以精确到秒
-        creditRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.LOTTERY.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        creditRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.LOTTERY.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {
             lock.lock(3, TimeUnit.SECONDS);
@@ -232,7 +230,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         activityRecord.setMonthCount(userCountAwardEntity.getCount());
         activityRecord.setPayAmount(BigDecimal.ZERO);
         activityRecord.setState(userAwardRecordEntity.getAwardState().getCode());
-        activityRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.COUNT.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        activityRecord.setOutBusinessNo(userId+Constants.UNDERLINE+ RebateTypeVO.COUNT.getCode()+Constants.UNDERLINE +new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
 
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {

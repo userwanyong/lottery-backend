@@ -4,6 +4,8 @@ import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.domain.strategy.model.entity.StrategyEntity;
 import com.lottery.domain.strategy.repository.StrategyRepository;
+import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
+import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -21,6 +23,12 @@ import java.util.Set;
 public abstract class AbstractStrategy implements StrategyArmory, StrategyService {
     @Resource
     protected StrategyRepository repository;
+
+    @Resource
+    private DefaultLogicChainFactory defaultLogicChainFactory;
+
+    @Resource
+    private DefaultLogicTreeFactory defaultLogicTreeFactory;
 
     @Override
     public boolean assembleLotteryStrategy(Long strategyId) {
@@ -42,6 +50,9 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "activity strategy is not configured");
         }
 
+        // 清理责任链JVM缓存
+        defaultLogicChainFactory.clearChainCache(strategyId);
+
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryActivityAwardList(activityId);
         if (strategyAwardEntities == null || strategyAwardEntities.isEmpty()) {
             throw new AppException(ResponseCode.ILLEGAL_PARAMETER.getCode(), "activity award is not configured");
@@ -54,6 +65,7 @@ public abstract class AbstractStrategy implements StrategyArmory, StrategyServic
                 .toList();
         for (Long treeId : treeIds) {
             repository.deleteCacheKeyByTreeId(treeId);
+            defaultLogicTreeFactory.clearEngineCache(treeId);
             repository.queryRuleTreeVO(treeId);
         }
 

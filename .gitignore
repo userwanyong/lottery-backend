@@ -45,3 +45,6 @@ build/
 
 /.claude/
 /lottery-app/.local-config
+/docs/md/
+/lottery-trigger/src/main/java/com/lottery/trigger/http/BenchmarkController.java
+/scripts/

@@ -4,7 +4,7 @@ import com.lottery.domain.activity.service.ActivityQuotaService;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.armory.StrategyService;
-import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
+import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component(Constants.RuleModel.RULE_WIGHT)
-public class RuleWeightLogicChain extends AbstractLogicChain {
+public class RuleWeightLogicChain implements LogicChain {
 
     @Resource
     private StrategyRepository repository;
@@ -44,7 +44,7 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
         // 1. 处理规则模型的值，如果规则模型没有值，直接放行
         Map<Long, String> analyticalValueGroup = getAnalyticalValue(ruleValue);
         if (analyticalValueGroup == null || analyticalValueGroup.isEmpty()) {
-            return next().logic(userId, strategyId,activityId);
+            return null;
         }
 
         // 2. 转换Keys值，并默认排序
@@ -68,9 +68,9 @@ public class RuleWeightLogicChain extends AbstractLogicChain {
                     .build();
         }
 
-        // 否则过滤其他责任链
+        // 否则放行到下一个责任链节点
         log.info("【抽奖责任链-RuleWeightLogicChain】-权重放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_WIGHT);
-        return next().logic(userId, strategyId,activityId);
+        return null;
     }
 
     private Map<Long, String> getAnalyticalValue(String ruleValue) {

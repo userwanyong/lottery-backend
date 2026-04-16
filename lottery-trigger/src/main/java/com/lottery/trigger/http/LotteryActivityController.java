@@ -8,6 +8,7 @@ import com.lottery.domain.activity.service.ActivitySkuProductService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.valobj.AwardStateVO;
+import com.lottery.domain.award.event.SaveAwardRecordMessageEvent;
 import com.lottery.domain.award.service.UserAwardService;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.TradeEntity;
@@ -24,7 +25,6 @@ import com.lottery.domain.strategy.service.Rule;
 import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.adapter.repository.EsErpRepository;
-import com.lottery.querys.model.valobj.EsUserAwardRecordVO;
 import com.lottery.querys.model.valobj.UserAwardRecordVO;
 import com.lottery.trigger.api.LotteryActivityService;
 import com.lottery.trigger.api.dto.req.*;
@@ -37,13 +37,11 @@ import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
+import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.types.model.MyPage;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +87,10 @@ public class LotteryActivityController implements LotteryActivityService {
     private ErpRepository repository;
     @Resource
     private Rule rule;
+    @Resource
+    private SaveAwardRecordMessageEvent saveAwardRecordMessageEvent;
+    @Resource
+    private EventPublisher eventPublisher;
 
     @Override
     @PostMapping("/armory")
@@ -120,7 +122,7 @@ public class LotteryActivityController implements LotteryActivityService {
     public BaseResponse<ActivityDrawResponseDTO> draw(@RequestBody ActivityDrawRequestDTO request) {
         log.info("======================[LotteryActivityController-draw]用户抽奖开始 userId:{} activityId:{} ======================", request.getUserId(), request.getActivityId());
         if ("open".equals(degradeSwitch)) {
-            log.info("======================[LotteryActivityController-draw]用户抽奖结束,已进行降级处理 ======================");
+            log.debug("======================[LotteryActivityController-draw]用户抽奖结束,已进行降级处理 ======================");
             return new BaseResponse<>(ResponseCode.DEGRADE_SWITCH.getCode(), ResponseCode.DEGRADE_SWITCH.getMessage());
         }
         // 1. 参数校验
@@ -129,12 +131,12 @@ public class LotteryActivityController implements LotteryActivityService {
         }
         // 2. 创建抽奖单
         PartakeOrderResEntity partakeOrder = activityPartakeService.createPartakeOrder(request.getUserId(), request.getActivityId());
-        log.info("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
+        log.debug("[LotteryActivityController-draw]抽奖单 orderId:{}", partakeOrder.getId());
         // 3. 执行抽奖
-        log.info("[LotteryActivityController-draw]执行抽奖");
+        log.debug("[LotteryActivityController-draw]执行抽奖");
         LotteryResEntity lotteryResEntity = lottery.doLottery(LotteryReqEntity.builder().userId(partakeOrder.getUserId()).strategyId(partakeOrder.getStrategyId()).activityId(partakeOrder.getActivityId()).build());
-        log.info("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
-        // 4. 写入中奖记录
+        log.debug("[LotteryActivityController-draw]抽奖结果 {}", lotteryResEntity);
+        // 4. 异步写入中奖记录（通过MQ）
         UserAwardRecordEntity userAwardRecord = UserAwardRecordEntity.builder()
                 .userId(partakeOrder.getUserId())
                 .activityId(partakeOrder.getActivityId())
@@ -146,8 +148,23 @@ public class LotteryActivityController implements LotteryActivityService {
                 .awardTime(lotteryResEntity.getAwardTime())
                 .awardState(AwardStateVO.create)
                 .build();
-        userAwardService.saveUserAwardRecord(userAwardRecord);
-        log.info("[LotteryActivityController-draw]写入中奖记录成功");
+        try {
+            SaveAwardRecordMessageEvent.SaveAwardRecordMessage msg = SaveAwardRecordMessageEvent.SaveAwardRecordMessage.builder()
+                    .userId(userAwardRecord.getUserId())
+                    .activityId(userAwardRecord.getActivityId())
+                    .strategyId(userAwardRecord.getStrategyId())
+                    .userOrderId(userAwardRecord.getUserOrderId())
+                    .awardId(userAwardRecord.getAwardId())
+                    .awardTitle(userAwardRecord.getAwardTitle())
+                    .awardConfig(userAwardRecord.getAwardConfig())
+                    .awardTime(userAwardRecord.getAwardTime())
+                    .build();
+            eventPublisher.publish(saveAwardRecordMessageEvent.topic(), saveAwardRecordMessageEvent.buildEventMessage(msg));
+            log.debug("[LotteryActivityController-draw]异步写入中奖记录消息已发送");
+        } catch (Exception e) {
+            log.error("[LotteryActivityController-draw]MQ发送失败，降级为同步保存 userId:{}", request.getUserId(), e);
+            userAwardService.saveUserAwardRecord(userAwardRecord);
+        }
         // 5. 返回结果
         ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
                 .awardId(lotteryResEntity.getAwardId())

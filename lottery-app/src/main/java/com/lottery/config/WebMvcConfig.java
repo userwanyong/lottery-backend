@@ -30,5 +30,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/user/wechat-mini-program/qrcode/status")
                 .excludePathPatterns("/user/wechat-mini-program/qrcode/login")
                 .excludePathPatterns("/health/check");
+//                // TODO 压测临时排除，测试完成后删除此行
+//                .excludePathPatterns("/activity/**")
+//                // TODO 基准测试临时排除，测试完成后删除此行
+//                .excludePathPatterns("/benchmark/**");
     }
 }

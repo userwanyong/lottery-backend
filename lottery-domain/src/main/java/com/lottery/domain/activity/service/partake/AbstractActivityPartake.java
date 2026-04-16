@@ -51,7 +51,7 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
             return partakeOrderResEntity;
         }
         //构建抽奖单
-        PartakeOrderResEntity userOrderRes = this.buildUserPartakeOrder(userId, activityId, currentTime);
+        PartakeOrderResEntity userOrderRes = this.buildUserPartakeOrder(userId, activityId, currentTime, activityEntity);
         //构建聚合对象
         CreatePartakeOrderAggregate createPartakeOrderAggregate = this.doFilterAccount(userId, activityId, currentTime);
         createPartakeOrderAggregate.setPartakeOrderResEntity(userOrderRes);
@@ -63,5 +63,5 @@ public abstract class AbstractActivityPartake implements ActivityPartakeService 
 
     protected abstract CreatePartakeOrderAggregate doFilterAccount(String userId, Long activityId, Date currentTime);
 
-    protected abstract PartakeOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime);
+    protected abstract PartakeOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime, ActivityEntity activityEntity);
 }

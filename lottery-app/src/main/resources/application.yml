@@ -40,6 +40,7 @@ spring:
       activity_sku_stock_zero: activity_sku_stock_zero
       award_stock_zero: award_stock_zero
       send_award: send_award
+      save_award_record: save_award_record
       send_rebate: send_rebate
       credit_adjust_success: credit_adjust_success
       lottery: lottery

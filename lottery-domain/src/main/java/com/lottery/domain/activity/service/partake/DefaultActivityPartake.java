@@ -1,6 +1,5 @@
 package com.lottery.domain.activity.service.partake;
 
-import com.github.yitter.idgen.YitIdHelper;
 import com.lottery.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
 import com.lottery.domain.activity.model.valobj.UserOrderStateVO;
@@ -79,8 +78,7 @@ public class DefaultActivityPartake extends AbstractActivityPartake {
     }
 
     @Override
-    protected PartakeOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime) {
-        ActivityEntity activityEntity = activityRepository.queryActivityByActivityId(activityId);
+    protected PartakeOrderResEntity buildUserPartakeOrder(String userId, Long activityId, Date currentTime, ActivityEntity activityEntity) {
         // 构建抽奖单
         PartakeOrderResEntity partakeOrderResEntity = new PartakeOrderResEntity();
         partakeOrderResEntity.setUserId(userId);

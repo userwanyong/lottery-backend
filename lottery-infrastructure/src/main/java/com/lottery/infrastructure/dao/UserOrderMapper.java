@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Update;
 public interface UserOrderMapper extends BaseMapper<UserOrder> {
 
     @DBRouter
-    @Select("select * from user_order where user_id = #{userId} and activity_id = #{activityId} and order_state='create'")
+    @Select("select * from user_order where user_id = #{userId} and activity_id = #{activityId} and order_state='create' limit 1")
     UserOrder queryNoUsedPartakeOrder(UserOrder userOrder);
 
     @DBRouter

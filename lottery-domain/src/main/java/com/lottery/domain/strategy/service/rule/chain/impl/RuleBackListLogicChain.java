@@ -2,7 +2,7 @@ package com.lottery.domain.strategy.service.rule.chain.impl;
 
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.repository.StrategyRepository;
-import com.lottery.domain.strategy.service.rule.chain.AbstractLogicChain;
+import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Component(Constants.RuleModel.RULE_BLACKLIST)
-public class RuleBackListLogicChain extends AbstractLogicChain {
+public class RuleBackListLogicChain implements LogicChain {
 
     @Resource
     private StrategyRepository repository;
@@ -43,8 +43,8 @@ public class RuleBackListLogicChain extends AbstractLogicChain {
                         .build();
             }
         }
-        // 否则过滤其他责任链
+        // 否则放行到下一个责任链节点
         log.info("【抽奖责任链-RuleBackListLogicChain】-黑名单放行 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, Constants.RuleModel.RULE_BLACKLIST);
-        return next().logic(userId, strategyId,activityId);
+        return null;
     }
 }

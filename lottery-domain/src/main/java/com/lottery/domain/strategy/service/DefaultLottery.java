@@ -8,7 +8,6 @@ import com.lottery.domain.strategy.model.valobj.RuleTreeVO;
 import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.domain.strategy.service.armory.StrategyService;
-import com.lottery.domain.strategy.service.rule.chain.LogicChain;
 import com.lottery.domain.strategy.service.rule.chain.factory.DefaultLogicChainFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.DefaultLogicTreeFactory;
 import com.lottery.domain.strategy.service.rule.tree.factory.engine.DecisionTreeEngine;
@@ -38,10 +37,10 @@ public class DefaultLottery extends AbstractLottery implements Stock, Rule {
 
     @Override
     public RuleEntity logicChain(String userId, Long strategyId, Long activityId) {
-        // 1. 获取责任链
-        LogicChain logicChain = defaultLogicChainFactory.getLogicChain(strategyId);
-        // 2. 依次执行责任链
-        return logicChain.logic(userId, strategyId, activityId);
+        // 1. 获取责任链（带缓存）
+        DefaultLogicChainFactory.ChainedLogic chainedLogic = defaultLogicChainFactory.getChainedLogic(strategyId);
+        // 2. 执行责任链
+        return chainedLogic.execute(userId, strategyId, activityId);
     }
 
     @Override

@@ -162,6 +162,14 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public String queryStrategyRuleValue(Long strategyId, Long awardId, String ruleModel) {
+        // 1. 查Redis缓存
+        String ruleValueCacheKey = Constants.RedisKey.STRATEGY_RULE_VALUE_KEY + strategyId + Constants.UNDERLINE + ruleModel;
+        String cachedValue = redisService.getValue(ruleValueCacheKey);
+        if (cachedValue != null) {
+            return cachedValue;
+        }
+
+        // 2. 缓存未命中，查DB
         Strategy strategy = new Strategy();
         String cacheKey = Constants.RedisKey.STRATEGY_KEY + strategyId;
         StrategyEntity strategyEntity = redisService.getValue(cacheKey);
@@ -186,7 +194,13 @@ public class StrategyRepositoryImpl implements StrategyRepository {
             return null;
         }
         Rule rule = ruleMapper.selectOne(queryWrapper);
-        return rule == null ? null : rule.getRuleValue();
+        String ruleValue = rule == null ? null : rule.getRuleValue();
+
+        // 3. 写入缓存
+        if (ruleValue != null) {
+            redisService.setValue(ruleValueCacheKey, ruleValue);
+        }
+        return ruleValue;
     }
 
     @Override
@@ -196,13 +210,27 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Override
     public Long queryRuleModelVO(Long activityId, Long awardId) {
+        // 1. 查Redis缓存
+        String cacheKey = Constants.RedisKey.RULE_MODEL_KEY + activityId + Constants.UNDERLINE + awardId;
+        Long cachedTreeId = redisService.getValue(cacheKey);
+        if (cachedTreeId != null) {
+            return cachedTreeId;
+        }
+
+        // 2. 缓存未命中，查DB
         StrategyAward strategyAward = strategyAwardMapper.selectOne(new QueryWrapper<StrategyAward>().lambda()
                 .eq(StrategyAward::getActivityId, activityId)
                 .eq(StrategyAward::getAwardId, awardId));
         if (strategyAward == null || strategyAward.getRuleTreeId() == null) {
+            // 缓存0L防穿透
+            redisService.setValue(cacheKey, 0L);
             return 0L;
         }
-        return strategyAward.getRuleTreeId();
+
+        // 3. 写入缓存
+        Long ruleTreeId = strategyAward.getRuleTreeId();
+        redisService.setValue(cacheKey, ruleTreeId);
+        return ruleTreeId;
     }
 
     @Override
@@ -523,12 +551,14 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public void deleteCacheKeyByStrategyId(Long strategyId) {
         redisService.deleteKeysWithPattern(Constants.RedisKey.STRATEGY_KEY + strategyId);
+        redisService.deleteKeysWithPattern(Constants.RedisKey.STRATEGY_RULE_VALUE_KEY + strategyId);
     }
 
     @Override
     public void deleteCacheKeyByActivityId(Long activityId) {
         redisService.deleteKeysWithPattern(activityId.toString());
         redisService.remove(Constants.RedisKey.ACTIVITY_RULE_WEIGHT_KEY + activityId);
+        redisService.deleteKeysWithPattern(Constants.RedisKey.RULE_MODEL_KEY + activityId);
     }
 
     @Override
