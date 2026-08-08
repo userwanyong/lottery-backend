@@ -1,10 +1,8 @@
 package com.lottery.infrastructure.adapter.repository;
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.lottery.domain.activity.event.ActivitySkuStockZeroMessageEvent;
 import com.lottery.domain.activity.model.aggregate.CreatePartakeOrderAggregate;
 import com.lottery.domain.activity.model.aggregate.CreateQuotaOrderAggregate;
 import com.lottery.domain.activity.model.entity.*;
@@ -15,7 +13,6 @@ import com.lottery.domain.activity.model.valobj.UserOrderStateVO;
 import com.lottery.domain.activity.repository.ActivityRepository;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
@@ -66,14 +63,7 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Resource
     private UserOrderMapper userOrderMapper;
     @Resource
-    private IDBRouterStrategy dbRouter;
-    @Resource
     private TransactionTemplate transactionTemplate;
-    @Resource
-    private EventPublisher eventPublisher;
-    @Resource
-    private ActivitySkuStockZeroMessageEvent activitySkuStockZeroMessageEvent;
-
 
     @Override
     public ActivitySkuEntity queryActivitySku(Long sku) {
@@ -176,8 +166,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
             activityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
 
-            // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
-            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
             // 编程式事务
             transactionTemplate.execute(status -> {
                 try {
@@ -224,7 +212,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
     }
@@ -252,8 +239,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityRecord.setPayAmount(activityOrderEntity.getPayAmount());
             activityRecord.setOutBusinessNo(activityOrderEntity.getOutBusinessNo());
 
-            // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
-            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
             // 编程式事务
             transactionTemplate.execute(status -> {
                 try {
@@ -268,7 +253,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
     }
@@ -292,9 +276,10 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         }
         long count = redisService.decr(key);
         if (count == 0) {
-            // 库存消耗没了以后，发送MQ消息，更新数据库库存
-            log.debug("[ActivityRepositoryImpl]已无库存，发送MQ消息清空数据库库存 sku: {}", sku);
-            eventPublisher.publish(activitySkuStockZeroMessageEvent.topic(), activitySkuStockZeroMessageEvent.buildEventMessage(sku));
+            // 库存归零，同步清空数据库库存与队列（轻量版：去 MQ，直接调用）
+            log.debug("[ActivityRepositoryImpl]已无库存，清空数据库库存 sku: {}", sku);
+            clearActivitySkuStock(sku);
+            clearQueueValue(sku);
         } else if (count < 0) {
             redisService.setAtomicLong(key, 0);
             throw new AppException(ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getCode(), ResponseCode.ACTIVITY_SKU_STOCK_ERROR.getMessage());
@@ -422,17 +407,14 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     @Override
     public Long saveCreatePartakeOrderAggregate(CreatePartakeOrderAggregate createPartakeOrderAggregate) {
         final Long[] userOrderId = {null};
-        try {
-            String userId = createPartakeOrderAggregate.getUserId();
-            Long activityId = createPartakeOrderAggregate.getActivityId();
-            ActivityAccountEntity activityAccountEntity = createPartakeOrderAggregate.getActivityAccountEntity();
-            ActivityAccountMonthEntity activityAccountMonthEntity = createPartakeOrderAggregate.getActivityAccountMonthEntity();
-            ActivityAccountDayEntity activityAccountDayEntity = createPartakeOrderAggregate.getActivityAccountDayEntity();
-            PartakeOrderResEntity partakeOrderResEntity = createPartakeOrderAggregate.getPartakeOrderResEntity();
+        String userId = createPartakeOrderAggregate.getUserId();
+        Long activityId = createPartakeOrderAggregate.getActivityId();
+        ActivityAccountEntity activityAccountEntity = createPartakeOrderAggregate.getActivityAccountEntity();
+        ActivityAccountMonthEntity activityAccountMonthEntity = createPartakeOrderAggregate.getActivityAccountMonthEntity();
+        ActivityAccountDayEntity activityAccountDayEntity = createPartakeOrderAggregate.getActivityAccountDayEntity();
+        PartakeOrderResEntity partakeOrderResEntity = createPartakeOrderAggregate.getPartakeOrderResEntity();
 
-            // 统一切换路由，以下事务内的所有操作，都走一个路由
-            dbRouter.doRouter(userId);
-            transactionTemplate.execute(status -> {
+        transactionTemplate.execute(status -> {
                 try {
                     // 1. 更新总账户 activity_account
                     LambdaUpdateWrapper<ActivityAccount> activityAccountLambdaUpdateWrapper = new LambdaUpdateWrapper<ActivityAccount>()
@@ -542,9 +524,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                     throw new AppException(ResponseCode.INDEX_DUP.getCode(), ResponseCode.INDEX_DUP.getMessage());
                 }
             });
-        } finally {
-            dbRouter.clear();
-        }
         return userOrderId[0];
 
     }
@@ -657,7 +636,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
     public void updateQuotaOrder(DeliveryOrderEntity deliveryOrderEntity) {
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_UPDATE_LOCK + deliveryOrderEntity.getUserId());
         try {
-            dbRouter.doRouter(deliveryOrderEntity.getUserId());
             lock.lock(3, TimeUnit.SECONDS);
             // 查询订单
             LambdaQueryWrapper<ActivityRecord> queryWrapper = new QueryWrapper<ActivityRecord>().lambda()
@@ -747,7 +725,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
     }
@@ -779,38 +756,28 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 .eq(ActivityRecord::getSku, quotaOrderEntity.getSku())
                 .eq(ActivityRecord::getActivityId, quotaOrderEntity.getActivityId())
                 .eq(ActivityRecord::getState, OrderStateVO.wait_pay);
-        try {
-            dbRouter.doRouter(quotaOrderEntity.getUserId());
-            ActivityRecord activityRecord = activityRecordMapper.selectOne(queryWrapper);
-            if (activityRecord == null) {
-                return null;
-            }
-            return UnpaidQuotaOrderEntity.builder()
-                    .userId(activityRecord.getUserId())
-                    .activityId(activityRecord.getActivityId())
-                    .outBusinessNo(activityRecord.getOutBusinessNo())
-                    .payAmount(activityRecord.getPayAmount())
-                    .build();
-        } finally {
-            dbRouter.clear();
+        ActivityRecord activityRecord = activityRecordMapper.selectOne(queryWrapper);
+        if (activityRecord == null) {
+            return null;
         }
+        return UnpaidQuotaOrderEntity.builder()
+                .userId(activityRecord.getUserId())
+                .activityId(activityRecord.getActivityId())
+                .outBusinessNo(activityRecord.getOutBusinessNo())
+                .payAmount(activityRecord.getPayAmount())
+                .build();
     }
 
     @Override
     public BigDecimal queryUserCreditAccountAmount(String userId, Long activityId) {
-        try {
-            dbRouter.doRouter(userId);
-            LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>()
-                    .eq(CreditAccount::getUserId, userId)
-                    .eq(CreditAccount::getActivityId, activityId);
-            CreditAccount userCreditAccount = creditAccountMapper.selectOne(queryWrapper);
-            if (userCreditAccount == null) {
-                return BigDecimal.ZERO;
-            }
-            return userCreditAccount.getAvailableAmount();
-        } finally {
-            dbRouter.clear();
+        LambdaQueryWrapper<CreditAccount> queryWrapper = new LambdaQueryWrapper<CreditAccount>()
+                .eq(CreditAccount::getUserId, userId)
+                .eq(CreditAccount::getActivityId, activityId);
+        CreditAccount userCreditAccount = creditAccountMapper.selectOne(queryWrapper);
+        if (userCreditAccount == null) {
+            return BigDecimal.ZERO;
         }
+        return userCreditAccount.getAvailableAmount();
     }
 
     @Override
@@ -860,8 +827,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
             activityAccountDay.setDayCount(createQuotaOrderAggregate.getDayCount());
             activityAccountDay.setDayCountSurplus(createQuotaOrderAggregate.getDayCount());
 
-            // 以用户ID作为切分键，通过 doRouter 设定路由【这样就保证了下面的操作，都是同一个链接下，也就保证了事务的特性】
-            dbRouter.doRouter(createQuotaOrderAggregate.getUserId());
             // 编程式事务
             transactionTemplate.execute(status -> {
                 try {
@@ -902,7 +867,6 @@ public class ActivityRepositoryImpl implements ActivityRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
     }

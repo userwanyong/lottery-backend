@@ -1,6 +1,5 @@
 package com.lottery.infrastructure.dao;
 
-import cn.bugstack.middleware.db.router.annotation.DBRouter;
 import com.lottery.infrastructure.dao.po.ActivityAccountDay;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,13 +12,8 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface ActivityAccountDayMapper extends BaseMapper<ActivityAccountDay> {
 
-    @DBRouter
     @Select("select * from activity_account_day where user_id = #{userId} and activity_id = #{activityId} and day = #{day}")
     ActivityAccountDay queryActivityAccountDayByUserId(ActivityAccountDay activityAccountDay);
 
     int updateAccount(ActivityAccountDay activityAccountDay);
 }
-
-
-
-

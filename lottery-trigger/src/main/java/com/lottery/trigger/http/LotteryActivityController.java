@@ -8,7 +8,6 @@ import com.lottery.domain.activity.service.ActivitySkuProductService;
 import com.lottery.domain.activity.service.armory.ActivityArmory;
 import com.lottery.domain.award.model.entity.UserAwardRecordEntity;
 import com.lottery.domain.award.model.valobj.AwardStateVO;
-import com.lottery.domain.award.event.SaveAwardRecordMessageEvent;
 import com.lottery.domain.award.service.UserAwardService;
 import com.lottery.domain.credit.model.entity.CreditAccountEntity;
 import com.lottery.domain.credit.model.entity.TradeEntity;
@@ -24,7 +23,6 @@ import com.lottery.domain.strategy.service.Lottery;
 import com.lottery.domain.strategy.service.Rule;
 import com.lottery.domain.strategy.service.armory.StrategyArmory;
 import com.lottery.querys.adapter.repository.ErpRepository;
-import com.lottery.querys.adapter.repository.EsErpRepository;
 import com.lottery.querys.model.valobj.UserAwardRecordVO;
 import com.lottery.trigger.api.LotteryActivityService;
 import com.lottery.trigger.api.dto.req.*;
@@ -37,7 +35,6 @@ import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
 import com.lottery.types.model.BaseResponse;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.types.model.MyPage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -82,15 +79,9 @@ public class LotteryActivityController implements LotteryActivityService {
     @DCCValue("degradeSwitch:close")
     private String degradeSwitch;
     @Resource
-    private EsErpRepository esRepository;
-    @Resource
     private ErpRepository repository;
     @Resource
     private Rule rule;
-    @Resource
-    private SaveAwardRecordMessageEvent saveAwardRecordMessageEvent;
-    @Resource
-    private EventPublisher eventPublisher;
 
     @Override
     @PostMapping("/armory")
@@ -148,23 +139,8 @@ public class LotteryActivityController implements LotteryActivityService {
                 .awardTime(lotteryResEntity.getAwardTime())
                 .awardState(AwardStateVO.create)
                 .build();
-        try {
-            SaveAwardRecordMessageEvent.SaveAwardRecordMessage msg = SaveAwardRecordMessageEvent.SaveAwardRecordMessage.builder()
-                    .userId(userAwardRecord.getUserId())
-                    .activityId(userAwardRecord.getActivityId())
-                    .strategyId(userAwardRecord.getStrategyId())
-                    .userOrderId(userAwardRecord.getUserOrderId())
-                    .awardId(userAwardRecord.getAwardId())
-                    .awardTitle(userAwardRecord.getAwardTitle())
-                    .awardConfig(userAwardRecord.getAwardConfig())
-                    .awardTime(userAwardRecord.getAwardTime())
-                    .build();
-            eventPublisher.publish(saveAwardRecordMessageEvent.topic(), saveAwardRecordMessageEvent.buildEventMessage(msg));
-            log.debug("[LotteryActivityController-draw]异步写入中奖记录消息已发送");
-        } catch (Exception e) {
-            log.error("[LotteryActivityController-draw]MQ发送失败，降级为同步保存 userId:{}", request.getUserId(), e);
-            userAwardService.saveUserAwardRecord(userAwardRecord);
-        }
+        // 轻量版：去 MQ，直接同步保存中奖记录（内部写 task 触发后续发奖补偿）
+        userAwardService.saveUserAwardRecord(userAwardRecord);
         // 5. 返回结果
         ActivityDrawResponseDTO result = ActivityDrawResponseDTO.builder()
                 .awardId(lotteryResEntity.getAwardId())
@@ -296,21 +272,6 @@ public class LotteryActivityController implements LotteryActivityService {
         log.info("======================[LotteryActivityController-creditPayExchangeSku]积分兑换商品成功 userId:{} activityId:{} sku:{} orderId:{} ======================", request.getUserId(), request.getActivityId(), request.getSku(), creditOrder);
         return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), true);
     }
-
-//    @Override
-//    @GetMapping("/query_user_award_record_by_activity_id")
-//    public BaseResponse<List<EsUserAwardRecordResponseDTO>> queryUserAwardRecordByActivityId(@RequestParam Long activityId) {
-//        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报开始 activityId:{} ======================", activityId);
-//        List<EsUserAwardRecordVO> esUserAwardRecords = esRepository.queryEsUserAwardRecordVOList(activityId);
-//        ArrayList<EsUserAwardRecordResponseDTO> list = new ArrayList<>();
-//        for (EsUserAwardRecordVO esUserAwardRecord : esUserAwardRecords) {
-//            EsUserAwardRecordResponseDTO esUserAwardRecordResponseDTO = new EsUserAwardRecordResponseDTO();
-//            BeanUtils.copyProperties(esUserAwardRecord, esUserAwardRecordResponseDTO);
-//            list.add(esUserAwardRecordResponseDTO);
-//        }
-//        log.info("======================[LotteryActivityController-queryUserAwardRecordByActivityId]查询中奖播报成功 activityId:{} ======================", activityId);
-//        return new BaseResponse<>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), list);
-//    }
 
     @GetMapping("/query_my_award_record")
     @Override

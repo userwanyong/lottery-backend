@@ -6,19 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 /**
  * @author 永
- * 奖品事件消息（基本消息事件的组装）
+ * 奖品事件消息（轻量版：topic 硬编码，去 rabbitmq 配置）
  */
 @Component
 public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendAwardMessage> {
-    @Value("${spring.rabbitmq.topic.send_award}")
-    private String topic;
 
     @Override
     public EventMessage<SendAwardMessage> buildEventMessage(SendAwardMessage data) {
@@ -31,7 +28,7 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
 
     @Override
     public String topic() {
-        return topic;
+        return "send_award";
     }
 
     @Data
@@ -39,29 +36,17 @@ public class SendAwardMessageEvent extends BaseEvent<SendAwardMessageEvent.SendA
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SendAwardMessage {
-        /**
-         * 用户ID
-         */
+        /** 用户ID */
         private String userId;
-        /**
-         * 活动ID
-         */
+        /** 活动ID */
         private Long activityId;
-        /**
-         * 奖品ID
-         */
+        /** 奖品ID */
         private Long awardId;
-        /**
-         * 奖品标题（名称）
-         */
+        /** 奖品标题（名称） */
         private String awardTitle;
-        /**
-         * 订单ID
-         */
+        /** 订单ID */
         private Long userOrderId;
-        /**
-         * 奖品配置信息
-         */
+        /** 奖品配置信息 */
         private String awardConfig;
 
     }

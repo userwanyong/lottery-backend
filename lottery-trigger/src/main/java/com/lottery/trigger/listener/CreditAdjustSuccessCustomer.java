@@ -9,29 +9,25 @@ import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.event.BaseEvent;
 import com.lottery.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+
 /**
  * @author 永
- * @description 积分调整成功消息
+ * 积分调整成功消息（轻量版：由 SendMessageTaskJob 本地分发调用，去 MQ）
  */
 @Slf4j
 @Component
 public class CreditAdjustSuccessCustomer {
+    public static final String TOPIC = "credit_adjust_success";
 
-    @Value("${spring.rabbitmq.topic.credit_adjust_success}")
-    private String topic;
     @Resource
     private ActivityQuotaService activityQuotaService;
 
-    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.credit_adjust_success}"))
     public void listener(String message) {
         try {
-            log.info("[CreditAdjustSuccessCustomer]监听到积分账户调整成功消息，进行交易商品发放 topic: {} message: {}", topic, message);
+            log.info("[CreditAdjustSuccessCustomer]监听到积分账户调整成功消息，进行交易商品发放 topic: {} message: {}", TOPIC, message);
             BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage>>() {
             }.getType());
             CreditAdjustSuccessMessageEvent.CreditAdjustSuccessMessage creditAdjustSuccessMessage = eventMessage.getData();
@@ -41,18 +37,17 @@ public class CreditAdjustSuccessCustomer {
             deliveryOrderEntity.setActivityId(creditAdjustSuccessMessage.getActivityId());
             deliveryOrderEntity.setOutBusinessNo(creditAdjustSuccessMessage.getOutBusinessNo());
             activityQuotaService.updateQuotaOrder(deliveryOrderEntity);
-            log.info("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货成功 topic: {} message: {}", topic, message);
+            log.info("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货成功 topic: {} message: {}", TOPIC, message);
         } catch (AppException ae) {
-            if (ResponseCode.INDEX_DUP.getCode()==ae.getCode()) {
-                log.warn("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货，消费重复 topic: {} message: {}", topic, message, ae);
+            if (ResponseCode.INDEX_DUP.getCode() == ae.getCode()) {
+                log.warn("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货，消费重复 topic: {} message: {}", TOPIC, message, ae);
                 return;
             }
             throw ae;
         } catch (Exception e) {
-            log.error("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", topic, message, e);
+            log.error("[CreditAdjustSuccessCustomer]积分账户调整成功消息，进行交易商品发货失败 topic: {} message: {}", TOPIC, message, e);
             throw e;
         }
     }
 
 }
-

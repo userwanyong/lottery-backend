@@ -2,7 +2,6 @@ package com.lottery.infrastructure.adapter.repository;
 
 import com.lottery.domain.task.model.entity.TaskEntity;
 import com.lottery.domain.task.repository.TaskRepository;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.dao.TaskMapper;
 import com.lottery.infrastructure.dao.po.Task;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +13,13 @@ import java.util.List;
 
 /**
  * @author 永
- * 任务领域仓储实现
+ * 任务领域仓储实现（轻量版：消息投递由 SendMessageTaskJob 本地分发，sendMessage 不再实际发送）
  */
 @Repository
 @Slf4j
 public class TaskRepositoryImpl implements TaskRepository {
     @Resource
     private TaskMapper taskMapper;
-    @Resource
-    private EventPublisher eventPublisher;
 
     @Override
     public List<TaskEntity> queryNoSendMessageTaskList() {
@@ -41,8 +38,8 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public void sendMessage(TaskEntity taskEntity) {
-        eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-        log.debug("[TaskRepositoryImpl]发送MQ消息成功 userId: {} topic: {}", taskEntity.getUserId(), taskEntity.getTopic());
+        // 轻量版：去 MQ，消息投递由 SendMessageTaskJob 本地分发（按 topic 路由到对应 Customer）
+        log.debug("[TaskRepositoryImpl]消息投递由 SendMessageTaskJob 本地分发 userId: {} topic: {}", taskEntity.getUserId(), taskEntity.getTopic());
     }
 
     @Override

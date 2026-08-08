@@ -6,21 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 /**
  * @author 永
- * mq发送返利消息
+ * 返利消息（轻量版：topic 硬编码，去 rabbitmq 配置）
  */
 @Component
 public class SendRebateMessageEvent extends BaseEvent<SendRebateMessageEvent.RebateMessage> {
-
-
-    @Value("${spring.rabbitmq.topic.send_rebate}")
-    private String topic;
 
     @Override
     public EventMessage<RebateMessage> buildEventMessage(RebateMessage data) {
@@ -33,7 +28,7 @@ public class SendRebateMessageEvent extends BaseEvent<SendRebateMessageEvent.Reb
 
     @Override
     public String topic() {
-        return topic;
+        return "send_rebate";
     }
 
     @Data
@@ -41,29 +36,17 @@ public class SendRebateMessageEvent extends BaseEvent<SendRebateMessageEvent.Reb
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RebateMessage {
-        /**
-         * 用户ID
-         */
+        /** 用户ID */
         private String userId;
-        /**
-         * 活动ID
-         */
+        /** 活动ID */
         private Long activityId;
-        /**
-         * 返利描述
-         */
+        /** 返利描述 */
         private String rebateDesc;
-        /**
-         * 返利类型
-         */
+        /** 返利类型 */
         private String rebateType;
-        /**
-         * 返利配置
-         */
+        /** 返利配置 */
         private String rebateConfig;
-        /**
-         * 业务ID - 唯一ID，确保幂等
-         */
+        /** 业务ID - 唯一ID，确保幂等 */
         private String bizId;
     }
 }

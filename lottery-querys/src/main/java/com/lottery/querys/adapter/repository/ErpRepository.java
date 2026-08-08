@@ -103,4 +103,20 @@ public interface ErpRepository {
     List<RuleTreeNodeVO> queryRuleTreeNodeVOByRuleTreeId(String ruleTreeId);
 
     MyPage<UserAwardRecordVO> queryUserAwardRecordVOListByPage(Integer pageNum, Integer pageSize, Long activityId, String userId);
+
+    List<EsUserOrderVO> queryEsUserOrderVOList();
+
+    List<EsActivityAccountVO> queryEsActivityAccountVOList();
+
+    List<EsUserAwardRecordVO> queryEsUserAwardRecordVOList();
+
+    List<EsUserAwardRecordSimpleVO> queryUserAwardRecordSimpleEsByActivityId(Long activityId);
+
+    List<EsCreditAccountVO> queryCreditAccountVOList();
+
+    List<EsCreditRecordVO> queryCreditRecordVOList();
+
+    List<EsActivityRecordVO> queryEsActivityRecordVOList();
+
+    List<EsUserBehaviorRebateOrderVO> queryEsUserBehaviorRebateOrderVOList();
 }

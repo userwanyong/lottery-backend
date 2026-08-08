@@ -1,6 +1,5 @@
 package com.lottery.infrastructure.adapter.repository;
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,8 +16,9 @@ import com.lottery.infrastructure.dao.UserBehaviorRebateOrderMapper;
 import com.lottery.infrastructure.dao.po.BehaviorRebate;
 import com.lottery.infrastructure.dao.po.Task;
 import com.lottery.infrastructure.dao.po.UserBehaviorRebateOrder;
-import com.lottery.infrastructure.event.EventPublisher;
+import com.lottery.infrastructure.event.LocalMessageEvent;
 import com.lottery.infrastructure.redis.RedisService;
+import org.springframework.context.ApplicationEventPublisher;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -45,13 +45,11 @@ public class RebateRepositoryImpl implements RebateRepository {
     @Resource
     private UserBehaviorRebateOrderMapper userBehaviorRebateOrderMapper;
     @Resource
-    private IDBRouterStrategy dbRouter;
-    @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
     private TaskMapper taskMapper;
     @Resource
-    private EventPublisher eventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private RedisService redisService;
 
@@ -80,9 +78,7 @@ public class RebateRepositoryImpl implements RebateRepository {
             throw new AppException(ResponseCode.FEATURE_IS_NOT_CONFIGURED.getCode(), ResponseCode.FEATURE_IS_NOT_CONFIGURED.getMessage());
         }
         String userId = aggregates.get(0).getUserId();
-        try {
-            dbRouter.doRouter(userId);
-            transactionTemplate.execute(status -> {
+        transactionTemplate.execute(status -> {
                 try {
                     for (RebateAggregate aggregate : aggregates) {
                         //保存返利单
@@ -112,25 +108,13 @@ public class RebateRepositoryImpl implements RebateRepository {
                     throw new DuplicateKeyException(Objects.requireNonNull(e.getMessage()));
                 }
             });
-        } finally {
-            dbRouter.clear();
-        }
-        //发送mq消息 不用加在事务里，因为有事务补偿机制
+        // task 已在事务内写入（state=create）。事务提交后立即异步分发（轻量版：Spring event 替代 MQ，准实时），
+        // 每个 aggregate 对应一条 task，分别投递；失败/崩溃由 SendMessageTaskJob 扫表补偿。
         for (RebateAggregate aggregate : aggregates) {
             TaskEntity taskEntity = aggregate.getTaskEntity();
-            Task task = new Task();
-            task.setUserId(taskEntity.getUserId());
-            task.setMessageId(taskEntity.getMessageId());
-            try {
-                eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-                log.debug("[RebateRepositoryImpl]发送返利记录MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
-                //更新数据库
-                taskMapper.updateTaskSendMessageCompleted(task);
-                log.debug("[RebateRepositoryImpl]任务表状态成功 userId: {} topic: {}", userId, task.getTopic());
-            } catch (Exception e) {
-                log.error("[RebateRepositoryImpl]发送返利记录MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
-                taskMapper.updateTaskSendMessageFail(task);
-            }
+            applicationEventPublisher.publishEvent(new LocalMessageEvent(this,
+                    taskEntity.getTopic(), JSON.toJSONString(taskEntity.getMessage()),
+                    taskEntity.getUserId(), taskEntity.getMessageId()));
         }
     }
 
@@ -140,12 +124,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                 .eq(UserBehaviorRebateOrder::getUserId, userId)
                 .eq(UserBehaviorRebateOrder::getOutBusinessNo, outBusinessNo);
         List<UserBehaviorRebateOrder> userBehaviorRebateOrders;
-        try {
-            dbRouter.doRouter(userId);
-            userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
-        } finally {
-            dbRouter.clear();
-        }
+        userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
         List<RebateOrderEntity> rebateOrderEntities = new ArrayList<>(userBehaviorRebateOrders.size());
         for (UserBehaviorRebateOrder userBehaviorRebateOrder : userBehaviorRebateOrders) {
             RebateOrderEntity rebateOrderEntity = new RebateOrderEntity();
@@ -162,12 +141,7 @@ public class RebateRepositoryImpl implements RebateRepository {
                 .eq(UserBehaviorRebateOrder::getActivityId, activityId)
                 .eq(UserBehaviorRebateOrder::getOutBusinessNo, outBusinessNo);
         List<UserBehaviorRebateOrder> userBehaviorRebateOrders;
-        try {
-            dbRouter.doRouter(userId);
-            userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
-        } finally {
-            dbRouter.clear();
-        }
+        userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(queryWrapper);
         return !userBehaviorRebateOrders.isEmpty();
     }
 

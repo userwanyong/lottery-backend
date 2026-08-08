@@ -1,6 +1,5 @@
 package com.lottery.infrastructure.adapter.repository;
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -19,8 +18,9 @@ import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.rebate.model.valobj.RebateTypeVO;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
-import com.lottery.infrastructure.event.EventPublisher;
+import com.lottery.infrastructure.event.LocalMessageEvent;
 import com.lottery.infrastructure.redis.RedisService;
+import org.springframework.context.ApplicationEventPublisher;
 import com.lottery.types.common.Constants;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.exception.AppException;
@@ -56,11 +56,9 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
     @Resource
     private AwardMapper awardMapper;
     @Resource
-    private IDBRouterStrategy dbRouter;
-    @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
-    private EventPublisher eventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private RedisService redisService;
     @Resource
@@ -95,9 +93,7 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         userOrder.setUserId(userAwardRecordEntity.getUserId());
         userOrder.setActivityId(userAwardRecordEntity.getActivityId());
         //将中奖记录和任务写入数据库表，更新抽奖单状态为used已使用
-        try {
-            dbRouter.doRouter(userAwardRecordEntity.getUserId());
-            transactionTemplate.execute(status -> {
+        transactionTemplate.execute(status -> {
                 try {
                     userAwardRecordMapper.insert(userAwardRecord);
                     taskMapper.insert(task);
@@ -114,21 +110,12 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                     return 1;
                 }
             });
-        } finally {
-            dbRouter.clear();
-        }
 
-        //发送mq消息
-        try {
-            // 发送消息【在事务外执行，如果失败还有任务补偿】
-            eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-            // 更新数据库记录，task 任务表 状态为 completed 已完成
-            taskMapper.updateTaskSendMessageCompleted(task);
-            log.debug("[UserAwardRepositoryImpl]写入中奖记录，MQ消息发送成功 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
-        } catch (Exception e) {
-            log.error("[UserAwardRepositoryImpl]写入中奖记录，MQ消息发送失败 userId: {} topic: {}", userAwardRecordEntity.getUserId(), task.getTopic());
-            taskMapper.updateTaskSendMessageFail(task);
-        }
+        // task 已在事务内写入（state=create）。事务提交后立即异步分发（轻量版：Spring event 替代 MQ，准实时），
+        // 失败/崩溃由 SendMessageTaskJob 扫表补偿，保证最终一致性。
+        applicationEventPublisher.publishEvent(new LocalMessageEvent(this,
+                taskEntity.getTopic(), JSON.toJSONString(taskEntity.getMessage()),
+                taskEntity.getUserId(), taskEntity.getMessageId()));
     }
 
     @Override
@@ -157,7 +144,6 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {
             lock.lock(3, TimeUnit.SECONDS);
-            dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
                 try {
                     // 写入积分记录表
@@ -190,7 +176,6 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
 
@@ -235,7 +220,6 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         RLock lock = redisService.getLock(Constants.RedisKey.ACTIVITY_ACCOUNT_LOCK + userId);
         try {
             lock.lock(3, TimeUnit.SECONDS);
-            dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
                 try {
                     // 既然能抽奖肯定已经有抽奖账户了，直接更新三个抽奖账户即可
@@ -288,7 +272,6 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
                 }
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
 
@@ -299,26 +282,21 @@ public class UserAwardRepositoryImpl implements UserAwardRepository {
         String userId = userAwardRecordEntity.getUserId();
         UserAwardRecord userAwardRecord = new UserAwardRecord();
         userAwardRecord.setAwardState(userAwardRecordEntity.getAwardState().getCode());
-        try {
-            dbRouter.doRouter(userId);
-            transactionTemplate.execute(status -> {
-                try {
-                    // 更新中奖记录状态为completed 发奖完成
-                    int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserOrderId, userAwardRecordEntity.getUserOrderId()));
-                    log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{}", userId);
-                    if (count == 0) {
-                        log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{}", userId);
-                        status.setRollbackOnly();
-                    }
-                    return 1;
-                } catch (DuplicateKeyException e) {
+        transactionTemplate.execute(status -> {
+            try {
+                // 更新中奖记录状态为completed 发奖完成
+                int count = userAwardRecordMapper.update(userAwardRecord, new LambdaUpdateWrapper<UserAwardRecord>().eq(UserAwardRecord::getUserOrderId, userAwardRecordEntity.getUserOrderId()));
+                log.debug("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成成功 userId:{}", userId);
+                if (count == 0) {
+                    log.error("[UserAwardRepositoryImpl]更新中奖记录状态为 completed 发奖完成失败 userId:{}", userId);
                     status.setRollbackOnly();
-                    log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
-                    throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
                 }
-            });
-        } finally {
-            dbRouter.clear();
-        }
+                return 1;
+            } catch (DuplicateKeyException e) {
+                status.setRollbackOnly();
+                log.error("[UserAwardRepositoryImpl]更新中奖记录，唯一索引冲突 userId: {} ", userId, e);
+                throw new AppException(ResponseCode.INDEX_DUP.getCode(), e);
+            }
+        });
     }
 }

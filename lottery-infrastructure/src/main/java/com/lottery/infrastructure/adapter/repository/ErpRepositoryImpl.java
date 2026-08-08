@@ -1,7 +1,6 @@
 package com.lottery.infrastructure.adapter.repository;
 
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,7 +8,6 @@ import com.lottery.domain.rebate.model.valobj.BehaviorTypeVO;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.*;
@@ -17,7 +15,6 @@ import com.lottery.types.common.Constants;
 import com.lottery.types.model.MyPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -60,11 +57,17 @@ public class ErpRepositoryImpl implements ErpRepository {
     @Resource
     private UserAwardRecordMapper userAwardRecordMapper;
     @Resource
-    private IDBRouterStrategy dbRouter;
+    private UserOrderMapper userOrderMapper;
     @Resource
-    private EventPublisher eventPublisher;
-    @Value("${spring.rabbitmq.topic.delete_keys_with_prefix}")
-    private String topic;
+    private ActivityAccountMapper activityAccountMapper;
+    @Resource
+    private CreditAccountMapper creditAccountMapper;
+    @Resource
+    private CreditRecordMapper creditRecordMapper;
+    @Resource
+    private ActivityRecordMapper activityRecordMapper;
+    @Resource
+    private UserBehaviorRebateOrderMapper userBehaviorRebateOrderMapper;
 
     @Override
     public List<ActivityVO> queryActivityVOList() {
@@ -468,12 +471,7 @@ public class ErpRepositoryImpl implements ErpRepository {
         Page<UserAwardRecord> page = new Page<>(pageNum, pageSize);
         MyPage<UserAwardRecordVO> myPage = new MyPage<>();
         Page<UserAwardRecord> userAwardRecordPage=null;
-        try {
-            dbRouter.doRouter(userId);
-            userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
-        } finally {
-            dbRouter.clear();
-        }
+        userAwardRecordPage = userAwardRecordMapper.selectPage(page, queryWrapper);
         if (userAwardRecordPage.getRecords().isEmpty()){
             return myPage;
         }
@@ -525,5 +523,103 @@ public class ErpRepositoryImpl implements ErpRepository {
         myPage.setTotal(userAwardRecordPage.getTotal());
         myPage.setItems(list);
         return myPage;
+    }
+
+    @Override
+    public List<EsUserOrderVO> queryEsUserOrderVOList() {
+        List<UserOrder> userOrders = userOrderMapper.selectList(null);
+        ArrayList<EsUserOrderVO> list = new ArrayList<>();
+        for (UserOrder userOrder : userOrders) {
+            EsUserOrderVO vo = new EsUserOrderVO();
+            BeanUtils.copyProperties(userOrder, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsActivityAccountVO> queryEsActivityAccountVOList() {
+        List<ActivityAccount> activityAccounts = activityAccountMapper.selectList(null);
+        ArrayList<EsActivityAccountVO> list = new ArrayList<>();
+        for (ActivityAccount activityAccount : activityAccounts) {
+            EsActivityAccountVO vo = new EsActivityAccountVO();
+            BeanUtils.copyProperties(activityAccount, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsUserAwardRecordVO> queryEsUserAwardRecordVOList() {
+        List<UserAwardRecord> userAwardRecords = userAwardRecordMapper.selectList(null);
+        ArrayList<EsUserAwardRecordVO> list = new ArrayList<>();
+        for (UserAwardRecord userAwardRecord : userAwardRecords) {
+            EsUserAwardRecordVO vo = new EsUserAwardRecordVO();
+            BeanUtils.copyProperties(userAwardRecord, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsUserAwardRecordSimpleVO> queryUserAwardRecordSimpleEsByActivityId(Long activityId) {
+        LambdaQueryWrapper<UserAwardRecord> queryWrapper = new LambdaQueryWrapper<UserAwardRecord>()
+                .eq(UserAwardRecord::getActivityId, activityId);
+        List<UserAwardRecord> userAwardRecords = userAwardRecordMapper.selectList(queryWrapper);
+        ArrayList<EsUserAwardRecordSimpleVO> list = new ArrayList<>();
+        for (UserAwardRecord userAwardRecord : userAwardRecords) {
+            EsUserAwardRecordSimpleVO vo = new EsUserAwardRecordSimpleVO();
+            BeanUtils.copyProperties(userAwardRecord, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsCreditAccountVO> queryCreditAccountVOList() {
+        List<CreditAccount> creditAccounts = creditAccountMapper.selectList(null);
+        ArrayList<EsCreditAccountVO> list = new ArrayList<>();
+        for (CreditAccount creditAccount : creditAccounts) {
+            EsCreditAccountVO vo = new EsCreditAccountVO();
+            BeanUtils.copyProperties(creditAccount, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsCreditRecordVO> queryCreditRecordVOList() {
+        List<CreditRecord> creditRecords = creditRecordMapper.selectList(null);
+        ArrayList<EsCreditRecordVO> list = new ArrayList<>();
+        for (CreditRecord creditRecord : creditRecords) {
+            EsCreditRecordVO vo = new EsCreditRecordVO();
+            BeanUtils.copyProperties(creditRecord, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsActivityRecordVO> queryEsActivityRecordVOList() {
+        List<ActivityRecord> activityRecords = activityRecordMapper.selectList(null);
+        ArrayList<EsActivityRecordVO> list = new ArrayList<>();
+        for (ActivityRecord activityRecord : activityRecords) {
+            EsActivityRecordVO vo = new EsActivityRecordVO();
+            BeanUtils.copyProperties(activityRecord, vo);
+            list.add(vo);
+        }
+        return list;
+    }
+
+    @Override
+    public List<EsUserBehaviorRebateOrderVO> queryEsUserBehaviorRebateOrderVOList() {
+        List<UserBehaviorRebateOrder> userBehaviorRebateOrders = userBehaviorRebateOrderMapper.selectList(null);
+        ArrayList<EsUserBehaviorRebateOrderVO> list = new ArrayList<>();
+        for (UserBehaviorRebateOrder userBehaviorRebateOrder : userBehaviorRebateOrders) {
+            EsUserBehaviorRebateOrderVO vo = new EsUserBehaviorRebateOrderVO();
+            BeanUtils.copyProperties(userBehaviorRebateOrder, vo);
+            list.add(vo);
+        }
+        return list;
     }
 }

@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.lottery.domain.activity.event.AwardStockZeroMessageEvent;
 import com.lottery.domain.activity.model.entity.ActivityEntity;
-import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
@@ -20,7 +18,6 @@ import com.lottery.domain.strategy.model.valobj.RuleWeightVO;
 import com.lottery.domain.strategy.repository.StrategyRepository;
 import com.lottery.infrastructure.dao.*;
 import com.lottery.infrastructure.dao.po.*;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.redis.RedisService;
 import com.lottery.types.common.Constants;
 import com.lottery.types.event.BaseEvent;
@@ -73,12 +70,6 @@ public class StrategyRepositoryImpl implements StrategyRepository {
 
     @Resource
     private RuleTreeNodeLineMapper ruleTreeNodeLineMapper;
-
-    @Resource
-    private EventPublisher eventPublisher;
-
-    @Resource
-    private AwardStockZeroMessageEvent awardStockZeroMessageEvent;
 
     @Override
     public List<StrategyAwardEntity> queryActivityAwardList(Long activityId) {
@@ -292,10 +283,9 @@ public class StrategyRepositoryImpl implements StrategyRepository {
         if (count == 0) {
             String[] split = key.split(Constants.UNDERLINE);
             String activityAward = split[split.length - 2] + Constants.UNDERLINE + split[split.length - 1];
-            eventPublisher.publish(
-                    awardStockZeroMessageEvent.topic(),
-                    awardStockZeroMessageEvent.buildEventMessage(activityAward)
-            );
+            // 奖品库存归零，同步清空数据库库存与队列（轻量版：去 MQ，直接调用）
+            clearAwardStock(activityAward);
+            clearQueueValue(activityAward);
         } else if (count < 0) {
             redisService.setAtomicLong(key, 0);
             return false;
@@ -531,15 +521,6 @@ public class StrategyRepositoryImpl implements StrategyRepository {
     @Override
     public <K, V> Map<K, V> getMap(String key) {
         return redisService.getMap(Constants.RedisKey.RATE_TABLE_KEY + key);
-    }
-
-    @Override
-    public void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> message) {
-        try {
-            eventPublisher.publish(topic, message);
-        } catch (Exception e) {
-            log.error("send lottery message failed userId:{} topic:{}", message.getData().getUserId(), topic, e);
-        }
     }
 
     @Override

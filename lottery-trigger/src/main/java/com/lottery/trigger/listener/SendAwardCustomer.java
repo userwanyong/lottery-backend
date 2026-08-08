@@ -7,30 +7,25 @@ import com.lottery.domain.award.model.entity.DistributeAwardEntity;
 import com.lottery.domain.award.service.UserAwardService;
 import com.lottery.types.event.BaseEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
 /**
  * @author 永
- * 发奖
+ * 发奖（轻量版：由 SendMessageTaskJob 本地分发调用，去 MQ）
  */
 @Slf4j
 @Component
 public class SendAwardCustomer {
-    @Value("${spring.rabbitmq.topic.send_award}")
-    private String topic;
+    public static final String TOPIC = "send_award";
 
     @Resource
     private UserAwardService userAwardService;
 
-    @RabbitListener(queuesToDeclare = @Queue(value = "${spring.rabbitmq.topic.send_award}"))
     public void listener(String message) {
         try {
-            log.info("[SendAwardCustomer]监听到用户发奖消息 topic: {} message: {}", topic, message);
+            log.info("[SendAwardCustomer]监听到用户发奖消息 topic: {} message: {}", TOPIC, message);
             BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage> eventMessage = JSON.parseObject(message, new TypeReference<BaseEvent.EventMessage<SendAwardMessageEvent.SendAwardMessage>>() {
             }.getType());
             SendAwardMessageEvent.SendAwardMessage sendAwardMessage = eventMessage.getData();
@@ -42,9 +37,9 @@ public class SendAwardCustomer {
             distributeAwardEntity.setUserId(sendAwardMessage.getUserId());
             distributeAwardEntity.setActivityId(sendAwardMessage.getActivityId());
             userAwardService.distributeAward(distributeAwardEntity);
-            log.info("[SendAwardCustomer]用户发奖消息，消费成功 topic: {} message: {}", topic, message);
+            log.info("[SendAwardCustomer]用户发奖消息，消费成功 topic: {} message: {}", TOPIC, message);
         } catch (Exception e) {
-            log.error("[SendAwardCustomer]用户发奖消息，消费失败 topic: {} message: {}", topic, message);
+            log.error("[SendAwardCustomer]用户发奖消息，消费失败 topic: {} message: {}", TOPIC, message);
             throw e;
         }
     }

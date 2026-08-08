@@ -1,6 +1,5 @@
 package com.lottery.infrastructure.adapter.repository;
 
-import cn.bugstack.middleware.db.router.strategy.IDBRouterStrategy;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -12,13 +11,14 @@ import com.lottery.domain.credit.model.valobj.CreditAccountStatusVO;
 import com.lottery.domain.credit.model.valobj.TradeTypeVO;
 import com.lottery.domain.credit.repository.CreditRepository;
 import com.lottery.infrastructure.dao.po.CreditRecord;
-import com.lottery.infrastructure.event.EventPublisher;
 import com.lottery.infrastructure.dao.CreditAccountMapper;
 import com.lottery.infrastructure.dao.TaskMapper;
 import com.lottery.infrastructure.dao.CreditRecordMapper;
 import com.lottery.infrastructure.dao.po.CreditAccount;
 import com.lottery.infrastructure.dao.po.Task;
+import com.lottery.infrastructure.event.LocalMessageEvent;
 import com.lottery.infrastructure.redis.RedisService;
+import org.springframework.context.ApplicationEventPublisher;
 import com.lottery.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -46,11 +46,9 @@ public class CreditRepositoryImpl implements CreditRepository {
     @Resource
     private TaskMapper taskMapper;
     @Resource
-    private IDBRouterStrategy dbRouter;
-    @Resource
     private TransactionTemplate transactionTemplate;
     @Resource
-    private EventPublisher eventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void saveTradeAggregate(TradeAggregate tradeAggregate) {
@@ -87,7 +85,6 @@ public class CreditRepositoryImpl implements CreditRepository {
 
         try {
             lock.lock(3, TimeUnit.SECONDS);
-            dbRouter.doRouter(userId);
             transactionTemplate.execute(status -> {
                 try {
                     // 保存账户
@@ -124,43 +121,32 @@ public class CreditRepositoryImpl implements CreditRepository {
                 return 1;
             });
         } finally {
-            dbRouter.clear();
             lock.unlock();
         }
 
-        //发送mq消息 不用加在事务里，因为有事务补偿机制
-        try {
-            eventPublisher.publish(taskEntity.getTopic(), taskEntity.getMessage());
-            //更新数据库
-            taskMapper.updateTaskSendMessageCompleted(task);
-            log.debug("[CreditRepositoryImpl]发送更新账户积分MQ消息成功 userId: {} topic: {}", userId, task.getTopic());
-        } catch (Exception e) {
-            log.error("[CreditRepositoryImpl]发送更新账户积分MQ消息失败 userId: {} topic: {}", userId, task.getTopic());
-            taskMapper.updateTaskSendMessageFail(task);
-        }
+        // task 已在事务内写入（state=create）。事务提交后立即异步分发（轻量版：Spring event 替代 MQ，准实时），
+        // 失败/崩溃由 SendMessageTaskJob 扫表补偿，保证最终一致性。
+        applicationEventPublisher.publishEvent(new LocalMessageEvent(this,
+                taskEntity.getTopic(), JSON.toJSONString(taskEntity.getMessage()),
+                taskEntity.getUserId(), taskEntity.getMessageId()));
     }
 
     @Override
     public CreditAccountEntity queryUserCreditAccount(String userId,Long activityId) {
-        try {
-            dbRouter.doRouter(userId);
-            LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
-                    .eq(CreditAccount::getUserId, userId)
-                    .eq(CreditAccount::getActivityId, activityId);
-            CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
-            if (creditAccount == null) {
-                return CreditAccountEntity.builder()
-                        .userId(userId)
-                        .creditAmount(BigDecimal.ZERO)
-                        .build();
-            }
+        LambdaQueryWrapper<CreditAccount> queryWrapper = new QueryWrapper<CreditAccount>().lambda()
+                .eq(CreditAccount::getUserId, userId)
+                .eq(CreditAccount::getActivityId, activityId);
+        CreditAccount creditAccount = creditAccountMapper.selectOne(queryWrapper);
+        if (creditAccount == null) {
             return CreditAccountEntity.builder()
-                    .userId(creditAccount.getUserId())
-                    .creditAmount(creditAccount.getAvailableAmount())
+                    .userId(userId)
+                    .creditAmount(BigDecimal.ZERO)
                     .build();
-        } finally {
-            dbRouter.clear();
         }
+        return CreditAccountEntity.builder()
+                .userId(creditAccount.getUserId())
+                .creditAmount(creditAccount.getAvailableAmount())
+                .build();
 
     }
 }

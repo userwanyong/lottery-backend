@@ -1,6 +1,5 @@
 package com.lottery.domain.strategy.repository;
 
-import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
 import com.lottery.domain.strategy.model.entity.StrategyAwardEntity;
@@ -69,8 +68,6 @@ public interface StrategyRepository {
     String queryStrategyArmoryAlgorithmFromCache(String key);
 
     <K, V> Map<K, V> getMap(String key);
-
-    void sendLotteryMessageToMq(String topic, BaseEvent.EventMessage<SendLotteryMessageEvent.LotteryMessage> eventMessage);
 
     String queryRuleValue(Long awardId);
 

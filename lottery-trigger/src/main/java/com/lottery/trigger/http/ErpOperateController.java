@@ -1,7 +1,7 @@
 package com.lottery.trigger.http;
 
 
-import com.lottery.querys.adapter.repository.EsErpRepository;
+import com.lottery.querys.adapter.repository.ErpRepository;
 import com.lottery.querys.model.valobj.*;
 import com.lottery.trigger.api.ErpOperateService;
 import com.lottery.trigger.api.dto.res.*;
@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping("/erp")
 public class ErpOperateController implements ErpOperateService {
     @Resource
-    private EsErpRepository repository;
+    private ErpRepository repository;
 
     @Override
     @GetMapping("/query_user_order")

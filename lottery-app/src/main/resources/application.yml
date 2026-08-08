@@ -1,6 +1,6 @@
 spring:
   application:
-    name: xybjz-app
+    name: xybjz-app-lite
   config:
     import:
       - optional:file:./.env[.properties]
@@ -9,42 +9,21 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  elasticsearch:
-    datasource:
-      url: jdbc:es://http://${app.infra.es.host}:${app.infra.es.port}
-      username: ${app.infra.es.username}
-      password: ${app.infra.es.password}
-  rabbitmq:
-    addresses: ${app.infra.rabbitmq.host}
-    port: ${app.infra.rabbitmq.port}
-    username: ${app.infra.rabbitmq.username}
-    password: ${app.infra.rabbitmq.password}
-    virtual-host: ${app.infra.rabbitmq.virtual-host}
-    connection-timeout: 2s
-    listener:
-      simple:
-        retry:
-          enabled: true
-          initial-interval: 1000ms
-          multiplier: 1
-          max-attempts: 3
-        prefetch: 1
-        acknowledge-mode: auto
-    template:
-      retry:
-        enabled: true
-        initial-interval: 1000ms
-        multiplier: 1
-        max-attempts: 3
-    topic:
-      activity_sku_stock_zero: activity_sku_stock_zero
-      award_stock_zero: award_stock_zero
-      send_award: send_award
-      save_award_record: save_award_record
-      send_rebate: send_rebate
-      credit_adjust_success: credit_adjust_success
-      lottery: lottery
-      delete_keys_with_prefix: delete_keys_with_prefix
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${app.infra.mysql.host}:${app.infra.mysql.port}/marketing_lite?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
+    username: ${app.infra.mysql.username}
+    password: ${app.infra.mysql.password}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: Lottery_HikariCP
+      minimum-idle: 15
+      idle-timeout: 180000
+      maximum-pool-size: 25
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
 
 server:
   port: 8091
@@ -69,60 +48,6 @@ thread:
         block-queue-size: 5000
         policy: CallerRunsPolicy
 
-mini-db-router:
-  jdbc:
-    datasource:
-      dbCount: 2
-      tbCount: 4
-      default: db00
-      routerKey: userId
-      list: db01,db02
-      db00:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://${app.infra.mysql.host}:${app.infra.mysql.port}/marketing?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
-        username: ${app.infra.mysql.username}
-        password: ${app.infra.mysql.password}
-        type-class-name: com.zaxxer.hikari.HikariDataSource
-        pool:
-          pool-name: Retail_HikariCP
-          minimum-idle: 15
-          idle-timeout: 180000
-          maximum-pool-size: 25
-          auto-commit: true
-          max-lifetime: 1800000
-          connection-timeout: 30000
-          connection-test-query: SELECT 1
-      db01:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://${app.infra.mysql.host}:${app.infra.mysql.port}/marketing_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
-        username: ${app.infra.mysql.username}
-        password: ${app.infra.mysql.password}
-        type-class-name: com.zaxxer.hikari.HikariDataSource
-        pool:
-          pool-name: Retail_HikariCP
-          minimum-idle: 15
-          idle-timeout: 180000
-          maximum-pool-size: 25
-          auto-commit: true
-          max-lifetime: 1800000
-          connection-timeout: 30000
-          connection-test-query: SELECT 1
-      db02:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://${app.infra.mysql.host}:${app.infra.mysql.port}/marketing_02?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
-        username: ${app.infra.mysql.username}
-        password: ${app.infra.mysql.password}
-        type-class-name: com.zaxxer.hikari.HikariDataSource
-        pool:
-          pool-name: Retail_HikariCP
-          minimum-idle: 15
-          idle-timeout: 180000
-          maximum-pool-size: 25
-          auto-commit: true
-          max-lifetime: 1800000
-          connection-timeout: 30000
-          connection-test-query: SELECT 1
-
 redis:
   sdk:
     config:
@@ -144,7 +69,7 @@ logging:
 
 dubbo:
   application:
-    name: lottery
+    name: lottery_lite
     version: 1.0
   registry:
     id: nacos-registry
@@ -159,35 +84,13 @@ dubbo:
 
 auth:
   tenant-id: ${app.auth.tenant-id}
-  refresh-token-prefix: "lottery:refresh_token:"
+  refresh-token-prefix: "lottery_lite:refresh_token:"
   refresh-token-ttl-days: 7
 
 authing:
   app-id: ${app.authing.app-id}
   app-secret: ${app.authing.app-secret}
   app-host: ${app.authing.app-host}
-
-zookeeper:
-  sdk:
-    config:
-      connect-string: ${app.infra.zookeeper.host}:${app.infra.zookeeper.port}
-      base-sleep-time-ms: 1000
-      max-retries: 3
-      session-timeout-ms: 18000
-      connection-timeout-ms: 30000
-
-xxl:
-  job:
-    accessToken: default_token
-    admin:
-      addresses: http://${app.infra.xxl.host}:${app.infra.xxl.port}/xxl-job-admin
-    executor:
-      address:
-      appname: marketing-job
-      ip:
-      port: 9999
-      logpath: ./data/applogs/xxl-job/jobhandler
-      logretentiondays: 30
 
 alioss:
   endpoint: ${app.infra.alioss.endpoint}

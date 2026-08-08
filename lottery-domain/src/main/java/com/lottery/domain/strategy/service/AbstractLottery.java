@@ -1,7 +1,6 @@
 package com.lottery.domain.strategy.service;
 
 import com.lottery.domain.channel.service.ChannelService;
-import com.lottery.domain.strategy.event.SendLotteryMessageEvent;
 import com.lottery.domain.strategy.model.entity.LotteryReqEntity;
 import com.lottery.domain.strategy.model.entity.LotteryResEntity;
 import com.lottery.domain.strategy.model.entity.RuleEntity;
@@ -31,9 +30,6 @@ public abstract class AbstractLottery implements Lottery {
     protected ChannelService channelService;
     protected DefaultLogicChainFactory defaultLogicChainFactory;
     protected DefaultLogicTreeFactory defaultLogicTreeFactory;
-
-    @Resource
-    private SendLotteryMessageEvent sendLotteryMessageEvent;
 
     public AbstractLottery(
             StrategyRepository repository,
