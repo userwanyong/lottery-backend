@@ -1,25 +1,29 @@
 package com.lottery.domain.user.service.impl;
 
 import com.lottery.domain.user.model.vo.UserVO;
-import com.lottery.domain.user.model.vo.WechatMiniProgramQrCodeVO;
+
+import java.util.List;
 
 /**
  * @author 永
  */
 public interface IUserService {
-    void sendEmailRegisterCode(String email);
 
-    UserVO registerByEmail(String email, String passCode, String password);
+    List<String> listEnabledLoginMethods();
 
-    UserVO loginByEmailPassword(String email, String password);
+    UserVO loginByPassword(String username, String password);
+
+    void sendLoginCode(String method, String target);
+
+    UserVO loginByCode(String method, String target, String code);
+
+    String buildOAuthAuthorizeUrl(String provider);
+
+    UserVO handleOAuthCallback(String provider, String code, String state);
 
     UserVO refreshToken(String refreshToken);
 
-    WechatMiniProgramQrCodeVO generateWechatMiniProgramLoginQrCode();
+    UserVO getUserById(Long userId);
 
-    WechatMiniProgramQrCodeVO queryWechatMiniProgramLoginQrCodeStatus(String qrcodeId);
-
-    UserVO loginByWechatMiniProgramQrCode(String ticket);
-
-    void logout(Long userId);
+    void logout(String accessToken, String refreshToken);
 }

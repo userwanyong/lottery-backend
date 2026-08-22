@@ -30,15 +30,11 @@ public enum ResponseCode {
     PERMISSION_DENIED(2013, "permission denied"),
     REFRESH_TOKEN_INVALID(2015, "refresh token is invalid or expired"),
     AUTH_SERVICE_ERROR(2016, "auth service error"),
-    EMAIL_EMPTY(2017, "email cannot be blank"),
-    EMAIL_PASSCODE_EMPTY(2018, "email passcode cannot be blank"),
-    AUTHING_SEND_EMAIL_FAILED(2019, "failed to send email passcode"),
-    AUTHING_EMAIL_SIGN_UP_FAILED(2021, "failed to register by email"),
-    AUTHING_SERVICE_ERROR(2022, "authing service error"),
-    EMAIL_PASSWORD_EMPTY(2023, "email password cannot be blank"),
-    EMAIL_ALREADY_REGISTERED(2024, "email has already been registered"),
-    EMAIL_NOT_REGISTERED(2025, "email is not registered"),
-    EMAIL_PASSWORD_INVALID(2026, "email or password is invalid");
+    LOGIN_FAILED(2026, "用户名或密码错误"),
+    CODE_SEND_FAILED(2027, "验证码发送失败"),
+    CODE_LOGIN_FAILED(2028, "验证码登录失败"),
+    OAUTH_LOGIN_FAILED(2029, "第三方登录失败"),
+    USER_NOT_FOUND(2030, "用户不存在或已禁用");
 
     private final int code;
     private final String message;

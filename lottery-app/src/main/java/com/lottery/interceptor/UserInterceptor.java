@@ -2,34 +2,33 @@ package com.lottery.interceptor;
 
 
 import cn.hutool.core.util.StrUtil;
-import cn.wanyj.auth.api.protobuf.StringValue;
-import cn.wanyj.auth.api.protobuf.TokenRpcServiceProtobuf;
 import cn.wanyj.auth.api.protobuf.TokenValidationResult;
 import com.alibaba.fastjson.JSON;
+import com.lottery.infrastructure.adapter.rpc.AuthServiceGateway;
 import com.lottery.types.enums.ResponseCode;
 import com.lottery.types.model.BaseResponse;
 import com.lottery.types.util.ThreadUtils;
 import com.lottery.types.util.UserUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
 /**
  * @author 永
- * 拦截器，将用户信息从token中取出，放入到线程上下文中
+ * 拦截器，通过 auth-service RPC 解析 accessToken，将用户信息放入线程上下文
  */
 @Slf4j
 @Component
 public class UserInterceptor implements HandlerInterceptor {
 
-    @DubboReference(version = "1.0.0", check = false)
-    private TokenRpcServiceProtobuf tokenRpcService;
+    @Resource
+    private AuthServiceGateway authServiceGateway;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -48,9 +47,7 @@ public class UserInterceptor implements HandlerInterceptor {
         }
         // 通过RPC校验token
         try {
-            TokenValidationResult result = tokenRpcService.parseToken(
-                    StringValue.newBuilder().setValue(token).build()
-            );
+            TokenValidationResult result = authServiceGateway.parseToken(token);
             if (!result.getValid()) {
                 log.warn("token验证失败");
                 writeUnauthorized(response, "认证令牌无效或已过期");
@@ -62,7 +59,7 @@ public class UserInterceptor implements HandlerInterceptor {
             userUtils.setUsername(result.getUsername());
             userUtils.setRoles(new ArrayList<>(result.getRolesList()));
             userUtils.setPermissions(new ArrayList<>(result.getPermissionsList()));
-            userUtils.setTenantId(result.getTenantId());
+            userUtils.setTenantUid(result.getTenantUid());
             ThreadUtils.setUser(userUtils);
             log.info("已将用户信息存入线程上下文：{}", userUtils);
             return true;

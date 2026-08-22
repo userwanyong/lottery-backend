@@ -10,7 +10,7 @@ public class UserUtils {
     private String username;
     private List<String> roles;
     private List<String> permissions;
-    private Long tenantId;
+    private String tenantUid;
 
     public boolean hasRole(String role) {
         return roles != null && roles.contains(role);

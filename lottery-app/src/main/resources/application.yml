@@ -83,14 +83,12 @@ dubbo:
     retries: 1
 
 auth:
-  tenant-id: ${app.auth.tenant-id}
-  refresh-token-prefix: "lottery_lite:refresh_token:"
-  refresh-token-ttl-days: 7
-
-authing:
-  app-id: ${app.authing.app-id}
-  app-secret: ${app.authing.app-secret}
-  app-host: ${app.authing.app-host}
+  # auth-service 租户唯一标识（对外 tenantUid，所有 RPC 均使用）
+  tenant-uid: ${app.auth.tenant-uid:}
+  # auth-service 提供端 RPC 鉴权令牌（RPC_SERVICE_TOKEN）
+  rpc-token: ${app.auth.rpc-token:}
+  # OAuth 登录完成后 302 回前端登录页的基地址
+  frontend-base-url: ${app.auth.frontend-base-url:http://localhost:8000}
 
 alioss:
   endpoint: ${app.infra.alioss.endpoint}

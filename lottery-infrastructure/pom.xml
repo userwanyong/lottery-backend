@@ -28,11 +28,6 @@
             <artifactId>auth-service-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.authing</groupId>
-            <artifactId>authing-java-sdk</artifactId>
-            <version>3.1.20</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>

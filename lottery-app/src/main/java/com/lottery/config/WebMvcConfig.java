@@ -22,17 +22,13 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/email/send-code")
-                .excludePathPatterns("/user/email/register")
-                .excludePathPatterns("/user/email/login")
+                // 登录方式发现 / 各类登录入口 / 令牌刷新 / OAuth 授权与回调：公开访问
+                .excludePathPatterns("/user/login-methods")
+                .excludePathPatterns("/user/login")
+                .excludePathPatterns("/user/send-code")
+                .excludePathPatterns("/user/login-by-code")
                 .excludePathPatterns("/user/refresh")
-                .excludePathPatterns("/user/wechat-mini-program/qrcode/generate")
-                .excludePathPatterns("/user/wechat-mini-program/qrcode/status")
-                .excludePathPatterns("/user/wechat-mini-program/qrcode/login")
+                .excludePathPatterns("/user/oauth/**")
                 .excludePathPatterns("/health/check");
-//                // TODO 压测临时排除，测试完成后删除此行
-//                .excludePathPatterns("/activity/**")
-//                // TODO 基准测试临时排除，测试完成后删除此行
-//                .excludePathPatterns("/benchmark/**");
     }
 }

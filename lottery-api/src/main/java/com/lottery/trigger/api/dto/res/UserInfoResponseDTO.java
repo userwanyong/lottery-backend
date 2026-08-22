@@ -1,6 +1,5 @@
 package com.lottery.trigger.api.dto.res;
 
-
 import lombok.Data;
 
 import java.io.Serial;
@@ -8,10 +7,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author 永
+ * 当前登录用户信息
  */
 @Data
-public class UserLoginResponseDTO implements Serializable {
+public class UserInfoResponseDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -42,21 +41,4 @@ public class UserLoginResponseDTO implements Serializable {
      * 权限编码
      */
     private List<String> permissions;
-
-    /**
-     * accessToken
-     */
-    private String accessToken;
-
-    /**
-     * refreshToken
-     */
-    private String refreshToken;
-
-    /**
-     * 过期时间（秒）
-     */
-    private Long expiresIn;
-
-
 }
