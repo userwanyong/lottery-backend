@@ -7,7 +7,12 @@ import cn.wanyj.auth.api.protobuf.OAuthUrlRpcResponse;
 import cn.wanyj.auth.api.protobuf.OperationResult;
 import cn.wanyj.auth.api.protobuf.TokenRpcResponse;
 import cn.wanyj.auth.api.protobuf.TokenValidationResult;
+import cn.wanyj.auth.api.protobuf.UpdateUserRpcRequest;
 import cn.wanyj.auth.api.protobuf.UserRpcResponse;
+import com.lottery.domain.auth.model.vo.AuthUserUpdateVO;
+import com.lottery.domain.auth.model.vo.AuthUserVO;
+import com.lottery.domain.auth.model.vo.OAuthBindingVO;
+import com.lottery.domain.user.model.vo.OAuthCallbackResultVO;
 import com.lottery.domain.user.model.vo.UserVO;
 import com.lottery.domain.user.repository.IUserRepository;
 import com.lottery.infrastructure.adapter.rpc.AuthServiceGateway;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户认证仓储实现：全部委托 auth-service（Dubbo Triple RPC），
@@ -91,15 +97,29 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
-    public UserVO handleOAuthCallback(String provider, String code, String state) {
+    public OAuthCallbackResultVO handleOAuthCallback(String provider, String code, String state) {
         OAuthCallbackRpcResult result = authServiceGateway.handleOAuthCallback(provider, code, state);
-        if (result.getLogin() && result.hasToken() && StringUtils.isNotBlank(result.getToken().getAccessToken())) {
-            return buildUserVO(result.getUser(), result.getToken());
+        if (result.getLogin()) {
+            if (!result.hasToken() || StringUtils.isBlank(result.getToken().getAccessToken())) {
+                log.warn("oauth login rejected, provider={}, message={}", provider, result.getMessage());
+                throw new AppException(ResponseCode.OAUTH_LOGIN_FAILED.getCode(),
+                        resolveMessage(result.getMessage(), ResponseCode.OAUTH_LOGIN_FAILED));
+            }
+            OAuthCallbackResultVO vo = new OAuthCallbackResultVO();
+            vo.setLogin(true);
+            vo.setUser(buildUserVO(result.getUser(), result.getToken()));
+            return vo;
         }
-        log.warn("oauth callback rejected, provider={}, login={}, success={}, message={}",
-                provider, result.getLogin(), result.getSuccess(), result.getMessage());
-        throw new AppException(ResponseCode.OAUTH_LOGIN_FAILED.getCode(),
-                resolveMessage(result.getMessage(), ResponseCode.OAUTH_LOGIN_FAILED));
+
+        // 绑定流程（个人中心发起）
+        OAuthCallbackResultVO vo = new OAuthCallbackResultVO();
+        vo.setLogin(false);
+        vo.setBindSuccess(result.getSuccess());
+        vo.setMessage(result.getMessage());
+        if (!result.getSuccess()) {
+            log.warn("oauth bind rejected, provider={}, message={}", provider, result.getMessage());
+        }
+        return vo;
     }
 
     @Override
@@ -149,6 +169,153 @@ public class UserRepositoryImpl implements IUserRepository {
         } catch (AppException e) {
             // 登出尽力而为：认证服务短暂不可用不应阻塞用户退出本地会话
             log.error("logout rpc failed, fallback to local logout", e);
+        }
+    }
+
+    // ==================== 个人中心 ====================
+
+    @Override
+    public AuthUserVO getProfile(Long userId) {
+        UserRpcResponse user = authServiceGateway.getUserById(userId);
+        if (user.getId() <= 0) {
+            throw new AppException(ResponseCode.USER_NOT_FOUND.getCode(), ResponseCode.USER_NOT_FOUND.getMessage());
+        }
+        AuthUserVO profile = new AuthUserVO();
+        profile.setId(user.getId());
+        profile.setUsername(user.getUsername());
+        profile.setEmail(user.getEmail());
+        profile.setPhone(user.getPhone());
+        profile.setNickname(user.getNickname());
+        profile.setAvatar(user.getAvatar());
+        profile.setStatus(user.getStatus());
+        profile.setRoles(user.getRolesList());
+        profile.setPermissions(user.getPermissionsList());
+        profile.setRealName(user.getRealName());
+        profile.setGender(user.getGender());
+        profile.setBirthday(user.getBirthday());
+        profile.setEmailVerified(user.getEmailVerified());
+        profile.setPhoneVerified(user.getPhoneVerified());
+        profile.setCreatedAt(user.getCreatedAt());
+        profile.setLastLoginAt(user.getLastLoginAt());
+        return profile;
+    }
+
+    @Override
+    public void updateProfile(Long userId, AuthUserUpdateVO updateVO) {
+        UpdateUserRpcRequest.Builder builder = UpdateUserRpcRequest.newBuilder();
+        List<String> fields = updateVO.buildFieldsToUpdate();
+        if (updateVO.getNickname() != null) {
+            builder.setNickname(updateVO.getNickname());
+        }
+        if (updateVO.getAvatar() != null) {
+            builder.setAvatar(updateVO.getAvatar());
+        }
+        if (updateVO.getEmail() != null) {
+            builder.setEmail(updateVO.getEmail());
+        }
+        if (updateVO.getPhone() != null) {
+            builder.setPhone(updateVO.getPhone());
+        }
+        if (updateVO.getRealName() != null) {
+            builder.setRealName(updateVO.getRealName());
+        }
+        if (updateVO.getGender() != null) {
+            builder.setGender(updateVO.getGender());
+        }
+        if (updateVO.getBirthday() != null) {
+            builder.setBirthday(updateVO.getBirthday());
+        }
+        fields.forEach(builder::addFieldsToUpdate);
+
+        OperationResult result = authServiceGateway.updateUser(userId, builder);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        OperationResult result = authServiceGateway.changePassword(userId, oldPassword, newPassword);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public String uploadAvatar(Long userId, String filename, String contentType, byte[] data) {
+        String url = authServiceGateway.uploadAvatar(userId, filename, contentType, data);
+        if (StringUtils.isBlank(url)) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(), "头像上传失败（存储服务未配置或格式不支持）");
+        }
+        return url;
+    }
+
+    @Override
+    public List<OAuthBindingVO> listOAuthBindings(Long userId) {
+        return authServiceGateway.listOAuthBindings(userId).stream().map(binding -> {
+            OAuthBindingVO vo = new OAuthBindingVO();
+            vo.setId(binding.getId());
+            vo.setProvider(binding.getProvider());
+            vo.setProviderUid(binding.getProviderUid());
+            vo.setCreatedAt(binding.getCreatedAt());
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String buildBindAuthorizeUrl(Long userId, String provider) {
+        String url = authServiceGateway.buildBindAuthorizeUrl(userId, provider);
+        if (StringUtils.isBlank(url)) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    "该登录方式未启用或未配置凭证: " + provider);
+        }
+        return url;
+    }
+
+    @Override
+    public void unbindOAuth(Long userId, String provider) {
+        OperationResult result = authServiceGateway.unbindOAuth(userId, provider);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public void bindEmail(Long userId, String method, String target, String code) {
+        OperationResult result = authServiceGateway.bindEmail(userId, method, target, code);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public void unbindEmail(Long userId) {
+        OperationResult result = authServiceGateway.unbindEmail(userId);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public void bindPhone(Long userId, String method, String target, String code) {
+        OperationResult result = authServiceGateway.bindPhone(userId, method, target, code);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
+        }
+    }
+
+    @Override
+    public void unbindPhone(Long userId) {
+        OperationResult result = authServiceGateway.unbindPhone(userId);
+        if (!result.getSuccess()) {
+            throw new AppException(ResponseCode.AUTH_MANAGE_FAILED.getCode(),
+                    resolveMessage(result.getMessage(), ResponseCode.AUTH_MANAGE_FAILED));
         }
     }
 

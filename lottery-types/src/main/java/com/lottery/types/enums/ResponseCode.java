@@ -34,7 +34,8 @@ public enum ResponseCode {
     CODE_SEND_FAILED(2027, "验证码发送失败"),
     CODE_LOGIN_FAILED(2028, "验证码登录失败"),
     OAUTH_LOGIN_FAILED(2029, "第三方登录失败"),
-    USER_NOT_FOUND(2030, "用户不存在或已禁用");
+    USER_NOT_FOUND(2030, "用户不存在或已禁用"),
+    AUTH_MANAGE_FAILED(2031, "认证管理操作失败");
 
     private final int code;
     private final String message;
