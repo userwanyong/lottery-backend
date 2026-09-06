@@ -93,34 +93,34 @@ public class AuthServiceGateway {
     /**
      * 写语义（登录、发码、令牌轮换、登出、改密）必须 retries=0，避免重试导致验证码重复消费/令牌对轮换错乱
      */
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private AuthRpcServiceProtobuf authRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private OAuthRpcServiceProtobuf oauthRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private UserRpcServiceProtobuf userRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private RoleRpcServiceProtobuf roleRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private PermissionRpcServiceProtobuf permissionRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private ContactBindingRpcServiceProtobuf contactBindingRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 10000, retries = 0)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 0)
     private OssRpcServiceProtobuf ossRpcService;
 
     /**
      * 读语义（解析令牌）允许一次重试
      */
-    @DubboReference(version = "1.0.0", check = false, timeout = 3000, retries = 1)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 1)
     private TokenRpcServiceProtobuf tokenRpcService;
 
-    @DubboReference(version = "1.0.0", check = false, timeout = 5000, retries = 1)
+    @DubboReference(version = "1.0.0", check = false, timeout = 15000, retries = 1)
     private LoginMethodRpcServiceProtobuf loginMethodRpcService;
 
     // ==================== 登录与令牌 ====================
